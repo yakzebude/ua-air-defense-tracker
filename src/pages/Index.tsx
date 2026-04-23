@@ -73,20 +73,6 @@ const Index = () => {
               visualization tracks how many were sent — and how many Ukraine's air defenses
               brought down — every month through March 2026.
             </p>
-            <figure className="mt-10">
-              <div className="overflow-hidden rounded-sm border border-border bg-muted">
-                <img
-                  src={shahedWreckage}
-                  alt="Ukrainian soldiers inspecting the wreckage of a downed Shahed-136 attack drone, showing its delta-wing airframe at human scale."
-                  className="h-auto w-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-              <figcaption className="mt-3 text-xs leading-relaxed text-muted-foreground">
-                Ukrainian soldiers examine the wreckage of a downed Shahed-136 — its
-                delta-wing fuselage roughly the height of a grown man.
-              </figcaption>
-            </figure>
           </div>
           <aside className="md:col-span-4 md:border-l md:border-border md:pl-8">
             <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
