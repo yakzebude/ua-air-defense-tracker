@@ -47,6 +47,12 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        series: {
+          launched: "hsl(var(--series-launched))",
+          destroyed: "hsl(var(--series-destroyed))",
+          rate: "hsl(var(--series-rate))",
+        },
+        grid: "hsl(var(--grid))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
