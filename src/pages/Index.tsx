@@ -152,6 +152,26 @@ const Index = () => {
             )}
           </section>
 
+          {/* Editorial image break */}
+          <section className="border-t border-border">
+            <div className="container py-14 md:py-20">
+              <figure className="mx-auto max-w-4xl">
+                <div className="overflow-hidden rounded-sm border border-border bg-muted">
+                  <img
+                    src={shahedWreckage}
+                    alt="Ukrainian soldiers inspecting the wreckage of a downed Shahed-136 attack drone, showing its delta-wing airframe at human scale."
+                    className="h-auto w-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                  Ukrainian soldiers examine the wreckage of a downed Shahed-136 — its
+                  delta-wing fuselage roughly the height of a grown man.
+                </figcaption>
+              </figure>
+            </div>
+          </section>
+
           {/* Rate chart */}
           <section className="border-t border-border bg-card/30">
             <div className="container py-14">
