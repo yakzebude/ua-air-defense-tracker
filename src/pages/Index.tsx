@@ -67,7 +67,7 @@ const Index = () => {
               <span className="text-muted-foreground">measured month by month.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-              Since January 2023, Russia has launched thousands of Iranian-designed
+              Since February 24th, 2022, Russia has launched thousands of Iranian-designed
               Shahed-136/131 attack drones at Ukrainian cities and infrastructure. This
               visualization tracks how many were sent — and how many Ukraine's air defenses
               brought down — every month through March 2026.
