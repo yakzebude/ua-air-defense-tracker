@@ -64,7 +64,7 @@ const Index = () => {
             </div>
             <h1 className="font-serif text-4xl leading-[1.05] tracking-tight md:text-6xl">
               Three years of Shahed strikes,{" "}
-              <span className="text-muted-foreground">measured month by month.</span>
+              <span>measured month by month.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
               Since February 24th, 2022, Russia has launched thousands of Iranian-designed
