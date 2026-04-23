@@ -175,7 +175,16 @@ const Index = () => {
               <p>
                 Data: daily reports from the Air Force Command of the Armed Forces of
                 Ukraine, aggregated to monthly totals. Filtered to model{" "}
-                <span className="font-mono">Shahed-136/131</span>.
+                <span className="font-mono">Shahed-136/131</span>. Source:{" "}
+                <a
+                  href="https://www.kaggle.com/datasets/piterfm/massive-missile-attacks-on-ukraine"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-foreground"
+                >
+                  Kaggle dataset
+                </a>
+                .
               </p>
               <p>Range locked to Jan 2023 – Mar 2026.</p>
             </div>
