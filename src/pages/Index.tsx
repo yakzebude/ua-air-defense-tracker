@@ -4,6 +4,7 @@ import { MonthlyTrendChart } from "@/components/MonthlyTrendChart";
 import { InterceptionRateChart } from "@/components/InterceptionRateChart";
 import { SummaryStats } from "@/components/SummaryStats";
 import { DateRangeFilter } from "@/components/DateRangeFilter";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 
 const Index = () => {
@@ -52,7 +53,10 @@ const Index = () => {
             <div className="h-2 w-2 rounded-full bg-series-launched" />
             <span className="text-sm font-semibold tracking-wide">SHAHED WATCH</span>
           </div>
-          <span className="text-xs text-muted-foreground">Open data · Updated 2026</span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-muted-foreground">Open data · Updated 2026</span>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
