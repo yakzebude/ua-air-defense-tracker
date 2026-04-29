@@ -4,7 +4,7 @@ import { MonthlyTrendChart } from "@/components/MonthlyTrendChart";
 import { InterceptionRateChart } from "@/components/InterceptionRateChart";
 import { SummaryStats } from "@/components/SummaryStats";
 import { DateRangeFilter } from "@/components/DateRangeFilter";
-import shahedWreckage from "@/assets/shahed-wreckage.webp";
+
 
 const Index = () => {
   const [dataset, setDataset] = useState<Dataset | null>(null);
@@ -150,26 +150,6 @@ const Index = () => {
                 ({(peak.rate * 100).toFixed(1)}% intercepted).
               </p>
             )}
-          </section>
-
-          {/* Editorial image break */}
-          <section className="border-t border-border">
-            <div className="container py-14 md:py-20">
-              <figure className="mx-auto max-w-4xl">
-                <div className="overflow-hidden rounded-sm border border-border bg-muted">
-                  <img
-                    src={shahedWreckage}
-                    alt="Ukrainian soldiers inspecting the wreckage of a downed Shahed-136 attack drone, showing its delta-wing airframe at human scale."
-                    className="h-auto w-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
-                <figcaption className="mt-3 text-xs leading-relaxed text-muted-foreground">
-                  Ukrainian soldiers examine the wreckage of a downed Shahed-136 — its
-                  delta-wing fuselage roughly the height of a grown man.
-                </figcaption>
-              </figure>
-            </div>
           </section>
 
           {/* Rate chart */}
