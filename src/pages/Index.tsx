@@ -4,7 +4,7 @@ import { MonthlyTrendChart } from "@/components/MonthlyTrendChart";
 import { InterceptionRateChart } from "@/components/InterceptionRateChart";
 import { SummaryStats } from "@/components/SummaryStats";
 import { DateRangeFilter } from "@/components/DateRangeFilter";
-import shahedWreckage from "@/assets/shahed-wreckage.webp";
+
 
 const Index = () => {
   const [dataset, setDataset] = useState<Dataset | null>(null);
