@@ -56,24 +56,24 @@
   .dark {
     /* Dark olive / military green palette */
     --background: 80 18% 6%;
-    --foreground: 60 25% 92%;
+    --foreground: 60 18% 78%;
     --card: 80 16% 9%;
-    --card-foreground: 60 25% 92%;
+    --card-foreground: 60 18% 78%;
     --popover: 80 16% 9%;
-    --popover-foreground: 60 25% 92%;
-    --primary: 60 25% 92%;
+    --popover-foreground: 60 18% 78%;
+    --primary: 60 18% 78%;
     --primary-foreground: 80 18% 6%;
     --secondary: 80 14% 13%;
-    --secondary-foreground: 60 25% 92%;
+    --secondary-foreground: 60 18% 78%;
     --muted: 80 14% 13%;
-    --muted-foreground: 70 12% 62%;
+    --muted-foreground: 70 10% 52%;
     --accent: 80 14% 13%;
-    --accent-foreground: 60 25% 92%;
+    --accent-foreground: 60 18% 78%;
     --destructive: 0 62.8% 50%;
-    --destructive-foreground: 60 25% 92%;
+    --destructive-foreground: 60 18% 78%;
     --border: 80 14% 17%;
     --input: 80 14% 17%;
-    --ring: 60 25% 92%;
+    --ring: 60 18% 78%;
     --series-launched: 22 85% 58%;
     --series-destroyed: 195 60% 58%;
     --series-rate: 80 45% 60%;
