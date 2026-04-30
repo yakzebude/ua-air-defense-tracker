@@ -244,6 +244,9 @@ const Index = () => {
           {/* Main chart */}
           <section className="container pb-14">
             <div className="mb-6 max-w-3xl">
+              <div className="mb-4 inline-block border-l-2 border-series-launched pl-3 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                Group · Shahed-131/136 attack drones fired at Ukraine
+              </div>
               <h2 className="font-serif text-2xl md:text-3xl">
                 Monthly launches versus interceptions
               </h2>
