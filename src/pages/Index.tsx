@@ -83,11 +83,11 @@ const Index = () => {
               <span>measured month by month</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-              From October 2022 — the first full month of mass Shahed-136/131 strikes —
-              through March 2026, Russia has launched thousands of Iranian-designed attack
-              drones at Ukrainian cities and infrastructure. This visualization tracks how
-              many were sent and how many Ukraine's air defenses brought down, month by
-              month.
+              Russia has been attacking Ukraine since February 2022. The dataset used here
+              begins with October 2022 — the first full month of sustained aerial strikes —
+              and runs through March 2026, tracking how many Iranian-designed Shahed-136/131
+              attack drones were launched at Ukrainian cities and infrastructure, and how
+              many Ukraine's air defenses brought down.
             </p>
           </div>
           <aside className="md:col-span-4 md:border-l md:border-border md:pl-8">
