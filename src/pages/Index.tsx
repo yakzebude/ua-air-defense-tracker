@@ -196,88 +196,25 @@ const Index = () => {
             </div>
           </section>
 
-          {/* Missiles & Cruise Missiles */}
-          {missiles && missilesRange && (() => {
-            const mFiltered = missiles.months.slice(missilesRange[0], missilesRange[1] + 1);
-            const mLaunched = mFiltered.reduce((s, m) => s + m.launched, 0);
-            const mDestroyed = mFiltered.reduce((s, m) => s + m.destroyed, 0);
-            const mRate = mLaunched > 0 ? mDestroyed / mLaunched : 0;
-            const mPeak = mFiltered.length
-              ? mFiltered.reduce((a, b) => (b.launched > a.launched ? b : a))
-              : null;
-            const mRangeLabel = mFiltered.length
-              ? `${mFiltered[0].label} – ${mFiltered[mFiltered.length - 1].label}`
-              : "";
-            return (
-              <section className="border-t border-border">
-                <div className="container py-14 md:py-20">
-                  <div className="mb-8 max-w-3xl">
-                    <div className="mb-4 inline-block border-l-2 border-series-launched pl-3 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                      Group · Missiles & Cruise Missiles
-                    </div>
-                    <h2 className="font-serif text-3xl md:text-4xl leading-tight">
-                      Ballistic and cruise missiles fired at Ukraine
-                    </h2>
-                    <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                      Aggregated monthly totals for ballistic missiles (Iskander-M/KN-23,
-                      Kinzhal, Zircon, Oniks, ICBMs), cruise missiles (Kalibr, X-101/X-555,
-                      X-22, X-59/X-69, Iskander-K), tactical air-to-surface missiles (X-31,
-                      X-35) and S-300/S-400 systems used in ground-attack mode. Drones such
-                      as Shahed-136/131 are excluded — they're shown in the section above.
-                    </p>
-                  </div>
+          {/* Cruise missiles */}
+          <MissileSection
+            kicker="Group · Cruise Missiles"
+            title="Cruise missiles fired at Ukraine"
+            description="Aggregated monthly totals for cruise and air-to-surface missiles — Kalibr, X-101/X-555, X-22, X-32, X-59/X-69, X-31, X-35, Iskander-K and P-800 Oniks. Ballistic missiles and Shahed drones are tracked in their own sections."
+            dataset={cruise}
+            range={cruiseRange}
+            onRangeChange={setCruiseRange}
+          />
 
-                  <div className="mb-8 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-6 md:grid-cols-4">
-                    <div className="relative pl-4 before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-[3px] before:bg-series-launched">
-                      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Launched</div>
-                      <div className="mt-1 font-serif text-3xl md:text-4xl num">{mLaunched.toLocaleString("en-US")}</div>
-                      <div className="mt-1 text-xs text-muted-foreground">{mRangeLabel}</div>
-                    </div>
-                    <div className="relative pl-4 before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-[3px] before:bg-series-destroyed">
-                      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Destroyed</div>
-                      <div className="mt-1 font-serif text-3xl md:text-4xl num">{mDestroyed.toLocaleString("en-US")}</div>
-                      <div className="mt-1 text-xs text-muted-foreground">confirmed interceptions</div>
-                    </div>
-                    <div className="relative pl-4 before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-[3px] before:bg-series-rate">
-                      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Interception rate</div>
-                      <div className="mt-1 font-serif text-3xl md:text-4xl num">{(mRate * 100).toFixed(1)}%</div>
-                      <div className="mt-1 text-xs text-muted-foreground num">{mDestroyed.toLocaleString("en-US")} of {mLaunched.toLocaleString("en-US")}</div>
-                    </div>
-                    <div className="relative pl-4 before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-[3px] before:bg-foreground">
-                      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Reached target area</div>
-                      <div className="mt-1 font-serif text-3xl md:text-4xl num">{Math.max(mLaunched - mDestroyed, 0).toLocaleString("en-US")}</div>
-                      <div className="mt-1 text-xs text-muted-foreground">{mLaunched > 0 ? (((mLaunched - mDestroyed) / mLaunched) * 100).toFixed(1) : "0.0"}% of launches</div>
-                    </div>
-                  </div>
-
-                  <div className="mb-10">
-                    <DateRangeFilter
-                      months={missiles.months}
-                      range={missilesRange}
-                      onChange={setMissilesRange}
-                    />
-                  </div>
-
-                  <div className="rounded-sm border border-border bg-card p-4 md:p-6">
-                    <MonthlyTrendChart data={mFiltered} />
-                  </div>
-                  {mPeak && (
-                    <p className="mt-3 text-xs text-muted-foreground">
-                      Peak month in range:{" "}
-                      <span className="font-semibold text-foreground">{mPeak.label}</span>{" "}
-                      with <span className="num">{mPeak.launched.toLocaleString()}</span> missiles launched ·{" "}
-                      <span className="num">{mPeak.destroyed.toLocaleString()}</span> destroyed
-                      ({(mPeak.rate * 100).toFixed(1)}% intercepted).
-                    </p>
-                  )}
-
-                  <div className="mt-10 rounded-sm border border-border bg-card p-4 md:p-6">
-                    <InterceptionRateChart data={mFiltered} />
-                  </div>
-                </div>
-              </section>
-            );
-          })()}
+          {/* Ballistic missiles */}
+          <MissileSection
+            kicker="Group · Ballistic Missiles"
+            title="Ballistic missiles fired at Ukraine"
+            description="Aggregated monthly totals for ballistic and quasi-ballistic weapons — Iskander-M / KN-23, X-47 Kinzhal, 3M22 Zircon, intercontinental ballistic missiles and S-300/S-400 systems used in surface-to-surface mode."
+            dataset={ballistic}
+            range={ballisticRange}
+            onRangeChange={setBallisticRange}
+          />
 
           {/* Footer */}
           <footer className="border-t border-border">
