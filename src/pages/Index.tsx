@@ -192,28 +192,34 @@ const Index = () => {
             <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               At a glance
             </div>
-            {dataset ? (
-              <dl className="mt-4 space-y-4 num">
-                <div>
-                  <dt className="text-xs text-muted-foreground">Total launched</dt>
-                  <dd className="font-serif text-2xl">
-                    {dataset.totals.launched.toLocaleString()}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-muted-foreground">Total destroyed</dt>
-                  <dd className="font-serif text-2xl">
-                    {dataset.totals.destroyed.toLocaleString()}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-muted-foreground">Overall interception</dt>
-                  <dd className="font-serif text-2xl text-series-rate">
-                    {(dataset.totals.rate * 100).toFixed(1)}%
-                  </dd>
-                </div>
-              </dl>
-            ) : (
+            {dataset && cruise && ballistic ? (() => {
+              const totalLaunched =
+                dataset.totals.launched + cruise.totals.launched + ballistic.totals.launched;
+              const totalDestroyed =
+                dataset.totals.destroyed + cruise.totals.destroyed + ballistic.totals.destroyed;
+              const totalRate = totalLaunched > 0 ? totalDestroyed / totalLaunched : 0;
+              return (
+                <dl className="mt-4 space-y-4 num">
+                  <div>
+                    <dt className="text-xs text-muted-foreground">Total launched</dt>
+                    <dd className="font-serif text-2xl">{totalLaunched.toLocaleString()}</dd>
+                    <div className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+                      drones &amp; missiles
+                    </div>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-muted-foreground">Total destroyed</dt>
+                    <dd className="font-serif text-2xl">{totalDestroyed.toLocaleString()}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-muted-foreground">Overall interception</dt>
+                    <dd className="font-serif text-2xl text-series-rate">
+                      {(totalRate * 100).toFixed(1)}%
+                    </dd>
+                  </div>
+                </dl>
+              );
+            })() : (
               <div className="mt-4 text-sm text-muted-foreground">Loading dataset…</div>
             )}
           </aside>
