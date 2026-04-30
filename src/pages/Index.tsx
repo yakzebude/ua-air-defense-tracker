@@ -89,7 +89,10 @@ const Index = () => {
               beginning with the first full month of sustained Russian strikes using
               Iranian-designed Shahed-136/131 loitering munitions. It tracks the number
               of Shahed drones launched at Ukrainian cities and infrastructure, along
-              with the number reportedly intercepted by Ukrainian air defenses.
+              with the number reportedly intercepted by Ukrainian air defenses. A
+              second section extends the picture to ballistic and cruise missiles —
+              including Kalibr, X-101/X-555, Iskander-M/K, Kinzhal and other
+              stand-off weapons fired at Ukrainian targets over the same period.
             </p>
           </div>
           <aside className="md:col-span-4 md:border-l md:border-border md:pl-8">
