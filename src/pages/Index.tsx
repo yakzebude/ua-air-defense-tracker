@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { loadShahedData, type Dataset, type MonthPoint } from "@/lib/shahed-data";
+import { loadMissilesData } from "@/lib/missiles-data";
 import { MonthlyTrendChart } from "@/components/MonthlyTrendChart";
 import { InterceptionRateChart } from "@/components/InterceptionRateChart";
 import { SummaryStats } from "@/components/SummaryStats";
@@ -12,11 +13,21 @@ const Index = () => {
   const [error, setError] = useState<string | null>(null);
   const [range, setRange] = useState<[number, number] | null>(null);
 
+  const [missiles, setMissiles] = useState<Dataset | null>(null);
+  const [missilesRange, setMissilesRange] = useState<[number, number] | null>(null);
+
   useEffect(() => {
     loadShahedData()
       .then((d) => {
         setDataset(d);
         setRange([0, d.months.length - 1]);
+      })
+      .catch((e) => setError(String(e)));
+
+    loadMissilesData()
+      .then((d) => {
+        setMissiles(d);
+        setMissilesRange([0, d.months.length - 1]);
       })
       .catch((e) => setError(String(e)));
   }, []);
