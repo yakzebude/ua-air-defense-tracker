@@ -79,8 +79,8 @@ const Index = () => {
               Defense · Data Story
             </div>
             <h1 className="font-serif text-4xl leading-[1.05] tracking-tight md:text-6xl">
-              Vier Jahre russischer Angriffskrieg{" "}
-              <span>gegen die Ukraine.</span>
+              Four years of Russia's war on Ukraine,{" "}
+              <span>measured month by month</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
               From October 2022 — the first full month of mass Shahed-136/131 strikes —
