@@ -241,47 +241,38 @@ const Index = () => {
             <DateRangeFilter months={dataset.months} range={range} onChange={setRange} />
           </section>
 
-          {/* Main chart */}
-          <section className="container pb-14">
-            <div className="mb-6 max-w-3xl">
-              <div className="mb-4 inline-block border-l-2 border-series-launched pl-3 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                Group · Shahed-131/136 attack drones fired at Ukraine
-              </div>
-              <h2 className="font-serif text-2xl md:text-3xl">
-                Monthly launches versus interceptions
-              </h2>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Each point is a calendar month. The orange line shows drones launched toward
-                Ukraine; the blue line shows how many were destroyed by air defenses. Hover
-                for exact figures.
-              </p>
-            </div>
-            <div className="rounded-sm border border-border bg-card p-4 md:p-6">
-              <MonthlyTrendChart data={filtered} />
-            </div>
-            {peak && (
-              <p className="mt-3 text-xs text-muted-foreground">
-                Peak month in range: <span className="font-semibold text-foreground">{peak.label}</span>{" "}
-                with <span className="num">{peak.launched.toLocaleString()}</span> drones launched ·{" "}
-                <span className="num">{peak.destroyed.toLocaleString()}</span> destroyed
-                ({(peak.rate * 100).toFixed(1)}% intercepted).
-              </p>
-            )}
-          </section>
-
-          {/* Rate chart */}
-          <section className="border-t border-border bg-card/30">
-            <div className="container py-14">
-              <div className="mb-6 max-w-3xl">
-                <h2 className="font-serif text-2xl md:text-3xl">
-                  Interception efficiency over time
+          {/* Shahed drones */}
+          <section className="border-t border-border">
+            <div className="container py-14 md:py-20">
+              <div className="mb-8 max-w-3xl">
+                <div className="mb-4 inline-block border-l-2 border-series-launched pl-3 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                  Group · Shahed-136/131
+                </div>
+                <h2 className="font-serif text-3xl md:text-4xl leading-tight">
+                  Shahed-136/131 attack drones fired at Ukraine
                 </h2>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  The share of incoming Shahed drones that Ukrainian air defenses neutralized
-                  each month. The dashed line marks the 50% midpoint.
+                <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+                  Aggregated monthly totals for Iranian-designed Shahed-136/131 loitering
+                  munitions launched at Ukrainian cities and infrastructure, alongside the
+                  number reportedly intercepted by Ukrainian air defenses. Cruise and
+                  ballistic missiles are tracked in their own sections below.
                 </p>
               </div>
+
               <div className="rounded-sm border border-border bg-card p-4 md:p-6">
+                <MonthlyTrendChart data={filtered} />
+              </div>
+              {peak && (
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Peak month in range:{" "}
+                  <span className="font-semibold text-foreground">{peak.label}</span>{" "}
+                  with <span className="num">{peak.launched.toLocaleString()}</span> drones launched ·{" "}
+                  <span className="num">{peak.destroyed.toLocaleString()}</span> destroyed
+                  ({(peak.rate * 100).toFixed(1)}% intercepted).
+                </p>
+              )}
+
+              <div className="mt-10 rounded-sm border border-border bg-card p-4 md:p-6">
                 <InterceptionRateChart data={filtered} />
               </div>
             </div>
