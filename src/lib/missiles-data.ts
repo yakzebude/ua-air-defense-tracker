@@ -1,7 +1,7 @@
 import Papa from "papaparse";
 import type { MonthPoint, Dataset, RawRow } from "@/lib/shahed-data";
 
-const MIN = new Date(Date.UTC(2023, 0, 1));
+const MIN = new Date(Date.UTC(2022, 9, 1));
 const MAX = new Date(Date.UTC(2026, 2, 31, 23, 59, 59));
 
 function parseDate(s: string): Date | null {
@@ -99,9 +99,10 @@ export async function loadMissilesData(
   const parsed = Papa.parse<RawRow>(text, { header: true, skipEmptyLines: true });
 
   const buckets = new Map<string, { launched: number; destroyed: number; date: Date }>();
-  for (let y = 2023; y <= 2026; y++) {
+  for (let y = 2022; y <= 2026; y++) {
+    const firstMonth = y === 2022 ? 9 : 0;
     const lastMonth = y === 2026 ? 2 : 11;
-    for (let m = 0; m <= lastMonth; m++) {
+    for (let m = firstMonth; m <= lastMonth; m++) {
       const d = new Date(Date.UTC(y, m, 1));
       buckets.set(monthKey(d), { launched: 0, destroyed: 0, date: d });
     }

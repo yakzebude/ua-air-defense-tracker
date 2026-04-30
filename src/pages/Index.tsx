@@ -79,14 +79,15 @@ const Index = () => {
               Defense · Data Story
             </div>
             <h1 className="font-serif text-4xl leading-[1.05] tracking-tight md:text-6xl">
-              Three years of Shahed strikes,{" "}
-              <span>measured month by month.</span>
+              Vier Jahre russischer Angriffskrieg{" "}
+              <span>gegen die Ukraine.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-              Since February 24th, 2022, Russia has launched thousands of Iranian-designed
-              Shahed-136/131 attack drones at Ukrainian cities and infrastructure. This
-              visualization tracks how many were sent — and how many Ukraine's air defenses
-              brought down — every month through March 2026.
+              From October 2022 — the first full month of mass Shahed-136/131 strikes —
+              through March 2026, Russia has launched thousands of Iranian-designed attack
+              drones at Ukrainian cities and infrastructure. This visualization tracks how
+              many were sent and how many Ukraine's air defenses brought down, month by
+              month.
             </p>
           </div>
           <aside className="md:col-span-4 md:border-l md:border-border md:pl-8">
@@ -285,7 +286,7 @@ const Index = () => {
                 </a>
                 .
               </p>
-              <p>Range locked to Jan 2023 – Mar 2026.</p>
+              <p>Range: Oct 2022 – Mar 2026.</p>
             </div>
           </footer>
         </>
