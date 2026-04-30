@@ -8,6 +8,94 @@ import { DateRangeFilter } from "@/components/DateRangeFilter";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 
+type MissileSectionProps = {
+  kicker: string;
+  title: string;
+  description: string;
+  dataset: Dataset | null;
+  range: [number, number] | null;
+  onRangeChange: (r: [number, number]) => void;
+};
+
+const MissileSection = ({
+  kicker,
+  title,
+  description,
+  dataset,
+  range,
+  onRangeChange,
+}: MissileSectionProps) => {
+  if (!dataset || !range) return null;
+  const filtered = dataset.months.slice(range[0], range[1] + 1);
+  const launched = filtered.reduce((s, m) => s + m.launched, 0);
+  const destroyed = filtered.reduce((s, m) => s + m.destroyed, 0);
+  const rate = launched > 0 ? destroyed / launched : 0;
+  const peak = filtered.length
+    ? filtered.reduce((a, b) => (b.launched > a.launched ? b : a))
+    : null;
+  const rangeLabel = filtered.length
+    ? `${filtered[0].label} – ${filtered[filtered.length - 1].label}`
+    : "";
+
+  return (
+    <section className="border-t border-border">
+      <div className="container py-14 md:py-20">
+        <div className="mb-8 max-w-3xl">
+          <div className="mb-4 inline-block border-l-2 border-series-launched pl-3 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+            {kicker}
+          </div>
+          <h2 className="font-serif text-3xl md:text-4xl leading-tight">{title}</h2>
+          <p className="mt-4 text-base leading-relaxed text-muted-foreground">{description}</p>
+        </div>
+
+        <div className="mb-8 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-6 md:grid-cols-4">
+          <div className="relative pl-4 before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-[3px] before:bg-series-launched">
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Launched</div>
+            <div className="mt-1 font-serif text-3xl md:text-4xl num">{launched.toLocaleString("en-US")}</div>
+            <div className="mt-1 text-xs text-muted-foreground">{rangeLabel}</div>
+          </div>
+          <div className="relative pl-4 before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-[3px] before:bg-series-destroyed">
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Destroyed</div>
+            <div className="mt-1 font-serif text-3xl md:text-4xl num">{destroyed.toLocaleString("en-US")}</div>
+            <div className="mt-1 text-xs text-muted-foreground">confirmed interceptions</div>
+          </div>
+          <div className="relative pl-4 before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-[3px] before:bg-series-rate">
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Interception rate</div>
+            <div className="mt-1 font-serif text-3xl md:text-4xl num">{(rate * 100).toFixed(1)}%</div>
+            <div className="mt-1 text-xs text-muted-foreground num">{destroyed.toLocaleString("en-US")} of {launched.toLocaleString("en-US")}</div>
+          </div>
+          <div className="relative pl-4 before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-[3px] before:bg-foreground">
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Reached target area</div>
+            <div className="mt-1 font-serif text-3xl md:text-4xl num">{Math.max(launched - destroyed, 0).toLocaleString("en-US")}</div>
+            <div className="mt-1 text-xs text-muted-foreground">{launched > 0 ? (((launched - destroyed) / launched) * 100).toFixed(1) : "0.0"}% of launches</div>
+          </div>
+        </div>
+
+        <div className="mb-10">
+          <DateRangeFilter months={dataset.months} range={range} onChange={onRangeChange} />
+        </div>
+
+        <div className="rounded-sm border border-border bg-card p-4 md:p-6">
+          <MonthlyTrendChart data={filtered} />
+        </div>
+        {peak && (
+          <p className="mt-3 text-xs text-muted-foreground">
+            Peak month in range:{" "}
+            <span className="font-semibold text-foreground">{peak.label}</span>{" "}
+            with <span className="num">{peak.launched.toLocaleString()}</span> missiles launched ·{" "}
+            <span className="num">{peak.destroyed.toLocaleString()}</span> destroyed
+            ({(peak.rate * 100).toFixed(1)}% intercepted).
+          </p>
+        )}
+
+        <div className="mt-10 rounded-sm border border-border bg-card p-4 md:p-6">
+          <InterceptionRateChart data={filtered} />
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const Index = () => {
   const [dataset, setDataset] = useState<Dataset | null>(null);
   const [error, setError] = useState<string | null>(null);
