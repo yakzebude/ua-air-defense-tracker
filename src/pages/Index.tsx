@@ -83,11 +83,13 @@ const Index = () => {
               <span>measured month by month</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-              Russia has been attacking Ukraine since February 2022. The dataset used here
-              begins with October 2022 — the first full month of sustained aerial strikes —
-              and runs through March 2026, tracking how many Iranian-designed Shahed-136/131
-              attack drones were launched at Ukrainian cities and infrastructure, and how
-              many Ukraine's air defenses brought down.
+              Russia has been conducting aerial attacks against Ukraine since the
+              full-scale invasion began in February 2022. This dataset focuses
+              specifically on the period from October 2022 through the present day,
+              beginning with the first full month of sustained Russian strikes using
+              Iranian-designed Shahed-136/131 loitering munitions. It tracks the number
+              of Shahed drones launched at Ukrainian cities and infrastructure, along
+              with the number reportedly intercepted by Ukrainian air defenses.
             </p>
           </div>
           <aside className="md:col-span-4 md:border-l md:border-border md:pl-8">
