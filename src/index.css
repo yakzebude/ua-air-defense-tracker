@@ -54,29 +54,30 @@
   }
 
   .dark {
-    --background: 220 45% 10%;
-    --foreground: 36 33% 95%;
-    --card: 220 42% 13%;
-    --card-foreground: 36 33% 95%;
-    --popover: 220 42% 13%;
-    --popover-foreground: 36 33% 95%;
-    --primary: 36 33% 95%;
-    --primary-foreground: 220 45% 10%;
-    --secondary: 220 38% 18%;
-    --secondary-foreground: 36 33% 95%;
-    --muted: 220 38% 18%;
-    --muted-foreground: 36 15% 70%;
-    --accent: 220 38% 18%;
-    --accent-foreground: 36 33% 95%;
+    /* Dark olive / military green palette */
+    --background: 80 18% 10%;
+    --foreground: 60 25% 92%;
+    --card: 80 16% 13%;
+    --card-foreground: 60 25% 92%;
+    --popover: 80 16% 13%;
+    --popover-foreground: 60 25% 92%;
+    --primary: 60 25% 92%;
+    --primary-foreground: 80 18% 10%;
+    --secondary: 80 14% 18%;
+    --secondary-foreground: 60 25% 92%;
+    --muted: 80 14% 18%;
+    --muted-foreground: 70 12% 68%;
+    --accent: 80 14% 18%;
+    --accent-foreground: 60 25% 92%;
     --destructive: 0 62.8% 50%;
-    --destructive-foreground: 36 33% 95%;
-    --border: 220 35% 22%;
-    --input: 220 35% 22%;
-    --ring: 36 33% 95%;
-    --series-launched: 14 88% 60%;
-    --series-destroyed: 205 80% 60%;
-    --series-rate: 145 55% 55%;
-    --grid: 220 35% 22%;
+    --destructive-foreground: 60 25% 92%;
+    --border: 80 14% 22%;
+    --input: 80 14% 22%;
+    --ring: 60 25% 92%;
+    --series-launched: 22 85% 58%;
+    --series-destroyed: 195 60% 58%;
+    --series-rate: 80 45% 60%;
+    --grid: 80 14% 22%;
   }
 }
 
