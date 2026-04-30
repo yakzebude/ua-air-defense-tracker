@@ -62,7 +62,7 @@ const Index = () => {
         <div className="container flex items-center justify-between py-4">
           <div className="flex items-center gap-3">
             <div className="h-2 w-2 rounded-full bg-series-launched" />
-            <span className="text-sm font-semibold tracking-wide">SHAHED WATCH</span>
+            <span className="text-sm font-semibold tracking-wide">DEFENCE WATCH</span>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-xs text-muted-foreground">Open data · Updated 2026</span>
