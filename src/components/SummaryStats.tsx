@@ -46,7 +46,7 @@ export function SummaryStats({ launched, destroyed, rate, rangeLabel }: Props) {
           Summary · {rangeLabel}
         </div>
         <div className="grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4">
-          <Stat label="Launched" value={fmt(launched)} accent="launched" sub="Shahed-136/131 drones" />
+          <Stat label="Launched" value={fmt(launched)} accent="launched" sub="drones & missiles" />
           <Stat label="Destroyed" value={fmt(destroyed)} accent="destroyed" sub="confirmed interceptions" />
           <Stat
             label="Interception rate"

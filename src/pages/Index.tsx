@@ -192,28 +192,34 @@ const Index = () => {
             <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               At a glance
             </div>
-            {dataset ? (
-              <dl className="mt-4 space-y-4 num">
-                <div>
-                  <dt className="text-xs text-muted-foreground">Total launched</dt>
-                  <dd className="font-serif text-2xl">
-                    {dataset.totals.launched.toLocaleString()}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-muted-foreground">Total destroyed</dt>
-                  <dd className="font-serif text-2xl">
-                    {dataset.totals.destroyed.toLocaleString()}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-muted-foreground">Overall interception</dt>
-                  <dd className="font-serif text-2xl text-series-rate">
-                    {(dataset.totals.rate * 100).toFixed(1)}%
-                  </dd>
-                </div>
-              </dl>
-            ) : (
+            {dataset && cruise && ballistic ? (() => {
+              const totalLaunched =
+                dataset.totals.launched + cruise.totals.launched + ballistic.totals.launched;
+              const totalDestroyed =
+                dataset.totals.destroyed + cruise.totals.destroyed + ballistic.totals.destroyed;
+              const totalRate = totalLaunched > 0 ? totalDestroyed / totalLaunched : 0;
+              return (
+                <dl className="mt-4 space-y-4 num">
+                  <div>
+                    <dt className="text-xs text-muted-foreground">Total launched</dt>
+                    <dd className="font-serif text-2xl">{totalLaunched.toLocaleString()}</dd>
+                    <div className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+                      drones &amp; missiles
+                    </div>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-muted-foreground">Total destroyed</dt>
+                    <dd className="font-serif text-2xl">{totalDestroyed.toLocaleString()}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-muted-foreground">Overall interception</dt>
+                    <dd className="font-serif text-2xl text-series-rate">
+                      {(totalRate * 100).toFixed(1)}%
+                    </dd>
+                  </div>
+                </dl>
+              );
+            })() : (
               <div className="mt-4 text-sm text-muted-foreground">Loading dataset…</div>
             )}
           </aside>
@@ -228,18 +234,25 @@ const Index = () => {
 
       {dataset && range && (
         <>
-          {/* Summary */}
-          <SummaryStats
-            launched={totals.launched}
-            destroyed={totals.destroyed}
-            rate={totals.rate}
-            rangeLabel={rangeLabel}
-          />
-
-          {/* Filter */}
-          <section className="container py-10 md:py-14">
-            <DateRangeFilter months={dataset.months} range={range} onChange={setRange} />
-          </section>
+          {/* Combined summary (drones + cruise + ballistic missiles) */}
+          {cruise && ballistic && (() => {
+            const combinedLaunched =
+              dataset.totals.launched + cruise.totals.launched + ballistic.totals.launched;
+            const combinedDestroyed =
+              dataset.totals.destroyed + cruise.totals.destroyed + ballistic.totals.destroyed;
+            const combinedRate = combinedLaunched > 0 ? combinedDestroyed / combinedLaunched : 0;
+            const combinedRangeLabel = dataset.months.length
+              ? `${dataset.months[0].label} – ${dataset.months[dataset.months.length - 1].label}`
+              : "";
+            return (
+              <SummaryStats
+                launched={combinedLaunched}
+                destroyed={combinedDestroyed}
+                rate={combinedRate}
+                rangeLabel={combinedRangeLabel}
+              />
+            );
+          })()}
 
           {/* Shahed drones */}
           <section className="border-t border-border">
@@ -257,6 +270,33 @@ const Index = () => {
                   number reportedly intercepted by Ukrainian air defenses. Cruise and
                   ballistic missiles are tracked in their own sections below.
                 </p>
+              </div>
+
+              <div className="mb-8 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-6 md:grid-cols-4">
+                <div className="relative pl-4 before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-[3px] before:bg-series-launched">
+                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Launched</div>
+                  <div className="mt-1 font-serif text-3xl md:text-4xl num">{totals.launched.toLocaleString("en-US")}</div>
+                  <div className="mt-1 text-xs text-muted-foreground">{rangeLabel}</div>
+                </div>
+                <div className="relative pl-4 before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-[3px] before:bg-series-destroyed">
+                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Destroyed</div>
+                  <div className="mt-1 font-serif text-3xl md:text-4xl num">{totals.destroyed.toLocaleString("en-US")}</div>
+                  <div className="mt-1 text-xs text-muted-foreground">confirmed interceptions</div>
+                </div>
+                <div className="relative pl-4 before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-[3px] before:bg-series-rate">
+                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Interception rate</div>
+                  <div className="mt-1 font-serif text-3xl md:text-4xl num">{(totals.rate * 100).toFixed(1)}%</div>
+                  <div className="mt-1 text-xs text-muted-foreground num">{totals.destroyed.toLocaleString("en-US")} of {totals.launched.toLocaleString("en-US")}</div>
+                </div>
+                <div className="relative pl-4 before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-[3px] before:bg-foreground">
+                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Reached target area</div>
+                  <div className="mt-1 font-serif text-3xl md:text-4xl num">{Math.max(totals.launched - totals.destroyed, 0).toLocaleString("en-US")}</div>
+                  <div className="mt-1 text-xs text-muted-foreground">{totals.launched > 0 ? (((totals.launched - totals.destroyed) / totals.launched) * 100).toFixed(1) : "0.0"}% of launches</div>
+                </div>
+              </div>
+
+              <div className="mb-10">
+                <DateRangeFilter months={dataset.months} range={range} onChange={setRange} />
               </div>
 
               <div className="rounded-sm border border-border bg-card p-4 md:p-6">
