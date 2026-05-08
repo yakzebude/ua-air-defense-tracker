@@ -738,10 +738,32 @@ const Index = () => {
         </div>
       </section>
 
+      <RelatedSourcesSection />
+
       <footer className="border-t border-border">
-        <div className="container flex flex-col items-start justify-between gap-3 py-8 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground md:flex-row md:items-center">
-          <p>Defence Watch · monthly aggregates from Ukrainian Air Force daily reports.</p>
-          <p>Range: Oct 2022 – Mar 2026.</p>
+        <div className="container flex flex-col items-start justify-between gap-4 py-8 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground md:flex-row md:items-center">
+          <p>
+            Defence Watch · monthly aggregates from Ukrainian Air Force daily reports.
+          </p>
+          <div className="flex flex-wrap items-center gap-4">
+            <span>
+              Last data point:{" "}
+              <span className="text-foreground">{lastUpdatedLabel ?? "—"}</span>
+            </span>
+            <a
+              href="/data/missile_attacks_daily.csv"
+              download
+              className="rounded-sm border border-border px-3 py-1 text-foreground transition-colors hover:bg-secondary"
+            >
+              Download CSV ↓
+            </a>
+            <a
+              href="#methodology"
+              className="underline-offset-4 hover:text-foreground hover:underline"
+            >
+              Methodology
+            </a>
+          </div>
         </div>
       </footer>
 
