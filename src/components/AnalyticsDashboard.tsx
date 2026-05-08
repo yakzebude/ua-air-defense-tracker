@@ -128,62 +128,64 @@ function StackedAreaChart({ shahed, cruise, ballistic }: Props) {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Donut — share of total launches by category                               */
+/*  Combined: share of launches × interception performance                    */
 /* -------------------------------------------------------------------------- */
 
-function DonutShare({ shahed, cruise, ballistic }: Props) {
-  const data = [
-    { key: "uavs",      name: CAT_META.uavs.label,      value: shahed.totals.launched },
-    { key: "cruise",    name: CAT_META.cruise.label,    value: cruise.totals.launched },
-    { key: "ballistic", name: CAT_META.ballistic.label, value: ballistic.totals.launched },
+function ShareInterception({ shahed, cruise, ballistic }: Props) {
+  const rows = [
+    { key: "uavs",      label: CAT_META.uavs.label,      ds: shahed },
+    { key: "cruise",    label: CAT_META.cruise.label,    ds: cruise },
+    { key: "ballistic", label: CAT_META.ballistic.label, ds: ballistic },
   ];
-  const total = data.reduce((s, d) => s + d.value, 0);
+  const grandLaunched = rows.reduce((s, r) => s + r.ds.totals.launched, 0);
 
   return (
-    <div className="grid grid-cols-2 items-center gap-4">
-      <div className="relative h-[200px]">
-        <ResponsiveContainer>
-          <PieChart>
-            <Pie
-              data={data}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              innerRadius={62}
-              outerRadius={92}
-              paddingAngle={2}
-              stroke="hsl(var(--background))"
-              strokeWidth={2}
-            >
-              {data.map((d) => (
-                <Cell key={d.key} fill={CAT_META[d.key as CategoryKey].color} />
-              ))}
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
-        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Total</div>
-          <div className="num font-display text-xl text-foreground">{fmt(total)}</div>
-        </div>
-      </div>
-      <ul className="space-y-2.5 text-sm">
-        {data.map((d) => {
-          const pct = total > 0 ? (d.value / total) * 100 : 0;
-          return (
-            <li key={d.key} className="flex items-center justify-between gap-3">
-              <span className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: CAT_META[d.key as CategoryKey].color }} />
-                <span className="text-foreground">{d.name}</span>
+    <ul className="space-y-5">
+      {rows.map((r) => {
+        const pct = r.ds.totals.rate * 100;
+        const share = grandLaunched > 0 ? (r.ds.totals.launched / grandLaunched) * 100 : 0;
+        const color = CAT_META[r.key as CategoryKey].color;
+        return (
+          <li key={r.key}>
+            <div className="mb-2 flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.16em]">
+              <span className="flex items-center gap-2 text-foreground">
+                <span className="h-2 w-2 rounded-sm" style={{ background: color }} />
+                {r.label}
+                <span className="text-muted-foreground">· {share.toFixed(1)}% of launches</span>
               </span>
-              <span className="num font-mono text-xs tabular-nums text-muted-foreground">
-                {pct.toFixed(1)}%
+              <span className="num text-muted-foreground">
+                <span className="text-foreground">{pct.toFixed(1)}%</span>
+                <span className="ml-2">
+                  {fmt(r.ds.totals.destroyed)} / {fmt(r.ds.totals.launched)}
+                </span>
               </span>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+            </div>
+            {/* Share bar (faint) */}
+            <div className="relative h-1 overflow-hidden rounded-sm bg-secondary/60">
+              <div
+                className="h-full rounded-sm"
+                style={{ width: `${share}%`, background: color, opacity: 0.35 }}
+              />
+            </div>
+            {/* Interception bar (solid + glow) */}
+            <div className="relative mt-1.5 h-2.5 overflow-hidden rounded-sm bg-secondary">
+              <div
+                className="h-full rounded-sm transition-[width] duration-700 ease-out"
+                style={{
+                  width: `${pct}%`,
+                  background: color,
+                  boxShadow: `0 0 12px -2px ${color}`,
+                }}
+              />
+            </div>
+            <div className="mt-1 flex justify-between font-mono text-[9.5px] uppercase tracking-[0.16em] text-muted-foreground">
+              <span>Share of launches</span>
+              <span>Interception rate</span>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
