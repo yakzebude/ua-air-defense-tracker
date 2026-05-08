@@ -7,9 +7,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  PieChart,
-  Pie,
-  Cell,
 } from "recharts";
 import type { Dataset, MonthPoint } from "@/lib/shahed-data";
 
@@ -18,10 +15,12 @@ const fmt = (n: number) => n.toLocaleString("en-US");
 type CategoryKey = "uavs" | "cruise" | "ballistic";
 
 const CAT_META: Record<CategoryKey, { label: string; color: string }> = {
-  uavs:      { label: "UAVs",      color: "hsl(var(--ua-yellow))" },
-  cruise:    { label: "Cruise",    color: "hsl(var(--cyber))" },
-  ballistic: { label: "Ballistic", color: "hsl(var(--destructive))" },
+  uavs:      { label: "UAVs",      color: "hsl(var(--ua-yellow))" },     /* yellow */
+  cruise:    { label: "Cruise",    color: "hsl(25 92% 58%)" },           /* orange */
+  ballistic: { label: "Ballistic", color: "hsl(0 78% 60%)" },            /* red */
 };
+
+const ACCENT_PURPLE = "hsl(280 65% 68%)";
 
 interface Props {
   shahed: Dataset;
