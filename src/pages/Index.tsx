@@ -8,6 +8,7 @@ import { MonthlyTrendChart } from "@/components/MonthlyTrendChart";
 import { DateRangeFilter } from "@/components/DateRangeFilter";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
+import { WeaponsCatalogSection } from "@/components/WeaponsCatalogSection";
 
 /* -------------------------------------------------------------------------- */
 /*  Small primitives                                                          */
@@ -65,6 +66,7 @@ function SectionNav() {
     { id: "drones", label: "UAVs" },
     { id: "cruise", label: "Cruise missiles" },
     { id: "ballistic", label: "Ballistic missiles" },
+    { id: "arsenal", label: "Arsenal" },
     { id: "methodology", label: "Methodology" },
     { id: "related", label: "Related sources" },
     { id: "help", label: "How to help" },
@@ -989,6 +991,8 @@ const Index = () => {
           onRangeChange={setBallisticRange}
         />
       )}
+
+      <WeaponsCatalogSection />
 
       {/* ─────────────── METHODOLOGY ─────────────── */}
       <section id="methodology" className="scroll-mt-24 border-t border-border bg-secondary/30">
