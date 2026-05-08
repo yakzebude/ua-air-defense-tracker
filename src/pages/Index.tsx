@@ -44,11 +44,10 @@ function StatusBar({ lastUpdated }: { lastUpdated: string | null }) {
       <div className="container flex items-center justify-between gap-4 py-2.5 text-[11px] uppercase tracking-[0.18em]">
         <div className="flex items-center gap-3">
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping-soft rounded-full bg-cyber" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-cyber" />
+            <span className="absolute inline-flex h-full w-full animate-ping-soft rounded-full bg-ua-yellow" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-ua-yellow" />
           </span>
-          <span className="font-semibold tracking-[0.24em] text-foreground">UA DEFENSE TRACKER</span>
-          <span className="hidden text-muted-foreground md:inline">/ Operations Center</span>
+          <span className="font-semibold tracking-[0.24em] text-foreground">UA INTEL</span>
         </div>
         <div className="flex items-center gap-4">
           <span className="hidden text-muted-foreground md:inline">Last Update</span>
