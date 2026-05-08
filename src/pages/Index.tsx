@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ChevronDown, ShieldCheck } from "lucide-react";
 import { loadShahedData, type Dataset, type MonthPoint } from "@/lib/shahed-data";
 import { loadAllMissileCategories } from "@/lib/missiles-data";
 import { MonthlyTrendChart } from "@/components/MonthlyTrendChart";
@@ -720,12 +721,29 @@ const Index = () => {
                   Explore Intelligence
                   <span className="transition-transform group-hover:translate-x-0.5">→</span>
                 </a>
-                <a
-                  href="#methodology"
+                <Link
+                  to="/methodology"
                   className="inline-flex items-center gap-2 rounded-sm border border-border bg-card/40 px-5 py-2.5 text-sm font-medium text-foreground backdrop-blur transition-colors hover:border-cyber/60 hover:bg-card/70 hover:text-cyber"
                 >
                   Methodology &amp; Sources
-                </a>
+                </Link>
+              </div>
+
+              {/* Trust strip */}
+              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[10.5px] uppercase tracking-[0.2em] text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 text-cyber">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  Single primary source
+                </span>
+                <Link to="/sources" className="hover:text-foreground">
+                  UA Air Force Command ↗
+                </Link>
+                <Link to="/methodology" className="hover:text-foreground">
+                  How we verify
+                </Link>
+                <Link to="/disclaimer" className="hover:text-foreground">
+                  Disclaimer
+                </Link>
               </div>
             </div>
 
@@ -998,12 +1016,24 @@ const Index = () => {
             >
               Download CSV ↓
             </a>
-            <a
-              href="#methodology"
+            <Link
+              to="/methodology"
               className="underline-offset-4 hover:text-foreground hover:underline"
             >
               Methodology
-            </a>
+            </Link>
+            <Link
+              to="/sources"
+              className="underline-offset-4 hover:text-foreground hover:underline"
+            >
+              Sources
+            </Link>
+            <Link
+              to="/disclaimer"
+              className="underline-offset-4 hover:text-foreground hover:underline"
+            >
+              Disclaimer
+            </Link>
           </div>
         </div>
       </footer>
