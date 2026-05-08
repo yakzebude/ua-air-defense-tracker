@@ -692,7 +692,7 @@ const Index = () => {
             <div className="md:col-span-8 animate-fade-in-up">
               <h1 className="font-display text-[2.4rem] leading-[1.02] tracking-tight md:text-[4.25rem]">
                 Ukraine's{" "}
-                <span className="text-ua-yellow text-glow-yellow">Defense Analytics</span>.
+                <span className="text-ua-yellow text-glow-yellow">Defense Analytics</span><span className="text-ua-yellow text-glow-yellow">.</span>
               </h1>
               <p className="mt-6 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
                 Verified airstrike and aerial attack data, interception statistics,
