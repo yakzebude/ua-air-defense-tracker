@@ -13,7 +13,7 @@ import { Panel, SourceLabel } from "@/components/ui/panel";
 import { rampColor } from "@/lib/threat-ramp";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
-const PRIMARY_SOURCE = "Air Force Command of the Armed Forces of Ukraine (daily reports, via Kaggle)";
+const PRIMARY_SOURCE = "Air Force Command of the Armed Forces of Ukraine (weekly reports, via Kaggle)";
 
 type CategoryKey = "uavs" | "cruise" | "ballistic";
 
@@ -233,20 +233,35 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
 
   return (
     <div>
-      <div className="mb-3 flex flex-wrap items-center gap-1 font-mono text-[10.5px] uppercase tracking-[0.14em]">
-        {(["all", "uavs", "cruise", "ballistic"] as const).map((c) => (
-          <button
-            key={c}
-            onClick={() => setCat(c)}
-            className={`rounded-sm border px-2.5 py-1 transition-colors ${
-              cat === c
-                ? "border-foreground bg-foreground text-background"
-                : "border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground"
-            }`}
-          >
-            {c === "all" ? "All" : CAT_LABELS[c]}
-          </button>
-        ))}
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-1 font-mono text-[10.5px] uppercase tracking-[0.14em]">
+          {(["all", "uavs", "cruise", "ballistic"] as const).map((c) => (
+            <button
+              key={c}
+              onClick={() => setCat(c)}
+              className={`rounded-sm border px-2.5 py-1 transition-colors ${
+                cat === c
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground"
+              }`}
+            >
+              {c === "all" ? "All" : CAT_LABELS[c]}
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+          <span>Less</span>
+          <div className="flex gap-1">
+            {[0.15, 0.35, 0.55, 0.75, 1].map((i) => (
+              <div
+                key={i}
+                className="h-2.5 w-5 rounded-[2px] border border-border/60"
+                style={{ background: rampColor(i, 0.25 + i * 0.75) }}
+              />
+            ))}
+          </div>
+          <span>More · Peak {fmt(max)}</span>
+        </div>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full border-separate" style={{ borderSpacing: 2 }}>
@@ -288,19 +303,6 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
             ))}
           </tbody>
         </table>
-      </div>
-      <div className="mt-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-        <span>Less</span>
-        <div className="flex gap-1">
-          {[0.15, 0.35, 0.55, 0.75, 1].map((i) => (
-            <div
-              key={i}
-              className="h-2.5 w-5 rounded-[2px] border border-border/60"
-              style={{ background: rampColor(i, 0.25 + i * 0.75) }}
-            />
-          ))}
-        </div>
-        <span>More · Peak {fmt(max)}</span>
       </div>
     </div>
   );
