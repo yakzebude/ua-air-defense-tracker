@@ -54,12 +54,13 @@ export function WeaponsCatalogSection() {
       return [w.model, w.name, w.name_NATO, w.type, w.manufacturer, w.designer]
         .some((v) => v.toLowerCase().includes(needle));
     });
-    return arr.sort((a, b) => {
-      const av = (a[sortKey] || "").toString().toLowerCase();
-      const bv = (b[sortKey] || "").toString().toLowerCase();
-      if (av === bv) return 0;
-      return (av < bv ? -1 : 1) * (sortAsc ? 1 : -1);
-    });
+    const getKey = (w: Weapon) =>
+      sortKey === "model"
+        ? (w.name || w.model || "").toLowerCase()
+        : (w[sortKey] || "").toString().toLowerCase();
+    return arr.sort((a, b) =>
+      getKey(a).localeCompare(getKey(b), "en", { numeric: true }) * (sortAsc ? 1 : -1),
+    );
   }, [weapons, cat, origin, q, sortKey, sortAsc]);
 
   const toggleSort = (k: SortKey) => {
