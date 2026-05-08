@@ -211,7 +211,103 @@ function RelatedSourcesSection() {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  KPI primitives                                                            */
+/*  How to help — donation organisations                                      */
+/* -------------------------------------------------------------------------- */
+
+type DonateLink = {
+  name: string;
+  href: string;
+  blurb: string;
+  tag: "Military" | "Humanitarian" | "Mixed";
+};
+
+const DONATE_ORGS: DonateLink[] = [
+  {
+    name: "UNITED24",
+    href: "https://u24.gov.ua/",
+    blurb:
+      "Official fundraising platform of the President of Ukraine — defence, demining, medical aid and rebuilding programmes.",
+    tag: "Mixed",
+  },
+  {
+    name: "Come Back Alive",
+    href: "https://savelife.in.ua/en/",
+    blurb:
+      "Ukraine's largest charity supporting the Armed Forces — equipment, training and veteran assistance since 2014.",
+    tag: "Military",
+  },
+  {
+    name: "Serhiy Prytula Foundation",
+    href: "https://prytulafoundation.org/en",
+    blurb:
+      "Funds reconnaissance drones, vehicles and protective gear for Ukrainian units, plus humanitarian projects.",
+    tag: "Mixed",
+  },
+  {
+    name: "Razom for Ukraine",
+    href: "https://razomforukraine.org/",
+    blurb:
+      "US-based non-profit delivering tactical medical supplies, emergency response and advocacy for Ukraine.",
+    tag: "Humanitarian",
+  },
+  {
+    name: "Hospitallers Medical Battalion",
+    href: "https://www.hospitallers.life/needs-hospitallers",
+    blurb:
+      "Volunteer paramedic battalion evacuating wounded soldiers and civilians from the front line.",
+    tag: "Humanitarian",
+  },
+  {
+    name: "Voices of Children",
+    href: "https://voices.org.ua/en/",
+    blurb:
+      "Psychological and humanitarian support for children affected by the war, including evacuations and therapy.",
+    tag: "Humanitarian",
+  },
+];
+
+function HowToHelpSection() {
+  return (
+    <section id="help" className="scroll-mt-24 border-t border-border">
+      <div className="container py-14 md:py-20">
+        <div className="mb-8 max-w-3xl">
+          <div className="mb-4 inline-block border-l-2 border-series-destroyed pl-3 font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+            How to help
+          </div>
+          <h2 className="font-serif text-3xl md:text-4xl leading-tight">
+            Donate to Ukraine
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+            Vetted Ukrainian and international organisations covering both military
+            support — drones, vehicles, protective gear — and humanitarian relief
+            for civilians, medics and children affected by the war.
+          </p>
+        </div>
+        <div className="grid gap-px bg-border md:grid-cols-2 lg:grid-cols-3">
+          {DONATE_ORGS.map((s) => (
+            <a
+              key={s.href}
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer external"
+              className="group flex flex-col gap-3 bg-card p-5 transition-colors hover:bg-secondary/50"
+            >
+              <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                {s.tag}
+              </div>
+              <h3 className="font-serif text-xl leading-tight">{s.name}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">{s.blurb}</p>
+              <div className="mt-auto pt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover:text-foreground">
+                Donate ↗
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* -------------------------------------------------------------------------- */
 
 type Accent = "launched" | "destroyed" | "rate" | "neutral";
