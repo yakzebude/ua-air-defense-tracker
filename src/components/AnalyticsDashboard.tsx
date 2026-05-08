@@ -262,15 +262,17 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
                   const v = grid.get(`${y}-${mo}`) ?? 0;
                   const intensity = max > 0 ? Math.pow(v / max, 0.6) : 0;
                   const has = v > 0;
+                  // Threat ramp: low = yellow, peak = deep purple.
+                  const cellColor = rampColor(intensity);
                   return (
                     <td key={mo} className="p-0">
                       <div
                         className="group relative aspect-square w-full min-w-[22px] rounded-[3px] border border-border/40 transition-transform hover:scale-110"
                         style={{
                           background: has
-                            ? `color-mix(in srgb, ${baseColor} ${(intensity * 100).toFixed(0)}%, hsl(var(--card)))`
+                            ? `color-mix(in srgb, ${cellColor} ${(60 + intensity * 40).toFixed(0)}%, hsl(var(--card)))`
                             : "hsl(var(--card))",
-                          boxShadow: intensity > 0.7 ? `0 0 8px -2px ${baseColor}` : undefined,
+                          boxShadow: intensity > 0.7 ? `0 0 10px -2px ${cellColor}` : undefined,
                         }}
                         title={`${monthLabels[mo]} ${y}: ${fmt(v)} launched`}
                       />
