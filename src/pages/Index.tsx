@@ -565,7 +565,7 @@ const Index = () => {
           </div>
 
           {/* About — collapsible */}
-          <div className="mt-10 border-t border-border pt-4">
+          <div className="mt-6 border-t border-border pt-3">
             <button
               type="button"
               onClick={() => setAboutOpen((v) => !v)}
@@ -580,7 +580,7 @@ const Index = () => {
               />
             </button>
             {aboutOpen && (
-              <p className="mt-4 max-w-3xl animate-fade-in text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-3 max-w-3xl animate-fade-in text-sm leading-relaxed text-muted-foreground">
                 Daily reports from the Air Force Command of the Armed Forces of Ukraine
                 are aggregated to monthly totals and broken into three weapon families:
                 Shahed-136/131 loitering munitions; cruise / air-to-surface missiles
