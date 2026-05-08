@@ -38,17 +38,18 @@ function CountUp({ value, duration = 1600 }: { value: number; duration?: number 
 
 function StatusBar({ lastUpdated }: { lastUpdated: string | null }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/70 font-mono">
-      <div className="container flex items-center justify-between gap-4 py-2 text-[11px] uppercase tracking-[0.18em]">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 font-mono">
+      <div className="container flex items-center justify-between gap-4 py-2.5 text-[11px] uppercase tracking-[0.18em]">
         <div className="flex items-center gap-3">
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-series-launched opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-series-launched" />
+            <span className="absolute inline-flex h-full w-full animate-ping-soft rounded-full bg-cyber" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-cyber" />
           </span>
-          <span className="font-semibold tracking-[0.22em]">UA DEFENSE TRACKER</span>
+          <span className="font-semibold tracking-[0.24em] text-foreground">UA DEFENSE TRACKER</span>
+          <span className="hidden text-muted-foreground md:inline">/ Operations Center</span>
         </div>
-        <div className="flex items-center gap-3">
-          <span className="hidden text-muted-foreground md:inline">LAST UPDATE</span>
+        <div className="flex items-center gap-4">
+          <span className="hidden text-muted-foreground md:inline">Last Update</span>
           <span className="num text-foreground">{lastUpdated ?? "—"}</span>
           <ThemeToggle />
         </div>
@@ -384,6 +385,64 @@ function Sparkline({
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Operations Center tile                                                    */
+/* -------------------------------------------------------------------------- */
+
+type OpsAccent = "yellow" | "cyber" | "destructive" | "neutral";
+
+function OpsTile({
+  label,
+  value,
+  sub,
+  accent = "neutral",
+  spark,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  accent?: OpsAccent;
+  spark?: number[];
+}) {
+  const accentColor: Record<OpsAccent, string> = {
+    yellow: "hsl(var(--ua-yellow))",
+    cyber: "hsl(var(--cyber))",
+    destructive: "hsl(var(--destructive))",
+    neutral: "hsl(var(--muted-foreground))",
+  };
+  const valueClass: Record<OpsAccent, string> = {
+    yellow: "text-ua-yellow",
+    cyber: "text-cyber",
+    destructive: "text-destructive",
+    neutral: "text-foreground",
+  };
+  return (
+    <div className="group relative flex flex-col gap-3 bg-card/70 p-4 backdrop-blur transition-colors hover:bg-card md:p-5">
+      <div className="flex items-center justify-between font-mono text-[10.5px] uppercase tracking-[0.2em] text-muted-foreground">
+        <span>{label}</span>
+        <span
+          aria-hidden
+          className="h-1.5 w-1.5 rounded-full pulse-soft"
+          style={{ backgroundColor: accentColor[accent] }}
+        />
+      </div>
+      <div className={`font-display text-3xl leading-none num md:text-[2.25rem] ${valueClass[accent]}`}>
+        {value}
+      </div>
+      {spark && spark.length > 0 ? (
+        <Sparkline data={spark} stroke={accentColor[accent]} height={28} />
+      ) : (
+        <div className="h-7" />
+      )}
+      {sub && (
+        <div className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
+          {sub}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Hero pillar card (one of three categories)                                */
 /* -------------------------------------------------------------------------- */
 
@@ -613,58 +672,130 @@ const Index = () => {
       <StatusBar lastUpdated={lastUpdatedLabel} />
       <SectionNav />
 
-      {/* ─────────────── HERO ─────────────── */}
-      <section className="border-b border-border">
-        <div className="container pt-14 pb-6 md:pt-20 md:pb-8">
-          <div className="mb-6 inline-block border-l-2 border-series-launched pl-3 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-            Defence · Data Story · Oct 2022 – present
+      {/* ─────────────── HERO · OPERATIONS CENTER ─────────────── */}
+      <section className="relative overflow-hidden border-b border-border">
+        {/* Tactical grid + radar sweep background */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-tactical-grid mask-radial opacity-60" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-tactical-grid-fine mask-radial opacity-30" />
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,hsl(var(--cyber)/0.10),transparent_70%)]" />
+        <div aria-hidden className="pointer-events-none absolute -top-32 left-1/2 h-64 w-[680px] -translate-x-1/2 rounded-full bg-ua-yellow/10 blur-3xl" />
+        <div aria-hidden className="scan-line absolute inset-0" />
+
+        <div className="container relative pt-12 pb-10 md:pt-20 md:pb-14">
+          {/* Status / kicker row */}
+          <div className="flex flex-wrap items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.24em] text-muted-foreground">
+            <span className="inline-flex items-center gap-2 rounded-sm border border-cyber/40 bg-cyber/5 px-2.5 py-1 text-cyber">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping-soft rounded-full bg-cyber" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-cyber" />
+              </span>
+              Live OSINT Feed
+            </span>
+            <span className="hidden sm:inline">Defence · Data Story</span>
+            <span className="hidden text-foreground/60 sm:inline">Oct 2022 — present</span>
           </div>
 
-          <div className="grid gap-10 md:grid-cols-12 md:items-end">
-            <div className="md:col-span-7">
-              <h1 className="font-serif text-4xl leading-[1.05] tracking-tight md:text-6xl">
-                Russia's air war on Ukraine, in numbers.
+          {/* Headline + subhead */}
+          <div className="mt-7 grid gap-10 md:grid-cols-12 md:items-end">
+            <div className="md:col-span-8 animate-fade-in-up">
+              <h1 className="font-display text-[2.4rem] leading-[1.02] tracking-tight md:text-[4.25rem]">
+                Real-Time Ukraine{" "}
+                <span className="text-ua-yellow text-glow-yellow">Defense Intelligence</span>.
               </h1>
-              <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
-                Each month, Ukraine's air defences face thousands of incoming weapons —
-                Iranian-designed Shahed drones, Russian cruise missiles, and ballistic
-                weapons that are far harder to intercept. This is the monthly record,
-                from October 2022 to today.
+              <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+                Verified battlefield data, equipment losses, strike analysis, and
+                operational trends — aggregated from the Air Force Command of the
+                Armed Forces of Ukraine. Track every weapon launched, intercepted,
+                and reaching its target since October 2022.
               </p>
+
+              {/* CTAs */}
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <a
+                  href="#drones"
+                  className="group inline-flex items-center gap-2 rounded-sm bg-ua-yellow px-5 py-2.5 text-sm font-semibold text-background transition-all hover:glow-yellow"
+                >
+                  Explore Intelligence
+                  <span className="transition-transform group-hover:translate-x-0.5">→</span>
+                </a>
+                <a
+                  href="#methodology"
+                  className="inline-flex items-center gap-2 rounded-sm border border-border bg-card/40 px-5 py-2.5 text-sm font-medium text-foreground backdrop-blur transition-colors hover:border-cyber/60 hover:bg-card/70 hover:text-cyber"
+                >
+                  Methodology &amp; Sources
+                </a>
+              </div>
             </div>
 
-            <div className="md:col-span-5 md:border-l md:border-border md:pl-8">
-              <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-                Total weapons fired at Ukraine
-              </div>
-              <div className="mt-2 font-serif text-7xl leading-none tracking-tight num md:text-[8rem]">
-                {ready ? <CountUp value={grand.launched} /> : "—"}
-              </div>
-              <div className="mt-4 flex flex-wrap items-baseline gap-x-5 gap-y-1 text-sm text-muted-foreground num">
-                <span>
-                  <span className="font-semibold text-series-destroyed">
-                    {ready ? fmt(grand.destroyed) : "—"}
-                  </span>{" "}
-                  destroyed
-                </span>
-                <span>
-                  <span className="font-semibold text-series-rate">
-                    {ready ? `${(grand.rate * 100).toFixed(1)}%` : "—"}
-                  </span>{" "}
-                  intercepted
-                </span>
-                <span>
-                  <span className="font-semibold text-foreground">
-                    {ready ? fmt(Math.max(grand.launched - grand.destroyed, 0)) : "—"}
-                  </span>{" "}
-                  through
-                </span>
+            {/* Hero KPI panel — Total weapons fired */}
+            <div className="md:col-span-4">
+              <div className="glass scan-line relative overflow-hidden rounded-md p-5">
+                <div className="flex items-center justify-between font-mono text-[10.5px] uppercase tracking-[0.22em] text-muted-foreground">
+                  <span>Total weapons fired</span>
+                  <span className="text-ua-yellow">●</span>
+                </div>
+                <div className="mt-3 font-display text-[3.75rem] leading-none tracking-tight num text-glow-yellow text-ua-yellow">
+                  {ready ? <CountUp value={grand.launched} /> : "—"}
+                </div>
+                <div className="mt-3 grid grid-cols-3 gap-2 border-t border-border pt-3 font-mono text-[10.5px] uppercase tracking-[0.16em]">
+                  <div>
+                    <div className="text-muted-foreground">Down</div>
+                    <div className="num mt-1 text-sm text-cyber">
+                      {ready ? fmt(grand.destroyed) : "—"}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Rate</div>
+                    <div className="num mt-1 text-sm text-series-rate">
+                      {ready ? `${(grand.rate * 100).toFixed(1)}%` : "—"}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Through</div>
+                    <div className="num mt-1 text-sm text-foreground">
+                      {ready ? fmt(Math.max(grand.launched - grand.destroyed, 0)) : "—"}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
+          {/* Live ops grid — per-category snapshots */}
+          {ready && (
+            <div className="mt-10 grid gap-px overflow-hidden rounded-md border border-border bg-border md:grid-cols-4">
+              <OpsTile
+                label="UAVs launched"
+                value={fmt(shahed!.totals.launched)}
+                sub={`${(shahed!.totals.rate * 100).toFixed(1)}% intercepted`}
+                accent="yellow"
+                spark={sparks.shahed}
+              />
+              <OpsTile
+                label="Cruise missiles"
+                value={fmt(cruise!.totals.launched)}
+                sub={`${(cruise!.totals.rate * 100).toFixed(1)}% intercepted`}
+                accent="cyber"
+                spark={sparks.cruise}
+              />
+              <OpsTile
+                label="Ballistic missiles"
+                value={fmt(ballistic!.totals.launched)}
+                sub={`${(ballistic!.totals.rate * 100).toFixed(1)}% intercepted`}
+                accent="destructive"
+                spark={sparks.ballistic}
+              />
+              <OpsTile
+                label="Latest data point"
+                value={lastUpdatedLabel ?? "—"}
+                sub="Air Force Command · UA"
+                accent="neutral"
+              />
+            </div>
+          )}
 
           {/* About — collapsible */}
-          <div className="mt-6 border-t border-border pt-3">
+          <div className="mt-8 border-t border-border pt-3">
             <button
               type="button"
               onClick={() => setAboutOpen((v) => !v)}
