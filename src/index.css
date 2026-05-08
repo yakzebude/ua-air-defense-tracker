@@ -80,9 +80,9 @@
     --cyber: 195 95% 58%;
     --cyber-glow: 195 100% 68%;
 
-    --series-launched: 14 92% 62%;
-    --series-destroyed: 195 95% 62%;
-    --series-rate: 145 65% 55%;
+    --series-launched: 25 92% 58%;     /* orange */
+    --series-destroyed: 280 65% 68%;   /* purple */
+    --series-rate: 47 95% 58%;         /* yellow */
     --grid: 222 22% 18%;
 
     --sidebar-background: 222 38% 6%;
