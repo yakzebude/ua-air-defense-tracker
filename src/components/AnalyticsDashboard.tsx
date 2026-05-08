@@ -312,8 +312,11 @@ export function AnalyticsDashboard(props: Props) {
       <div className="container py-14 md:py-20">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-3xl">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-sm border border-cyber/40 bg-cyber/5 px-2.5 py-1 font-mono text-[10.5px] uppercase tracking-[0.22em] text-cyber">
-              <span className="h-1.5 w-1.5 rounded-full bg-cyber pulse-soft" />
+            <div
+              className="mb-3 inline-flex items-center gap-2 rounded-sm border px-2.5 py-1 font-mono text-[10.5px] uppercase tracking-[0.22em]"
+              style={{ borderColor: `${ACCENT_PURPLE}66`, background: `${ACCENT_PURPLE}1A`, color: ACCENT_PURPLE }}
+            >
+              <span className="h-1.5 w-1.5 rounded-full pulse-soft" style={{ background: ACCENT_PURPLE }} />
               Analytics Dashboard
             </div>
             <h2 className="font-display text-3xl leading-tight md:text-4xl">
@@ -346,26 +349,16 @@ export function AnalyticsDashboard(props: Props) {
           <StackedAreaChart {...props} />
         </div>
 
-        {/* Bottom: 3-up dashboard */}
-        <div className="mt-px grid gap-px bg-border md:grid-cols-3">
+        {/* Bottom: 2-up dashboard */}
+        <div className="mt-px grid gap-px bg-border md:grid-cols-2">
           <div className="bg-card/70 p-5 backdrop-blur md:p-6">
             <div className="mb-4 flex items-baseline justify-between">
-              <h3 className="font-display text-base text-foreground">Share of launches</h3>
+              <h3 className="font-display text-base text-foreground">Share &amp; interception performance</h3>
               <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                All-time
+                All-time · confirmed / launched
               </span>
             </div>
-            <DonutShare {...props} />
-          </div>
-
-          <div className="bg-card/70 p-5 backdrop-blur md:p-6">
-            <div className="mb-4 flex items-baseline justify-between">
-              <h3 className="font-display text-base text-foreground">Interception performance</h3>
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                Confirmed / launched
-              </span>
-            </div>
-            <InterceptionComparison {...props} />
+            <ShareInterception {...props} />
           </div>
 
           <div className="bg-card/70 p-5 backdrop-blur md:p-6">
