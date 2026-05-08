@@ -132,6 +132,30 @@ function useCompositionData({ shahed, cruise, ballistic }: Props) {
   }, [shahed, cruise, ballistic]);
 }
 
+function CompositionPair(props: Props) {
+  const data = useCompositionData(props);
+  return (
+    <div className="grid gap-4 md:grid-cols-2">
+      <Panel
+        title="UAV launches · monthly"
+        subtitle="Loitering munitions & reconnaissance UAVs"
+        source={PRIMARY_SOURCE}
+        note="Includes Shahed-136/131, Lancet, Orlan, ZALA, Supercam and other UAV types reported in daily Air Force communiqués."
+      >
+        <CompositionAreaChart data={data} series={["uavs"]} />
+      </Panel>
+      <Panel
+        title="Cruise & ballistic launches · monthly"
+        subtitle="Stacked, monthly aggregates"
+        source={PRIMARY_SOURCE}
+        note="Mixed-fire rows attribute counts to every category referenced; minor overlap between cruise and ballistic on those nights."
+      >
+        <CompositionAreaChart data={data} series={["ballistic", "cruise"]} />
+      </Panel>
+    </div>
+  );
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Share & interception performance                                          */
 /* -------------------------------------------------------------------------- */
