@@ -17,11 +17,11 @@ const PRIMARY_SOURCE = "Air Force Command of the Armed Forces of Ukraine (daily 
 
 type CategoryKey = "uavs" | "cruise" | "ballistic";
 
-// Three-tone scale built from the ink/amber palette.
+// Grayscale ramp — UAVs lightest, ballistic darkest (highest threat / lowest intercept).
 const CAT_COLORS: Record<CategoryKey, string> = {
-  uavs:      "hsl(var(--muted-foreground))",   // gray   — UAVs (highest volume)
-  cruise:    "hsl(220 15% 35%)",               // ink-mid — cruise
-  ballistic: "hsl(var(--signal))",             // amber  — ballistic (lowest intercept)
+  uavs:      "hsl(220 10% 62%)",   // light gray   — UAVs
+  cruise:    "hsl(220 12% 42%)",   // mid gray     — cruise
+  ballistic: "hsl(220 18% 22%)",   // dark gray    — ballistic
 };
 
 const CAT_LABELS: Record<CategoryKey, string> = {
