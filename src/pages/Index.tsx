@@ -6,6 +6,7 @@ import { MonthlyTrendChart } from "@/components/MonthlyTrendChart";
 import { InterceptionRateChart } from "@/components/InterceptionRateChart";
 import { DateRangeFilter } from "@/components/DateRangeFilter";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 
 /* -------------------------------------------------------------------------- */
 /*  Small primitives                                                          */
@@ -60,6 +61,7 @@ function StatusBar({ lastUpdated }: { lastUpdated: string | null }) {
 
 function SectionNav() {
   const items = [
+    { id: "analytics", label: "Analytics" },
     { id: "drones", label: "UAVs" },
     { id: "cruise", label: "Cruise missiles" },
     { id: "ballistic", label: "Ballistic missiles" },
