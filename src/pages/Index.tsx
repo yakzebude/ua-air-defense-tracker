@@ -840,6 +840,7 @@ const Index = () => {
         </div>
       </section>
 
+      <HowToHelpSection />
       <RelatedSourcesSection />
 
       <footer className="border-t border-border">
