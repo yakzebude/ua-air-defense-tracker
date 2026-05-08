@@ -746,7 +746,7 @@ const Index = () => {
       <footer className="border-t border-border">
         <div className="container flex flex-col items-start justify-between gap-4 py-8 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground md:flex-row md:items-center">
           <p>
-            Defence Watch · monthly aggregates from Ukrainian Air Force daily reports.
+            UA Defense Tracker · monthly aggregates from Ukrainian Air Force daily reports.
           </p>
           <div className="flex flex-wrap items-center gap-4">
             <span>
