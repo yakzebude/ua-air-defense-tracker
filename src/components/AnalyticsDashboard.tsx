@@ -313,11 +313,8 @@ export function AnalyticsDashboard(props: Props) {
       <div className="container py-14 md:py-20">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-3xl">
-            <div
-              className="mb-3 inline-flex items-center gap-2 rounded-sm border px-2.5 py-1 font-mono text-[10.5px] uppercase tracking-[0.22em]"
-              style={{ borderColor: `${ACCENT_PURPLE}66`, background: `${ACCENT_PURPLE}1A`, color: ACCENT_PURPLE }}
-            >
-              <span className="h-1.5 w-1.5 rounded-full pulse-soft" style={{ background: ACCENT_PURPLE }} />
+            <div className="mb-3 inline-flex items-center gap-2 rounded-sm border border-ua-yellow/40 bg-ua-yellow/10 px-2.5 py-1 font-mono text-[10.5px] uppercase tracking-[0.22em] text-ua-yellow">
+              <span className="h-1.5 w-1.5 rounded-full bg-ua-yellow pulse-soft" />
               Analytics Dashboard
             </div>
             <h2 className="font-display text-3xl leading-tight md:text-4xl">
