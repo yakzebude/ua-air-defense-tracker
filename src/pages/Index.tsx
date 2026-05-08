@@ -270,9 +270,24 @@ const DONATE_ORGS: DonateLink[] = [
 ];
 
 function HowToHelpSection() {
+  // Per-card accent palette — rotates through the threat ramp + cyber for variety.
+  const ACCENTS = [
+    "47 95% 58%",   // yellow
+    "25 92% 58%",   // orange
+    "0 78% 58%",    // red
+    "280 65% 60%",  // purple
+    "195 95% 58%",  // cyber blue
+    "160 70% 50%",  // mint
+  ];
+
   return (
-    <section id="help" className="scroll-mt-24 border-t border-border">
-      <div className="container py-14 md:py-20">
+    <section id="help" className="relative scroll-mt-24 overflow-hidden border-t border-border">
+      {/* Tactical backdrop — same vocabulary as the hero */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-tactical-grid mask-radial opacity-30" />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,hsl(var(--ua-yellow)/0.08),transparent_70%)]" />
+      <div aria-hidden className="scan-line pointer-events-none absolute inset-0 opacity-60" />
+
+      <div className="container relative py-14 md:py-20">
         <div className="mb-8 max-w-3xl">
           <div className="mb-4 inline-block border-l-2 border-series-destroyed pl-3 font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
             How to help
@@ -286,25 +301,56 @@ function HowToHelpSection() {
             for civilians, medics and children affected by the war.
           </p>
         </div>
-        <div className="grid gap-px bg-border md:grid-cols-2 lg:grid-cols-3">
-          {DONATE_ORGS.map((s) => (
-            <a
-              key={s.href}
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer external"
-              className="group flex flex-col gap-3 bg-card p-5 transition-colors hover:bg-secondary/50"
-            >
-              <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-                {s.tag}
-              </div>
-              <h3 className="font-serif text-xl leading-tight">{s.name}</h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">{s.blurb}</p>
-              <div className="mt-auto pt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover:text-foreground">
-                Donate ↗
-              </div>
-            </a>
-          ))}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {DONATE_ORGS.map((s, i) => {
+            const accent = ACCENTS[i % ACCENTS.length];
+            return (
+              <a
+                key={s.href}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer external"
+                className="group relative flex flex-col gap-3 overflow-hidden rounded-md border p-5 backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5"
+                style={{
+                  borderColor: `hsl(${accent} / 0.28)`,
+                  background: `
+                    radial-gradient(120% 80% at 0% 0%, hsl(${accent} / 0.18), transparent 55%),
+                    radial-gradient(100% 80% at 100% 100%, hsl(${accent} / 0.10), transparent 60%),
+                    linear-gradient(135deg, hsl(var(--card) / 0.55), hsl(var(--card) / 0.25))
+                  `,
+                  boxShadow: `0 1px 0 hsl(0 0% 100% / 0.04) inset, 0 14px 40px -18px hsl(${accent} / 0.45)`,
+                }}
+              >
+                {/* Glossy highlight */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-x-0 top-0 h-px"
+                  style={{ background: `linear-gradient(90deg, transparent, hsl(${accent} / 0.55), transparent)` }}
+                />
+                {/* Subtle scanline animation, hero-style */}
+                <div aria-hidden className="scan-line pointer-events-none absolute inset-0 opacity-50" />
+                {/* Hover bloom */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute -inset-1 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
+                  style={{ background: `radial-gradient(60% 60% at 50% 30%, hsl(${accent} / 0.25), transparent 70%)` }}
+                />
+
+                <div className="relative flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.2em]">
+                  <span style={{ color: `hsl(${accent})` }}>{s.tag}</span>
+                  <span
+                    className="h-1.5 w-1.5 rounded-full pulse-soft"
+                    style={{ background: `hsl(${accent})`, boxShadow: `0 0 10px hsl(${accent} / 0.7)` }}
+                  />
+                </div>
+                <h3 className="relative font-serif text-xl leading-tight text-foreground">{s.name}</h3>
+                <p className="relative text-sm leading-relaxed text-muted-foreground">{s.blurb}</p>
+                <div className="relative mt-auto pt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover:text-foreground">
+                  Donate ↗
+                </div>
+              </a>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -692,7 +738,7 @@ const Index = () => {
             <div className="md:col-span-8 animate-fade-in-up">
               <h1 className="font-display text-[2.4rem] leading-[1.02] tracking-tight md:text-[4.25rem]">
                 Ukraine's{" "}
-                <span className="text-ua-yellow text-glow-yellow">Defense Analytics</span>.
+                <span className="text-ua-yellow text-glow-yellow">Defense Analytics</span><span className="text-ua-yellow text-glow-yellow">.</span>
               </h1>
               <p className="mt-6 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
                 Verified airstrike and aerial attack data, interception statistics,
