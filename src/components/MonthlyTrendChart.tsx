@@ -1,15 +1,15 @@
 import { useMemo } from "react";
 import {
   ResponsiveContainer,
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
 } from "recharts";
 import type { MonthPoint } from "@/lib/shahed-data";
+import { rampColor } from "@/lib/threat-ramp";
 
 interface Props {
   data: MonthPoint[];
@@ -17,32 +17,34 @@ interface Props {
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 
+const COLOR_LAUNCHED  = rampColor(0.45); // orange — "incoming"
+const COLOR_DESTROYED = rampColor(1);    // deep purple — "neutralised"
+const ACCENT          = rampColor(1);
+
 function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   const p = payload[0]?.payload as MonthPoint;
   return (
-    <div className="rounded-sm border border-border bg-card px-3 py-2 shadow-md">
-      <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-        {label}
-      </div>
-      <div className="space-y-1 text-sm num">
-        <div className="flex items-center justify-between gap-6">
+    <div className="rounded-sm border border-border bg-background/95 px-3 py-2 font-mono text-[11px] shadow-xl backdrop-blur">
+      <div className="mb-1.5 uppercase tracking-[0.18em] text-muted-foreground">{label}</div>
+      <div className="space-y-1">
+        <div className="flex items-center justify-between gap-6 text-foreground">
           <span className="flex items-center gap-2">
-            <span className="h-[2px] w-3 bg-series-launched" />
+            <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_LAUNCHED }} />
             Launched
           </span>
-          <span className="font-semibold">{fmt(p.launched)}</span>
+          <span className="num font-semibold">{fmt(p.launched)}</span>
         </div>
-        <div className="flex items-center justify-between gap-6">
+        <div className="flex items-center justify-between gap-6 text-foreground">
           <span className="flex items-center gap-2">
-            <span className="h-[2px] w-3 bg-series-destroyed" />
+            <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_DESTROYED }} />
             Destroyed
           </span>
-          <span className="font-semibold">{fmt(p.destroyed)}</span>
+          <span className="num font-semibold">{fmt(p.destroyed)}</span>
         </div>
-        <div className="mt-1 border-t border-border pt-1 flex items-center justify-between gap-6 text-xs text-muted-foreground">
+        <div className="mt-1 flex items-center justify-between gap-6 border-t border-border pt-1 text-muted-foreground">
           <span>Interception</span>
-          <span className="font-semibold">{(p.rate * 100).toFixed(1)}%</span>
+          <span className="num font-semibold text-foreground">{(p.rate * 100).toFixed(1)}%</span>
         </div>
       </div>
     </div>
@@ -51,55 +53,66 @@ function ChartTooltip({ active, payload, label }: any) {
 
 export function MonthlyTrendChart({ data }: Props) {
   const ticks = useMemo(
-    () => data.filter((_, i) => i % 3 === 0).map((m) => m.label),
+    () => data.filter((_, i) => i % 4 === 0).map((m) => m.label),
     [data],
   );
 
   return (
     <div className="h-[420px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 16, right: 24, left: 8, bottom: 8 }}>
-          <CartesianGrid stroke="hsl(var(--grid))" strokeDasharray="0" vertical={false} />
+        <AreaChart data={data} margin={{ top: 12, right: 16, left: 0, bottom: 8 }}>
+          <defs>
+            <linearGradient id="mtc-launched" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stopColor={COLOR_LAUNCHED} stopOpacity={0.7} />
+              <stop offset="100%" stopColor={COLOR_LAUNCHED} stopOpacity={0.05} />
+            </linearGradient>
+            <linearGradient id="mtc-destroyed" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stopColor={COLOR_DESTROYED} stopOpacity={0.7} />
+              <stop offset="100%" stopColor={COLOR_DESTROYED} stopOpacity={0.05} />
+            </linearGradient>
+            <filter id="mtc-glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="2.5" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <CartesianGrid stroke="hsl(var(--grid))" vertical={false} />
           <XAxis
             dataKey="label"
             ticks={ticks}
-            tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+            tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
             tickLine={false}
             axisLine={{ stroke: "hsl(var(--border))" }}
           />
           <YAxis
-            tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+            tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(v) => fmt(v as number)}
             width={56}
+            tickFormatter={(v) => fmt(v as number)}
           />
-          <Tooltip content={<ChartTooltip />} cursor={{ stroke: "hsl(var(--foreground))", strokeOpacity: 0.15 }} />
-          <Legend
-            verticalAlign="top"
-            align="left"
-            iconType="plainline"
-            wrapperStyle={{ paddingBottom: 16, fontSize: 13 }}
-          />
-          <Line
+          <Tooltip content={<ChartTooltip />} cursor={{ stroke: ACCENT, strokeOpacity: 0.5 }} />
+          <Area
             type="monotone"
             dataKey="launched"
             name="Launched"
-            stroke="hsl(var(--series-launched))"
-            strokeWidth={2.25}
-            dot={false}
-            activeDot={{ r: 4 }}
+            stroke={COLOR_LAUNCHED}
+            strokeWidth={1.5}
+            fill="url(#mtc-launched)"
+            filter="url(#mtc-glow)"
           />
-          <Line
+          <Area
             type="monotone"
             dataKey="destroyed"
             name="Destroyed"
-            stroke="hsl(var(--series-destroyed))"
-            strokeWidth={2.25}
-            dot={false}
-            activeDot={{ r: 4 }}
+            stroke={COLOR_DESTROYED}
+            strokeWidth={1.5}
+            fill="url(#mtc-destroyed)"
+            filter="url(#mtc-glow)"
           />
-        </LineChart>
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   );
