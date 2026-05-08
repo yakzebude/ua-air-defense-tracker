@@ -202,81 +202,92 @@ const Index = () => {
   const rangeLabel =
     filtered.length > 0 ? `${filtered[0].label} – ${filtered[filtered.length - 1].label}` : "";
 
+  const ready = dataset && cruise && ballistic;
+  const grandLaunched = ready
+    ? dataset.totals.launched + cruise.totals.launched + ballistic.totals.launched
+    : 0;
+  const grandDestroyed = ready
+    ? dataset.totals.destroyed + cruise.totals.destroyed + ballistic.totals.destroyed
+    : 0;
+  const grandRate = grandLaunched > 0 ? grandDestroyed / grandLaunched : 0;
+
+  const [aboutOpen, setAboutOpen] = useState(false);
+
   return (
     <main className="min-h-screen bg-background">
-      {/* Top bar */}
-      <header className="border-b border-border">
-        <div className="container flex items-center justify-between py-4">
-          <div className="flex items-center gap-3">
-            <div className="h-2 w-2 rounded-full bg-series-launched" />
-            <span className="text-sm font-semibold tracking-wide">DEFENCE WATCH</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-muted-foreground">Open data · Updated 2026</span>
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
+      <StatusBar />
 
-      {/* Hero */}
+      {/* Hero — single hook number */}
       <section className="border-b border-border">
-        <div className="container grid gap-10 py-14 md:grid-cols-12 md:py-20">
-          <div className="md:col-span-8">
-            <div className="mb-4 inline-block border-l-2 border-series-launched pl-3 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              Defense · Data Story
-            </div>
-            <h1 className="font-serif text-4xl leading-[1.05] tracking-tight md:text-6xl">
-              Four years of Russia's war on Ukraine,{" "}
-              <span>measured month by month</span>
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-              Russia has been conducting aerial attacks against Ukraine since the
-              full-scale invasion began in February 2022. This dataset focuses
-              specifically on the period from October 2022 through the present day,
-              beginning with the first full month of sustained Russian strikes using
-              Iranian-designed Shahed-136/131 loitering munitions. It tracks the number
-              of Shahed drones launched at Ukrainian cities and infrastructure, along
-              with the number reportedly intercepted by Ukrainian air defenses. A
-              second section extends the picture to ballistic and cruise missiles —
-              including Kalibr, X-101/X-555, Iskander-M/K, Kinzhal and other
-              stand-off weapons fired at Ukrainian targets over the same period.
-            </p>
+        <div className="container py-20 md:py-28">
+          <div className="mb-6 inline-block border-l-2 border-series-launched pl-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+            Defense · Data Story · Oct 2022 – present
           </div>
-          <aside className="md:col-span-4 md:border-l md:border-border md:pl-8">
-            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              At a glance
+
+          <div className="grid gap-10 md:grid-cols-12 md:items-end">
+            <div className="md:col-span-8">
+              <div className="text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">
+                Total drones &amp; missiles fired at Ukraine
+              </div>
+              <div className="mt-3 font-serif text-7xl leading-none tracking-tight md:text-[10rem] num">
+                {ready ? <CountUp value={grandLaunched} /> : "—"}
+              </div>
+              <div className="mt-4 flex flex-wrap items-baseline gap-x-6 gap-y-1 text-sm text-muted-foreground num">
+                <span>
+                  <span className="font-semibold text-series-destroyed">
+                    {ready ? grandDestroyed.toLocaleString() : "—"}
+                  </span>{" "}
+                  destroyed
+                </span>
+                <span>
+                  <span className="font-semibold text-series-rate">
+                    {ready ? `${(grandRate * 100).toFixed(1)}%` : "—"}
+                  </span>{" "}
+                  intercepted
+                </span>
+                <span>
+                  <span className="font-semibold text-foreground">
+                    {ready ? Math.max(grandLaunched - grandDestroyed, 0).toLocaleString() : "—"}
+                  </span>{" "}
+                  reached target area
+                </span>
+              </div>
             </div>
-            {dataset && cruise && ballistic ? (() => {
-              const totalLaunched =
-                dataset.totals.launched + cruise.totals.launched + ballistic.totals.launched;
-              const totalDestroyed =
-                dataset.totals.destroyed + cruise.totals.destroyed + ballistic.totals.destroyed;
-              const totalRate = totalLaunched > 0 ? totalDestroyed / totalLaunched : 0;
-              return (
-                <dl className="mt-4 space-y-4 num">
-                  <div>
-                    <dt className="text-xs text-muted-foreground">Total launched</dt>
-                    <dd className="font-serif text-2xl">{totalLaunched.toLocaleString()}</dd>
-                    <div className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-                      drones &amp; missiles
-                    </div>
-                  </div>
-                  <div>
-                    <dt className="text-xs text-muted-foreground">Total destroyed</dt>
-                    <dd className="font-serif text-2xl">{totalDestroyed.toLocaleString()}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-xs text-muted-foreground">Overall interception</dt>
-                    <dd className="font-serif text-2xl text-series-rate">
-                      {(totalRate * 100).toFixed(1)}%
-                    </dd>
-                  </div>
-                </dl>
-              );
-            })() : (
-              <div className="mt-4 text-sm text-muted-foreground">Loading dataset…</div>
+
+            <div className="md:col-span-4 md:border-l md:border-border md:pl-8">
+              <h1 className="font-serif text-2xl leading-[1.15] md:text-3xl">
+                Four years of Russia's war on Ukraine, measured month by month.
+              </h1>
+            </div>
+          </div>
+
+          {/* Collapsible project description */}
+          <div className="mt-10 border-t border-border pt-4">
+            <button
+              type="button"
+              onClick={() => setAboutOpen((v) => !v)}
+              aria-expanded={aboutOpen}
+              className="flex w-full items-center justify-between gap-4 text-left text-[11px] font-mono font-semibold uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <span>About this project</span>
+              <ChevronDown
+                className={`h-4 w-4 transition-transform duration-300 ${aboutOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+            {aboutOpen && (
+              <p className="mt-4 max-w-3xl animate-fade-in text-sm leading-relaxed text-muted-foreground">
+                Russia has been conducting aerial attacks against Ukraine since the
+                full-scale invasion began in February 2022. This dataset focuses on the
+                period from October 2022 onward — the first full month of sustained
+                strikes using Iranian-designed Shahed-136/131 loitering munitions. It
+                tracks drones launched at Ukrainian cities and infrastructure, alongside
+                interceptions reported by Ukrainian air defenses. Additional sections
+                extend the picture to cruise missiles (Kalibr, X-101/X-555, Iskander-K,
+                Oniks and others) and ballistic weapons (Iskander-M / KN-23, Kinzhal,
+                Zircon, S-300/S-400 in surface-to-surface mode).
+              </p>
             )}
-          </aside>
+          </div>
         </div>
       </section>
 
