@@ -309,6 +309,8 @@ function HowToHelpSection() {
 }
 
 /* -------------------------------------------------------------------------- */
+/*  KPI primitives                                                            */
+/* -------------------------------------------------------------------------- */
 
 type Accent = "launched" | "destroyed" | "rate" | "neutral";
 const accentClass: Record<Accent, string> = {
