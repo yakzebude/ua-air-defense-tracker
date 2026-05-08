@@ -9,18 +9,19 @@ import {
   Tooltip,
 } from "recharts";
 import type { Dataset, MonthPoint } from "@/lib/shahed-data";
+import { rampColor } from "@/lib/threat-ramp";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 
 type CategoryKey = "uavs" | "cruise" | "ballistic";
 
 const CAT_META: Record<CategoryKey, { label: string; color: string }> = {
-  uavs:      { label: "UAVs",      color: "hsl(var(--ua-yellow))" },     /* yellow */
-  cruise:    { label: "Cruise",    color: "hsl(25 92% 58%)" },           /* orange */
-  ballistic: { label: "Ballistic", color: "hsl(0 78% 60%)" },            /* red */
+  uavs:      { label: "UAVs",      color: rampColor(0.05) }, /* yellow  — typically high intercept */
+  cruise:    { label: "Cruise",    color: rampColor(0.55) }, /* orange/red */
+  ballistic: { label: "Ballistic", color: rampColor(0.95) }, /* deep purple — many leakers */
 };
 
-const ACCENT_PURPLE = "hsl(280 65% 68%)";
+const ACCENT_PURPLE = rampColor(1);
 
 interface Props {
   shahed: Dataset;
