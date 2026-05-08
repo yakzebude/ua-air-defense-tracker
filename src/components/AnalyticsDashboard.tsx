@@ -114,7 +114,7 @@ function StackedAreaChart({ shahed, cruise, ballistic }: Props) {
             width={48}
             tickFormatter={(v) => fmt(v as number)}
           />
-          <Tooltip content={<StackedTooltip />} cursor={{ stroke: "hsl(var(--cyber))", strokeOpacity: 0.4 }} />
+          <Tooltip content={<StackedTooltip />} cursor={{ stroke: ACCENT_PURPLE, strokeOpacity: 0.5 }} />
           <Area type="monotone" dataKey="ballistic" name="Ballistic" stackId="1"
                 stroke={CAT_META.ballistic.color} strokeWidth={1.5} fill="url(#g-ballistic)" filter="url(#glow)" />
           <Area type="monotone" dataKey="cruise"    name="Cruise"    stackId="1"
