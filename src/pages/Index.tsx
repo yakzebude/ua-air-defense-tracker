@@ -59,7 +59,7 @@ function StatusBar({ lastUpdated }: { lastUpdated: string | null }) {
 
 function SectionNav() {
   const items = [
-    { id: "drones", label: "Shahed drones" },
+    { id: "drones", label: "UAVs" },
     { id: "cruise", label: "Cruise missiles" },
     { id: "ballistic", label: "Ballistic missiles" },
     { id: "methodology", label: "Methodology" },
