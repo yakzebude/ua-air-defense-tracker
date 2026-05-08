@@ -54,30 +54,30 @@
   }
 
   .dark {
-    /* Dark olive / military green palette */
-    --background: 80 18% 6%;
-    --foreground: 60 18% 78%;
-    --card: 80 16% 9%;
-    --card-foreground: 60 18% 78%;
-    --popover: 80 16% 9%;
-    --popover-foreground: 60 18% 78%;
-    --primary: 60 18% 78%;
-    --primary-foreground: 80 18% 6%;
-    --secondary: 80 14% 13%;
-    --secondary-foreground: 60 18% 78%;
-    --muted: 80 14% 13%;
-    --muted-foreground: 70 10% 52%;
-    --accent: 80 14% 13%;
-    --accent-foreground: 60 18% 78%;
-    --destructive: 0 62.8% 50%;
-    --destructive-foreground: 60 18% 78%;
-    --border: 80 14% 17%;
-    --input: 80 14% 17%;
-    --ring: 60 18% 78%;
-    --series-launched: 22 85% 58%;
-    --series-destroyed: 195 60% 58%;
-    --series-rate: 80 45% 60%;
-    --grid: 80 14% 17%;
+    /* Editorial dark — near-black ink with warm cream foreground (FT/Reuters night mode) */
+    --background: 220 18% 7%;
+    --foreground: 36 25% 92%;
+    --card: 220 16% 10%;
+    --card-foreground: 36 25% 92%;
+    --popover: 220 16% 10%;
+    --popover-foreground: 36 25% 92%;
+    --primary: 36 25% 92%;
+    --primary-foreground: 220 18% 7%;
+    --secondary: 220 14% 14%;
+    --secondary-foreground: 36 25% 92%;
+    --muted: 220 14% 14%;
+    --muted-foreground: 36 10% 62%;
+    --accent: 220 14% 14%;
+    --accent-foreground: 36 25% 92%;
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 36 25% 92%;
+    --border: 220 14% 18%;
+    --input: 220 14% 18%;
+    --ring: 36 25% 92%;
+    --series-launched: 14 92% 60%;
+    --series-destroyed: 200 78% 62%;
+    --series-rate: 145 55% 58%;
+    --grid: 220 14% 16%;
   }
 }
 
