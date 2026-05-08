@@ -516,7 +516,7 @@ const Index = () => {
 
       {/* ─────────────── HERO ─────────────── */}
       <section className="border-b border-border">
-        <div className="container py-14 md:py-20">
+        <div className="container pt-14 pb-6 md:pt-20 md:pb-8">
           <div className="mb-6 inline-block border-l-2 border-series-launched pl-3 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
             Defence · Data Story · Oct 2022 – present
           </div>
