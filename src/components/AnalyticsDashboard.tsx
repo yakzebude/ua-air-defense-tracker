@@ -305,7 +305,6 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
         </table>
       </div>
     </div>
-    </div>
   );
 }
 
