@@ -770,21 +770,21 @@ const Index = () => {
                 label="UAVs launched"
                 value={fmt(shahed!.totals.launched)}
                 sub={`${(shahed!.totals.rate * 100).toFixed(1)}% intercepted`}
-                accent="yellow"
+                accent="neutral"
                 spark={sparks.shahed}
               />
               <OpsTile
                 label="Cruise missiles"
                 value={fmt(cruise!.totals.launched)}
                 sub={`${(cruise!.totals.rate * 100).toFixed(1)}% intercepted`}
-                accent="cyber"
+                accent="neutral"
                 spark={sparks.cruise}
               />
               <OpsTile
                 label="Ballistic missiles"
                 value={fmt(ballistic!.totals.launched)}
                 sub={`${(ballistic!.totals.rate * 100).toFixed(1)}% intercepted`}
-                accent="destructive"
+                accent="neutral"
                 spark={sparks.ballistic}
               />
               <OpsTile
