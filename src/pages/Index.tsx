@@ -517,7 +517,7 @@ const Index = () => {
 
       <footer className="border-t border-border">
         <div className="container flex flex-col items-start justify-between gap-3 py-6 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground md:flex-row md:items-center">
-          <p>UA Intel · monthly aggregates from Ukrainian Air Force daily reports</p>
+          <p>UA Intel · monthly aggregates from Ukrainian Air Force weekly reports</p>
           <div className="flex flex-wrap items-center gap-3">
             <span>Last data point: <span className="text-foreground">{lastUpdatedLabel ?? "—"}</span></span>
             <a
