@@ -27,27 +27,25 @@ export function DateRangeFilter({ months, range, onChange }: Props) {
   );
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+    <div className="space-y-3 rounded-sm border border-border bg-card p-4 md:p-5">
+      <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Date range
-          </div>
-          <div className="mt-1 font-serif text-xl num">
+          <div className="src-label">Date range</div>
+          <div className="mt-1 num text-[15px] font-semibold text-foreground">
             {fromLabel} <span className="text-muted-foreground">→</span> {toLabel}
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1">
           {presets.map((p) => {
             const active = p.from === from && p.to === to;
             return (
               <button
                 key={p.name}
                 onClick={() => onChange([p.from, p.to])}
-                className={`rounded-sm border px-3 py-1 text-xs font-medium transition-colors ${
+                className={`rounded-sm border px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors ${
                   active
                     ? "border-foreground bg-foreground text-background"
-                    : "border-border bg-card text-foreground hover:bg-secondary"
+                    : "border-border bg-card text-muted-foreground hover:bg-secondary hover:text-foreground"
                 }`}
               >
                 {p.name}
@@ -64,7 +62,7 @@ export function DateRangeFilter({ months, range, onChange }: Props) {
         onValueChange={(v) => onChange([v[0], v[1]] as [number, number])}
         className="w-full"
       />
-      <div className="flex justify-between text-[11px] text-muted-foreground num">
+      <div className="flex justify-between font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground num">
         <span>Oct '22</span>
         <span>Mar '26</span>
       </div>

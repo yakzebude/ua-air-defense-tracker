@@ -3,96 +3,114 @@
 @tailwind utilities;
 
 /* ===========================================================================
-   UA Defense Tracker — dark military-tech design system
-   Inspired by Bloomberg Terminal / Palantir / NATO ops dashboards
+   UA Intel — restrained OSINT / defense analytics design system
+   Palette: ink (primary) + amber (signal) + neutral gray scale
+   No gradients, no glow, single border radius, single shadow token.
    =========================================================================== */
 
 @layer base {
   :root {
-    /* Light mode — high-contrast editorial / ops dashboard */
-    --background: 220 24% 96%;
-    --foreground: 222 45% 8%;
+    /* Light — paper / report look */
+    --background: 0 0% 100%;
+    --foreground: 220 15% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 222 45% 8%;
+    --card-foreground: 220 15% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 45% 8%;
-    --primary: 222 45% 8%;
-    --primary-foreground: 220 24% 98%;
-    --secondary: 220 18% 90%;
-    --secondary-foreground: 222 45% 8%;
-    --muted: 220 18% 92%;
-    --muted-foreground: 222 18% 30%;        /* darker for AA contrast on light bg */
-    --accent: 47 95% 48%;
-    --accent-foreground: 222 45% 8%;
-    --destructive: 0 78% 42%;
-    --destructive-foreground: 220 24% 98%;
-    --border: 220 16% 78%;                  /* deeper, more visible borders */
-    --input: 220 16% 78%;
-    --ring: 47 95% 48%;
-    --radius: 0.375rem;
+    --popover-foreground: 220 15% 12%;
 
-    /* Brand accents */
-    --ua-yellow: 47 100% 42%;               /* darker yellow for legibility on light bg */
-    --ua-blue: 215 92% 38%;
-    --cyber: 195 95% 38%;
-    --cyber-glow: 195 100% 55%;
+    --primary: 220 15% 12%;          /* ink */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 15% 12%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 8% 38%;
+    --accent: 220 14% 96%;
+    --accent-foreground: 220 15% 12%;
+    --destructive: 0 65% 42%;
+    --destructive-foreground: 0 0% 100%;
 
-    /* Data series */
-    --series-launched: 25 92% 45%;
-    --series-destroyed: 280 65% 42%;
-    --series-rate: 47 100% 42%;
-    --grid: 220 16% 82%;
+    --border: 220 13% 88%;
+    --input: 220 13% 88%;
+    --ring: 220 15% 12%;
+    --radius: 0.25rem;
 
-    --sidebar-background: 220 24% 96%;
-    --sidebar-foreground: 222 22% 22%;
-    --sidebar-primary: 222 45% 8%;
-    --sidebar-primary-foreground: 220 24% 98%;
-    --sidebar-accent: 220 18% 90%;
-    --sidebar-accent-foreground: 222 45% 8%;
-    --sidebar-border: 220 16% 78%;
-    --sidebar-ring: 47 95% 48%;
+    /* Two functional accents only */
+    --ink: 220 15% 12%;
+    --signal: 38 92% 45%;            /* muted amber */
+    --signal-soft: 38 80% 92%;
+
+    /* Legacy aliases kept so untouched components don't break */
+    --ua-yellow: 38 92% 45%;
+    --ua-blue: 220 15% 12%;
+    --cyber: 220 8% 38%;
+    --cyber-glow: 220 8% 38%;
+
+    /* Chart series — ink, amber, mid-gray */
+    --series-launched: 220 15% 22%;
+    --series-destroyed: 38 92% 45%;
+    --series-rate: 220 8% 50%;
+    --grid: 220 13% 90%;
+
+    --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 1px 0 rgb(15 23 42 / 0.03);
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 15% 12%;
+    --sidebar-primary: 220 15% 12%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 220 15% 12%;
+    --sidebar-border: 220 13% 88%;
+    --sidebar-ring: 220 15% 12%;
   }
 
   .dark {
-    /* Dark military-tech — deep navy ink, cool slate surfaces */
-    --background: 222 38% 6%;          /* near-black navy */
-    --foreground: 210 30% 96%;
-    --card: 222 32% 9%;                /* slate panel */
-    --card-foreground: 210 30% 96%;
-    --popover: 222 32% 9%;
-    --popover-foreground: 210 30% 96%;
-    --primary: 47 95% 58%;             /* UA yellow as primary accent */
-    --primary-foreground: 222 38% 6%;
-    --secondary: 222 24% 14%;
-    --secondary-foreground: 210 30% 96%;
-    --muted: 222 22% 13%;
-    --muted-foreground: 215 18% 62%;
-    --accent: 195 95% 58%;             /* cyber blue */
-    --accent-foreground: 222 38% 6%;
-    --destructive: 0 78% 58%;
-    --destructive-foreground: 210 30% 96%;
-    --border: 222 22% 16%;
-    --input: 222 22% 16%;
-    --ring: 47 95% 58%;
+    /* Dark — neutral charcoal terminal */
+    --background: 220 14% 9%;
+    --foreground: 220 14% 92%;
+    --card: 220 14% 11%;
+    --card-foreground: 220 14% 92%;
+    --popover: 220 14% 11%;
+    --popover-foreground: 220 14% 92%;
 
-    --ua-yellow: 47 95% 58%;
-    --ua-blue: 215 95% 58%;
-    --cyber: 195 95% 58%;
-    --cyber-glow: 195 100% 68%;
+    --primary: 220 14% 92%;
+    --primary-foreground: 220 14% 9%;
+    --secondary: 220 12% 15%;
+    --secondary-foreground: 220 14% 92%;
+    --muted: 220 12% 14%;
+    --muted-foreground: 220 8% 60%;
+    --accent: 220 12% 15%;
+    --accent-foreground: 220 14% 92%;
+    --destructive: 0 60% 55%;
+    --destructive-foreground: 220 14% 92%;
 
-    --series-launched: 25 92% 58%;     /* orange */
-    --series-destroyed: 280 65% 68%;   /* purple */
-    --series-rate: 47 95% 58%;         /* yellow */
-    --grid: 222 22% 18%;
+    --border: 220 12% 18%;
+    --input: 220 12% 18%;
+    --ring: 220 14% 92%;
 
-    --sidebar-background: 222 38% 6%;
-    --sidebar-foreground: 210 30% 96%;
-    --sidebar-primary: 47 95% 58%;
-    --sidebar-primary-foreground: 222 38% 6%;
-    --sidebar-accent: 222 24% 14%;
-    --sidebar-accent-foreground: 210 30% 96%;
-    --sidebar-border: 222 22% 16%;
-    --sidebar-ring: 47 95% 58%;
+    --ink: 220 14% 92%;
+    --signal: 38 88% 58%;
+    --signal-soft: 38 40% 18%;
+
+    --ua-yellow: 38 88% 58%;
+    --ua-blue: 220 14% 92%;
+    --cyber: 220 8% 60%;
+    --cyber-glow: 220 8% 60%;
+
+    --series-launched: 220 14% 80%;
+    --series-destroyed: 38 88% 58%;
+    --series-rate: 220 8% 55%;
+    --grid: 220 12% 18%;
+
+    --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.4), 0 1px 1px 0 rgb(0 0 0 / 0.25);
+
+    --sidebar-background: 220 14% 9%;
+    --sidebar-foreground: 220 14% 92%;
+    --sidebar-primary: 220 14% 92%;
+    --sidebar-primary-foreground: 220 14% 9%;
+    --sidebar-accent: 220 12% 15%;
+    --sidebar-accent-foreground: 220 14% 92%;
+    --sidebar-border: 220 12% 18%;
+    --sidebar-ring: 220 14% 92%;
   }
 }
 
@@ -110,9 +128,9 @@
   }
 
   h1, h2, h3, h4 {
-    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     font-weight: 600;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.015em;
   }
 
   .font-mono, code, kbd, pre {
@@ -126,75 +144,46 @@
   }
 }
 
-@layer utilities {
-  /* Tactical grid background — subtle radar/ops feel */
-  .bg-tactical-grid {
-    background-image:
-      linear-gradient(hsl(var(--border) / 0.5) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--border) / 0.5) 1px, transparent 1px);
-    background-size: 56px 56px;
-    background-position: -1px -1px;
-  }
-
-  .bg-tactical-grid-fine {
-    background-image:
-      linear-gradient(hsl(var(--border) / 0.35) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--border) / 0.35) 1px, transparent 1px);
-    background-size: 24px 24px;
-  }
-
-  /* Radial vignette to fade grid into background edges */
-  .mask-radial {
-    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 100%);
-            mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 100%);
-  }
-
-  /* Glassmorphism panel */
-  .glass {
-    background-color: hsl(var(--card) / 0.65);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
+@layer components {
+  /* The canonical card surface — used everywhere */
+  .panel {
+    background-color: hsl(var(--card));
     border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
   }
+  .panel-padded { padding: 1.25rem; }
+  @media (min-width: 768px) {
+    .panel-padded { padding: 1.5rem; }
+  }
+}
 
-  /* Glow utilities */
-  .glow-cyber {
-    box-shadow:
-      0 0 0 1px hsl(var(--cyber) / 0.25),
-      0 0 24px -4px hsl(var(--cyber) / 0.35);
-  }
-  .glow-yellow {
-    box-shadow:
-      0 0 0 1px hsl(var(--ua-yellow) / 0.3),
-      0 0 24px -4px hsl(var(--ua-yellow) / 0.35);
-  }
-  .text-glow-yellow {
-    text-shadow: 0 0 24px hsl(var(--ua-yellow) / 0.45);
-  }
+@layer utilities {
+  /* Legacy utilities kept as no-ops so old refs don't blow up visually */
+  .bg-tactical-grid,
+  .bg-tactical-grid-fine,
+  .mask-radial,
+  .glass,
+  .glow-cyber,
+  .glow-yellow,
+  .text-glow-yellow,
+  .scan-line::after { /* no decoration */ }
 
-  /* Scanning sweep line — radar feel */
-  .scan-line::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      hsl(var(--cyber) / 0.08) 50%,
-      transparent 100%
-    );
-    animation: scan 6s linear infinite;
-    pointer-events: none;
-  }
-
-  @keyframes scan {
-    0%   { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
+  .scan-line::after { content: none; }
 
   @keyframes pulse-soft {
     0%, 100% { opacity: 1; }
-    50%      { opacity: 0.55; }
+    50%      { opacity: 0.6; }
   }
   .pulse-soft { animation: pulse-soft 2.6s ease-in-out infinite; }
+
+  /* Source / uncertainty micro-label */
+  .src-label {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10px;
+    line-height: 1.4;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+  }
 }

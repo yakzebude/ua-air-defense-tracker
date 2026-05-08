@@ -1,57 +1,32 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, ShieldCheck } from "lucide-react";
 import { loadShahedData, type Dataset, type MonthPoint } from "@/lib/shahed-data";
 import { loadAllMissileCategories } from "@/lib/missiles-data";
 import { MonthlyTrendChart } from "@/components/MonthlyTrendChart";
-
 import { DateRangeFilter } from "@/components/DateRangeFilter";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 import { WeaponsCatalogSection } from "@/components/WeaponsCatalogSection";
-
-/* -------------------------------------------------------------------------- */
-/*  Small primitives                                                          */
-/* -------------------------------------------------------------------------- */
+import { Panel, SourceLabel } from "@/components/ui/panel";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
+const PRIMARY_SOURCE = "Air Force Command of the Armed Forces of Ukraine (daily reports, via Kaggle dataset, Petro Ivaniuk)";
 
-function CountUp({ value, duration = 1600 }: { value: number; duration?: number }) {
-  const [display, setDisplay] = useState(0);
-  const startedRef = useRef(false);
-  useEffect(() => {
-    if (startedRef.current) {
-      setDisplay(value);
-      return;
-    }
-    startedRef.current = true;
-    const start = performance.now();
-    let raf = 0;
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - t, 3);
-      setDisplay(Math.round(value * eased));
-      if (t < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [value, duration]);
-  return <>{display.toLocaleString("en-US")}</>;
-}
+/* -------------------------------------------------------------------------- */
+/*  Top bars                                                                  */
+/* -------------------------------------------------------------------------- */
 
 function StatusBar({ lastUpdated }: { lastUpdated: string | null }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 font-mono">
-      <div className="container flex items-center justify-between gap-4 py-2.5 text-[11px] uppercase tracking-[0.18em]">
-        <div className="flex items-center gap-3">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping-soft rounded-full bg-ua-yellow" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-ua-yellow" />
-          </span>
-          <span className="font-semibold tracking-[0.24em] text-foreground">UA INTEL</span>
+    <header className="sticky top-0 z-40 border-b border-border bg-background">
+      <div className="container flex items-center justify-between gap-4 py-2 font-mono text-[10.5px] uppercase tracking-[0.16em]">
+        <div className="flex items-center gap-2">
+          <span className="h-1.5 w-1.5 rounded-full bg-signal" />
+          <span className="font-semibold tracking-[0.2em] text-foreground">UA Intel</span>
+          <span className="hidden text-muted-foreground sm:inline">· Air-Threat Tracker</span>
         </div>
-        <div className="flex items-center gap-4">
-          <span className="hidden text-muted-foreground md:inline">Last Update</span>
+        <div className="flex items-center gap-4 text-muted-foreground">
+          <span className="hidden md:inline">Last data point</span>
           <span className="num text-foreground">{lastUpdated ?? "—"}</span>
           <ThemeToggle />
         </div>
@@ -62,13 +37,14 @@ function StatusBar({ lastUpdated }: { lastUpdated: string | null }) {
 
 function SectionNav() {
   const items = [
+    { id: "summary", label: "Summary" },
     { id: "analytics", label: "Analytics" },
     { id: "drones", label: "UAVs" },
-    { id: "cruise", label: "Cruise missiles" },
-    { id: "ballistic", label: "Ballistic missiles" },
+    { id: "cruise", label: "Cruise" },
+    { id: "ballistic", label: "Ballistic" },
     { id: "arsenal", label: "Arsenal" },
     { id: "methodology", label: "Methodology" },
-    { id: "related", label: "Related sources" },
+    { id: "related", label: "Sources" },
     { id: "help", label: "How to help" },
   ];
   const [active, setActive] = useState<string>(items[0].id);
@@ -80,7 +56,6 @@ function SectionNav() {
     if (!sections.length) return;
     const obs = new IntersectionObserver(
       (entries) => {
-        // Pick the entry closest to the top that is currently intersecting.
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
@@ -93,8 +68,8 @@ function SectionNav() {
   }, []);
 
   return (
-    <nav className="sticky top-[34px] z-30 border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-      <div className="container flex items-center gap-1 overflow-x-auto py-2 text-[11px] font-mono uppercase tracking-[0.18em]">
+    <nav className="sticky top-[33px] z-30 border-b border-border bg-background">
+      <div className="container flex items-center gap-1 overflow-x-auto py-1.5 text-[11px] font-mono uppercase tracking-[0.16em]">
         {items.map((it) => {
           const isActive = active === it.id;
           return (
@@ -102,7 +77,7 @@ function SectionNav() {
               key={it.id}
               href={`#${it.id}`}
               aria-current={isActive ? "true" : undefined}
-              className={`whitespace-nowrap rounded-sm px-3 py-1 transition-colors ${
+              className={`whitespace-nowrap rounded-sm px-2.5 py-1 transition-colors ${
                 isActive
                   ? "bg-secondary text-foreground"
                   : "text-muted-foreground hover:bg-secondary hover:text-foreground"
@@ -118,94 +93,106 @@ function SectionNav() {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Related sources                                                           */
+/*  KPI                                                                       */
 /* -------------------------------------------------------------------------- */
 
-type SourceLink = {
-  name: string;
-  href: string;
-  blurb: string;
-  tag: string;
-};
+function KPI({
+  label,
+  value,
+  sub,
+  signal = false,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  signal?: boolean;
+}) {
+  return (
+    <div className="min-w-0">
+      <div className="text-[10.5px] font-mono font-medium uppercase tracking-[0.18em] text-muted-foreground">
+        {label}
+      </div>
+      <div
+        className={`mt-1.5 num font-semibold leading-none text-[2rem] md:text-[2.5rem] ${
+          signal ? "text-signal" : "text-foreground"
+        }`}
+      >
+        {value}
+      </div>
+      {sub && <div className="mt-2 text-[12px] text-muted-foreground num">{sub}</div>}
+    </div>
+  );
+}
 
-const RELATED_SOURCES: SourceLink[] = [
+/* -------------------------------------------------------------------------- */
+/*  Sources                                                                   */
+/* -------------------------------------------------------------------------- */
+
+const RELATED_SOURCES = [
   {
     name: "GUR · war-sanctions",
     href: "https://war-sanctions.gur.gov.ua/en/components",
-    blurb:
-      "Foreign components found in Russian missiles and drones — built and maintained by Ukraine's Defence Intelligence (HUR).",
-    tag: "Components & sanctions",
+    blurb: "Foreign components identified in Russian missiles and UAVs. Maintained by Ukraine's Defence Intelligence (HUR).",
+    tag: "Components",
   },
   {
     name: "Ukrainian Air Force",
     href: "https://www.facebook.com/kpszsu",
-    blurb:
-      "Original daily reports on launched and intercepted weapons, the upstream source of this dataset.",
-    tag: "Primary source",
+    blurb: "Original daily reports on launched and intercepted weapons — the upstream source of this dataset.",
+    tag: "Primary",
   },
   {
     name: "Oryx",
     href: "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html",
-    blurb:
-      "Open-source, photo-verified record of equipment losses on both sides of the war.",
+    blurb: "Open-source, photo-verified record of equipment losses on both sides of the war.",
     tag: "Verified losses",
   },
   {
-    name: "ISW · Russia Daily Updates",
+    name: "ISW · Daily updates",
     href: "https://www.understandingwar.org/backgrounder/russian-offensive-campaign-assessment",
-    blurb:
-      "Institute for the Study of War — daily campaign assessments and operational maps.",
+    blurb: "Institute for the Study of War — daily campaign assessments and operational maps.",
     tag: "Analysis",
   },
   {
     name: "CSIS · Missile Threat",
     href: "https://missilethreat.csis.org/",
-    blurb:
-      "Reference profiles for the cruise, ballistic and hypersonic weapons used against Ukraine.",
-    tag: "Weapon profiles",
+    blurb: "Reference profiles for cruise, ballistic and hypersonic weapons used against Ukraine.",
+    tag: "Reference",
   },
   {
-    name: "Kiel Institute · Ukraine Support Tracker",
+    name: "Kiel · Ukraine Support Tracker",
     href: "https://www.ifw-kiel.de/topics/war-against-ukraine/ukraine-support-tracker/",
-    blurb:
-      "Quantifies military, financial and humanitarian aid pledged to Ukraine by Western governments.",
-    tag: "Aid tracking",
+    blurb: "Quantifies military, financial and humanitarian aid pledged to Ukraine by Western governments.",
+    tag: "Aid",
   },
 ];
 
 function RelatedSourcesSection() {
   return (
     <section id="related" className="scroll-mt-24 border-t border-border">
-      <div className="container py-14 md:py-20">
-        <div className="mb-8 max-w-3xl">
-          <div className="mb-4 inline-block border-l-2 border-series-launched pl-3 font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            Further reading
-          </div>
-          <h2 className="font-serif text-3xl md:text-4xl leading-tight">
-            Related sources & investigations
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-            This tracker only covers the volume side of the air war. For the
-            components inside those weapons, the people losing them and the support
-            flowing the other way, the sources below pick up where these charts end.
+      <div className="container py-12 md:py-16">
+        <div className="mb-6 max-w-3xl">
+          <div className="src-label mb-2">Further reading</div>
+          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">Related sources</h2>
+          <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
+            This tracker covers reported aerial threat volume only. Linked projects below
+            cover components, equipment losses, campaign analysis and aid flows.
           </p>
         </div>
-        <div className="grid gap-px bg-border md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-px overflow-hidden rounded-sm border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
           {RELATED_SOURCES.map((s) => (
             <a
               key={s.href}
               href={s.href}
               target="_blank"
               rel="noopener noreferrer external"
-              className="group flex flex-col gap-3 bg-card p-5 transition-colors hover:bg-secondary/50"
+              className="group flex flex-col gap-2 bg-card p-5 transition-colors hover:bg-secondary"
             >
-              <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-                {s.tag}
-              </div>
-              <h3 className="font-serif text-xl leading-tight">{s.name}</h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">{s.blurb}</p>
-              <div className="mt-auto pt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover:text-foreground">
-                Visit site ↗
+              <div className="src-label">{s.tag}</div>
+              <h3 className="text-[15px] font-semibold leading-snug text-foreground">{s.name}</h3>
+              <p className="text-[13px] leading-relaxed text-muted-foreground">{s.blurb}</p>
+              <div className="src-label mt-auto pt-2 transition-colors group-hover:text-foreground">
+                Open ↗
               </div>
             </a>
           ))}
@@ -216,339 +203,51 @@ function RelatedSourcesSection() {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  How to help — donation organisations                                      */
+/*  Donate                                                                    */
 /* -------------------------------------------------------------------------- */
 
-type DonateLink = {
-  name: string;
-  href: string;
-  blurb: string;
-  tag: "Military" | "Humanitarian" | "Mixed";
-};
-
-const DONATE_ORGS: DonateLink[] = [
-  {
-    name: "UNITED24",
-    href: "https://u24.gov.ua/",
-    blurb:
-      "Official fundraising platform of the President of Ukraine — defence, demining, medical aid and rebuilding programmes.",
-    tag: "Mixed",
-  },
-  {
-    name: "Come Back Alive",
-    href: "https://savelife.in.ua/en/",
-    blurb:
-      "Ukraine's largest charity supporting the Armed Forces — equipment, training and veteran assistance since 2014.",
-    tag: "Military",
-  },
-  {
-    name: "Serhiy Prytula Foundation",
-    href: "https://prytulafoundation.org/en",
-    blurb:
-      "Funds reconnaissance drones, vehicles and protective gear for Ukrainian units, plus humanitarian projects.",
-    tag: "Mixed",
-  },
-  {
-    name: "Razom for Ukraine",
-    href: "https://razomforukraine.org/",
-    blurb:
-      "US-based non-profit delivering tactical medical supplies, emergency response and advocacy for Ukraine.",
-    tag: "Humanitarian",
-  },
-  {
-    name: "Hospitallers Medical Battalion",
-    href: "https://www.hospitallers.life/needs-hospitallers",
-    blurb:
-      "Volunteer paramedic battalion evacuating wounded soldiers and civilians from the front line.",
-    tag: "Humanitarian",
-  },
-  {
-    name: "Voices of Children",
-    href: "https://voices.org.ua/en/",
-    blurb:
-      "Psychological and humanitarian support for children affected by the war, including evacuations and therapy.",
-    tag: "Humanitarian",
-  },
+const DONATE_ORGS = [
+  { name: "UNITED24", href: "https://u24.gov.ua/", blurb: "Official fundraising platform of the Office of the President of Ukraine — defence, demining, medical aid, rebuilding.", tag: "Mixed" },
+  { name: "Come Back Alive", href: "https://savelife.in.ua/en/", blurb: "Ukrainian charity supporting the Armed Forces — equipment, training, veteran assistance (since 2014).", tag: "Military" },
+  { name: "Serhiy Prytula Foundation", href: "https://prytulafoundation.org/en", blurb: "Funds reconnaissance UAVs, vehicles and protective gear; also runs humanitarian projects.", tag: "Mixed" },
+  { name: "Razom for Ukraine", href: "https://razomforukraine.org/", blurb: "US-based non-profit delivering tactical medical supplies, emergency response and advocacy.", tag: "Humanitarian" },
+  { name: "Hospitallers Medical Battalion", href: "https://www.hospitallers.life/needs-hospitallers", blurb: "Volunteer paramedic battalion evacuating wounded soldiers and civilians from the front line.", tag: "Humanitarian" },
+  { name: "Voices of Children", href: "https://voices.org.ua/en/", blurb: "Psychological and humanitarian support for children affected by the war.", tag: "Humanitarian" },
 ];
 
 function HowToHelpSection() {
-  // Per-card accent palette — rotates through the threat ramp + cyber for variety.
-  const ACCENTS = [
-    "47 95% 58%",   // yellow
-    "25 92% 58%",   // orange
-    "0 78% 58%",    // red
-    "280 65% 60%",  // purple
-    "195 95% 58%",  // cyber blue
-    "160 70% 50%",  // mint
-  ];
-
   return (
-    <section id="help" className="relative scroll-mt-24 overflow-hidden border-t border-border">
-      {/* Tactical backdrop — same vocabulary as the hero */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-tactical-grid mask-radial opacity-30" />
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,hsl(var(--ua-yellow)/0.08),transparent_70%)]" />
-      <div aria-hidden className="scan-line pointer-events-none absolute inset-0 opacity-60" />
-
-      <div className="container relative py-14 md:py-20">
-        <div className="mb-8 max-w-3xl">
-          <div className="mb-4 inline-block border-l-2 border-series-destroyed pl-3 font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            How to help
-          </div>
-          <h2 className="font-serif text-3xl md:text-4xl leading-tight">
-            Donate to Ukraine
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-            Vetted Ukrainian and international organisations covering both military
-            support — drones, vehicles, protective gear — and humanitarian relief
-            for civilians, medics and children affected by the war.
+    <section id="help" className="scroll-mt-24 border-t border-border">
+      <div className="container py-12 md:py-16">
+        <div className="mb-6 max-w-3xl">
+          <div className="src-label mb-2">How to help</div>
+          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">Vetted donation organisations</h2>
+          <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
+            Established Ukrainian and international organisations covering military
+            support and humanitarian relief. UA Intel does not solicit funds and is
+            not affiliated with the entities listed.
           </p>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {DONATE_ORGS.map((s, i) => {
-            const accent = ACCENTS[i % ACCENTS.length];
-            return (
-              <a
-                key={s.href}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer external"
-                className="group relative flex flex-col gap-3 overflow-hidden rounded-md border p-5 backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5"
-                style={{
-                  borderColor: `hsl(${accent} / 0.28)`,
-                  background: `
-                    radial-gradient(120% 80% at 0% 0%, hsl(${accent} / 0.18), transparent 55%),
-                    radial-gradient(100% 80% at 100% 100%, hsl(${accent} / 0.10), transparent 60%),
-                    linear-gradient(135deg, hsl(var(--card) / 0.55), hsl(var(--card) / 0.25))
-                  `,
-                  boxShadow: `0 1px 0 hsl(0 0% 100% / 0.04) inset, 0 14px 40px -18px hsl(${accent} / 0.45)`,
-                }}
-              >
-                {/* Glossy highlight */}
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-x-0 top-0 h-px"
-                  style={{ background: `linear-gradient(90deg, transparent, hsl(${accent} / 0.55), transparent)` }}
-                />
-                {/* Subtle scanline animation, hero-style */}
-                <div aria-hidden className="scan-line pointer-events-none absolute inset-0 opacity-50" />
-                {/* Hover bloom */}
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute -inset-1 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
-                  style={{ background: `radial-gradient(60% 60% at 50% 30%, hsl(${accent} / 0.25), transparent 70%)` }}
-                />
-
-                <div className="relative flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.2em]">
-                  <span style={{ color: `hsl(${accent})` }}>{s.tag}</span>
-                  <span
-                    className="h-1.5 w-1.5 rounded-full pulse-soft"
-                    style={{ background: `hsl(${accent})`, boxShadow: `0 0 10px hsl(${accent} / 0.7)` }}
-                  />
-                </div>
-                <h3 className="relative font-serif text-xl leading-tight text-foreground">{s.name}</h3>
-                <p className="relative text-sm leading-relaxed text-muted-foreground">{s.blurb}</p>
-                <div className="relative mt-auto pt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover:text-foreground">
-                  Donate ↗
-                </div>
-              </a>
-            );
-          })}
+        <div className="grid gap-px overflow-hidden rounded-sm border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
+          {DONATE_ORGS.map((s) => (
+            <a
+              key={s.href}
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer external"
+              className="group flex flex-col gap-2 bg-card p-5 transition-colors hover:bg-secondary"
+            >
+              <div className="src-label">{s.tag}</div>
+              <h3 className="text-[15px] font-semibold leading-snug text-foreground">{s.name}</h3>
+              <p className="text-[13px] leading-relaxed text-muted-foreground">{s.blurb}</p>
+              <div className="src-label mt-auto pt-2 transition-colors group-hover:text-foreground">
+                Donate ↗
+              </div>
+            </a>
+          ))}
         </div>
       </div>
     </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*  KPI primitives                                                            */
-/* -------------------------------------------------------------------------- */
-
-type Accent = "launched" | "destroyed" | "rate" | "neutral";
-const accentClass: Record<Accent, string> = {
-  launched: "before:bg-series-launched",
-  destroyed: "before:bg-series-destroyed",
-  rate: "before:bg-series-rate",
-  neutral: "before:bg-foreground",
-};
-
-function KPI({
-  label,
-  value,
-  sub,
-  accent = "neutral",
-}: {
-  label: string;
-  value: string;
-  sub?: string;
-  accent?: Accent;
-}) {
-  return (
-    <div
-      className={`relative pl-4 before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-[3px] ${accentClass[accent]}`}
-    >
-      <div className="text-[11px] font-mono font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-        {label}
-      </div>
-      <div className="mt-1 font-serif text-3xl md:text-4xl text-foreground num leading-none">
-        {value}
-      </div>
-      {sub && <div className="mt-2 text-xs text-muted-foreground num">{sub}</div>}
-    </div>
-  );
-}
-
-/** Tiny inline sparkline (no axes), used for at-a-glance category cards. */
-function Sparkline({
-  data,
-  stroke = "hsl(var(--series-launched))",
-  height = 36,
-}: {
-  data: number[];
-  stroke?: string;
-  height?: number;
-}) {
-  if (!data.length) return null;
-  const w = 120;
-  const h = height;
-  const max = Math.max(...data, 1);
-  const step = w / Math.max(data.length - 1, 1);
-  const points = data
-    .map((v, i) => `${(i * step).toFixed(1)},${(h - (v / max) * h).toFixed(1)}`)
-    .join(" ");
-  return (
-    <svg
-      viewBox={`0 0 ${w} ${h}`}
-      preserveAspectRatio="none"
-      className="h-9 w-full"
-      aria-hidden="true"
-    >
-      <polyline
-        fill="none"
-        stroke={stroke}
-        strokeWidth={1.5}
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        points={points}
-      />
-    </svg>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Operations Center tile                                                    */
-/* -------------------------------------------------------------------------- */
-
-type OpsAccent = "yellow" | "cyber" | "destructive" | "neutral";
-
-function OpsTile({
-  label,
-  value,
-  sub,
-  accent = "neutral",
-  spark,
-}: {
-  label: string;
-  value: string;
-  sub?: string;
-  accent?: OpsAccent;
-  spark?: number[];
-}) {
-  const accentColor: Record<OpsAccent, string> = {
-    yellow: "hsl(var(--ua-yellow))",
-    cyber: "hsl(var(--cyber))",
-    destructive: "hsl(var(--destructive))",
-    neutral: "hsl(var(--muted-foreground))",
-  };
-  const valueClass: Record<OpsAccent, string> = {
-    yellow: "text-ua-yellow",
-    cyber: "text-cyber",
-    destructive: "text-destructive",
-    neutral: "text-foreground",
-  };
-  return (
-    <div className="group relative flex flex-col gap-3 bg-card/70 p-4 backdrop-blur transition-colors hover:bg-card md:p-5">
-      <div className="flex items-center justify-between font-mono text-[10.5px] uppercase tracking-[0.2em] text-muted-foreground">
-        <span>{label}</span>
-        <span
-          aria-hidden
-          className="h-1.5 w-1.5 rounded-full pulse-soft"
-          style={{ backgroundColor: accentColor[accent] }}
-        />
-      </div>
-      <div className={`font-display text-3xl leading-none num md:text-[2.25rem] ${valueClass[accent]}`}>
-        {value}
-      </div>
-      {spark && spark.length > 0 ? (
-        <Sparkline data={spark} stroke={accentColor[accent]} height={28} />
-      ) : (
-        <div className="h-7" />
-      )}
-      {sub && (
-        <div className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
-          {sub}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Hero pillar card (one of three categories)                                */
-/* -------------------------------------------------------------------------- */
-
-function PillarCard({
-  index,
-  kicker,
-  title,
-  total,
-  destroyed,
-  spark,
-  href,
-}: {
-  index: string;
-  kicker: string;
-  title: string;
-  total: number;
-  destroyed: number;
-  spark: number[];
-  href: string;
-}) {
-  const rate = total > 0 ? destroyed / total : 0;
-  const reached = Math.max(total - destroyed, 0);
-  return (
-    <a
-      href={href}
-      className="group relative flex flex-col gap-4 border border-border bg-card p-5 transition-colors hover:bg-secondary/50"
-    >
-      <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-        <span>{index}</span>
-        <span>{kicker}</span>
-      </div>
-      <h3 className="font-serif text-xl leading-tight md:text-2xl">{title}</h3>
-      <div className="font-serif text-5xl md:text-6xl num leading-none">
-        <CountUp value={total} />
-      </div>
-      <Sparkline data={spark} />
-      <div className="grid grid-cols-3 gap-3 border-t border-border pt-3 text-xs">
-        <div>
-          <div className="font-mono uppercase tracking-wider text-muted-foreground">Down</div>
-          <div className="mt-1 num font-semibold text-series-destroyed">{fmt(destroyed)}</div>
-        </div>
-        <div>
-          <div className="font-mono uppercase tracking-wider text-muted-foreground">Rate</div>
-          <div className="mt-1 num font-semibold text-series-rate">
-            {(rate * 100).toFixed(1)}%
-          </div>
-        </div>
-        <div>
-          <div className="font-mono uppercase tracking-wider text-muted-foreground">Through</div>
-          <div className="mt-1 num font-semibold text-foreground">{fmt(reached)}</div>
-        </div>
-      </div>
-      <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover:text-foreground">
-        Read section →
-      </div>
-    </a>
   );
 }
 
@@ -561,86 +260,50 @@ type CategorySectionProps = {
   kicker: string;
   title: string;
   description: string;
-  unitNoun: string; // "drones" or "missiles"
+  unitNoun: string;
   dataset: Dataset;
   range: [number, number];
   onRangeChange: (r: [number, number]) => void;
 };
 
 function CategorySection({
-  id,
-  kicker,
-  title,
-  description,
-  unitNoun,
-  dataset,
-  range,
-  onRangeChange,
+  id, kicker, title, description, unitNoun, dataset, range, onRangeChange,
 }: CategorySectionProps) {
   const filtered = dataset.months.slice(range[0], range[1] + 1);
   const launched = filtered.reduce((s, m) => s + m.launched, 0);
   const destroyed = filtered.reduce((s, m) => s + m.destroyed, 0);
   const rate = launched > 0 ? destroyed / launched : 0;
-  const peak = filtered.length
-    ? filtered.reduce((a, b) => (b.launched > a.launched ? b : a))
-    : null;
-  const rangeLabel = filtered.length
-    ? `${filtered[0].label} – ${filtered[filtered.length - 1].label}`
-    : "";
+  const peak = filtered.length ? filtered.reduce((a, b) => (b.launched > a.launched ? b : a)) : null;
+  const rangeLabel = filtered.length ? `${filtered[0].label} – ${filtered[filtered.length - 1].label}` : "";
 
   return (
     <section id={id} className="scroll-mt-24 border-t border-border">
-      <div className="container py-14 md:py-20">
-        <div className="mb-8 max-w-3xl">
-          <div className="mb-4 inline-block border-l-2 border-series-launched pl-3 font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            {kicker}
-          </div>
-          <h2 className="font-serif text-3xl md:text-4xl leading-tight">{title}</h2>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground">{description}</p>
+      <div className="container py-12 md:py-16">
+        <div className="mb-6 max-w-3xl">
+          <div className="src-label mb-2">{kicker}</div>
+          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{title}</h2>
+          <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">{description}</p>
         </div>
 
-        <div className="mb-8 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-6 md:grid-cols-4">
-          <KPI label="Launched" value={fmt(launched)} sub={rangeLabel} accent="launched" />
-          <KPI
-            label="Destroyed"
-            value={fmt(destroyed)}
-            sub="confirmed interceptions"
-            accent="destroyed"
-          />
-          <KPI
-            label="Interception rate"
-            value={`${(rate * 100).toFixed(1)}%`}
-            sub={`${fmt(destroyed)} of ${fmt(launched)}`}
-            accent="rate"
-          />
-          <KPI
-            label="Reached target area"
-            value={fmt(Math.max(launched - destroyed, 0))}
-            sub={
-              launched > 0
-                ? `${(((launched - destroyed) / launched) * 100).toFixed(1)}% of launches`
-                : "—"
-            }
-          />
+        <div className="mb-6 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-6 md:grid-cols-4">
+          <KPI label="Launched (reported)" value={fmt(launched)} sub={rangeLabel} />
+          <KPI label="Destroyed (confirmed)" value={fmt(destroyed)} sub="confirmed interceptions" />
+          <KPI label="Interception rate" value={`${(rate * 100).toFixed(1)}%`} sub={`${fmt(destroyed)} of ${fmt(launched)}`} />
+          <KPI label="Reached target area" value={fmt(Math.max(launched - destroyed, 0))} sub={launched > 0 ? `${(((launched - destroyed) / launched) * 100).toFixed(1)}% of launches` : "—"} />
         </div>
 
-        <div className="mb-10">
+        <div className="mb-6">
           <DateRangeFilter months={dataset.months} range={range} onChange={onRangeChange} />
         </div>
 
-        <div className="rounded-sm border border-border bg-card p-4 md:p-6">
+        <Panel
+          title={`Monthly ${unitNoun} — launched vs destroyed`}
+          subtitle={rangeLabel}
+          source={PRIMARY_SOURCE}
+          note={peak ? `Peak month in range: ${peak.label} — ${fmt(peak.launched)} ${unitNoun} reported, ${fmt(peak.destroyed)} destroyed (${(peak.rate * 100).toFixed(1)}% intercepted).` : undefined}
+        >
           <MonthlyTrendChart data={filtered} />
-        </div>
-        {peak && (
-          <p className="mt-3 text-xs text-muted-foreground">
-            Peak month in range:{" "}
-            <span className="font-semibold text-foreground">{peak.label}</span> with{" "}
-            <span className="num">{fmt(peak.launched)}</span> {unitNoun} launched ·{" "}
-            <span className="num">{fmt(peak.destroyed)}</span> destroyed (
-            {(peak.rate * 100).toFixed(1)}% intercepted).
-          </p>
-        )}
-
+        </Panel>
       </div>
     </section>
   );
@@ -653,30 +316,20 @@ function CategorySection({
 const Index = () => {
   const [shahed, setShahed] = useState<Dataset | null>(null);
   const [shahedRange, setShahedRange] = useState<[number, number] | null>(null);
-
   const [cruise, setCruise] = useState<Dataset | null>(null);
   const [cruiseRange, setCruiseRange] = useState<[number, number] | null>(null);
-
   const [ballistic, setBallistic] = useState<Dataset | null>(null);
   const [ballisticRange, setBallisticRange] = useState<[number, number] | null>(null);
-
   const [error, setError] = useState<string | null>(null);
-  const [aboutOpen, setAboutOpen] = useState(false);
 
   useEffect(() => {
     loadShahedData()
-      .then((d) => {
-        setShahed(d);
-        setShahedRange([0, d.months.length - 1]);
-      })
+      .then((d) => { setShahed(d); setShahedRange([0, d.months.length - 1]); })
       .catch((e) => setError(String(e)));
-
     loadAllMissileCategories()
       .then(({ cruise: c, ballistic: b }) => {
-        setCruise(c);
-        setCruiseRange([0, c.months.length - 1]);
-        setBallistic(b);
-        setBallisticRange([0, b.months.length - 1]);
+        setCruise(c); setCruiseRange([0, c.months.length - 1]);
+        setBallistic(b); setBallisticRange([0, b.months.length - 1]);
       })
       .catch((e) => setError(String(e)));
   }, []);
@@ -685,27 +338,15 @@ const Index = () => {
 
   const grand = useMemo(() => {
     if (!ready) return { launched: 0, destroyed: 0, rate: 0 };
-    const launched =
-      shahed!.totals.launched + cruise!.totals.launched + ballistic!.totals.launched;
-    const destroyed =
-      shahed!.totals.destroyed + cruise!.totals.destroyed + ballistic!.totals.destroyed;
+    const launched = shahed!.totals.launched + cruise!.totals.launched + ballistic!.totals.launched;
+    const destroyed = shahed!.totals.destroyed + cruise!.totals.destroyed + ballistic!.totals.destroyed;
     return { launched, destroyed, rate: launched > 0 ? destroyed / launched : 0 };
   }, [ready, shahed, cruise, ballistic]);
-
-  const sparks = useMemo(() => {
-    return {
-      shahed: shahed?.months.map((m) => m.launched) ?? [],
-      cruise: cruise?.months.map((m) => m.launched) ?? [],
-      ballistic: ballistic?.months.map((m) => m.launched) ?? [],
-    };
-  }, [shahed, cruise, ballistic]);
 
   const lastUpdatedLabel = useMemo(() => {
     const lastWithData = (d: Dataset | null): MonthPoint | null => {
       if (!d) return null;
-      for (let i = d.months.length - 1; i >= 0; i--) {
-        if (d.months[i].launched > 0) return d.months[i];
-      }
+      for (let i = d.months.length - 1; i >= 0; i--) if (d.months[i].launched > 0) return d.months[i];
       return null;
     };
     const candidates = [lastWithData(shahed), lastWithData(cruise), lastWithData(ballistic)]
@@ -714,235 +355,53 @@ const Index = () => {
     return candidates[0]?.label ?? null;
   }, [shahed, cruise, ballistic]);
 
+  const reached = Math.max(grand.launched - grand.destroyed, 0);
+
   return (
     <main className="min-h-screen bg-background">
       <StatusBar lastUpdated={lastUpdatedLabel} />
       <SectionNav />
 
-      {/* ─────────────── HERO · OPERATIONS CENTER ─────────────── */}
-      <section className="relative overflow-hidden border-b border-border">
-        {/* Tactical grid + radar sweep background */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-tactical-grid mask-radial opacity-60" />
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-tactical-grid-fine mask-radial opacity-30" />
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,hsl(var(--cyber)/0.10),transparent_70%)]" />
-        <div aria-hidden className="pointer-events-none absolute -top-32 left-1/2 h-64 w-[680px] -translate-x-1/2 rounded-full bg-ua-yellow/10 blur-3xl" />
-        <div aria-hidden className="scan-line absolute inset-0" />
-
-        <div className="container relative pt-12 pb-10 md:pt-20 md:pb-14">
-          {/* Status / kicker row */}
-          <div className="flex flex-wrap items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.24em] text-muted-foreground">
-            <span className="hidden sm:inline">Defence · Data Story</span>
-            <span className="hidden text-foreground/60 sm:inline">Oct 2022 — present</span>
+      {/* ─────────────── MASTHEAD ─────────────── */}
+      <section id="summary" className="border-b border-border">
+        <div className="container py-10 md:py-14">
+          <div className="src-label mb-3">OSINT · Air-threat tracker</div>
+          <h1 className="max-w-4xl text-3xl font-semibold leading-[1.15] tracking-tight md:text-[2.75rem]">
+            Ukraine air defense — operational data
+          </h1>
+          <p className="mt-4 max-w-3xl text-[14px] leading-relaxed text-muted-foreground md:text-[15px]">
+            Monthly counts of reported aerial threats and confirmed interceptions over Ukraine,
+            October 2022 – present. Data is compiled from daily reports of the Ukrainian Air Force
+            Command and aggregated to calendar months. Figures are subject to revision.
+          </p>
+          <div className="src-label mt-4 flex flex-wrap items-center gap-x-4 gap-y-1">
+            <span>Last data point: <span className="text-foreground">{lastUpdatedLabel ?? "—"}</span></span>
+            <span aria-hidden>·</span>
+            <Link to="/sources" className="hover:text-foreground">Primary source ↗</Link>
+            <Link to="/methodology" className="hover:text-foreground">Methodology</Link>
+            <Link to="/disclaimer" className="hover:text-foreground">Disclaimer</Link>
           </div>
 
-          {/* Headline + subhead */}
-          <div className="mt-7 grid gap-10 md:grid-cols-12 md:items-end">
-            <div className="md:col-span-8 animate-fade-in-up">
-              <h1 className="font-display text-[2.4rem] leading-[1.02] tracking-tight md:text-[4.25rem]">
-                Ukraine's{" "}
-                <span className="text-ua-yellow text-glow-yellow">Defense Analytics</span><span className="text-ua-yellow text-glow-yellow">.</span>
-              </h1>
-              <p className="mt-6 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
-                Verified airstrike and aerial attack data, interception statistics,
-                strike analysis, and operational trends — aggregated from the Air
-                Force Command of the Armed Forces of Ukraine. Track every missile
-                and drone launched, intercepted, and reaching its target since
-                October 2022.
-              </p>
-
-              {/* CTAs */}
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <a
-                  href="#drones"
-                  className="group inline-flex items-center gap-2 rounded-sm bg-ua-yellow px-5 py-2.5 text-sm font-semibold text-background transition-all hover:glow-yellow"
-                >
-                  Explore Intelligence
-                  <span className="transition-transform group-hover:translate-x-0.5">→</span>
-                </a>
-                <Link
-                  to="/methodology"
-                  className="inline-flex items-center gap-2 rounded-sm border border-border bg-card/40 px-5 py-2.5 text-sm font-medium text-foreground backdrop-blur transition-colors hover:border-cyber/60 hover:bg-card/70 hover:text-cyber"
-                >
-                  Methodology &amp; Sources
-                </Link>
-              </div>
-
-              {/* Trust strip */}
-              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[10.5px] uppercase tracking-[0.2em] text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5 text-cyber">
-                  <ShieldCheck className="h-3.5 w-3.5" />
-                  Single primary source
-                </span>
-                <Link to="/sources" className="hover:text-foreground">
-                  UA Air Force Command ↗
-                </Link>
-                <Link to="/methodology" className="hover:text-foreground">
-                  How we verify
-                </Link>
-                <Link to="/disclaimer" className="hover:text-foreground">
-                  Disclaimer
-                </Link>
-              </div>
-            </div>
-
-            {/* Hero KPI panel — Total weapons fired */}
-            <div className="md:col-span-4">
-              <div className="glass scan-line relative overflow-hidden rounded-md p-5">
-                <div className="flex items-center justify-between font-mono text-[10.5px] uppercase tracking-[0.22em] text-muted-foreground">
-                  <span>Total weapons fired</span>
-                  <span className="text-ua-yellow">●</span>
-                </div>
-                <div className="mt-3 font-display text-[3.75rem] leading-none tracking-tight num text-glow-yellow text-ua-yellow">
-                  {ready ? <CountUp value={grand.launched} /> : "—"}
-                </div>
-                <div className="mt-3 grid grid-cols-3 gap-2 border-t border-border pt-3 font-mono text-[10.5px] uppercase tracking-[0.16em]">
-                  <div>
-                    <div className="text-muted-foreground">Down</div>
-                    <div className="num mt-1 text-sm text-foreground/80">
-                      {ready ? fmt(grand.destroyed) : "—"}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Rate</div>
-                    <div className="num mt-1 text-sm text-foreground/80">
-                      {ready ? `${(grand.rate * 100).toFixed(1)}%` : "—"}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Through</div>
-                    <div className="num mt-1 text-sm text-foreground">
-                      {ready ? fmt(Math.max(grand.launched - grand.destroyed, 0)) : "—"}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Live ops grid — per-category snapshots */}
+          {/* KPI strip */}
           {ready && (
-            <div className="mt-10 grid gap-px overflow-hidden rounded-md border border-border bg-border md:grid-cols-4">
-              <OpsTile
-                label="UAVs launched"
-                value={fmt(shahed!.totals.launched)}
-                sub={`${(shahed!.totals.rate * 100).toFixed(1)}% intercepted`}
-                accent="neutral"
-                spark={sparks.shahed}
-              />
-              <OpsTile
-                label="Cruise missiles"
-                value={fmt(cruise!.totals.launched)}
-                sub={`${(cruise!.totals.rate * 100).toFixed(1)}% intercepted`}
-                accent="neutral"
-                spark={sparks.cruise}
-              />
-              <OpsTile
-                label="Ballistic missiles"
-                value={fmt(ballistic!.totals.launched)}
-                sub={`${(ballistic!.totals.rate * 100).toFixed(1)}% intercepted`}
-                accent="neutral"
-                spark={sparks.ballistic}
-              />
-              <OpsTile
-                label="Latest data point"
-                value={lastUpdatedLabel ?? "—"}
-                sub="Air Force Command · UA"
-                accent="neutral"
-              />
+            <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-7 md:grid-cols-4">
+              <KPI label="Total launched (reported)" value={fmt(grand.launched)} sub="UAVs, cruise & ballistic combined" signal />
+              <KPI label="Confirmed destroyed" value={fmt(grand.destroyed)} sub="Air defense interceptions" />
+              <KPI label="Interception rate" value={`${(grand.rate * 100).toFixed(1)}%`} sub={`${fmt(grand.destroyed)} of ${fmt(grand.launched)}`} />
+              <KPI label="Reached target area" value={fmt(reached)} sub="Estimated leakers" />
             </div>
           )}
 
-          {/* About — collapsible */}
-          <div className="mt-8 border-t border-border pt-3">
-            <button
-              type="button"
-              onClick={() => setAboutOpen((v) => !v)}
-              aria-expanded={aboutOpen}
-              className="flex w-full items-center justify-between gap-4 text-left font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <span>About this project</span>
-              <ChevronDown
-                className={`h-4 w-4 transition-transform duration-300 ${
-                  aboutOpen ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-            {aboutOpen && (
-              <p className="mt-3 max-w-3xl animate-fade-in text-sm leading-relaxed text-muted-foreground">
-                Daily reports from the Air Force Command of the Armed Forces of Ukraine
-                are aggregated to monthly totals and broken into three weapon families:
-                Shahed-136/131 loitering munitions; cruise / air-to-surface missiles
-                (Kalibr, X-101/X-555, X-22, X-59/X-69, Iskander-K, P-800 Oniks, others);
-                and ballistic weapons (Iskander-M / KN-23, Kinzhal, 3M22 Zircon,
-                S-300/S-400 fired in surface-to-surface mode, ICBMs). Mixed-model rows
-                contribute to every category they list. Source:{" "}
-                <a
-                  href="https://www.kaggle.com/datasets/piterfm/massive-missile-attacks-on-ukraine"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline underline-offset-2 hover:text-foreground"
-                >
-                  Kaggle dataset
-                </a>
-                .
-              </p>
-            )}
-          </div>
+          {ready && (
+            <SourceLabel className="mt-3">
+              Source: {PRIMARY_SOURCE} · Range: Oct 2022 – {lastUpdatedLabel}
+            </SourceLabel>
+          )}
         </div>
       </section>
 
-      {/* ─────────────── THREE-PILLAR KPI ─────────────── */}
-      {ready && (
-        <section className="border-b border-border bg-secondary/30">
-          <div className="container py-12 md:py-16">
-            <div className="mb-8 flex items-baseline justify-between gap-6">
-              <div>
-                <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-                  At a glance
-                </div>
-                <h2 className="mt-1 font-serif text-2xl md:text-3xl">
-                  Three weapon categories, since October 2022
-                </h2>
-              </div>
-              <div className="hidden text-right font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground md:block">
-                Click any card to read the section
-              </div>
-            </div>
-            <div className="grid gap-px bg-border md:grid-cols-3">
-              <PillarCard
-                index="01"
-                kicker="Loitering munitions"
-                title="UAVs (Shahed, etc.)"
-                total={shahed!.totals.launched}
-                destroyed={shahed!.totals.destroyed}
-                spark={sparks.shahed}
-                href="#drones"
-              />
-              <PillarCard
-                index="02"
-                kicker="Cruise & air-to-surface"
-                title="Cruise missiles"
-                total={cruise!.totals.launched}
-                destroyed={cruise!.totals.destroyed}
-                spark={sparks.cruise}
-                href="#cruise"
-              />
-              <PillarCard
-                index="03"
-                kicker="Ballistic & quasi-ballistic"
-                title="Ballistic missiles"
-                total={ballistic!.totals.launched}
-                destroyed={ballistic!.totals.destroyed}
-                spark={sparks.ballistic}
-                href="#ballistic"
-              />
-            </div>
-          </div>
-        </section>
-      )}
-
       {error && (
-        <div className="container py-8 text-sm text-destructive">
+        <div className="container py-6 text-sm text-destructive">
           Failed to load dataset: {error}
         </div>
       )}
@@ -956,10 +415,10 @@ const Index = () => {
       {shahed && shahedRange && (
         <CategorySection
           id="drones"
-          kicker="01 · Unmanned Aerial Vehicles"
-          title="Unmanned Aerial Vehicles fired at Ukraine"
-          description="Iranian-designed loitering munitions launched at Ukrainian cities and infrastructure, with monthly interceptions reported by Ukrainian air defenses. Cruise and ballistic missiles are tracked in their own sections below."
-          unitNoun="drones"
+          kicker="01 · Unmanned aerial vehicles"
+          title="Loitering munitions (Shahed-136 / 131)"
+          description="Iranian-designed loitering munitions reported launched against Ukrainian targets, with confirmed interceptions by Ukrainian air defense. Cruise and ballistic systems are tracked separately below."
+          unitNoun="UAVs"
           dataset={shahed}
           range={shahedRange}
           onRangeChange={setShahedRange}
@@ -969,9 +428,9 @@ const Index = () => {
       {cruise && cruiseRange && (
         <CategorySection
           id="cruise"
-          kicker="02 · Cruise missiles"
-          title="Cruise missiles fired at Ukraine"
-          description="Cruise and air-to-surface missiles — Kalibr, X-101/X-555, X-22, X-32, X-59/X-69, X-31, X-35, Iskander-K and P-800 Oniks. Generally subsonic, easier to intercept than ballistic weapons."
+          kicker="02 · Cruise & air-to-surface"
+          title="Cruise missiles"
+          description="Cruise and air-to-surface missiles — Kalibr, X-101/X-555, X-22, X-32, X-59/X-69, X-31, X-35, Iskander-K and P-800 Oniks. Generally subsonic; historically intercepted at higher rates than ballistic systems."
           unitNoun="missiles"
           dataset={cruise}
           range={cruiseRange}
@@ -982,9 +441,9 @@ const Index = () => {
       {ballistic && ballisticRange && (
         <CategorySection
           id="ballistic"
-          kicker="03 · Ballistic missiles"
-          title="Ballistic missiles fired at Ukraine"
-          description="Ballistic and quasi-ballistic weapons — Iskander-M / KN-23, X-47 Kinzhal, 3M22 Zircon, ICBMs and S-300 / S-400 systems used in surface-to-surface mode. Their high speed and trajectory make them the hardest category to intercept."
+          kicker="03 · Ballistic & quasi-ballistic"
+          title="Ballistic missiles"
+          description="Ballistic and quasi-ballistic systems — Iskander-M / KN-23, X-47 Kinzhal, 3M22 Zircon, ICBMs and S-300 / S-400 used in surface-to-surface mode. High velocity and trajectory typically yield the lowest interception rates."
           unitNoun="missiles"
           dataset={ballistic}
           range={ballisticRange}
@@ -995,42 +454,35 @@ const Index = () => {
       <WeaponsCatalogSection />
 
       {/* ─────────────── METHODOLOGY ─────────────── */}
-      <section id="methodology" className="scroll-mt-24 border-t border-border bg-secondary/30">
-        <div className="container grid gap-10 py-14 md:grid-cols-12 md:py-20">
+      <section id="methodology" className="scroll-mt-24 border-t border-border">
+        <div className="container grid gap-8 py-12 md:grid-cols-12 md:py-16">
           <div className="md:col-span-4">
-            <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-              Methodology
-            </div>
-            <h2 className="mt-2 font-serif text-3xl leading-tight md:text-4xl">
-              How the numbers are built
+            <div className="src-label mb-2">Methodology</div>
+            <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
+              How the figures are compiled
             </h2>
           </div>
-          <div className="space-y-4 text-sm leading-relaxed text-muted-foreground md:col-span-8">
+          <div className="space-y-3 text-[14px] leading-relaxed text-muted-foreground md:col-span-8">
             <p>
-              Daily reports from the Air Force Command of the Armed Forces of Ukraine
-              are parsed from a public CSV and aggregated to calendar months in UTC.
-              "Launched" reflects the count reported by Ukrainian sources for that
-              window; "Destroyed" reflects confirmed interceptions only. Weapons that
-              were jammed, lost, or fell without reaching their target are not counted
-              as "destroyed" — they are absorbed into "Reached target area".
+              Daily reports from the Ukrainian Air Force Command are parsed from a public
+              CSV mirror (Petro Ivaniuk, Kaggle) and aggregated to calendar months in UTC.
+              <strong className="text-foreground"> Launched</strong> reflects values reported by Ukrainian sources;{" "}
+              <strong className="text-foreground">destroyed</strong> reflects confirmed interceptions only.
+              Weapons jammed, lost or impacting without interception are not counted as
+              destroyed and are reported under <strong className="text-foreground">reached target area</strong>.
             </p>
             <p>
-              Rows that mix multiple weapon types in a single attack (for example
-              "X-101/X-555 and Iskander-K") have their counts attributed to every
-              category they reference. This produces a small overlap between the
+              Rows that mix multiple weapon types in one attack (e.g. "X-101/X-555 and Iskander-K")
+              attribute counts to every category referenced. This produces a small overlap between
               cruise and ballistic categories on a handful of mixed-fire nights.
             </p>
             <p>
-              Range covered: October 2022 – March 2026. Source:{" "}
-              <a
-                href="https://www.kaggle.com/datasets/piterfm/massive-missile-attacks-on-ukraine"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-2 hover:text-foreground"
-              >
-                Kaggle — Massive missile attacks on Ukraine
-              </a>
-              .
+              Range covered: October 2022 – March 2026. All figures should be treated as{" "}
+              <em>reported</em> rather than independently verified. See the{" "}
+              <Link to="/methodology" className="underline underline-offset-4 hover:text-foreground">
+                full methodology
+              </Link>{" "}
+              and <Link to="/sources" className="underline underline-offset-4 hover:text-foreground">source list</Link>.
             </p>
           </div>
         </div>
@@ -1039,47 +491,40 @@ const Index = () => {
       <RelatedSourcesSection />
       <HowToHelpSection />
 
-      <footer className="border-t border-border">
-        <div className="container flex flex-col items-start justify-between gap-4 py-8 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground md:flex-row md:items-center">
-          <p>
-            UA Defense Tracker · monthly aggregates from Ukrainian Air Force daily reports.
+      {/* Data disclaimer banner */}
+      <div className="border-t border-border bg-secondary">
+        <div className="container py-4">
+          <p className="text-[12px] leading-relaxed text-muted-foreground">
+            <strong className="text-foreground">Data note.</strong> Figures are compiled from open
+            sources and may contain errors, omissions or revisions. The dataset reflects{" "}
+            <em>reported</em> launches and <em>confirmed</em> interceptions; values for weapons
+            jammed, lost or unverified are not included. Figures are reviewed and updated on a
+            rolling basis.
           </p>
-          <div className="flex flex-wrap items-center gap-4">
-            <span>
-              Last data point:{" "}
-              <span className="text-foreground">{lastUpdatedLabel ?? "—"}</span>
-            </span>
+        </div>
+      </div>
+
+      <footer className="border-t border-border">
+        <div className="container flex flex-col items-start justify-between gap-3 py-6 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground md:flex-row md:items-center">
+          <p>UA Intel · monthly aggregates from Ukrainian Air Force daily reports</p>
+          <div className="flex flex-wrap items-center gap-3">
+            <span>Last data point: <span className="text-foreground">{lastUpdatedLabel ?? "—"}</span></span>
             <a
               href="/data/missile_attacks_daily.csv"
               download
-              className="rounded-sm border border-border px-3 py-1 text-foreground transition-colors hover:bg-secondary"
+              className="rounded-sm border border-border px-2.5 py-1 text-foreground transition-colors hover:bg-secondary"
             >
               Download CSV ↓
             </a>
-            <Link
-              to="/methodology"
-              className="underline-offset-4 hover:text-foreground hover:underline"
-            >
-              Methodology
-            </Link>
-            <Link
-              to="/sources"
-              className="underline-offset-4 hover:text-foreground hover:underline"
-            >
-              Sources
-            </Link>
-            <Link
-              to="/disclaimer"
-              className="underline-offset-4 hover:text-foreground hover:underline"
-            >
-              Disclaimer
-            </Link>
+            <Link to="/methodology" className="hover:text-foreground">Methodology</Link>
+            <Link to="/sources" className="hover:text-foreground">Sources</Link>
+            <Link to="/disclaimer" className="hover:text-foreground">Disclaimer</Link>
           </div>
         </div>
       </footer>
 
       {!ready && !error && (
-        <div className="container py-24 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+        <div className="container py-20 text-center font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
           Loading dataset…
         </div>
       )}

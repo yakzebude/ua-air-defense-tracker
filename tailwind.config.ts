@@ -56,6 +56,9 @@ export default {
           yellow: "hsl(var(--ua-yellow))",
           blue: "hsl(var(--ua-blue))",
         },
+        ink: "hsl(var(--ink))",
+        signal: "hsl(var(--signal))",
+        "signal-soft": "hsl(var(--signal-soft))",
         cyber: {
           DEFAULT: "hsl(var(--cyber))",
           glow: "hsl(var(--cyber-glow))",
