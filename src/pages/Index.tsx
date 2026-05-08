@@ -753,13 +753,13 @@ const Index = () => {
                 <div className="mt-3 grid grid-cols-3 gap-2 border-t border-border pt-3 font-mono text-[10.5px] uppercase tracking-[0.16em]">
                   <div>
                     <div className="text-muted-foreground">Down</div>
-                    <div className="num mt-1 text-sm text-cyber">
+                    <div className="num mt-1 text-sm text-foreground/80">
                       {ready ? fmt(grand.destroyed) : "—"}
                     </div>
                   </div>
                   <div>
                     <div className="text-muted-foreground">Rate</div>
-                    <div className="num mt-1 text-sm text-series-rate">
+                    <div className="num mt-1 text-sm text-foreground/80">
                       {ready ? `${(grand.rate * 100).toFixed(1)}%` : "—"}
                     </div>
                   </div>
