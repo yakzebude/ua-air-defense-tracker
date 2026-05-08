@@ -7,9 +7,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  PieChart,
-  Pie,
-  Cell,
 } from "recharts";
 import type { Dataset, MonthPoint } from "@/lib/shahed-data";
 
@@ -18,10 +15,12 @@ const fmt = (n: number) => n.toLocaleString("en-US");
 type CategoryKey = "uavs" | "cruise" | "ballistic";
 
 const CAT_META: Record<CategoryKey, { label: string; color: string }> = {
-  uavs:      { label: "UAVs",      color: "hsl(var(--ua-yellow))" },
-  cruise:    { label: "Cruise",    color: "hsl(var(--cyber))" },
-  ballistic: { label: "Ballistic", color: "hsl(var(--destructive))" },
+  uavs:      { label: "UAVs",      color: "hsl(var(--ua-yellow))" },     /* yellow */
+  cruise:    { label: "Cruise",    color: "hsl(25 92% 58%)" },           /* orange */
+  ballistic: { label: "Ballistic", color: "hsl(0 78% 60%)" },            /* red */
 };
+
+const ACCENT_PURPLE = "hsl(280 65% 68%)";
 
 interface Props {
   shahed: Dataset;
@@ -115,7 +114,7 @@ function StackedAreaChart({ shahed, cruise, ballistic }: Props) {
             width={48}
             tickFormatter={(v) => fmt(v as number)}
           />
-          <Tooltip content={<StackedTooltip />} cursor={{ stroke: "hsl(var(--cyber))", strokeOpacity: 0.4 }} />
+          <Tooltip content={<StackedTooltip />} cursor={{ stroke: ACCENT_PURPLE, strokeOpacity: 0.5 }} />
           <Area type="monotone" dataKey="ballistic" name="Ballistic" stackId="1"
                 stroke={CAT_META.ballistic.color} strokeWidth={1.5} fill="url(#g-ballistic)" filter="url(#glow)" />
           <Area type="monotone" dataKey="cruise"    name="Cruise"    stackId="1"
@@ -129,62 +128,64 @@ function StackedAreaChart({ shahed, cruise, ballistic }: Props) {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Donut — share of total launches by category                               */
+/*  Combined: share of launches × interception performance                    */
 /* -------------------------------------------------------------------------- */
 
-function DonutShare({ shahed, cruise, ballistic }: Props) {
-  const data = [
-    { key: "uavs",      name: CAT_META.uavs.label,      value: shahed.totals.launched },
-    { key: "cruise",    name: CAT_META.cruise.label,    value: cruise.totals.launched },
-    { key: "ballistic", name: CAT_META.ballistic.label, value: ballistic.totals.launched },
+function ShareInterception({ shahed, cruise, ballistic }: Props) {
+  const rows = [
+    { key: "uavs",      label: CAT_META.uavs.label,      ds: shahed },
+    { key: "cruise",    label: CAT_META.cruise.label,    ds: cruise },
+    { key: "ballistic", label: CAT_META.ballistic.label, ds: ballistic },
   ];
-  const total = data.reduce((s, d) => s + d.value, 0);
+  const grandLaunched = rows.reduce((s, r) => s + r.ds.totals.launched, 0);
 
   return (
-    <div className="grid grid-cols-2 items-center gap-4">
-      <div className="relative h-[200px]">
-        <ResponsiveContainer>
-          <PieChart>
-            <Pie
-              data={data}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              innerRadius={62}
-              outerRadius={92}
-              paddingAngle={2}
-              stroke="hsl(var(--background))"
-              strokeWidth={2}
-            >
-              {data.map((d) => (
-                <Cell key={d.key} fill={CAT_META[d.key as CategoryKey].color} />
-              ))}
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
-        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Total</div>
-          <div className="num font-display text-xl text-foreground">{fmt(total)}</div>
-        </div>
-      </div>
-      <ul className="space-y-2.5 text-sm">
-        {data.map((d) => {
-          const pct = total > 0 ? (d.value / total) * 100 : 0;
-          return (
-            <li key={d.key} className="flex items-center justify-between gap-3">
-              <span className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: CAT_META[d.key as CategoryKey].color }} />
-                <span className="text-foreground">{d.name}</span>
+    <ul className="space-y-5">
+      {rows.map((r) => {
+        const pct = r.ds.totals.rate * 100;
+        const share = grandLaunched > 0 ? (r.ds.totals.launched / grandLaunched) * 100 : 0;
+        const color = CAT_META[r.key as CategoryKey].color;
+        return (
+          <li key={r.key}>
+            <div className="mb-2 flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.16em]">
+              <span className="flex items-center gap-2 text-foreground">
+                <span className="h-2 w-2 rounded-sm" style={{ background: color }} />
+                {r.label}
+                <span className="text-muted-foreground">· {share.toFixed(1)}% of launches</span>
               </span>
-              <span className="num font-mono text-xs tabular-nums text-muted-foreground">
-                {pct.toFixed(1)}%
+              <span className="num text-muted-foreground">
+                <span className="text-foreground">{pct.toFixed(1)}%</span>
+                <span className="ml-2">
+                  {fmt(r.ds.totals.destroyed)} / {fmt(r.ds.totals.launched)}
+                </span>
               </span>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+            </div>
+            {/* Share bar (faint) */}
+            <div className="relative h-1 overflow-hidden rounded-sm bg-secondary/60">
+              <div
+                className="h-full rounded-sm"
+                style={{ width: `${share}%`, background: color, opacity: 0.35 }}
+              />
+            </div>
+            {/* Interception bar (solid + glow) */}
+            <div className="relative mt-1.5 h-2.5 overflow-hidden rounded-sm bg-secondary">
+              <div
+                className="h-full rounded-sm transition-[width] duration-700 ease-out"
+                style={{
+                  width: `${pct}%`,
+                  background: color,
+                  boxShadow: `0 0 12px -2px ${color}`,
+                }}
+              />
+            </div>
+            <div className="mt-1 flex justify-between font-mono text-[9.5px] uppercase tracking-[0.16em] text-muted-foreground">
+              <span>Share of launches</span>
+              <span>Interception rate</span>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
@@ -221,7 +222,7 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
   const baseColor = cat === "uavs" ? CAT_META.uavs.color
                   : cat === "cruise" ? CAT_META.cruise.color
                   : cat === "ballistic" ? CAT_META.ballistic.color
-                  : "hsl(var(--cyber))";
+                  : ACCENT_PURPLE;
 
   return (
     <div>
@@ -232,7 +233,7 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
             onClick={() => setCat(c)}
             className={`rounded-sm border px-2.5 py-1 transition-colors ${
               cat === c
-                ? "border-cyber bg-cyber/10 text-cyber"
+                ? "border-foreground/60 bg-secondary text-foreground"
                 : "border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground"
             }`}
           >
@@ -299,47 +300,7 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Comparative interception bars                                             */
-/* -------------------------------------------------------------------------- */
-
-function InterceptionComparison({ shahed, cruise, ballistic }: Props) {
-  const rows = [
-    { key: "uavs",      label: CAT_META.uavs.label,      ds: shahed },
-    { key: "cruise",    label: CAT_META.cruise.label,    ds: cruise },
-    { key: "ballistic", label: CAT_META.ballistic.label, ds: ballistic },
-  ];
-  return (
-    <ul className="space-y-4">
-      {rows.map((r) => {
-        const pct = r.ds.totals.rate * 100;
-        return (
-          <li key={r.key}>
-            <div className="mb-1.5 flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.16em]">
-              <span className="text-foreground">{r.label}</span>
-              <span className="num text-muted-foreground">
-                <span className="text-foreground">{pct.toFixed(1)}%</span>
-                <span className="ml-2">
-                  {fmt(r.ds.totals.destroyed)} / {fmt(r.ds.totals.launched)}
-                </span>
-              </span>
-            </div>
-            <div className="relative h-2 overflow-hidden rounded-sm bg-secondary">
-              <div
-                className="h-full rounded-sm transition-[width] duration-700 ease-out"
-                style={{
-                  width: `${pct}%`,
-                  background: CAT_META[r.key as CategoryKey].color,
-                  boxShadow: `0 0 12px -2px ${CAT_META[r.key as CategoryKey].color}`,
-                }}
-              />
-            </div>
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
+/* (Interception comparison merged into ShareInterception above)              */
 
 /* -------------------------------------------------------------------------- */
 /*  Section                                                                   */
@@ -351,8 +312,11 @@ export function AnalyticsDashboard(props: Props) {
       <div className="container py-14 md:py-20">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-3xl">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-sm border border-cyber/40 bg-cyber/5 px-2.5 py-1 font-mono text-[10.5px] uppercase tracking-[0.22em] text-cyber">
-              <span className="h-1.5 w-1.5 rounded-full bg-cyber pulse-soft" />
+            <div
+              className="mb-3 inline-flex items-center gap-2 rounded-sm border px-2.5 py-1 font-mono text-[10.5px] uppercase tracking-[0.22em]"
+              style={{ borderColor: `${ACCENT_PURPLE}66`, background: `${ACCENT_PURPLE}1A`, color: ACCENT_PURPLE }}
+            >
+              <span className="h-1.5 w-1.5 rounded-full pulse-soft" style={{ background: ACCENT_PURPLE }} />
               Analytics Dashboard
             </div>
             <h2 className="font-display text-3xl leading-tight md:text-4xl">
@@ -385,26 +349,16 @@ export function AnalyticsDashboard(props: Props) {
           <StackedAreaChart {...props} />
         </div>
 
-        {/* Bottom: 3-up dashboard */}
-        <div className="mt-px grid gap-px bg-border md:grid-cols-3">
+        {/* Bottom: 2-up dashboard */}
+        <div className="mt-px grid gap-px bg-border md:grid-cols-2">
           <div className="bg-card/70 p-5 backdrop-blur md:p-6">
             <div className="mb-4 flex items-baseline justify-between">
-              <h3 className="font-display text-base text-foreground">Share of launches</h3>
+              <h3 className="font-display text-base text-foreground">Share &amp; interception performance</h3>
               <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                All-time
+                All-time · confirmed / launched
               </span>
             </div>
-            <DonutShare {...props} />
-          </div>
-
-          <div className="bg-card/70 p-5 backdrop-blur md:p-6">
-            <div className="mb-4 flex items-baseline justify-between">
-              <h3 className="font-display text-base text-foreground">Interception performance</h3>
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                Confirmed / launched
-              </span>
-            </div>
-            <InterceptionComparison {...props} />
+            <ShareInterception {...props} />
           </div>
 
           <div className="bg-card/70 p-5 backdrop-blur md:p-6">

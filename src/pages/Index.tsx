@@ -44,11 +44,10 @@ function StatusBar({ lastUpdated }: { lastUpdated: string | null }) {
       <div className="container flex items-center justify-between gap-4 py-2.5 text-[11px] uppercase tracking-[0.18em]">
         <div className="flex items-center gap-3">
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping-soft rounded-full bg-cyber" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-cyber" />
+            <span className="absolute inline-flex h-full w-full animate-ping-soft rounded-full bg-ua-yellow" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-ua-yellow" />
           </span>
-          <span className="font-semibold tracking-[0.24em] text-foreground">UA DEFENSE TRACKER</span>
-          <span className="hidden text-muted-foreground md:inline">/ Operations Center</span>
+          <span className="font-semibold tracking-[0.24em] text-foreground">UA INTEL</span>
         </div>
         <div className="flex items-center gap-4">
           <span className="hidden text-muted-foreground md:inline">Last Update</span>
@@ -67,8 +66,8 @@ function SectionNav() {
     { id: "cruise", label: "Cruise missiles" },
     { id: "ballistic", label: "Ballistic missiles" },
     { id: "methodology", label: "Methodology" },
-    { id: "help", label: "How to help" },
     { id: "related", label: "Related sources" },
+    { id: "help", label: "How to help" },
   ];
   const [active, setActive] = useState<string>(items[0].id);
 
@@ -687,13 +686,6 @@ const Index = () => {
         <div className="container relative pt-12 pb-10 md:pt-20 md:pb-14">
           {/* Status / kicker row */}
           <div className="flex flex-wrap items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.24em] text-muted-foreground">
-            <span className="inline-flex items-center gap-2 rounded-sm border border-cyber/40 bg-cyber/5 px-2.5 py-1 text-cyber">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping-soft rounded-full bg-cyber" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-cyber" />
-              </span>
-              Live OSINT Feed
-            </span>
             <span className="hidden sm:inline">Defence · Data Story</span>
             <span className="hidden text-foreground/60 sm:inline">Oct 2022 — present</span>
           </div>
@@ -702,14 +694,15 @@ const Index = () => {
           <div className="mt-7 grid gap-10 md:grid-cols-12 md:items-end">
             <div className="md:col-span-8 animate-fade-in-up">
               <h1 className="font-display text-[2.4rem] leading-[1.02] tracking-tight md:text-[4.25rem]">
-                Real-Time Ukraine{" "}
-                <span className="text-ua-yellow text-glow-yellow">Defense Intelligence</span>.
+                Ukraine's{" "}
+                <span className="text-ua-yellow text-glow-yellow">Defense Analytics</span>.
               </h1>
-              <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
-                Verified battlefield data, equipment losses, strike analysis, and
-                operational trends — aggregated from the Air Force Command of the
-                Armed Forces of Ukraine. Track every weapon launched, intercepted,
-                and reaching its target since October 2022.
+              <p className="mt-6 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
+                Verified airstrike and aerial attack data, interception statistics,
+                strike analysis, and operational trends — aggregated from the Air
+                Force Command of the Armed Forces of Ukraine. Track every missile
+                and drone launched, intercepted, and reaching its target since
+                October 2022.
               </p>
 
               {/* CTAs */}
@@ -760,13 +753,13 @@ const Index = () => {
                 <div className="mt-3 grid grid-cols-3 gap-2 border-t border-border pt-3 font-mono text-[10.5px] uppercase tracking-[0.16em]">
                   <div>
                     <div className="text-muted-foreground">Down</div>
-                    <div className="num mt-1 text-sm text-cyber">
+                    <div className="num mt-1 text-sm text-foreground/80">
                       {ready ? fmt(grand.destroyed) : "—"}
                     </div>
                   </div>
                   <div>
                     <div className="text-muted-foreground">Rate</div>
-                    <div className="num mt-1 text-sm text-series-rate">
+                    <div className="num mt-1 text-sm text-foreground/80">
                       {ready ? `${(grand.rate * 100).toFixed(1)}%` : "—"}
                     </div>
                   </div>
@@ -996,8 +989,8 @@ const Index = () => {
         </div>
       </section>
 
-      <HowToHelpSection />
       <RelatedSourcesSection />
+      <HowToHelpSection />
 
       <footer className="border-t border-border">
         <div className="container flex flex-col items-start justify-between gap-4 py-8 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground md:flex-row md:items-center">
