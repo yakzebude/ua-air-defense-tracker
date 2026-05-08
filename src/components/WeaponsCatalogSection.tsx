@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, ArrowUpDown } from "lucide-react";
+import { Search, ArrowUpDown, ChevronDown } from "lucide-react";
 import { loadWeaponsCatalog, type Weapon } from "@/lib/weapons-catalog";
+import { loadModelStats, lookupModelStats, type ModelStats } from "@/lib/model-stats";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Panel } from "@/components/ui/panel";
+
+const fmt = (n: number) => n.toLocaleString("en-US");
+const COLLAPSED_ROWS = 5;
 
 const CATEGORIES = [
   { key: "all", label: "All" },
