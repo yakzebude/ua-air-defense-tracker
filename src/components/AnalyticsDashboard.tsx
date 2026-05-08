@@ -222,7 +222,7 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
   const baseColor = cat === "uavs" ? CAT_META.uavs.color
                   : cat === "cruise" ? CAT_META.cruise.color
                   : cat === "ballistic" ? CAT_META.ballistic.color
-                  : "hsl(var(--cyber))";
+                  : ACCENT_PURPLE;
 
   return (
     <div>
@@ -233,7 +233,7 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
             onClick={() => setCat(c)}
             className={`rounded-sm border px-2.5 py-1 transition-colors ${
               cat === c
-                ? "border-cyber bg-cyber/10 text-cyber"
+                ? "border-foreground/60 bg-secondary text-foreground"
                 : "border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground"
             }`}
           >
