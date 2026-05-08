@@ -118,16 +118,19 @@ function CompositionAreaChart({
 
 function useCompositionData({ shahed, cruise, ballistic }: Props) {
   return useMemo(() => {
+    const now = new Date();
+    const curKey = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
     const map = new Map<string, { label: string; uavs: number; cruise: number; ballistic: number }>();
     const seed = (ms: MonthPoint[]) => {
       for (const m of ms) {
+        if (m.key === curKey) continue;
         if (!map.has(m.key)) map.set(m.key, { label: m.label, uavs: 0, cruise: 0, ballistic: 0 });
       }
     };
     seed(shahed.months); seed(cruise.months); seed(ballistic.months);
-    for (const m of shahed.months)    map.get(m.key)!.uavs      = m.launched;
-    for (const m of cruise.months)    map.get(m.key)!.cruise    = m.launched;
-    for (const m of ballistic.months) map.get(m.key)!.ballistic = m.launched;
+    for (const m of shahed.months)    if (map.has(m.key)) map.get(m.key)!.uavs      = m.launched;
+    for (const m of cruise.months)    if (map.has(m.key)) map.get(m.key)!.cruise    = m.launched;
+    for (const m of ballistic.months) if (map.has(m.key)) map.get(m.key)!.ballistic = m.launched;
     return Array.from(map.values());
   }, [shahed, cruise, ballistic]);
 }
