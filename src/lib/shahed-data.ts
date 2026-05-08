@@ -23,7 +23,7 @@ export type Dataset = {
 };
 
 const MIN = new Date(Date.UTC(2022, 9, 1)); // October 2022 — first complete month
-const MAX = new Date(Date.UTC(2026, 2, 31, 23, 59, 59)); // March 2026 inclusive
+const MAX = new Date(Date.UTC(2026, 11, 31, 23, 59, 59)); // through Dec 2026
 
 function parseDate(s: string): Date | null {
   if (!s) return null;
@@ -58,7 +58,7 @@ export async function loadShahedData(url = "/data/missile_attacks_daily.csv"): P
   // Seed every month in range so the chart has continuous x-axis
   for (let y = 2022; y <= 2026; y++) {
     const firstMonth = y === 2022 ? 9 : 0; // start October 2022
-    const lastMonth = y === 2026 ? 2 : 11; // March 2026 (index 2)
+    const lastMonth = 11;
     for (let m = firstMonth; m <= lastMonth; m++) {
       const d = new Date(Date.UTC(y, m, 1));
       buckets.set(monthKey(d), { launched: 0, destroyed: 0, date: d });

@@ -488,7 +488,7 @@ const Index = () => {
               cruise and ballistic categories on a handful of mixed-fire nights.
             </p>
             <p>
-              Range covered: October 2022 – March 2026. All figures should be treated as{" "}
+              Range covered: October 2022 – present. All figures should be treated as{" "}
               <em>reported</em> rather than independently verified. See the{" "}
               <Link to="/methodology" className="underline underline-offset-4 hover:text-foreground">
                 full methodology
