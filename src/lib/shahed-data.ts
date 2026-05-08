@@ -56,12 +56,12 @@ export async function loadShahedData(url = "/data/missile_attacks_daily.csv"): P
   const buckets = new Map<string, { launched: number; destroyed: number; date: Date }>();
 
   // Seed every month in range so the chart has continuous x-axis,
-  // capped at the last COMPLETE calendar month (UTC) — exclude the
-  // currently-running month and any future months.
+  // up to and including the current calendar month (UTC). The current
+  // (incomplete) month is included in totals; chart components filter it
+  // out of the visual series.
   const now = new Date();
-  let endY = now.getUTCFullYear();
-  let endM = now.getUTCMonth() - 1; // last complete month
-  if (endM < 0) { endM = 11; endY -= 1; }
+  const endY = now.getUTCFullYear();
+  const endM = now.getUTCMonth();
   for (let y = 2022; y <= endY; y++) {
     const firstMonth = y === 2022 ? 9 : 0; // start October 2022
     const lastMonth = y === endY ? endM : 11;

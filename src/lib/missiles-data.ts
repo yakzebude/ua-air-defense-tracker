@@ -104,9 +104,8 @@ function isAnyMissile(model: string): boolean {
 function emptyBuckets() {
   const buckets = new Map<string, { launched: number; destroyed: number; date: Date }>();
   const now = new Date();
-  let endY = now.getUTCFullYear();
-  let endM = now.getUTCMonth() - 1; // last complete month
-  if (endM < 0) { endM = 11; endY -= 1; }
+  const endY = now.getUTCFullYear();
+  const endM = now.getUTCMonth(); // include current (incomplete) month in totals
   for (let y = 2022; y <= endY; y++) {
     const firstMonth = y === 2022 ? 9 : 0;
     const lastMonth = y === endY ? endM : 11;
