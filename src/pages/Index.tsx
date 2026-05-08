@@ -593,9 +593,6 @@ function CategorySection({
           </p>
         )}
 
-        <div className="mt-10 rounded-sm border border-border bg-card p-4 md:p-6">
-          <InterceptionRateChart data={filtered} />
-        </div>
       </div>
     </section>
   );
