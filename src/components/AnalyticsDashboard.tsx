@@ -145,7 +145,9 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
       {rows.map((r) => {
         const pct = r.ds.totals.rate * 100;
         const share = grandLaunched > 0 ? (r.ds.totals.launched / grandLaunched) * 100 : 0;
-        const color = CAT_META[r.key as CategoryKey].color;
+        // Threat color: low interception rate → deep purple, high rate → yellow.
+        const threat = 1 - r.ds.totals.rate;
+        const color = rampColor(threat);
         return (
           <li key={r.key}>
             <div className="mb-2 flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.16em]">
