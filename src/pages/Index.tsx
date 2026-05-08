@@ -11,7 +11,7 @@ import { Panel, SourceLabel } from "@/components/ui/panel";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
-const PRIMARY_SOURCE = "Air Force Command of the Armed Forces of Ukraine (daily reports, via Kaggle dataset, Petro Ivaniuk)";
+const PRIMARY_SOURCE = "Air Force Command of the Armed Forces of Ukraine (weekly reports, via Kaggle dataset, Petro Ivaniuk)";
 
 /* -------------------------------------------------------------------------- */
 /*  Top bars                                                                  */
@@ -396,7 +396,7 @@ const Index = () => {
           {/* KPI strip */}
           {ready && (
             <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-7 md:grid-cols-4">
-              <KPI label="Total launched (reported)" numeric={grand.launched} sub="UAVs, cruise & ballistic combined" signal />
+              <KPI label="Total launched" numeric={grand.launched} sub="UAVs, cruise & ballistic combined" signal />
               <KPI label="Confirmed destroyed" numeric={grand.destroyed} sub="Air defense interceptions" />
               <KPI label="Interception rate" numeric={grand.rate * 100} decimals={1} suffix="%" sub={`${fmt(grand.destroyed)} of ${fmt(grand.launched)}`} />
               <KPI label="Reached target area" numeric={reached} sub="Estimated leakers" />

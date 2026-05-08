@@ -13,7 +13,7 @@ import { Panel, SourceLabel } from "@/components/ui/panel";
 import { rampColor } from "@/lib/threat-ramp";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
-const PRIMARY_SOURCE = "Air Force Command of the Armed Forces of Ukraine (daily reports, via Kaggle)";
+const PRIMARY_SOURCE = "Air Force Command of the Armed Forces of Ukraine (weekly reports, via Kaggle)";
 
 type CategoryKey = "uavs" | "cruise" | "ballistic";
 
