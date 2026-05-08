@@ -17,11 +17,11 @@ const PRIMARY_SOURCE = "Air Force Command of the Armed Forces of Ukraine (daily 
 
 type CategoryKey = "uavs" | "cruise" | "ballistic";
 
-// Three-tone scale built from the ink/amber palette.
+// Grayscale ramp — UAVs lightest, ballistic darkest (highest threat / lowest intercept).
 const CAT_COLORS: Record<CategoryKey, string> = {
-  uavs:      "hsl(var(--muted-foreground))",   // gray   — UAVs (highest volume)
-  cruise:    "hsl(220 15% 35%)",               // ink-mid — cruise
-  ballistic: "hsl(var(--signal))",             // amber  — ballistic (lowest intercept)
+  uavs:      "hsl(220 10% 62%)",   // light gray   — UAVs
+  cruise:    "hsl(220 12% 42%)",   // mid gray     — cruise
+  ballistic: "hsl(220 18% 22%)",   // dark gray    — ballistic
 };
 
 const CAT_LABELS: Record<CategoryKey, string> = {
@@ -65,25 +65,20 @@ function StackedTooltip({ active, payload, label }: any) {
   );
 }
 
-function StackedAreaChart({ shahed, cruise, ballistic }: Props) {
-  const data = useMemo(() => {
-    const map = new Map<string, { label: string; uavs: number; cruise: number; ballistic: number }>();
-    const seed = (ms: MonthPoint[]) => {
-      for (const m of ms) {
-        if (!map.has(m.key)) map.set(m.key, { label: m.label, uavs: 0, cruise: 0, ballistic: 0 });
-      }
-    };
-    seed(shahed.months); seed(cruise.months); seed(ballistic.months);
-    for (const m of shahed.months)    map.get(m.key)!.uavs      = m.launched;
-    for (const m of cruise.months)    map.get(m.key)!.cruise    = m.launched;
-    for (const m of ballistic.months) map.get(m.key)!.ballistic = m.launched;
-    return Array.from(map.values());
-  }, [shahed, cruise, ballistic]);
+type SeriesKey = CategoryKey;
 
+function CompositionAreaChart({
+  data,
+  series,
+  height = 300,
+}: {
+  data: Array<{ label: string; uavs: number; cruise: number; ballistic: number }>;
+  series: SeriesKey[];
+  height?: number;
+}) {
   const ticks = useMemo(() => data.filter((_, i) => i % 4 === 0).map((m) => m.label), [data]);
-
   return (
-    <div className="h-[340px] w-full">
+    <div style={{ height }} className="w-full">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data} margin={{ top: 8, right: 12, left: 0, bottom: 4 }}>
           <CartesianGrid stroke="hsl(var(--grid))" vertical={false} />
@@ -102,14 +97,61 @@ function StackedAreaChart({ shahed, cruise, ballistic }: Props) {
             tickFormatter={(v) => fmt(v as number)}
           />
           <Tooltip content={<StackedTooltip />} cursor={{ stroke: "hsl(var(--foreground))", strokeOpacity: 0.2 }} />
-          <Area type="monotone" dataKey="ballistic" name="Ballistic" stackId="1"
-                stroke={CAT_COLORS.ballistic} strokeWidth={1.25} fill={CAT_COLORS.ballistic} fillOpacity={0.35} />
-          <Area type="monotone" dataKey="cruise"    name="Cruise"    stackId="1"
-                stroke={CAT_COLORS.cruise}    strokeWidth={1.25} fill={CAT_COLORS.cruise}    fillOpacity={0.35} />
-          <Area type="monotone" dataKey="uavs"      name="UAVs"      stackId="1"
-                stroke={CAT_COLORS.uavs}      strokeWidth={1.25} fill={CAT_COLORS.uavs}      fillOpacity={0.25} />
+          {series.map((k) => (
+            <Area
+              key={k}
+              type="monotone"
+              dataKey={k}
+              name={CAT_LABELS[k]}
+              stackId="1"
+              stroke={CAT_COLORS[k]}
+              strokeWidth={1.25}
+              fill={CAT_COLORS[k]}
+              fillOpacity={0.35}
+            />
+          ))}
         </AreaChart>
       </ResponsiveContainer>
+    </div>
+  );
+}
+
+function useCompositionData({ shahed, cruise, ballistic }: Props) {
+  return useMemo(() => {
+    const map = new Map<string, { label: string; uavs: number; cruise: number; ballistic: number }>();
+    const seed = (ms: MonthPoint[]) => {
+      for (const m of ms) {
+        if (!map.has(m.key)) map.set(m.key, { label: m.label, uavs: 0, cruise: 0, ballistic: 0 });
+      }
+    };
+    seed(shahed.months); seed(cruise.months); seed(ballistic.months);
+    for (const m of shahed.months)    map.get(m.key)!.uavs      = m.launched;
+    for (const m of cruise.months)    map.get(m.key)!.cruise    = m.launched;
+    for (const m of ballistic.months) map.get(m.key)!.ballistic = m.launched;
+    return Array.from(map.values());
+  }, [shahed, cruise, ballistic]);
+}
+
+function CompositionPair(props: Props) {
+  const data = useCompositionData(props);
+  return (
+    <div className="grid gap-4 md:grid-cols-2">
+      <Panel
+        title="UAV launches · monthly"
+        subtitle="Loitering munitions & reconnaissance UAVs"
+        source={PRIMARY_SOURCE}
+        note="Includes Shahed-136/131, Lancet, Orlan, ZALA, Supercam and other UAV types reported in daily Air Force communiqués."
+      >
+        <CompositionAreaChart data={data} series={["uavs"]} />
+      </Panel>
+      <Panel
+        title="Cruise & ballistic launches · monthly"
+        subtitle="Stacked, monthly aggregates"
+        source={PRIMARY_SOURCE}
+        note="Mixed-fire rows attribute counts to every category referenced; minor overlap between cruise and ballistic on those nights."
+      >
+        <CompositionAreaChart data={data} series={["ballistic", "cruise"]} />
+      </Panel>
     </div>
   );
 }
@@ -293,14 +335,8 @@ export function AnalyticsDashboard(props: Props) {
           </div>
         </div>
 
-        <Panel
-          title="Monthly composition · weapons reported launched"
-          subtitle="Stacked, monthly aggregates"
-          source={PRIMARY_SOURCE}
-          note="Mixed-fire rows attribute counts to every category referenced; minor overlap between cruise and ballistic on those nights."
-        >
-          <StackedAreaChart {...props} />
-        </Panel>
+        <CompositionPair {...props} />
+
 
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <Panel

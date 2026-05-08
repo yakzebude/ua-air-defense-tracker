@@ -65,9 +65,23 @@ export async function loadShahedData(url = "/data/missile_attacks_daily.csv"): P
     }
   }
 
+  const UAV_TOKENS = [
+    "Shahed-136/131", "Lancet", "Orlan-10", "Orlan-30", "ZALA", "Supercam",
+    "Mohajer-6", "Orion", "Forpost", "Eleron", "Granat-4", "Merlin-VR",
+    "Kub", "Banderol", "Reconnaissance UAV", "Unknown UAV",
+    "Молнія", "Привет-82", "Фенікс", "Картограф",
+  ];
+  const isUAV = (model: string) => {
+    const m = model.trim();
+    return UAV_TOKENS.some((tok) => {
+      const escaped = tok.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return new RegExp(`(^|\\s|\\b)${escaped}(\\b|\\s|$)`).test(m);
+    });
+  };
+
   for (const row of parsed.data) {
     if (!row || !row.model) continue;
-    if (row.model.trim() !== "Shahed-136/131") continue;
+    if (!isUAV(row.model)) continue;
 
     const d = parseDate(row.time_start) ?? parseDate(row.time_end);
     if (!d) continue;

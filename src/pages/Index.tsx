@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 import { WeaponsCatalogSection } from "@/components/WeaponsCatalogSection";
 import { Panel, SourceLabel } from "@/components/ui/panel";
+import { AnimatedNumber } from "@/components/AnimatedNumber";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 const PRIMARY_SOURCE = "Air Force Command of the Armed Forces of Ukraine (daily reports, via Kaggle dataset, Petro Ivaniuk)";
@@ -99,11 +100,17 @@ function SectionNav() {
 function KPI({
   label,
   value,
+  numeric,
+  decimals = 0,
+  suffix = "",
   sub,
   signal = false,
 }: {
   label: string;
-  value: string;
+  value?: string;
+  numeric?: number;
+  decimals?: number;
+  suffix?: string;
   sub?: string;
   signal?: boolean;
 }) {
@@ -117,7 +124,11 @@ function KPI({
           signal ? "text-signal" : "text-foreground"
         }`}
       >
-        {value}
+        {numeric !== undefined ? (
+          <AnimatedNumber value={numeric} decimals={decimals} suffix={suffix} />
+        ) : (
+          value
+        )}
       </div>
       {sub && <div className="mt-2 text-[12px] text-muted-foreground num">{sub}</div>}
     </div>
@@ -286,10 +297,10 @@ function CategorySection({
         </div>
 
         <div className="mb-6 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-6 md:grid-cols-4">
-          <KPI label="Launched (reported)" value={fmt(launched)} sub={rangeLabel} />
-          <KPI label="Destroyed (confirmed)" value={fmt(destroyed)} sub="confirmed interceptions" />
-          <KPI label="Interception rate" value={`${(rate * 100).toFixed(1)}%`} sub={`${fmt(destroyed)} of ${fmt(launched)}`} />
-          <KPI label="Reached target area" value={fmt(Math.max(launched - destroyed, 0))} sub={launched > 0 ? `${(((launched - destroyed) / launched) * 100).toFixed(1)}% of launches` : "—"} />
+          <KPI label="Launched (reported)" numeric={launched} sub={rangeLabel} />
+          <KPI label="Destroyed (confirmed)" numeric={destroyed} sub="confirmed interceptions" />
+          <KPI label="Interception rate" numeric={rate * 100} decimals={1} suffix="%" sub={`${fmt(destroyed)} of ${fmt(launched)}`} />
+          <KPI label="Reached target area" numeric={Math.max(launched - destroyed, 0)} sub={launched > 0 ? `${(((launched - destroyed) / launched) * 100).toFixed(1)}% of launches` : "—"} />
         </div>
 
         <div className="mb-6">
@@ -385,10 +396,10 @@ const Index = () => {
           {/* KPI strip */}
           {ready && (
             <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-7 md:grid-cols-4">
-              <KPI label="Total launched (reported)" value={fmt(grand.launched)} sub="UAVs, cruise & ballistic combined" signal />
-              <KPI label="Confirmed destroyed" value={fmt(grand.destroyed)} sub="Air defense interceptions" />
-              <KPI label="Interception rate" value={`${(grand.rate * 100).toFixed(1)}%`} sub={`${fmt(grand.destroyed)} of ${fmt(grand.launched)}`} />
-              <KPI label="Reached target area" value={fmt(reached)} sub="Estimated leakers" />
+              <KPI label="Total launched (reported)" numeric={grand.launched} sub="UAVs, cruise & ballistic combined" signal />
+              <KPI label="Confirmed destroyed" numeric={grand.destroyed} sub="Air defense interceptions" />
+              <KPI label="Interception rate" numeric={grand.rate * 100} decimals={1} suffix="%" sub={`${fmt(grand.destroyed)} of ${fmt(grand.launched)}`} />
+              <KPI label="Reached target area" numeric={reached} sub="Estimated leakers" />
             </div>
           )}
 
@@ -416,8 +427,8 @@ const Index = () => {
         <CategorySection
           id="drones"
           kicker="01 · Unmanned aerial vehicles"
-          title="Loitering munitions (Shahed-136 / 131)"
-          description="Iranian-designed loitering munitions reported launched against Ukrainian targets, with confirmed interceptions by Ukrainian air defense. Cruise and ballistic systems are tracked separately below."
+          title="UAV launches against Ukraine"
+          description="All unmanned aerial vehicles reported in Ukrainian Air Force daily communiqués — Iranian-designed Shahed-136/131 loitering munitions, the Lancet family, Russian Orlan / ZALA / Supercam reconnaissance UAVs, Mohajer-6, Forpost and other types — with confirmed interceptions. Cruise and ballistic systems are tracked separately below."
           unitNoun="UAVs"
           dataset={shahed}
           range={shahedRange}

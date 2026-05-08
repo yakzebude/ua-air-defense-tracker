@@ -1,16 +1,16 @@
 /**
- * Threat color ramp — restrained two-tone version.
+ * Threat color ramp for the escalation calendar.
  *
- *   t = 0  → neutral mid-gray (low intensity)
- *   t = 1  → amber signal     (peak intensity)
+ *   t = 0  → pastel yellow (lowest monthly volume)
+ *   t = 1  → pastel deep red (peak monthly volume)
  *
- * All charts/heatmaps share this so the surface stays calm and readable.
+ * Tuned for legibility against both light and dark surfaces.
  */
 export function rampColor(t: number, alpha = 1): string {
   const tc = Math.max(0, Math.min(1, t));
-  // Interpolate between mid-gray and amber in HSL space.
-  const a = { h: 220, s: 8,  l: 70 };  // muted gray
-  const b = { h: 38,  s: 92, l: 45 };  // amber
+  // Pastel yellow → pastel deep red, interpolated through warm orange.
+  const a = { h: 50, s: 90, l: 78 };  // pastel yellow
+  const b = { h: 358, s: 65, l: 48 }; // pastel deep red
   const h = a.h + (b.h - a.h) * tc;
   const s = a.s + (b.s - a.s) * tc;
   const l = a.l + (b.l - a.l) * tc;

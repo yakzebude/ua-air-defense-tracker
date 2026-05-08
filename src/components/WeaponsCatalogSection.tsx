@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, ArrowUpDown } from "lucide-react";
+import { Search, ArrowUpDown, ChevronDown } from "lucide-react";
 import { loadWeaponsCatalog, type Weapon } from "@/lib/weapons-catalog";
+import { loadModelStats, lookupModelStats, type ModelStats } from "@/lib/model-stats";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Panel } from "@/components/ui/panel";
+
+const fmt = (n: number) => n.toLocaleString("en-US");
+const COLLAPSED_ROWS = 5;
 
 const CATEGORIES = [
   { key: "all", label: "All" },
@@ -17,15 +21,21 @@ type SortKey = "model" | "category" | "national_origin" | "in_sevice" | "unit_co
 
 export function WeaponsCatalogSection() {
   const [weapons, setWeapons] = useState<Weapon[] | null>(null);
+  const [stats, setStats] = useState<Map<string, ModelStats> | null>(null);
   const [cat, setCat] = useState<string>("all");
   const [origin, setOrigin] = useState<string>("all");
   const [q, setQ] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("model");
   const [sortAsc, setSortAsc] = useState(true);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     loadWeaponsCatalog().then(setWeapons).catch(() => setWeapons([]));
+    loadModelStats().then(setStats).catch(() => setStats(new Map()));
   }, []);
+
+  // Reset collapsed state when filters change
+  useEffect(() => { setExpanded(false); }, [cat, origin, q]);
 
   const origins = useMemo(() => {
     if (!weapons) return [];
@@ -134,6 +144,9 @@ export function WeaponsCatalogSection() {
             <>
               <div className="src-label mb-2">
                 {filtered.length} {filtered.length === 1 ? "system" : "systems"}
+                {!expanded && filtered.length > COLLAPSED_ROWS && (
+                  <span> · showing {COLLAPSED_ROWS}</span>
+                )}
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-[13px]">
@@ -142,37 +155,60 @@ export function WeaponsCatalogSection() {
                       <Th onClick={() => toggleSort("model")} active={sortKey === "model"} asc={sortAsc}>System</Th>
                       <Th onClick={() => toggleSort("category")} active={sortKey === "category"} asc={sortAsc}>Category</Th>
                       <Th onClick={() => toggleSort("national_origin")} active={sortKey === "national_origin"} asc={sortAsc}>Origin</Th>
-                      <Th>Type</Th>
+                      <Th>Launched</Th>
+                      <Th>Intercepted</Th>
+                      <Th>Rate</Th>
                       <Th onClick={() => toggleSort("in_sevice")} active={sortKey === "in_sevice"} asc={sortAsc}>In service</Th>
                       <Th>Guidance</Th>
-                      <Th>Manufacturer</Th>
                       <Th onClick={() => toggleSort("unit_cost")} active={sortKey === "unit_cost"} asc={sortAsc}>Unit cost (est.)</Th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filtered.map((w, i) => (
-                      <tr
-                        key={w.model}
-                        className={`border-t border-border ${i % 2 === 1 ? "bg-secondary/40" : ""}`}
-                      >
-                        <td className="px-3 py-2.5 align-top">
-                          <div className="font-semibold text-foreground">{w.name || w.model}</div>
-                          {w.name_NATO && (
-                            <div className="src-label mt-0.5">NATO · {w.name_NATO}</div>
-                          )}
-                        </td>
-                        <td className="px-3 py-2.5 align-top text-muted-foreground">{w.category || "—"}</td>
-                        <td className="px-3 py-2.5 align-top text-muted-foreground">{w.national_origin || "—"}</td>
-                        <td className="px-3 py-2.5 align-top text-muted-foreground">{w.type || "—"}</td>
-                        <td className="px-3 py-2.5 align-top num text-muted-foreground">{w.in_sevice || "—"}</td>
-                        <td className="px-3 py-2.5 align-top text-muted-foreground">{w.guidance_system || "—"}</td>
-                        <td className="px-3 py-2.5 align-top text-muted-foreground">{w.manufacturer || "—"}</td>
-                        <td className="px-3 py-2.5 align-top num text-muted-foreground">{w.unit_cost || "—"}</td>
-                      </tr>
-                    ))}
+                    {(expanded ? filtered : filtered.slice(0, COLLAPSED_ROWS)).map((w, i) => {
+                      const ms = stats ? lookupModelStats(stats, w.model) : null;
+                      return (
+                        <tr
+                          key={w.model}
+                          className={`border-t border-border ${i % 2 === 1 ? "bg-secondary/40" : ""}`}
+                        >
+                          <td className="px-3 py-2.5 align-top">
+                            <div className="font-semibold text-foreground">{w.name || w.model}</div>
+                            {w.name_NATO && (
+                              <div className="src-label mt-0.5">NATO · {w.name_NATO}</div>
+                            )}
+                            <div className="src-label mt-0.5 text-muted-foreground/70">{w.type || ""}</div>
+                          </td>
+                          <td className="px-3 py-2.5 align-top text-muted-foreground">{w.category || "—"}</td>
+                          <td className="px-3 py-2.5 align-top text-muted-foreground">{w.national_origin || "—"}</td>
+                          <td className="px-3 py-2.5 align-top num text-foreground">{ms ? fmt(ms.launched) : "—"}</td>
+                          <td className="px-3 py-2.5 align-top num text-muted-foreground">{ms ? fmt(ms.destroyed) : "—"}</td>
+                          <td className="px-3 py-2.5 align-top num text-muted-foreground">
+                            {ms && ms.launched > 0 ? `${(ms.rate * 100).toFixed(1)}%` : "—"}
+                          </td>
+                          <td className="px-3 py-2.5 align-top num text-muted-foreground">{w.in_sevice || "—"}</td>
+                          <td className="px-3 py-2.5 align-top text-muted-foreground">{w.guidance_system || "—"}</td>
+                          <td className="px-3 py-2.5 align-top num text-muted-foreground">{w.unit_cost || "—"}</td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
+              {filtered.length > COLLAPSED_ROWS && (
+                <div className="mt-3 flex justify-center">
+                  <button
+                    onClick={() => setExpanded((v) => !v)}
+                    className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-card px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-foreground transition-colors hover:bg-secondary"
+                  >
+                    {expanded
+                      ? "Show fewer"
+                      : `Show all ${filtered.length} systems`}
+                    <ChevronDown
+                      className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                </div>
+              )}
             </>
           )}
         </Panel>
