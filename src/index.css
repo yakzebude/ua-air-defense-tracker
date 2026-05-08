@@ -2,108 +2,199 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Data-journalism design system — inspired by FT / Our World in Data */
+/* ===========================================================================
+   UA Defense Tracker — dark military-tech design system
+   Inspired by Bloomberg Terminal / Palantir / NATO ops dashboards
+   =========================================================================== */
 
 @layer base {
   :root {
-    /* Warm off-white paper background, deep ink foreground */
-    --background: 36 33% 97%;
-    --foreground: 220 25% 12%;
-
+    /* Light mode — editorial fallback */
+    --background: 220 20% 98%;
+    --foreground: 220 35% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 220 25% 12%;
-
+    --card-foreground: 220 35% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 12%;
-
-    --primary: 220 25% 12%;
-    --primary-foreground: 36 33% 97%;
-
-    --secondary: 36 20% 92%;
-    --secondary-foreground: 220 25% 12%;
-
-    --muted: 36 15% 90%;
+    --popover-foreground: 220 35% 10%;
+    --primary: 220 35% 10%;
+    --primary-foreground: 220 20% 98%;
+    --secondary: 220 14% 94%;
+    --secondary-foreground: 220 35% 10%;
+    --muted: 220 14% 94%;
     --muted-foreground: 220 10% 40%;
-
-    --accent: 36 20% 92%;
-    --accent-foreground: 220 25% 12%;
-
+    --accent: 47 95% 50%;
+    --accent-foreground: 220 35% 10%;
     --destructive: 0 75% 45%;
-    --destructive-foreground: 36 33% 97%;
+    --destructive-foreground: 220 20% 98%;
+    --border: 220 14% 88%;
+    --input: 220 14% 88%;
+    --ring: 47 95% 50%;
+    --radius: 0.375rem;
 
-    --border: 30 15% 85%;
-    --input: 30 15% 85%;
-    --ring: 220 25% 12%;
+    /* Brand accents */
+    --ua-yellow: 47 95% 55%;          /* Ukrainian flag yellow */
+    --ua-blue: 215 90% 45%;           /* Ukrainian flag blue   */
+    --cyber: 195 95% 55%;             /* cyber / scan blue     */
+    --cyber-glow: 195 100% 65%;
 
-    --radius: 0.25rem;
+    /* Data series */
+    --series-launched: 14 90% 55%;
+    --series-destroyed: 195 90% 55%;
+    --series-rate: 145 60% 48%;
+    --grid: 220 14% 90%;
 
-    /* Data series — strong contrast */
-    --series-launched: 14 88% 48%;     /* burnt orange / vermillion — launched */
-    --series-destroyed: 205 70% 38%;   /* deep teal-blue — destroyed */
-    --series-rate: 145 55% 35%;        /* forest green — interception rate */
-    --grid: 30 15% 88%;
-
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 220 20% 98%;
+    --sidebar-foreground: 220 10% 30%;
+    --sidebar-primary: 220 35% 10%;
+    --sidebar-primary-foreground: 220 20% 98%;
+    --sidebar-accent: 220 14% 94%;
+    --sidebar-accent-foreground: 220 35% 10%;
+    --sidebar-border: 220 14% 88%;
+    --sidebar-ring: 47 95% 50%;
   }
 
   .dark {
-    /* Editorial dark — near-black ink with warm cream foreground (FT/Reuters night mode) */
-    --background: 220 18% 7%;
-    --foreground: 36 25% 92%;
-    --card: 220 16% 10%;
-    --card-foreground: 36 25% 92%;
-    --popover: 220 16% 10%;
-    --popover-foreground: 36 25% 92%;
-    --primary: 36 25% 92%;
-    --primary-foreground: 220 18% 7%;
-    --secondary: 220 14% 14%;
-    --secondary-foreground: 36 25% 92%;
-    --muted: 220 14% 14%;
-    --muted-foreground: 36 10% 62%;
-    --accent: 220 14% 14%;
-    --accent-foreground: 36 25% 92%;
-    --destructive: 0 72% 55%;
-    --destructive-foreground: 36 25% 92%;
-    --border: 220 14% 18%;
-    --input: 220 14% 18%;
-    --ring: 36 25% 92%;
-    --series-launched: 14 92% 60%;
-    --series-destroyed: 200 78% 62%;
-    --series-rate: 145 55% 58%;
-    --grid: 220 14% 16%;
+    /* Dark military-tech — deep navy ink, cool slate surfaces */
+    --background: 222 38% 6%;          /* near-black navy */
+    --foreground: 210 30% 96%;
+    --card: 222 32% 9%;                /* slate panel */
+    --card-foreground: 210 30% 96%;
+    --popover: 222 32% 9%;
+    --popover-foreground: 210 30% 96%;
+    --primary: 47 95% 58%;             /* UA yellow as primary accent */
+    --primary-foreground: 222 38% 6%;
+    --secondary: 222 24% 14%;
+    --secondary-foreground: 210 30% 96%;
+    --muted: 222 22% 13%;
+    --muted-foreground: 215 18% 62%;
+    --accent: 195 95% 58%;             /* cyber blue */
+    --accent-foreground: 222 38% 6%;
+    --destructive: 0 78% 58%;
+    --destructive-foreground: 210 30% 96%;
+    --border: 222 22% 16%;
+    --input: 222 22% 16%;
+    --ring: 47 95% 58%;
+
+    --ua-yellow: 47 95% 58%;
+    --ua-blue: 215 95% 58%;
+    --cyber: 195 95% 58%;
+    --cyber-glow: 195 100% 68%;
+
+    --series-launched: 14 92% 62%;
+    --series-destroyed: 195 95% 62%;
+    --series-rate: 145 65% 55%;
+    --grid: 222 22% 18%;
+
+    --sidebar-background: 222 38% 6%;
+    --sidebar-foreground: 210 30% 96%;
+    --sidebar-primary: 47 95% 58%;
+    --sidebar-primary-foreground: 222 38% 6%;
+    --sidebar-accent: 222 24% 14%;
+    --sidebar-accent-foreground: 210 30% 96%;
+    --sidebar-border: 222 22% 16%;
+    --sidebar-ring: 47 95% 58%;
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+  * { @apply border-border; }
 
   html {
     font-feature-settings: "ss01", "cv11", "tnum";
   }
 
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Source Sans 3', 'Inter', system-ui, sans-serif;
-    -webkit-font-smoothing: antialiased;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
   h1, h2, h3, h4 {
-    font-family: 'Fraunces', 'Source Serif 4', Georgia, serif;
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
     font-weight: 600;
     letter-spacing: -0.02em;
+  }
+
+  .font-mono, code, kbd, pre {
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-feature-settings: "tnum";
   }
 
   .num {
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum";
   }
+}
+
+@layer utilities {
+  /* Tactical grid background — subtle radar/ops feel */
+  .bg-tactical-grid {
+    background-image:
+      linear-gradient(hsl(var(--border) / 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.5) 1px, transparent 1px);
+    background-size: 56px 56px;
+    background-position: -1px -1px;
+  }
+
+  .bg-tactical-grid-fine {
+    background-image:
+      linear-gradient(hsl(var(--border) / 0.35) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.35) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Radial vignette to fade grid into background edges */
+  .mask-radial {
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 100%);
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 100%);
+  }
+
+  /* Glassmorphism panel */
+  .glass {
+    background-color: hsl(var(--card) / 0.65);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid hsl(var(--border));
+  }
+
+  /* Glow utilities */
+  .glow-cyber {
+    box-shadow:
+      0 0 0 1px hsl(var(--cyber) / 0.25),
+      0 0 24px -4px hsl(var(--cyber) / 0.35);
+  }
+  .glow-yellow {
+    box-shadow:
+      0 0 0 1px hsl(var(--ua-yellow) / 0.3),
+      0 0 24px -4px hsl(var(--ua-yellow) / 0.35);
+  }
+  .text-glow-yellow {
+    text-shadow: 0 0 24px hsl(var(--ua-yellow) / 0.45);
+  }
+
+  /* Scanning sweep line — radar feel */
+  .scan-line::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(var(--cyber) / 0.08) 50%,
+      transparent 100%
+    );
+    animation: scan 6s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes scan {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.55; }
+  }
+  .pulse-soft { animation: pulse-soft 2.6s ease-in-out infinite; }
 }
