@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 import { WeaponsCatalogSection } from "@/components/WeaponsCatalogSection";
 import { Panel, SourceLabel } from "@/components/ui/panel";
+import { AnimatedNumber } from "@/components/AnimatedNumber";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 const PRIMARY_SOURCE = "Air Force Command of the Armed Forces of Ukraine (daily reports, via Kaggle dataset, Petro Ivaniuk)";
@@ -99,11 +100,17 @@ function SectionNav() {
 function KPI({
   label,
   value,
+  numeric,
+  decimals = 0,
+  suffix = "",
   sub,
   signal = false,
 }: {
   label: string;
-  value: string;
+  value?: string;
+  numeric?: number;
+  decimals?: number;
+  suffix?: string;
   sub?: string;
   signal?: boolean;
 }) {
@@ -117,7 +124,11 @@ function KPI({
           signal ? "text-signal" : "text-foreground"
         }`}
       >
-        {value}
+        {numeric !== undefined ? (
+          <AnimatedNumber value={numeric} decimals={decimals} suffix={suffix} />
+        ) : (
+          value
+        )}
       </div>
       {sub && <div className="mt-2 text-[12px] text-muted-foreground num">{sub}</div>}
     </div>
