@@ -36,17 +36,7 @@ function CountUp({ value, duration = 1600 }: { value: number; duration?: number 
   return <>{display.toLocaleString("en-US")}</>;
 }
 
-function StatusBar() {
-  const [now, setNow] = useState(() => new Date());
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
-  const stamp = now
-    .toISOString()
-    .replace("T", " · ")
-    .replace(/:\d\d\.\d+Z$/, " UTC")
-    .toUpperCase();
+function StatusBar({ lastUpdated }: { lastUpdated: string | null }) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/70 font-mono">
       <div className="container flex items-center justify-between gap-4 py-2 text-[11px] uppercase tracking-[0.18em]">
@@ -55,12 +45,11 @@ function StatusBar() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-series-launched opacity-75" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-series-launched" />
           </span>
-          <span className="font-semibold tracking-[0.22em]">DEFENCE WATCH</span>
-          <span className="hidden text-muted-foreground sm:inline">// LIVE STATUS</span>
+          <span className="font-semibold tracking-[0.22em]">UA DEFENSE TRACKER</span>
         </div>
         <div className="flex items-center gap-3">
           <span className="hidden text-muted-foreground md:inline">LAST UPDATE</span>
-          <span className="num text-foreground animate-pulse">{stamp}</span>
+          <span className="num text-foreground">{lastUpdated ?? "—"}</span>
           <ThemeToggle />
         </div>
       </div>
@@ -70,7 +59,7 @@ function StatusBar() {
 
 function SectionNav() {
   const items = [
-    { id: "drones", label: "Shahed drones" },
+    { id: "drones", label: "UAVs" },
     { id: "cruise", label: "Cruise missiles" },
     { id: "ballistic", label: "Ballistic missiles" },
     { id: "methodology", label: "Methodology" },
@@ -522,7 +511,7 @@ const Index = () => {
 
   return (
     <main className="min-h-screen bg-background">
-      <StatusBar />
+      <StatusBar lastUpdated={lastUpdatedLabel} />
       <SectionNav />
 
       {/* ─────────────── HERO ─────────────── */}
@@ -576,7 +565,7 @@ const Index = () => {
           </div>
 
           {/* About — collapsible */}
-          <div className="mt-10 border-t border-border pt-4">
+          <div className="mt-6 border-t border-border pt-3">
             <button
               type="button"
               onClick={() => setAboutOpen((v) => !v)}
@@ -591,7 +580,7 @@ const Index = () => {
               />
             </button>
             {aboutOpen && (
-              <p className="mt-4 max-w-3xl animate-fade-in text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-3 max-w-3xl animate-fade-in text-sm leading-relaxed text-muted-foreground">
                 Daily reports from the Air Force Command of the Armed Forces of Ukraine
                 are aggregated to monthly totals and broken into three weapon families:
                 Shahed-136/131 loitering munitions; cruise / air-to-surface missiles
@@ -635,7 +624,7 @@ const Index = () => {
               <PillarCard
                 index="01"
                 kicker="Loitering munitions"
-                title="Shahed-136/131 attack drones"
+                title="UAVs (Shahed, etc.)"
                 total={shahed!.totals.launched}
                 destroyed={shahed!.totals.destroyed}
                 spark={sparks.shahed}
@@ -674,8 +663,8 @@ const Index = () => {
       {shahed && shahedRange && (
         <CategorySection
           id="drones"
-          kicker="01 · Shahed-136/131"
-          title="Shahed-136/131 attack drones fired at Ukraine"
+          kicker="01 · Unmanned Aerial Vehicles"
+          title="Unmanned Aerial Vehicles fired at Ukraine"
           description="Iranian-designed loitering munitions launched at Ukrainian cities and infrastructure, with monthly interceptions reported by Ukrainian air defenses. Cruise and ballistic missiles are tracked in their own sections below."
           unitNoun="drones"
           dataset={shahed}
@@ -757,7 +746,7 @@ const Index = () => {
       <footer className="border-t border-border">
         <div className="container flex flex-col items-start justify-between gap-4 py-8 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground md:flex-row md:items-center">
           <p>
-            Defence Watch · monthly aggregates from Ukrainian Air Force daily reports.
+            UA Defense Tracker · monthly aggregates from Ukrainian Air Force daily reports.
           </p>
           <div className="flex flex-wrap items-center gap-4">
             <span>
