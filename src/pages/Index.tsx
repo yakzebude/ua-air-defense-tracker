@@ -506,6 +506,20 @@ const Index = () => {
     };
   }, [shahed, cruise, ballistic]);
 
+  const lastUpdatedLabel = useMemo(() => {
+    const lastWithData = (d: Dataset | null): MonthPoint | null => {
+      if (!d) return null;
+      for (let i = d.months.length - 1; i >= 0; i--) {
+        if (d.months[i].launched > 0) return d.months[i];
+      }
+      return null;
+    };
+    const candidates = [lastWithData(shahed), lastWithData(cruise), lastWithData(ballistic)]
+      .filter((m): m is MonthPoint => !!m)
+      .sort((a, b) => b.date.getTime() - a.date.getTime());
+    return candidates[0]?.label ?? null;
+  }, [shahed, cruise, ballistic]);
+
   return (
     <main className="min-h-screen bg-background">
       <StatusBar />
