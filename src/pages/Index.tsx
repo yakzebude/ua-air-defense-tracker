@@ -74,21 +74,149 @@ function SectionNav() {
     { id: "cruise", label: "Cruise missiles" },
     { id: "ballistic", label: "Ballistic missiles" },
     { id: "methodology", label: "Methodology" },
+    { id: "related", label: "Related sources" },
   ];
+  const [active, setActive] = useState<string>(items[0].id);
+
+  useEffect(() => {
+    const sections = items
+      .map((it) => document.getElementById(it.id))
+      .filter((el): el is HTMLElement => !!el);
+    if (!sections.length) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        // Pick the entry closest to the top that is currently intersecting.
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]?.target.id) setActive(visible[0].target.id);
+      },
+      { rootMargin: "-30% 0px -60% 0px", threshold: [0, 0.1, 0.5, 1] },
+    );
+    sections.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <nav className="sticky top-[34px] z-30 border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/70">
       <div className="container flex items-center gap-1 overflow-x-auto py-2 text-[11px] font-mono uppercase tracking-[0.18em]">
-        {items.map((it) => (
-          <a
-            key={it.id}
-            href={`#${it.id}`}
-            className="whitespace-nowrap rounded-sm px-3 py-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-          >
-            {it.label}
-          </a>
-        ))}
+        {items.map((it) => {
+          const isActive = active === it.id;
+          return (
+            <a
+              key={it.id}
+              href={`#${it.id}`}
+              aria-current={isActive ? "true" : undefined}
+              className={`whitespace-nowrap rounded-sm px-3 py-1 transition-colors ${
+                isActive
+                  ? "bg-secondary text-foreground"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+              }`}
+            >
+              {it.label}
+            </a>
+          );
+        })}
       </div>
     </nav>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Related sources                                                           */
+/* -------------------------------------------------------------------------- */
+
+type SourceLink = {
+  name: string;
+  href: string;
+  blurb: string;
+  tag: string;
+};
+
+const RELATED_SOURCES: SourceLink[] = [
+  {
+    name: "GUR · war-sanctions",
+    href: "https://war-sanctions.gur.gov.ua/en/components",
+    blurb:
+      "Foreign components found in Russian missiles and drones — built and maintained by Ukraine's Defence Intelligence (HUR).",
+    tag: "Components & sanctions",
+  },
+  {
+    name: "Ukrainian Air Force",
+    href: "https://www.facebook.com/kpszsu",
+    blurb:
+      "Original daily reports on launched and intercepted weapons, the upstream source of this dataset.",
+    tag: "Primary source",
+  },
+  {
+    name: "Oryx",
+    href: "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html",
+    blurb:
+      "Open-source, photo-verified record of equipment losses on both sides of the war.",
+    tag: "Verified losses",
+  },
+  {
+    name: "ISW · Russia Daily Updates",
+    href: "https://www.understandingwar.org/backgrounder/russian-offensive-campaign-assessment",
+    blurb:
+      "Institute for the Study of War — daily campaign assessments and operational maps.",
+    tag: "Analysis",
+  },
+  {
+    name: "CSIS · Missile Threat",
+    href: "https://missilethreat.csis.org/",
+    blurb:
+      "Reference profiles for the cruise, ballistic and hypersonic weapons used against Ukraine.",
+    tag: "Weapon profiles",
+  },
+  {
+    name: "Kiel Institute · Ukraine Support Tracker",
+    href: "https://www.ifw-kiel.de/topics/war-against-ukraine/ukraine-support-tracker/",
+    blurb:
+      "Quantifies military, financial and humanitarian aid pledged to Ukraine by Western governments.",
+    tag: "Aid tracking",
+  },
+];
+
+function RelatedSourcesSection() {
+  return (
+    <section id="related" className="scroll-mt-24 border-t border-border">
+      <div className="container py-14 md:py-20">
+        <div className="mb-8 max-w-3xl">
+          <div className="mb-4 inline-block border-l-2 border-series-launched pl-3 font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+            Further reading
+          </div>
+          <h2 className="font-serif text-3xl md:text-4xl leading-tight">
+            Related sources & investigations
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+            This tracker only covers the volume side of the air war. For the
+            components inside those weapons, the people losing them and the support
+            flowing the other way, the sources below pick up where these charts end.
+          </p>
+        </div>
+        <div className="grid gap-px bg-border md:grid-cols-2 lg:grid-cols-3">
+          {RELATED_SOURCES.map((s) => (
+            <a
+              key={s.href}
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer external"
+              className="group flex flex-col gap-3 bg-card p-5 transition-colors hover:bg-secondary/50"
+            >
+              <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                {s.tag}
+              </div>
+              <h3 className="font-serif text-xl leading-tight">{s.name}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">{s.blurb}</p>
+              <div className="mt-auto pt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover:text-foreground">
+                Visit site ↗
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -378,6 +506,20 @@ const Index = () => {
     };
   }, [shahed, cruise, ballistic]);
 
+  const lastUpdatedLabel = useMemo(() => {
+    const lastWithData = (d: Dataset | null): MonthPoint | null => {
+      if (!d) return null;
+      for (let i = d.months.length - 1; i >= 0; i--) {
+        if (d.months[i].launched > 0) return d.months[i];
+      }
+      return null;
+    };
+    const candidates = [lastWithData(shahed), lastWithData(cruise), lastWithData(ballistic)]
+      .filter((m): m is MonthPoint => !!m)
+      .sort((a, b) => b.date.getTime() - a.date.getTime());
+    return candidates[0]?.label ?? null;
+  }, [shahed, cruise, ballistic]);
+
   return (
     <main className="min-h-screen bg-background">
       <StatusBar />
@@ -610,10 +752,32 @@ const Index = () => {
         </div>
       </section>
 
+      <RelatedSourcesSection />
+
       <footer className="border-t border-border">
-        <div className="container flex flex-col items-start justify-between gap-3 py-8 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground md:flex-row md:items-center">
-          <p>Defence Watch · monthly aggregates from Ukrainian Air Force daily reports.</p>
-          <p>Range: Oct 2022 – Mar 2026.</p>
+        <div className="container flex flex-col items-start justify-between gap-4 py-8 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground md:flex-row md:items-center">
+          <p>
+            Defence Watch · monthly aggregates from Ukrainian Air Force daily reports.
+          </p>
+          <div className="flex flex-wrap items-center gap-4">
+            <span>
+              Last data point:{" "}
+              <span className="text-foreground">{lastUpdatedLabel ?? "—"}</span>
+            </span>
+            <a
+              href="/data/missile_attacks_daily.csv"
+              download
+              className="rounded-sm border border-border px-3 py-1 text-foreground transition-colors hover:bg-secondary"
+            >
+              Download CSV ↓
+            </a>
+            <a
+              href="#methodology"
+              className="underline-offset-4 hover:text-foreground hover:underline"
+            >
+              Methodology
+            </a>
+          </div>
         </div>
       </footer>
 
