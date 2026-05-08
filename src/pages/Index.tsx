@@ -663,8 +663,8 @@ const Index = () => {
       {shahed && shahedRange && (
         <CategorySection
           id="drones"
-          kicker="01 · Shahed-136/131"
-          title="Shahed-136/131 attack drones fired at Ukraine"
+          kicker="01 · Unmanned Aerial Vehicles"
+          title="Unmanned Aerial Vehicles fired at Ukraine"
           description="Iranian-designed loitering munitions launched at Ukrainian cities and infrastructure, with monthly interceptions reported by Ukrainian air defenses. Cruise and ballistic missiles are tracked in their own sections below."
           unitNoun="drones"
           dataset={shahed}
