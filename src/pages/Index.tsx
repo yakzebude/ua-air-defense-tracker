@@ -624,7 +624,7 @@ const Index = () => {
               <PillarCard
                 index="01"
                 kicker="Loitering munitions"
-                title="Shahed-136/131 attack drones"
+                title="UAVs (Shahed, etc.)"
                 total={shahed!.totals.launched}
                 destroyed={shahed!.totals.destroyed}
                 spark={sparks.shahed}
