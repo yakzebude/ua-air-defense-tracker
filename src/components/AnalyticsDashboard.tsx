@@ -300,47 +300,7 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Comparative interception bars                                             */
-/* -------------------------------------------------------------------------- */
-
-function InterceptionComparison({ shahed, cruise, ballistic }: Props) {
-  const rows = [
-    { key: "uavs",      label: CAT_META.uavs.label,      ds: shahed },
-    { key: "cruise",    label: CAT_META.cruise.label,    ds: cruise },
-    { key: "ballistic", label: CAT_META.ballistic.label, ds: ballistic },
-  ];
-  return (
-    <ul className="space-y-4">
-      {rows.map((r) => {
-        const pct = r.ds.totals.rate * 100;
-        return (
-          <li key={r.key}>
-            <div className="mb-1.5 flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.16em]">
-              <span className="text-foreground">{r.label}</span>
-              <span className="num text-muted-foreground">
-                <span className="text-foreground">{pct.toFixed(1)}%</span>
-                <span className="ml-2">
-                  {fmt(r.ds.totals.destroyed)} / {fmt(r.ds.totals.launched)}
-                </span>
-              </span>
-            </div>
-            <div className="relative h-2 overflow-hidden rounded-sm bg-secondary">
-              <div
-                className="h-full rounded-sm transition-[width] duration-700 ease-out"
-                style={{
-                  width: `${pct}%`,
-                  background: CAT_META[r.key as CategoryKey].color,
-                  boxShadow: `0 0 12px -2px ${CAT_META[r.key as CategoryKey].color}`,
-                }}
-              />
-            </div>
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
+/* (Interception comparison merged into ShareInterception above)              */
 
 /* -------------------------------------------------------------------------- */
 /*  Section                                                                   */
