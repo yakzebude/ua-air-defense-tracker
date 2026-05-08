@@ -36,17 +36,7 @@ function CountUp({ value, duration = 1600 }: { value: number; duration?: number 
   return <>{display.toLocaleString("en-US")}</>;
 }
 
-function StatusBar() {
-  const [now, setNow] = useState(() => new Date());
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
-  const stamp = now
-    .toISOString()
-    .replace("T", " · ")
-    .replace(/:\d\d\.\d+Z$/, " UTC")
-    .toUpperCase();
+function StatusBar({ lastUpdated }: { lastUpdated: string | null }) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/70 font-mono">
       <div className="container flex items-center justify-between gap-4 py-2 text-[11px] uppercase tracking-[0.18em]">
@@ -55,12 +45,11 @@ function StatusBar() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-series-launched opacity-75" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-series-launched" />
           </span>
-          <span className="font-semibold tracking-[0.22em]">DEFENCE WATCH</span>
-          <span className="hidden text-muted-foreground sm:inline">// LIVE STATUS</span>
+          <span className="font-semibold tracking-[0.22em]">UA DEFENSE TRACKER</span>
         </div>
         <div className="flex items-center gap-3">
           <span className="hidden text-muted-foreground md:inline">LAST UPDATE</span>
-          <span className="num text-foreground animate-pulse">{stamp}</span>
+          <span className="num text-foreground">{lastUpdated ?? "—"}</span>
           <ThemeToggle />
         </div>
       </div>
