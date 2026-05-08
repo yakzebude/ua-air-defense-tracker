@@ -222,10 +222,6 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
   }, [cat, shahed, cruise, ballistic]);
 
   const monthLabels = ["J","F","M","A","M","J","J","A","S","O","N","D"];
-  const baseColor = cat === "uavs" ? CAT_META.uavs.color
-                  : cat === "cruise" ? CAT_META.cruise.color
-                  : cat === "ballistic" ? CAT_META.ballistic.color
-                  : ACCENT_PURPLE;
 
   return (
     <div>
