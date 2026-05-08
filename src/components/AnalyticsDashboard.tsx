@@ -9,18 +9,19 @@ import {
   Tooltip,
 } from "recharts";
 import type { Dataset, MonthPoint } from "@/lib/shahed-data";
+import { rampColor } from "@/lib/threat-ramp";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 
 type CategoryKey = "uavs" | "cruise" | "ballistic";
 
 const CAT_META: Record<CategoryKey, { label: string; color: string }> = {
-  uavs:      { label: "UAVs",      color: "hsl(var(--ua-yellow))" },     /* yellow */
-  cruise:    { label: "Cruise",    color: "hsl(25 92% 58%)" },           /* orange */
-  ballistic: { label: "Ballistic", color: "hsl(0 78% 60%)" },            /* red */
+  uavs:      { label: "UAVs",      color: rampColor(0.05) }, /* yellow  — typically high intercept */
+  cruise:    { label: "Cruise",    color: rampColor(0.55) }, /* orange/red */
+  ballistic: { label: "Ballistic", color: rampColor(0.95) }, /* deep purple — many leakers */
 };
 
-const ACCENT_PURPLE = "hsl(280 65% 68%)";
+const ACCENT_PURPLE = rampColor(1);
 
 interface Props {
   shahed: Dataset;
@@ -144,7 +145,9 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
       {rows.map((r) => {
         const pct = r.ds.totals.rate * 100;
         const share = grandLaunched > 0 ? (r.ds.totals.launched / grandLaunched) * 100 : 0;
-        const color = CAT_META[r.key as CategoryKey].color;
+        // Threat color: low interception rate → deep purple, high rate → yellow.
+        const threat = 1 - r.ds.totals.rate;
+        const color = rampColor(threat);
         return (
           <li key={r.key}>
             <div className="mb-2 flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.16em]">
@@ -219,10 +222,6 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
   }, [cat, shahed, cruise, ballistic]);
 
   const monthLabels = ["J","F","M","A","M","J","J","A","S","O","N","D"];
-  const baseColor = cat === "uavs" ? CAT_META.uavs.color
-                  : cat === "cruise" ? CAT_META.cruise.color
-                  : cat === "ballistic" ? CAT_META.ballistic.color
-                  : ACCENT_PURPLE;
 
   return (
     <div>
@@ -263,15 +262,17 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
                   const v = grid.get(`${y}-${mo}`) ?? 0;
                   const intensity = max > 0 ? Math.pow(v / max, 0.6) : 0;
                   const has = v > 0;
+                  // Threat ramp: low = yellow, peak = deep purple.
+                  const cellColor = rampColor(intensity);
                   return (
                     <td key={mo} className="p-0">
                       <div
                         className="group relative aspect-square w-full min-w-[22px] rounded-[3px] border border-border/40 transition-transform hover:scale-110"
                         style={{
                           background: has
-                            ? `color-mix(in srgb, ${baseColor} ${(intensity * 100).toFixed(0)}%, hsl(var(--card)))`
+                            ? `color-mix(in srgb, ${cellColor} ${(60 + intensity * 40).toFixed(0)}%, hsl(var(--card)))`
                             : "hsl(var(--card))",
-                          boxShadow: intensity > 0.7 ? `0 0 8px -2px ${baseColor}` : undefined,
+                          boxShadow: intensity > 0.7 ? `0 0 10px -2px ${cellColor}` : undefined,
                         }}
                         title={`${monthLabels[mo]} ${y}: ${fmt(v)} launched`}
                       />
@@ -290,7 +291,7 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
             <div
               key={i}
               className="h-2.5 w-5 rounded-[2px] border border-border/40"
-              style={{ background: `color-mix(in srgb, ${baseColor} ${(i * 100).toFixed(0)}%, hsl(var(--card)))` }}
+              style={{ background: `color-mix(in srgb, ${rampColor(i)} ${(60 + i * 40).toFixed(0)}%, hsl(var(--card)))` }}
             />
           ))}
         </div>
