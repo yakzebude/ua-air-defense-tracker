@@ -2,7 +2,7 @@ import Papa from "papaparse";
 import type { MonthPoint, Dataset, RawRow } from "@/lib/shahed-data";
 
 const MIN = new Date(Date.UTC(2022, 9, 1));
-const MAX = new Date(Date.UTC(2026, 2, 31, 23, 59, 59));
+const MAX = new Date(Date.UTC(2026, 11, 31, 23, 59, 59));
 
 function parseDate(s: string): Date | null {
   if (!s) return null;
@@ -105,7 +105,7 @@ function emptyBuckets() {
   const buckets = new Map<string, { launched: number; destroyed: number; date: Date }>();
   for (let y = 2022; y <= 2026; y++) {
     const firstMonth = y === 2022 ? 9 : 0;
-    const lastMonth = y === 2026 ? 2 : 11;
+    const lastMonth = 11;
     for (let m = firstMonth; m <= lastMonth; m++) {
       const d = new Date(Date.UTC(y, m, 1));
       buckets.set(monthKey(d), { launched: 0, destroyed: 0, date: d });
