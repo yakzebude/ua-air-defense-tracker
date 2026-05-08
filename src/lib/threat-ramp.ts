@@ -1,31 +1,23 @@
 /**
  * Threat color ramp for the escalation calendar.
  *
- *   t = 0    → pale yellow (lowest monthly volume)
- *   t = 0.5  → orange       (mid-range)
- *   t = 1    → deep red     (peak monthly volume)
+ *   t = 0  → pale yellow (lowest monthly volume)
+ *   t = 1  → deep red    (peak monthly volume)
  *
- * Piecewise interpolation through three anchor stops in HSL space so the
- * mid-tones read as warm orange rather than muddy brown.
+ * Yellow and red tones only — no orange or brown mid-stops.
+ * Hue is interpolated the short way around the wheel (60° → 0°).
  */
-const STOPS: Array<{ t: number; h: number; s: number; l: number }> = [
-  { t: 0,    h: 52,  s: 95, l: 80 },  // pale yellow
-  { t: 0.5,  h: 28,  s: 88, l: 58 },  // warm orange
-  { t: 1,    h: 358, s: 70, l: 42 },  // deep red
-];
-
 export function rampColor(t: number, alpha = 1): string {
   const tc = Math.max(0, Math.min(1, t));
-  // Find surrounding stops
-  let i = 0;
-  while (i < STOPS.length - 2 && tc > STOPS[i + 1].t) i++;
-  const a = STOPS[i];
-  const b = STOPS[i + 1];
-  const k = (tc - a.t) / (b.t - a.t);
-  const h = a.h + (b.h - a.h) * k;
-  const s = a.s + (b.s - a.s) * k;
-  const l = a.l + (b.l - a.l) * k;
+  const a = { h: 55,  s: 95, l: 78 };  // pale yellow
+  const b = { h: 358, s: 72, l: 40 };  // deep red
+  // Treat 358 as -2 so we sweep yellow → red the short way.
+  const bh = b.h > 180 ? b.h - 360 : b.h;
+  const h = a.h + (bh - a.h) * tc;
+  const s = a.s + (b.s - a.s) * tc;
+  const l = a.l + (b.l - a.l) * tc;
+  const hh = (h + 360) % 360;
   return alpha >= 1
-    ? `hsl(${h.toFixed(1)} ${s.toFixed(1)}% ${l.toFixed(1)}%)`
-    : `hsl(${h.toFixed(1)} ${s.toFixed(1)}% ${l.toFixed(1)}% / ${alpha})`;
+    ? `hsl(${hh.toFixed(1)} ${s.toFixed(1)}% ${l.toFixed(1)}%)`
+    : `hsl(${hh.toFixed(1)} ${s.toFixed(1)}% ${l.toFixed(1)}% / ${alpha})`;
 }
