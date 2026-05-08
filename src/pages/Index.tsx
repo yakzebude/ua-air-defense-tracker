@@ -1016,12 +1016,24 @@ const Index = () => {
             >
               Download CSV ↓
             </a>
-            <a
-              href="#methodology"
+            <Link
+              to="/methodology"
               className="underline-offset-4 hover:text-foreground hover:underline"
             >
               Methodology
-            </a>
+            </Link>
+            <Link
+              to="/sources"
+              className="underline-offset-4 hover:text-foreground hover:underline"
+            >
+              Sources
+            </Link>
+            <Link
+              to="/disclaimer"
+              className="underline-offset-4 hover:text-foreground hover:underline"
+            >
+              Disclaimer
+            </Link>
           </div>
         </div>
       </footer>
