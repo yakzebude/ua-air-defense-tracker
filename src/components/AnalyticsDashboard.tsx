@@ -211,11 +211,16 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
   const [cat, setCat] = useState<"all" | CategoryKey>("all");
 
   const { grid, years, max } = useMemo(() => {
+    const now = new Date();
+    const curY = now.getUTCFullYear();
+    const curM = now.getUTCMonth();
     const yearsSet = new Set<number>();
     const cellMap = new Map<string, number>();
     const add = (m: MonthPoint, val: number) => {
       const y = m.date.getUTCFullYear();
       const mo = m.date.getUTCMonth();
+      // Skip the current (incomplete) calendar month
+      if (y === curY && mo === curM) return;
       yearsSet.add(y);
       const k = `${y}-${mo}`;
       cellMap.set(k, (cellMap.get(k) ?? 0) + val);
