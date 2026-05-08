@@ -21,15 +21,21 @@ type SortKey = "model" | "category" | "national_origin" | "in_sevice" | "unit_co
 
 export function WeaponsCatalogSection() {
   const [weapons, setWeapons] = useState<Weapon[] | null>(null);
+  const [stats, setStats] = useState<Map<string, ModelStats> | null>(null);
   const [cat, setCat] = useState<string>("all");
   const [origin, setOrigin] = useState<string>("all");
   const [q, setQ] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("model");
   const [sortAsc, setSortAsc] = useState(true);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     loadWeaponsCatalog().then(setWeapons).catch(() => setWeapons([]));
+    loadModelStats().then(setStats).catch(() => setStats(new Map()));
   }, []);
+
+  // Reset collapsed state when filters change
+  useEffect(() => { setExpanded(false); }, [cat, origin, q]);
 
   const origins = useMemo(() => {
     if (!weapons) return [];
