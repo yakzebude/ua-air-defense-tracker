@@ -4,7 +4,7 @@ import { ChevronDown, ShieldCheck } from "lucide-react";
 import { loadShahedData, type Dataset, type MonthPoint } from "@/lib/shahed-data";
 import { loadAllMissileCategories } from "@/lib/missiles-data";
 import { MonthlyTrendChart } from "@/components/MonthlyTrendChart";
-import { InterceptionRateChart } from "@/components/InterceptionRateChart";
+
 import { DateRangeFilter } from "@/components/DateRangeFilter";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
