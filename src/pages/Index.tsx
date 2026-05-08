@@ -995,8 +995,8 @@ const Index = () => {
         </div>
       </section>
 
-      <HowToHelpSection />
       <RelatedSourcesSection />
+      <HowToHelpSection />
 
       <footer className="border-t border-border">
         <div className="container flex flex-col items-start justify-between gap-4 py-8 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground md:flex-row md:items-center">
