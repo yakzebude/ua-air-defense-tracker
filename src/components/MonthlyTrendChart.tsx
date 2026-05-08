@@ -51,10 +51,16 @@ function ChartTooltip({ active, payload, label }: any) {
 }
 
 export function MonthlyTrendChart({ data }: Props) {
-  const enriched = useMemo(
-    () => data.map((m) => ({ ...m, ratePct: +(m.rate * 100).toFixed(2) })),
-    [data],
-  );
+  const enriched = useMemo(() => {
+    // Exclude the currently-running (incomplete) calendar month from the
+    // visual series so stacked/bar charts only show complete months.
+    const now = new Date();
+    const curY = now.getUTCFullYear();
+    const curM = now.getUTCMonth();
+    return data
+      .filter((m) => !(m.date.getUTCFullYear() === curY && m.date.getUTCMonth() === curM))
+      .map((m) => ({ ...m, ratePct: +(m.rate * 100).toFixed(2) }));
+  }, [data]);
   const ticks = useMemo(
     () => enriched.filter((_, i) => i % 4 === 0).map((m) => m.label),
     [enriched],
