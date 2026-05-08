@@ -385,6 +385,64 @@ function Sparkline({
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Operations Center tile                                                    */
+/* -------------------------------------------------------------------------- */
+
+type OpsAccent = "yellow" | "cyber" | "destructive" | "neutral";
+
+function OpsTile({
+  label,
+  value,
+  sub,
+  accent = "neutral",
+  spark,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  accent?: OpsAccent;
+  spark?: number[];
+}) {
+  const accentColor: Record<OpsAccent, string> = {
+    yellow: "hsl(var(--ua-yellow))",
+    cyber: "hsl(var(--cyber))",
+    destructive: "hsl(var(--destructive))",
+    neutral: "hsl(var(--muted-foreground))",
+  };
+  const valueClass: Record<OpsAccent, string> = {
+    yellow: "text-ua-yellow",
+    cyber: "text-cyber",
+    destructive: "text-destructive",
+    neutral: "text-foreground",
+  };
+  return (
+    <div className="group relative flex flex-col gap-3 bg-card/70 p-4 backdrop-blur transition-colors hover:bg-card md:p-5">
+      <div className="flex items-center justify-between font-mono text-[10.5px] uppercase tracking-[0.2em] text-muted-foreground">
+        <span>{label}</span>
+        <span
+          aria-hidden
+          className="h-1.5 w-1.5 rounded-full pulse-soft"
+          style={{ backgroundColor: accentColor[accent] }}
+        />
+      </div>
+      <div className={`font-display text-3xl leading-none num md:text-[2.25rem] ${valueClass[accent]}`}>
+        {value}
+      </div>
+      {spark && spark.length > 0 ? (
+        <Sparkline data={spark} stroke={accentColor[accent]} height={28} />
+      ) : (
+        <div className="h-7" />
+      )}
+      {sub && (
+        <div className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
+          {sub}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Hero pillar card (one of three categories)                                */
 /* -------------------------------------------------------------------------- */
 
