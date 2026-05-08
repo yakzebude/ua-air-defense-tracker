@@ -511,7 +511,7 @@ const Index = () => {
 
   return (
     <main className="min-h-screen bg-background">
-      <StatusBar />
+      <StatusBar lastUpdated={lastUpdatedLabel} />
       <SectionNav />
 
       {/* ─────────────── HERO ─────────────── */}
