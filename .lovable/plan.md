@@ -1,95 +1,105 @@
-# Ausbauplan: Inhalte, Interaktivität, externe Querverlinkung
+# Redesign: Professional OSINT / Defense Analytics Look
 
-## A — Neue Inhalte / Datenebenen
+Goal: strip the marketing/cyber aesthetic and rebuild the surface to read like Bloomberg Terminal / Reuters Graphics / NATO briefings — calm, dense, trustworthy.
 
-1. **Tagesgranularität zusätzlich zur Monatsansicht**
-   Toggle „Monthly / Daily / 7-day rolling avg". Daily zeigt Spitzen (z.B. Großangriffe einzelner Nächte), Rolling-Avg glättet Trends.
+## 1. Design system reset (`src/index.css`, `tailwind.config.ts`)
 
-2. **Key-Events-Layer**
-   Vertikale Annotation-Linien im Chart bei wichtigen Ereignissen: Beginn Energieinfrastruktur-Kampagne (Okt 2022), Kinzhal-Erstabschuss (Mai 2023), Kachowka-Damm, Großangriff 29.12.2023, etc. Hover → Tooltip mit Kontext.
+**Palette — 2 colors + neutral grays only**
+- Primary accent: deep navy/ink `--accent-primary` (used for headlines, key numbers, primary chart series)
+- Signal accent: muted amber `--accent-signal` (used sparingly for active state, alerts, the single most important KPI)
+- Everything else: neutral gray scale (`--neutral-50` … `--neutral-900`)
+- Remove: cyber blue, purple, multi-stop gradients, `--cyber-glow`
 
-3. **Waffenfamilien-Drilldown**
-   In der Cruise-Sektion eine kleine Tabelle/Treemap nach Modell (Kalibr vs X-101 vs X-22 …): Launched, Down, Rate. Heute werden alle gemixt.
+**Chart series** reduced to: ink, amber, mid-gray. No purple/orange ramp.
 
-4. **Abfangrate-Heatmap**
-   Kalender-Heatmap (Monate × Jahre) für jede Kategorie — auf einen Blick erkennbar, wann Abwehr unter Druck stand.
+**Effects removed**
+- Delete `.glow-cyber`, `.glow-yellow`, `.text-glow-yellow`, `.scan-line`, `.pulse-soft`, `bg-tactical-grid` hero usage, radial vignettes, animated background grids
+- Replace with: 1px hairline borders, single subtle shadow token `--shadow-card: 0 1px 2px rgba(0,0,0,.04), 0 1px 1px rgba(0,0,0,.03)`
+- Single border-radius: `--radius: 4px`
 
-5. **„Through-Rate"-Kontext**
-   Mini-Erklärbox: was bedeutet ein durchgekommenes Shahed vs. eine durchgekommene Ballistic? Schwere/Sprengkopf/Reichweite kurz anreißen (Karten-Style).
+**Typography**
+- Headings: keep Space Grotesk but reduce weight to 500, tighten size scale
+- Body: Inter 14/20
+- Mono: IBM Plex Mono for all numbers (tabular)
 
-6. **Geografie (optional, höherer Aufwand)**
-   Statische Karte Ukraine + Hauptangriffsregionen (Kyiv, Charkiv, Odessa, Lwiw …) — wenn Daten verfügbar; sonst Schwarz-Weiß-Outline mit Energie/Hafen-Hotspots als Story-Element.
+## 2. Component refactor — uniform card primitive
 
-7. **Materialkosten / Aufwand pro Welle**
-   Geschätzte Stückkosten (Shahed ~$50k, Kalibr ~$1M, Kinzhal ~$10M) → grobe „$ launched at Ukraine" Kennzahl. Quelle klar zitieren.
+Create `src/components/ui/panel.tsx` — the single card primitive used everywhere:
+```
+<Panel title="..." subtitle="..." source="Source: ..." note="..." />
+```
+Identical padding (24px), border (1px hairline), radius (4px), shadow (`--shadow-card`). All sections converted: SummaryStats, AnalyticsDashboard, MonthlyTrendChart, Weapons Catalog, How to Help.
 
-8. **Vergleich zur Luftverteidigung**
-   Optionaler Block: bekannte gelieferte Patriot/IRIS-T/NASAMS-Systeme vs. ballistische Abfangrate-Entwicklung über Zeit.
+Delete the per-card "liquid glass" / accent-rotation styling in `HowToHelpSection`.
 
-## B — Struktur / Aufbau
+## 3. Hero / Index page
 
-1. **Hero-Hook schärfen**
-   Aktuell: eine große Zahl (Total fired). Idee: 3 rotierende/auswählbare Hook-Zahlen (Total fired · Total intercepted · Got through) mit Kicker-Text wie bei FT-„Visual Stories".
+- Remove animated background, glow dot, marketing copy
+- Replace with a sober masthead: small kicker "OSINT · Air Threat Tracker", H1 "Ukraine Air Defense — Operational Data", one-line standfirst with date range, last-updated timestamp, primary source line
+- KPI strip directly under masthead: 4 large numbers (Launched / Destroyed / Interception rate / Reached target), each with a tiny source label
 
-2. **Storytelling-Reihenfolge statt Nebeneinander**
-   Reihenfolge so begründen wie Reuters: Drohnen (volumenstark, billig) → Cruise (präzise, teuer) → Ballistic (schwer abzufangen, gefährlich). Zwischen Sektionen kurze redaktionelle Brücken-Absätze („Why this matters next…").
+## 4. Source attribution + uncertainty disclosure
 
-3. **Sticky-TOC mit Fortschrittsindikator**
-   Aktive Sektion in Section-Nav hervorheben (Scroll-Spy). Optional dünner Progress-Bar oben.
+- Add `<SourceLabel>` micro-component (10px uppercase, muted) rendered under every stat, chart, and table
+- Wire real source strings from `shahed-data.ts` / `missiles-data.ts` / `weapons_catalog.csv` provenance
+- Add a persistent thin banner above the footer: "Data is compiled from open sources and may contain errors. Figures are reviewed and updated regularly. Last update: <date>."
+- Add status qualifiers in copy: `reported`, `confirmed`, `estimated`, `unverified` where applicable
 
-4. **Methodology-Sektion ausbauen**
-   Eigene Sektion (kein Drawer): Datenquelle, Update-Kadenz, Mixed-Model-Behandlung, Limitationen, Lizenz, Stand der Daten.
+## 5. Filters
 
-5. **Footer mit Trust-Signalen**
-   Letztes Update, CSV-Download-Button, Quelle, Verantwortliche, Lizenz (CC BY 4.0?), Methodology-Link.
+Add a sticky filter bar (`src/components/FilterBar.tsx`) above the analytics + arsenal sections:
+- Country (origin) — from weapons catalog
+- Date range — existing `DateRangeFilter`, restyled
+- Weapon system / category
+- Source
 
-## C — Interaktivität
+State lifted into `Index.tsx`, passed to AnalyticsDashboard, MonthlyTrendChart, WeaponsCatalogSection.
 
-1. **Stacked / Grouped Toggle** im Trend-Chart (alle drei Kategorien zusammen sehen).
-2. **Kategorie-Vergleich**: Multi-Select-Chips über einem Master-Chart (Shahed/Cruise/Ballistic an/aus).
-3. **Brush/Zoom** im großen Chart statt nur DateRangeFilter — Drag-Auswahl direkt am Chart.
-4. **Hover-Crosshair** mit synchronisiertem Tooltip in beiden Charts derselben Sektion.
-5. **Share-Snapshot**: Button „Copy link to current view" — speichert Range + Kategorie in URL-Hash, beim Öffnen wiederhergestellt.
-6. **Per-Sektion CSV-Download** der gefilterten Daten.
-7. **Keyboard-Shortcuts** (g d / g c / g b für Sektionen, ? für Hilfe-Sheet) — kleines Power-User-Detail im FT-Stil.
-8. **Light/Dark + High-Contrast** Mode.
-9. **Live-Counter**: Statt einmaliger CountUp, jeden Monat beim Update kurz pulsen lassen.
+## 6. Tables
 
-## D — Querverlinkung zu externen Quellen (z.B. war-sanctions.gur.gov.ua)
+Rebuild Weapons Catalog as a real table (not card grid):
+- Sticky `<thead>`, zebra rows (`even:bg-neutral-50/40`), sortable columns (model, category, origin, in service, unit cost)
+- Horizontal scroll on mobile with frozen first column
+- Source label in caption
 
-Eine gut kuratierte „Related intelligence"-Sektion ist niedrigschwellig und sehr wertvoll. Vorschlag:
+## 7. Charts
 
-1. **Eigene Sektion „Related sources / Further reading"** vor dem Footer mit Karten-Grid:
-   - **GUR war-sanctions** → Komponenten in russischen Waffen (https://war-sanctions.gur.gov.ua/en/components)
-   - **Oryx** (visuell verifizierte Verluste)
-   - **ISW** (Daily Russia Updates)
-   - **Ukraine Air Force** (Originalquelle)
-   - **CSIS Missile Threat** (Waffenprofile)
-   - **Kiel Institute Ukraine Support Tracker**
-   Jede Karte: Logo/Favicon, Titel, 1-Zeilen-Beschreibung, externer Link mit `rel="noopener external"` und `target="_blank"`.
+Apply across `MonthlyTrendChart`, `AnalyticsDashboard`, `InterceptionRateChart`:
+- Remove gradients, glow filters, soft fills > 0.15 opacity
+- Two series only: ink (Launched) + amber (Destroyed) — interception rate as a thin gray line on secondary axis
+- Visible axis ticks + labels, gridlines only horizontal at 20% opacity, source caption under each chart, units in axis title
 
-2. **Kontextuelle Inline-Verlinkung**
-   In den Waffenfamilien-Beschreibungen direkt verlinken: „Shahed-136 → siehe Komponentenanalyse bei GUR war-sanctions" — fließender, wie FT-Artikel Einzelnachweise einbauen.
+## 8. Copy pass
 
-3. **Component-Embed (optional)**
-   Wenn GUR ein offenes Modell/JSON hat: ein „Top sanctioned components found in this week's downed drones" Widget einbetten, das live von dort lädt. Sonst statisch zitieren mit Stand-Datum.
+Rewrite emotional/marketing strings to neutral analytical tone in `Index.tsx`, `HowToHelpSection`, `Methodology.tsx`, `Sources.tsx`, `Disclaimer.tsx`. Examples:
+- "Ukraine's Defense Analytics." → "Ukraine Air Defense — Operational Data"
+- "Verified airstrike and aerial attack data…" → "Daily counts of reported aerial threats and confirmed interceptions, October 2022 – present."
+- "How to Help" donate cards → plain list with org name, mandate, link, source
 
-4. **Backlinks anbieten**
-   Klare Project-Page mit Logo/Kurztext/Embed-Snippet, damit andere Tracker zurücklinken können.
+## 9. Mobile
 
-## E — Technische Verbesserungen (im Hintergrund)
+- Single-column stacking ≤ 768px
+- KPI strip becomes 2x2
+- Filter bar collapses into a `<details>` drawer
+- Tables: horizontal scroll + first-column freeze
 
-- **SEO/OG**: dynamisches OG-Image mit aktueller Total-Zahl, JSON-LD `Dataset`-Schema, Canonical, sitemap.
-- **Performance**: CSV einmal laden (heute zwei `fetch`-Calls auf dieselbe Datei), via React Query cachen.
-- **A11y**: Charts mit `aria-label` + Daten-Tabelle als Fallback, Fokus-States für Section-Nav.
-- **i18n-vorbereiten**: Texte in einer Strings-Datei, später UA/EN-Toggle.
+## Technical scope
 
-## Empfohlene erste Iteration (kompakt, hoher Hebel)
+Files edited:
+- `src/index.css`, `tailwind.config.ts` — token reset
+- `src/pages/Index.tsx` — masthead, KPI strip, filter wiring, copy
+- `src/components/SummaryStats.tsx`, `AnalyticsDashboard.tsx`, `MonthlyTrendChart.tsx`, `InterceptionRateChart.tsx`, `WeaponsCatalogSection.tsx`, `DateRangeFilter.tsx`, `DocPageLayout.tsx` — restyle, remove glow, add source labels
+- `src/pages/Methodology.tsx`, `Sources.tsx`, `Disclaimer.tsx` — copy pass
 
-1. Stacked Master-Chart oben mit Kategorie-Toggle + Brush/Zoom
-2. Key-Events-Layer
-3. Sektion „Related sources" inkl. GUR war-sanctions
-4. Methodology als eigene Sektion + Footer mit Update-Stand & CSV-Download
-5. Scroll-Spy in der Section-Nav
+Files created:
+- `src/components/ui/panel.tsx` — uniform card primitive
+- `src/components/SourceLabel.tsx` — source/uncertainty micro-component
+- `src/components/FilterBar.tsx` — country / date / weapon / source filters
+- `src/components/WeaponsTable.tsx` — sortable sticky table replacing card grid
 
-Sag mir, welche Punkte du angehen willst, dann setze ich daraus konkrete Arbeitspakete.
+Files removed/inlined:
+- `HowToHelpSection` block in `Index.tsx` rewritten to plain list
+
+No backend or data-model changes. Pure presentation + filter state.
+
+Confirm and I'll implement.
