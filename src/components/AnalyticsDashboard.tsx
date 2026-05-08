@@ -311,14 +311,8 @@ export function AnalyticsDashboard(props: Props) {
           </div>
         </div>
 
-        <Panel
-          title="Monthly composition · weapons reported launched"
-          subtitle="Stacked, monthly aggregates"
-          source={PRIMARY_SOURCE}
-          note="Mixed-fire rows attribute counts to every category referenced; minor overlap between cruise and ballistic on those nights."
-        >
-          <StackedAreaChart {...props} />
-        </Panel>
+        <CompositionPair {...props} />
+
 
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <Panel
