@@ -63,6 +63,7 @@ function SectionNav() {
     { id: "cruise", label: "Cruise missiles" },
     { id: "ballistic", label: "Ballistic missiles" },
     { id: "methodology", label: "Methodology" },
+    { id: "help", label: "How to help" },
     { id: "related", label: "Related sources" },
   ];
   const [active, setActive] = useState<string>(items[0].id);
