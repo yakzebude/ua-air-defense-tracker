@@ -291,7 +291,7 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
             <div
               key={i}
               className="h-2.5 w-5 rounded-[2px] border border-border/40"
-              style={{ background: `color-mix(in srgb, ${baseColor} ${(i * 100).toFixed(0)}%, hsl(var(--card)))` }}
+              style={{ background: `color-mix(in srgb, ${rampColor(i)} ${(60 + i * 40).toFixed(0)}%, hsl(var(--card)))` }}
             />
           ))}
         </div>
