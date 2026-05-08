@@ -686,13 +686,6 @@ const Index = () => {
         <div className="container relative pt-12 pb-10 md:pt-20 md:pb-14">
           {/* Status / kicker row */}
           <div className="flex flex-wrap items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.24em] text-muted-foreground">
-            <span className="inline-flex items-center gap-2 rounded-sm border border-cyber/40 bg-cyber/5 px-2.5 py-1 text-cyber">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping-soft rounded-full bg-cyber" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-cyber" />
-              </span>
-              Live OSINT Feed
-            </span>
             <span className="hidden sm:inline">Defence · Data Story</span>
             <span className="hidden text-foreground/60 sm:inline">Oct 2022 — present</span>
           </div>
@@ -701,14 +694,15 @@ const Index = () => {
           <div className="mt-7 grid gap-10 md:grid-cols-12 md:items-end">
             <div className="md:col-span-8 animate-fade-in-up">
               <h1 className="font-display text-[2.4rem] leading-[1.02] tracking-tight md:text-[4.25rem]">
-                Real-Time Ukraine{" "}
-                <span className="text-ua-yellow text-glow-yellow">Defense Intelligence</span>.
+                Ukraine's{" "}
+                <span className="text-ua-yellow text-glow-yellow">Defense Analytics</span>.
               </h1>
-              <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
-                Verified battlefield data, equipment losses, strike analysis, and
-                operational trends — aggregated from the Air Force Command of the
-                Armed Forces of Ukraine. Track every weapon launched, intercepted,
-                and reaching its target since October 2022.
+              <p className="mt-6 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
+                Verified airstrike and aerial attack data, interception statistics,
+                strike analysis, and operational trends — aggregated from the Air
+                Force Command of the Armed Forces of Ukraine. Track every missile
+                and drone launched, intercepted, and reaching its target since
+                October 2022.
               </p>
 
               {/* CTAs */}
