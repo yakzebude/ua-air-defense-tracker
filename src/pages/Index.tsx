@@ -891,6 +891,11 @@ const Index = () => {
         </div>
       )}
 
+      {/* ─────────────── ANALYTICS DASHBOARD ─────────────── */}
+      {ready && (
+        <AnalyticsDashboard shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />
+      )}
+
       {/* ─────────────── SECTIONS ─────────────── */}
       {shahed && shahedRange && (
         <CategorySection
