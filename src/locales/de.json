@@ -1,0 +1,330 @@
+{
+  "lang": {
+    "en": "English",
+    "de": "Deutsch",
+    "fr": "Français",
+    "uk": "Українська"
+  },
+  "nav": {
+    "uaIntel": "UA Intel",
+    "subtitle": "Air-Threat Tracker",
+    "lastDataPoint": "Letzter Datenpunkt",
+    "summary": "Zusammenfassung",
+    "analytics": "Analyse",
+    "drones": "UAVs",
+    "cruise": "Marschflugk.",
+    "ballistic": "Ballistisch",
+    "arsenal": "Arsenal",
+    "methodology": "Methodik",
+    "sources": "Quellen",
+    "help": "Wie man hilft"
+  },
+  "theme": {
+    "toLight": "Zum hellen Modus wechseln",
+    "toDark": "Zum dunklen Modus wechseln"
+  },
+  "kpi": {
+    "totalLaunched": "Gesamt gestartet",
+    "totalLaunchedSub": "UAVs, Marschflugkörper & Ballistik kombiniert",
+    "confirmedDestroyed": "Bestätigt zerstört",
+    "confirmedDestroyedSub": "Abfangungen durch Luftverteidigung",
+    "interceptionRate": "Abfangrate",
+    "reachedTarget": "Zielgebiet erreicht",
+    "reachedTargetSub": "Geschätzte Durchbrüche",
+    "launchedReported": "Gestartet (gemeldet)",
+    "destroyedConfirmed": "Zerstört (bestätigt)",
+    "confirmedInterceptions": "bestätigte Abfangungen",
+    "ofSep": "von",
+    "leakerPctSuffix": "% der Starts"
+  },
+  "masthead": {
+    "kicker": "OSINT · Air-threat tracker",
+    "title": "Ukraine Luftverteidigung — Aggregierte Daten",
+    "intro": "Monatliche Anzahl gemeldeter Bedrohungen aus der Luft und bestätigter Abfangungen über der Ukraine, Okt 2022 – heute. Die Daten stammen aus täglichen Berichten des Ukrainian Air Force Command und werden auf Kalendermonate aggregiert. Zahlen unterliegen Revisionen.",
+    "primarySource": "Primärquelle ↗",
+    "methodology": "Methodik",
+    "disclaimer": "Haftungsausschluss",
+    "sourceRange": "Quelle: {{source}} · Zeitraum: Okt 2022 – {{last}}",
+    "loading": "Datensatz wird geladen…",
+    "loadFailed": "Laden des Datensatzes fehlgeschlagen:"
+  },
+  "primarySource": "Air Force Command of the Armed Forces of Ukraine (wöchentliche Berichte, via Kaggle Datensatz, Petro Ivaniuk)",
+  "primarySourceShort": "Air Force Command of the Armed Forces of Ukraine (via Kaggle)",
+  "category": {
+    "uavs": "UAVs",
+    "cruise": "Marschflugkörper",
+    "ballistic": "Ballistisch",
+    "drones": {
+      "kicker": "01 · Unbemannte Luftfahrzeuge",
+      "title": "UAV-Starts gegen die Ukraine",
+      "description": "Alle in den täglichen Kommuniqués der Ukrainian Air Force gemeldeten UAVs — Shahed-136/131 Loitering Munition iranischer Bauart, die Lancet-Familie, russische Orlan / ZALA / Supercam Aufklärungs-UAVs, Mohajer-6, Forpost und andere Typen — mit bestätigten Abfangungen. Marschflugkörper und ballistische Systeme werden unten separat erfasst.",
+      "unit": "UAVs"
+    },
+    "cruiseSection": {
+      "kicker": "02 · Marschflugkörper & Luft-Boden",
+      "title": "Marschflugkörper",
+      "description": "Marschflugkörper und Luft-Boden-Raketen — Kalibr, X-101/X-555, X-22, X-32, X-59/X-69, X-31, X-35, Iskander-K und P-800 Oniks. In der Regel Unterschall; historisch höhere Abfangraten als bei ballistischen Systemen.",
+      "unit": "Raketen"
+    },
+    "ballisticSection": {
+      "kicker": "03 · Ballistisch & Quasi-ballistisch",
+      "title": "Ballistische Raketen",
+      "description": "Ballistische und quasi-ballistische Systeme — Iskander-M / KN-23, X-47 Kinzhal, 3M22 Zircon, ICBMs und S-300 / S-400 im Boden-Boden-Modus. Hohe Geschwindigkeit und Flugbahn führen typischerweise zu den niedrigsten Abfangraten.",
+      "unit": "Raketen"
+    },
+    "monthlyPanel": "Monatliche {{unit}} — gestartet vs. zerstört",
+    "peakNote": "Spitzenmonat im Zeitraum: {{month}} — {{launched}} {{unit}} gemeldet, {{destroyed}} zerstört ({{rate}}% abgefangen)."
+  },
+  "chart": {
+    "launched": "Gestartet",
+    "destroyed": "Zerstört",
+    "interceptionRate": "Abfangrate",
+    "interceptionRateRight": "Abfangrate (rechte Achse)",
+    "total": "Gesamt",
+    "share": "Anteil der Starts",
+    "shareSuffix": "% der Starts"
+  },
+  "dateRange": {
+    "label": "Zeitraum",
+    "all": "Gesamter Zeitraum"
+  },
+  "analytics": {
+    "kicker": "Analyse",
+    "title": "Kategorienzusammensetzung und Abfangrate",
+    "intro": "Monatliche Zusammensetzung der gemeldeten Starts von UAVs, Marschflugkörpern und ballistischen Systemen, inklusive Abfangleistung und ein Kalender der Eskalation seit Oktober 2022.",
+    "uavMonthly": "UAV-Starts · monatlich",
+    "uavMonthlySub": "Loitering Munition & Aufklärungs-UAVs",
+    "uavMonthlyNote": "Enthält Shahed-136/131, Lancet, Orlan, ZALA, Supercam und andere UAV-Typen aus täglichen Air Force Kommuniqués.",
+    "cruiseBalMonthly": "Marschflugkörper & Ballistik · monatlich",
+    "cruiseBalMonthlySub": "Gestapelt, monatliche Aggregate",
+    "cruiseBalMonthlyNote": "Einträge mit gemischtem Beschuss ordnen die Zahlen jeder genannten Kategorie zu; geringfügige Überschneidungen zwischen Marschflugkörpern und Ballistik an diesen Abenden.",
+    "sharePanel": "Anteil & Abfangleistung",
+    "sharePanelSub": "Gesamtzeitraum · bestätigt / gestartet",
+    "calendarPanel": "Eskalationskalender",
+    "calendarPanelSub": "Jahr × Monat · gemeldete Starts",
+    "all": "Alle",
+    "less": "Weniger",
+    "more": "Mehr · Spitze {{n}}",
+    "monthCellTitle": "{{month}} {{year}}: {{n}} gemeldete Starts"
+  },
+  "arsenal": {
+    "kicker": "Arsenal · Waffenkatatalog",
+    "title": "Gegen die Ukraine eingesetzte russische Waffensysteme",
+    "intro": "Referenzprofile für UAVs, Marschflugkörper, ballistische Systeme, SAM und Lenkbomben. Filtern Sie nach Kategorie, Herkunft oder suchen Sie nach Modell, NATO-Bezeichnung oder Hersteller. Profile dienen nur zur Referenz und können Ungenauigkeiten enthalten.",
+    "source": "Open-Source-Referenzdaten, intern zusammengestellt; abgeglichen mit CSIS Missile Threat und öffentlichen Quellen",
+    "note": "Referenzdaten — Angaben wie Stückkosten und Dienstantritt sind Schätzungen und können je nach Quelle variieren.",
+    "all": "Alle",
+    "uavs": "UAVs",
+    "cruise": "Marschflugkörper",
+    "ballistic": "Ballistisch",
+    "sam": "SAM",
+    "guidedBombs": "Lenkbomben",
+    "allOrigins": "Alle Herkunftsländer",
+    "search": "Suche Modell, NATO-Name…",
+    "system": "System",
+    "category": "Kategorie",
+    "origin": "Herkunft",
+    "launched": "Gestartet",
+    "intercepted": "Abgefangen",
+    "rate": "Rate",
+    "inService": "Im Einsatz",
+    "guidance": "Lenkung",
+    "unitCost": "Stückkosten (gesch.)",
+    "noMatch": "Keine Systeme entsprechen diesen Filtern.",
+    "system_one": "System",
+    "system_other": "Systeme",
+    "showing": "gezeigt",
+    "showFewer": "Weniger anzeigen",
+    "showAll": "Alle {{n}} Systeme anzeigen",
+    "natoPrefix": "NATO ·"
+  },
+  "methodologyInline": {
+    "kicker": "Methodik",
+    "title": "Wie die Zahlen ermittelt werden",
+    "p1Pre": "Tägliche Berichte des Ukrainian Air Force Command werden aus einem öffentlichen CSV-Mirror (Petro Ivaniuk, Kaggle) extrahiert und auf Kalendermonate in UTC aggregiert.",
+    "launched": "Gestartet",
+    "destroyed": "zerstört",
+    "reachedTarget": "Zielgebiet erreicht",
+    "p1Post": "spiegelt die von ukrainischen Quellen gemeldeten Werte wider; bezieht sich nur auf bestätigte Abfangungen. Durch EW gestörte, abgestürzte oder ohne Abfangung einschlagende Waffen werden nicht als zerstört gezählt und unter Zielgebiet erreicht aufgeführt.",
+    "p2": "Zeilen, die mehrere Waffentypen in einem Angriff mischen (z. B. „X-101/X-555 und Iskander-K“), ordnen die Zahlen jeder genannten Kategorie zu. Dies führt zu einer kleinen Überschneidung zwischen den Kategorien Marschflugkörper und Ballistik an einigen Nächten mit gemischtem Beschuss.",
+    "p3Pre": "Zeitraum: Oktober 2022 – heute. Alle Zahlen sollten als ",
+    "p3Reported": "gemeldet",
+    "p3Mid": " und nicht als unabhängig verifiziert betrachtet werden. Siehe die ",
+    "p3FullMethodology": "vollständige Methodik",
+    "p3And": " und ",
+    "p3SourceList": "Quellenliste",
+    "p3End": "."
+  },
+  "related": {
+    "kicker": "Weitere Lektüre",
+    "title": "Verwandte Quellen",
+    "intro": "Dieser Tracker erfasst nur das Volumen gemeldeter Bedrohungen aus der Luft. Die unten verlinkten Projekte decken Komponenten, Ausrüstungsverluste, Kampagnenanalysen und Hilfsströme ab.",
+    "open": "Öffnen ↗",
+    "items": {
+      "gur": {
+        "name": "GUR · war-sanctions",
+        "blurb": "In russischen Raketen und UAVs identifizierte ausländische Komponenten. Gepflegt vom ukrainischen Militärgeheimdienst (HUR).",
+        "tag": "Komponenten"
+      },
+      "uaf": {
+        "name": "Ukrainian Air Force",
+        "blurb": "Originale tägliche Berichte über gestartete und abgefangene Waffen — die Primärquelle dieses Datensatzes.",
+        "tag": "Primärquelle"
+      },
+      "oryx": {
+        "name": "Oryx",
+        "blurb": "Open-Source, fotoverifizierte Aufzeichnung von Ausrüstungsverlusten auf beiden Seiten des Krieges.",
+        "tag": "Verifizierte Verluste"
+      },
+      "isw": {
+        "name": "ISW · Tägliche Updates",
+        "blurb": "Institute for the Study of War — tägliche Einschätzungen und operative Karten.",
+        "tag": "Analyse"
+      },
+      "csis": {
+        "name": "CSIS · Missile Threat",
+        "blurb": "Referenzprofile für Marschflugkörper, ballistische und Hyperschallwaffen, die gegen die Ukraine eingesetzt werden.",
+        "tag": "Referenz"
+      },
+      "kiel": {
+        "name": "Kiel · Ukraine Support Tracker",
+        "blurb": "Quantifiziert militärische, finanzielle und humanitäre Hilfe für die Ukraine durch westliche Regierungen.",
+        "tag": "Hilfe"
+      }
+    }
+  },
+  "donate": {
+    "kicker": "Wie man hilft",
+    "title": "Geprüfte Spendenorganisationen",
+    "intro": "Etablierte ukrainische und internationale Organisationen für militärische Unterstützung und humanitäre Hilfe. UA Intel sammelt keine Gelder und ist nicht mit den aufgeführten Organisationen verbunden.",
+    "cta": "Spenden ↗",
+    "tags": {
+      "mixed": "Gemischt",
+      "military": "Militärisch",
+      "humanitarian": "Humanitär"
+    },
+    "items": {
+      "u24": "Offizielle Fundraising-Plattform des Büros des Präsidenten der Ukraine — Verteidigung, Entminung, medizinische Hilfe, Wiederaufbau.",
+      "comeBackAlive": "Ukrainische Wohltätigkeitsorganisation zur Unterstützung der Streitkräfte — Ausrüstung, Training, Veteranenhilfe (seit 2014).",
+      "prytula": "Finanziert Aufklärungs-UAVs, Fahrzeuge und Schutzausrüstung; betreibt auch humanitäre Projekte.",
+      "razom": "In den USA ansässige gemeinnützige Organisation für taktische medizinische Versorgung, Notfallhilfe und Interessenvertretung.",
+      "hospitallers": "Freiwilliges Sanitäterbataillon zur Evakuierung verwundeter Soldaten und Zivilisten von der Front.",
+      "voices": "Psychologische und humanitäre Unterstützung für vom Krieg betroffene Kinder."
+    }
+  },
+  "footer": {
+    "tagline": "UA Intel · monatliche Aggregate aus wöchentlichen Berichten der Ukrainian Air Force",
+    "lastDataPoint": "Letzter Datenpunkt:",
+    "downloadCsv": "CSV herunterladen ↓",
+    "methodology": "Methodik",
+    "sources": "Quellen",
+    "disclaimer": "Haftungsausschluss",
+    "dataNote": "Datenhinweis.",
+    "dataNoteBody": "Zahlen stammen aus offenen Quellen und können Fehler, Auslassungen oder Revisionen enthalten. Der Datensatz spiegelt gemeldete Starts und bestätigte Abfangungen wider; Werte für gestörte, verschollene oder unverifizierte Waffen sind nicht enthalten. Zahlen werden rollierend geprüft und aktualisiert."
+  },
+  "doc": {
+    "back": "← Zurück zum Dashboard",
+    "topBack": "UA Intel"
+  },
+  "methodologyPage": {
+    "eyebrow": "Methodik",
+    "title": "Wie wir tägliche Berichte in Analysen verwandeln.",
+    "intro": "Jede Zahl auf dem UA Defense Tracker stammt aus einer einzigen, vollständig offenen Primärquelle: den täglichen Luftverteidigungsberichten des Air Force Command of the Armed Forces of Ukraine. Diese Seite dokumentiert den genauen Prozess, die Definitionen und die Grenzen des Dashboards.",
+    "s1Title": "Primärquelle",
+    "s1p1": "Wir aggregieren die täglichen Berichte, die auf den offiziellen Kanälen des <strong>Air Force Command of the Armed Forces of Ukraine</strong> (Повітряні сили ЗСУ) veröffentlicht werden. Der strukturierte CSV-Mirror wird vom Open-Source-Datensatz <a>“Massive Missile Attacks on Ukraine”</a> auf Kaggle gepflegt, der die täglichen Telegram/Facebook-Posts in eine normalisierte Zeitreihe umwandelt.",
+    "s1p2": "Die Erfassung beginnt im <strong>Oktober 2022</strong>, dem ersten Monat mit konsistenter täglicher Offenlegung von gestarteten und zerstörten Anzahlen pro Waffenmodell, und reicht bis zum neuesten veröffentlichten Bericht.",
+    "s2Title": "Aktualisierungszyklus",
+    "s2p1": "Der vorgelagerte Datensatz wird aktualisiert, wenn neue tägliche Berichte veröffentlicht werden — normalerweise innerhalb weniger Stunden nach dem morgendlichen Air Force Briefing. Unser Dashboard liest die CSV bei jedem Laden der Seite neu ein. Der Status „Letzte Aktualisierung“ spiegelt also den neuesten <strong>Datenpunkt</strong> in der Datei wider, nicht den Zeitpunkt Ihres Besuchs.",
+    "s2callLabel": "Live-Daten-Atmosphäre — was das bedeutet",
+    "s2callBody": "Wir rufen keinen Streaming-Feed ab. Das Interface ist um einen täglichen Rhythmus herum aufgebaut. Behandeln Sie stündliche Änderungen als Rauschen; vertrauen Sie auf Bewegungen auf Tages- und Monatsebene.",
+    "s3Title": "Definitionen",
+    "s3p1": "<strong>Gestartet.</strong> Die Anzahl der Waffen eines Modells, deren Eindringen in den ukrainischen Luftraum oder Beschuss auf ukrainisches Territorium die ukrainische Luftverteidigung im Berichtszeitraum beobachtet hat.",
+    "s3p2": "<strong>Zerstört.</strong> Die Anzahl dieser Waffen, welche die ukrainische Luftverteidigung als abgefangen, unterdrückt oder anderweitig neutralisiert meldet, bevor sie ihr Ziel erreichten.",
+    "s3p3": "<strong>Durchflussrate.</strong> Berechnet als <code>gestartet − zerstört</code> — die Anzahl der Waffen, deren Abfangung nicht bestätigt wurde. Dies ist eine Obergrenze für Einschläge, da einige Waffen im Flug versagen, gestört werden oder in unbewohntem Gebiet landen.",
+    "s3p4": "<strong>Abfangrate.</strong> <code>zerstört ÷ gestartet</code>, ausgedrückt in Prozent. Berechnet pro Kategorie und Monat.",
+    "s4Title": "Kategorie-Zuordnung",
+    "s4p1": "Jede Zeile in der Quell-CSV listet eines oder mehrere Waffenmodelle auf. Wir ordnen die Zeilen drei Waffenfamilien zu:",
+    "s4l1": "<strong>UAVs (Shahed, etc.).</strong> Loitering Munition, identifiziert als <em>Shahed-136/131</em>.",
+    "s4l2": "<strong>Marschflugkörper / Luft-Boden.</strong> Kalibr, X-101 / X-555, X-22, X-59 / X-69, Iskander-K, P-800 Oniks und andere Marschflugkörpersysteme.",
+    "s4l3": "<strong>Ballistisch.</strong> Iskander-M / KN-23, Kinzhal, 3M22 Zircon, S-300/S-400 im Boden-Boden-Modus und Systeme der ICBM-Klasse.",
+    "s4p2": "Zeilen mit gemischten Modellen (z. B. „Kalibr + Iskander-M“) tragen zu <strong>jeder aufgeführten Kategorie</strong> bei. Dies ist eine konservative Methode für Gesamtzahlen über Kategorien hinweg, entspricht aber der Art und Weise, wie die Air Force selbst kombinierte Angriffe meldet.",
+    "s5Title": "Aggregation",
+    "s5p1": "Tägliche Einträge werden nach dem <strong>Startdatum</strong> des Berichtszeitraums in Kalendermonate (UTC) gruppiert. Diagramme stellen die kontinuierliche Monatsachse ab Oktober 2022 dar, einschließlich Monaten ohne Aktivität, damit Eskalationsmuster nicht visuell gestaucht werden.",
+    "s6Title": "Einschränkungen",
+    "s6l1": "<strong>Einseitige Quellenlage.</strong> Alle Zahlen stammen von einer Konfliktpartei. Wir beziehen keine Behauptungen des russischen MoD ein, da diese systematisch inkonsistent sind.",
+    "s6l2": "<strong>Erfassungsschwelle.</strong> Sehr kleine oder Tarnkappen-Systeme könnten bei „gestartet“ untererfasst sein.",
+    "s6l3": "<strong>Zurechnung der Zerstörung.</strong> Einige Waffen stürzen ab, werden gestört oder durch EW statt durch kinetisches Abfangen ausgeschaltet. Die Air Force zählt diese als „zerstört“; wir folgen dieser Konvention.",
+    "s6l4": "<strong>Korrekturen unter dem Monat.</strong> Gelegentlich werden Gesamtzahlen in späteren Berichten revidiert; wir spiegeln immer die neueste CSV wider.",
+    "s7Title": "Eigene Überprüfung",
+    "s7p1": "Jede Zahl auf dieser Seite ist aus der öffentlichen CSV reproduzierbar. Sie können die Rohdatei herunterladen und jedes Diagramm in einer Tabellenkalkulation nachbauen:",
+    "s7Download": "↓ Roh-CSV herunterladen",
+    "s7Upstream": "Vorgelagerten Datensatz ansehen"
+  },
+  "sourcesPage": {
+    "eyebrow": "Quellen & Verifizierung",
+    "title": "Woher jede Zahl kommt.",
+    "intro": "Transparente Quellenarbeit ist die wichtigste Eigenschaft von OSINT. Diese Seite listet jede Quelle auf, die in das Dashboard einfließt, welche Rolle sie spielt und wie man sie unabhängig überprüft.",
+    "calloutLabel": "Eine Primärquelle · viele Querverweise",
+    "calloutBody": "Jede numerische Figur auf dem UA Defense Tracker lässt sich auf eine einzige Primärquelle zurückführen — das Air Force Command of the Armed Forces of Ukraine. Die anderen unten stehenden Quellen bieten unabhängigen Kontext, aber keine numerischen Daten.",
+    "s1Title": "Quellenverzeichnis",
+    "s2Title": "Wie man eine Zahl verifiziert",
+    "s2l1Pre": "Laden Sie die ",
+    "s2l1Link": "Roh-CSV",
+    "s2l1Post": " herunter, die mit dieser Seite bereitgestellt wird (identisch mit dem Kaggle-Mirror zum Zeitpunkt des Abrufs).",
+    "s2l2": "Filtern Sie die Zeilen nach Zeitraum und Waffenmodell entsprechend dem Diagramm, das Sie prüfen möchten.",
+    "s2l3Pre": "Summieren Sie die Spalten ",
+    "s2l3Launched": "launched",
+    "s2l3And": " und ",
+    "s2l3Destroyed": "destroyed",
+    "s2l3Post": ".",
+    "s2l4": "Gleichen Sie das Ergebnis mit dem originalen Air Force Bericht für diesen Tag in der oben genannten Primärquelle ab.",
+    "s3Title": "Was wir explizit nicht als Quelle nutzen",
+    "s3l1": "<strong>Behauptungen des russischen MoD.</strong> Ausgeschlossen aufgrund wiederholt dokumentierter Inkonsistenzen.",
+    "s3l2": "<strong>Social-Media-Sichtungen ohne Herkunft.</strong> Nicht integriert; OSINT erfordert reproduzierbare Ketten.",
+    "s3l3": "<strong>Opferzahlen.</strong> Liegt außerhalb des Rahmens dieses Dashboards.",
+    "roles": {
+      "Primary": "Primär",
+      "Mirror": "Spiegelung",
+      "Secondary": "Sekundär",
+      "Reference": "Referenz"
+    },
+    "items": {
+      "afc": "Tägliche Berichte über gegen die Ukraine gestartete Waffen und Abfangungen durch die Luftverteidigung, nach Modell. Die einzige vorgelagerte Quelle für jede Zahl in diesem Dashboard.",
+      "kaggle": "Open-Source CSV-Mirror der täglichen Air-Force-Berichte, normalisiert in eine strukturierte Zeitreihe. Wir rufen diese Datei bei jedem Seitenaufruf neu ab.",
+      "genstaff": "Tägliche Gesamtzahlen zu Personal- und Ausrüstungsverlusten auf beiden Seiten. Nützlicher Kontext, wird hier aber nicht als numerische Eingabe verwendet.",
+      "oryx": "Fotoverifizierte Aufzeichnung von Ausrüstungsverlusten auf beiden Seiten. Unabhängige visuelle Bestätigung; Methodik unterscheidet sich von unserer und Zahlen sind nicht direkt vergleichbar.",
+      "liveuamap": "Echtzeit-Karte mit geokalisierten Vorfällen. Nützlich zur Kontextualisierung der Einschlagsorte; keine numerische Eingabe.",
+      "isw": "Tägliche analytische Einschätzungen des Krieges. Empfohlen für den narrativen Kontext hinter den hier gezeigten Zahlen."
+    }
+  },
+  "disclaimerPage": {
+    "eyebrow": "Haftungsausschluss",
+    "title": "Was diese Seite ist — und was sie nicht ist.",
+    "intro": "UA Defense Tracker ist eine unabhängige, nicht-kommerzielle OSINT-Visualisierung. Lesen Sie diese Seite, bevor Sie die Zahlen zitieren.",
+    "calloutLabel": "Unabhängigkeit",
+    "calloutBody": "Dieses Projekt ist <strong>nicht verbunden mit</strong> der Regierung der Ukraine, den Streitkräften der Ukraine, der NATO, der Europäischen Union oder irgendeinem Geheimdienst. Es ist eine offene Visualisierungsebene über einem öffentlichen Datensatz.",
+    "s1Title": "Natur der Daten",
+    "s1p1": "Alle Zahlen stammen aus offiziellen täglichen Berichten des Air Force Command of the Armed Forces of Ukraine. Daher spiegeln sie die Berichterstattung einer Partei in einem aktiven bewaffneten Konflikt wider. Zahlen können rückwirkend revidiert werden. Wir stellen immer die neueste Version des Datensatzes bereit.",
+    "s2Title": "Nebel des Krieges",
+    "s2p1Pre": "In jedem aktiven Konflikt sind Echtzeit-Zahlen unvollkommen. Beobachtung, Zurechnung und Ergebniseinschätzung unterliegen operativer Unsicherheit. Lesen Sie die Seite zur ",
+    "s2p1Link": "Methodik",
+    "s2p1Post": " für eine vollständige Liste der Einschränkungen.",
+    "s3Title": "Nutzung der Visualisierungen",
+    "s3p1": "Sie können die Visualisierungen auf dieser Seite gerne teilen, einbetten, Screenshotten und für journalistische, analytische, pädagogische und Forschungszwecke zitieren, vorausgesetzt Sie:",
+    "s3l1": "Schreiben die zugrunde liegenden Daten dem Air Force Command of the Armed Forces of Ukraine zu.",
+    "s3l2": "Verlinken nach Möglichkeit zurück auf dieses Dashboard.",
+    "s3l3": "Stellen abgeleitete Zahlen nicht so dar, als wären sie von uns unabhängig verifiziert worden.",
+    "s4Title": "Keine operative Anleitung",
+    "s4p1": "Nichts auf dieser Seite stellt eine militärische Beratung, Zielinformationen, Bedrohungsanalysen für den Zivilschutz oder Investitionsempfehlungen dar. Das Dashboard ist eine retrospektive und echtzeitnahe analytische Ansicht, kein Frühwarnsystem.",
+    "s5Title": "Datenschutz & Sicherheit",
+    "s5l1": "<strong>Es werden keine personenbezogenen Daten erhoben.</strong> Die Seite hat kein Login, keine Kommentare und keine Benutzerkonten.",
+    "s5l2": "<strong>Statische, schreibgeschützte Architektur.</strong> Das Dashboard ist eine reine Client-Anwendung: Es liest eine öffentliche CSV-Datei und rendert Diagramme in Ihrem Browser. Es gibt kein Backend, das Abfragen oder Verhalten speichert.",
+    "s5l3": "<strong>Transportsicherheit.</strong> Alle Inhalte, einschließlich der CSV, werden über HTTPS übertragen.",
+    "s5l4": "<strong>Keine Drittanbieter-Tracker</strong> außer dem, was Ihr Hosting-Provider möglicherweise auf Netzwerkebene hinzufügt.",
+    "s6Title": "Korrekturen",
+    "s6p1": "Wenn Sie einen Fehler bei der Aggregation, Zuordnung oder Beschriftung entdecken, öffnen Sie bitte ein Issue im Quell-Repository oder kontaktieren Sie den Maintainer. Fehler werden direkt korrigiert; größere Änderungen werden im Changelog des vorgelagerten Datensatzes vermerkt."
+  },
+  "panel": {
+    "source": "Quelle:"
+  }
+}
