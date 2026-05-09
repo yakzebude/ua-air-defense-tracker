@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Search, ArrowUpDown, ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { loadWeaponsCatalog, type Weapon } from "@/lib/weapons-catalog";
 import { loadModelStats, lookupModelStats, type ModelStats } from "@/lib/model-stats";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -8,18 +9,10 @@ import { Panel } from "@/components/ui/panel";
 const fmt = (n: number) => n.toLocaleString("en-US");
 const COLLAPSED_ROWS = 5;
 
-const CATEGORIES = [
-  { key: "all", label: "All" },
-  { key: "UAV", label: "UAVs" },
-  { key: "cruise missile", label: "Cruise" },
-  { key: "ballistic missile", label: "Ballistic" },
-  { key: "surface-to-air missile", label: "SAM" },
-  { key: "guided bomb", label: "Guided bombs" },
-];
-
 type SortKey = "model" | "category" | "national_origin" | "in_sevice" | "unit_cost";
 
 export function WeaponsCatalogSection() {
+  const { t } = useTranslation();
   const [weapons, setWeapons] = useState<Weapon[] | null>(null);
   const [stats, setStats] = useState<Map<string, ModelStats> | null>(null);
   const [cat, setCat] = useState<string>("all");
@@ -34,8 +27,16 @@ export function WeaponsCatalogSection() {
     loadModelStats().then(setStats).catch(() => setStats(new Map()));
   }, []);
 
-  // Reset collapsed state when filters change
   useEffect(() => { setExpanded(false); }, [cat, origin, q]);
+
+  const CATEGORIES = [
+    { key: "all", label: t("arsenal.all") },
+    { key: "UAV", label: t("arsenal.uavs") },
+    { key: "cruise missile", label: t("arsenal.cruise") },
+    { key: "ballistic missile", label: t("arsenal.ballistic") },
+    { key: "surface-to-air missile", label: t("arsenal.sam") },
+    { key: "guided bomb", label: t("arsenal.guidedBombs") },
+  ];
 
   const origins = useMemo(() => {
     if (!weapons) return [];
@@ -72,23 +73,16 @@ export function WeaponsCatalogSection() {
     <section id="arsenal" className="scroll-mt-24 border-t border-border">
       <div className="container py-12 md:py-16">
         <div className="mb-6 max-w-3xl">
-          <div className="src-label mb-2">Arsenal · weapon catalog</div>
+          <div className="src-label mb-2">{t("arsenal.kicker")}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
-            Russian weapon systems used against Ukraine
+            {t("arsenal.title")}
           </h2>
           <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
-            Reference profiles for UAVs, cruise, ballistic, SAM and guided-bomb systems
-            tracked in the dataset. Filter by category, origin or search by model, NATO
-            designation or manufacturer. Profiles are reference-only and may contain
-            inaccuracies.
+            {t("arsenal.intro")}
           </p>
         </div>
 
-        <Panel
-          source="Open-source reference data, compiled internally; cross-checked against CSIS Missile Threat and public sources"
-          note="Reference data — figures such as unit cost and service entry are estimates and may vary by source."
-        >
-          {/* Controls */}
+        <Panel source={t("arsenal.source")} note={t("arsenal.note")}>
           <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="flex flex-wrap gap-1">
               {CATEGORIES.map((c) => {
@@ -115,7 +109,7 @@ export function WeaponsCatalogSection() {
                 className="rounded-sm border border-border bg-card px-2 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-foreground"
               >
                 {origins.map((o) => (
-                  <option key={o} value={o}>{o === "all" ? "All origins" : o}</option>
+                  <option key={o} value={o}>{o === "all" ? t("arsenal.allOrigins") : o}</option>
                 ))}
               </select>
               <div className="relative">
@@ -123,14 +117,13 @@ export function WeaponsCatalogSection() {
                 <input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  placeholder="Search model, NATO name…"
+                  placeholder={t("arsenal.search")}
                   className="w-56 rounded-sm border border-border bg-card py-1.5 pl-7 pr-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-foreground/40"
                 />
               </div>
             </div>
           </div>
 
-          {/* Table */}
           {!weapons ? (
             <div className="space-y-2">
               {Array.from({ length: 6 }).map((_, i) => (
@@ -139,43 +132,40 @@ export function WeaponsCatalogSection() {
             </div>
           ) : filtered.length === 0 ? (
             <div className="rounded-sm border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-              No systems match these filters.
+              {t("arsenal.noMatch")}
             </div>
           ) : (
             <>
               <div className="src-label mb-2">
-                {filtered.length} {filtered.length === 1 ? "system" : "systems"}
+                {filtered.length} {filtered.length === 1 ? t("arsenal.system_one") : t("arsenal.system_other")}
                 {!expanded && filtered.length > COLLAPSED_ROWS && (
-                  <span> · showing {COLLAPSED_ROWS}</span>
+                  <span> · {t("arsenal.showing")} {COLLAPSED_ROWS}</span>
                 )}
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-[13px]">
                   <thead>
                     <tr className="sticky top-0 z-10 bg-card">
-                      <Th onClick={() => toggleSort("model")} active={sortKey === "model"} asc={sortAsc}>System</Th>
-                      <Th onClick={() => toggleSort("category")} active={sortKey === "category"} asc={sortAsc}>Category</Th>
-                      <Th onClick={() => toggleSort("national_origin")} active={sortKey === "national_origin"} asc={sortAsc}>Origin</Th>
-                      <Th>Launched</Th>
-                      <Th>Intercepted</Th>
-                      <Th>Rate</Th>
-                      <Th onClick={() => toggleSort("in_sevice")} active={sortKey === "in_sevice"} asc={sortAsc}>In service</Th>
-                      <Th>Guidance</Th>
-                      <Th onClick={() => toggleSort("unit_cost")} active={sortKey === "unit_cost"} asc={sortAsc}>Unit cost (est.)</Th>
+                      <Th onClick={() => toggleSort("model")} active={sortKey === "model"} asc={sortAsc}>{t("arsenal.system")}</Th>
+                      <Th onClick={() => toggleSort("category")} active={sortKey === "category"} asc={sortAsc}>{t("arsenal.category")}</Th>
+                      <Th onClick={() => toggleSort("national_origin")} active={sortKey === "national_origin"} asc={sortAsc}>{t("arsenal.origin")}</Th>
+                      <Th>{t("arsenal.launched")}</Th>
+                      <Th>{t("arsenal.intercepted")}</Th>
+                      <Th>{t("arsenal.rate")}</Th>
+                      <Th onClick={() => toggleSort("in_sevice")} active={sortKey === "in_sevice"} asc={sortAsc}>{t("arsenal.inService")}</Th>
+                      <Th>{t("arsenal.guidance")}</Th>
+                      <Th onClick={() => toggleSort("unit_cost")} active={sortKey === "unit_cost"} asc={sortAsc}>{t("arsenal.unitCost")}</Th>
                     </tr>
                   </thead>
                   <tbody>
                     {(expanded ? filtered : filtered.slice(0, COLLAPSED_ROWS)).map((w, i) => {
                       const ms = stats ? lookupModelStats(stats, w.model) : null;
                       return (
-                        <tr
-                          key={w.model}
-                          className={`border-t border-border ${i % 2 === 1 ? "bg-secondary/40" : ""}`}
-                        >
+                        <tr key={w.model} className={`border-t border-border ${i % 2 === 1 ? "bg-secondary/40" : ""}`}>
                           <td className="px-3 py-2.5 align-top">
                             <div className="font-semibold text-foreground">{w.name || w.model}</div>
                             {w.name_NATO && (
-                              <div className="src-label mt-0.5">NATO · {w.name_NATO}</div>
+                              <div className="src-label mt-0.5">{t("arsenal.natoPrefix")} {w.name_NATO}</div>
                             )}
                             <div className="src-label mt-0.5 text-muted-foreground/70">{w.type || ""}</div>
                           </td>
@@ -201,12 +191,8 @@ export function WeaponsCatalogSection() {
                     onClick={() => setExpanded((v) => !v)}
                     className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-card px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-foreground transition-colors hover:bg-secondary"
                   >
-                    {expanded
-                      ? "Show fewer"
-                      : `Show all ${filtered.length} systems`}
-                    <ChevronDown
-                      className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-180" : ""}`}
-                    />
+                    {expanded ? t("arsenal.showFewer") : t("arsenal.showAll", { n: filtered.length })}
+                    <ChevronDown className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-180" : ""}`} />
                   </button>
                 </div>
               )}

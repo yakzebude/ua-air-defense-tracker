@@ -1,6 +1,8 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface Props {
   eyebrow: string;
@@ -10,15 +12,19 @@ interface Props {
 }
 
 export function DocPageLayout({ eyebrow, title, intro, children }: Props) {
+  const { t } = useTranslation();
   return (
     <main className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border bg-background">
-        <div className="container flex items-center justify-between py-2.5 font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
+        <div className="container flex items-center justify-between gap-4 py-2.5 font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
           <Link to="/" className="inline-flex items-center gap-2 transition-colors hover:text-foreground">
             <ArrowLeft className="h-3.5 w-3.5" />
-            UA Intel
+            {t("doc.topBack")}
           </Link>
-          <span className="hidden md:inline">{eyebrow}</span>
+          <div className="flex items-center gap-4">
+            <span className="hidden md:inline">{eyebrow}</span>
+            <LanguageSwitcher />
+          </div>
         </div>
       </header>
 
@@ -42,11 +48,11 @@ export function DocPageLayout({ eyebrow, title, intro, children }: Props) {
 
       <footer className="border-t border-border">
         <div className="container flex flex-wrap items-center justify-between gap-3 py-5 font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
-          <Link to="/" className="hover:text-foreground">← Back to dashboard</Link>
+          <Link to="/" className="hover:text-foreground">{t("doc.back")}</Link>
           <div className="flex flex-wrap gap-4">
-            <Link to="/methodology" className="hover:text-foreground">Methodology</Link>
-            <Link to="/sources" className="hover:text-foreground">Sources</Link>
-            <Link to="/disclaimer" className="hover:text-foreground">Disclaimer</Link>
+            <Link to="/methodology" className="hover:text-foreground">{t("nav.methodology")}</Link>
+            <Link to="/sources" className="hover:text-foreground">{t("nav.sources")}</Link>
+            <Link to="/disclaimer" className="hover:text-foreground">{t("footer.disclaimer")}</Link>
           </div>
         </div>
       </footer>

@@ -1,0 +1,330 @@
+{
+  "lang": {
+    "en": "English",
+    "de": "Deutsch",
+    "fr": "Français",
+    "uk": "Українська"
+  },
+  "nav": {
+    "uaIntel": "UA Intel",
+    "subtitle": "Air-Threat Tracker",
+    "lastDataPoint": "Dernière donnée",
+    "summary": "Résumé",
+    "analytics": "Analyses",
+    "drones": "UAVs",
+    "cruise": "Croisière",
+    "ballistic": "Balistique",
+    "arsenal": "Arsenal",
+    "methodology": "Méthodologie",
+    "sources": "Sources",
+    "help": "Comment aider"
+  },
+  "theme": {
+    "toLight": "Passer au mode clair",
+    "toDark": "Passer au mode sombre"
+  },
+  "kpi": {
+    "totalLaunched": "Total lancés",
+    "totalLaunchedSub": "UAVs, croisière et balistique combinés",
+    "confirmedDestroyed": "Confirmés détruits",
+    "confirmedDestroyedSub": "Interceptions de la défense aérienne",
+    "interceptionRate": "Taux d'interception",
+    "reachedTarget": "Zone cible atteinte",
+    "reachedTargetSub": "Estimations non-interceptés",
+    "launchedReported": "Lancés (rapportés)",
+    "destroyedConfirmed": "Détruits (confirmés)",
+    "confirmedInterceptions": "interceptions confirmées",
+    "ofSep": "sur",
+    "leakerPctSuffix": "% des lancements"
+  },
+  "masthead": {
+    "kicker": "OSINT · Air-threat tracker",
+    "title": "Défense aérienne ukrainienne — données agrégées",
+    "intro": "Nombre mensuel de menaces aériennes signalées et d'interceptions confirmées au-dessus de l'Ukraine, d'octobre 2022 à aujourd'hui. Les données sont compilées à partir des rapports quotidiens du commandement de la Force aérienne ukrainienne et agrégées par mois civil. Les chiffres sont sujets à révision.",
+    "primarySource": "Source principale ↗",
+    "methodology": "Méthodologie",
+    "disclaimer": "Clause de non-responsabilité",
+    "sourceRange": "Source : {{source}} · Période : oct. 2022 – {{last}}",
+    "loading": "Chargement du jeu de données…",
+    "loadFailed": "Échec du chargement du jeu de données :"
+  },
+  "primarySource": "Commandement de la Force aérienne des forces armées ukrainiennes (rapports hebdomadaires, via le jeu de données Kaggle, Petro Ivaniuk)",
+  "primarySourceShort": "Commandement de la Force aérienne (via Kaggle)",
+  "category": {
+    "uavs": "UAVs",
+    "cruise": "Croisière",
+    "ballistic": "Balistique",
+    "drones": {
+      "kicker": "01 · Véhicules aériens sans pilote",
+      "title": "Lancements d'UAVs contre l'Ukraine",
+      "description": "Tous les véhicules aériens sans pilote signalés dans les communiqués quotidiens de l'armée de l'air ukrainienne — munitions rodeuses Shahed-136/131 de conception iranienne, famille Lancet, UAVs de reconnaissance russes Orlan / ZALA / Supercam, Mohajer-6, Forpost et autres types — avec interceptions confirmées. Les systèmes de croisière et balistiques sont suivis séparément ci-dessous.",
+      "unit": "UAVs"
+    },
+    "cruiseSection": {
+      "kicker": "02 · Croisière et air-sol",
+      "title": "Missiles de croisière",
+      "description": "Missiles de croisière et air-sol — Kalibr, X-101/X-555, X-22, X-32, X-59/X-69, X-31, X-35, Iskander-K et P-800 Oniks. Généralement subsoniques ; historiquement interceptés à des taux plus élevés que les systèmes balistiques.",
+      "unit": "missiles"
+    },
+    "ballisticSection": {
+      "kicker": "03 · Balistique et quasi-balistique",
+      "title": "Missiles balistiques",
+      "description": "Systèmes balistiques et quasi-balistiques — Iskander-M / KN-23, X-47 Kinzhal, 3M22 Zircon, ICBMs et S-300 / S-400 utilisés en mode surface-surface. La vitesse et la trajectoire élevées produisent généralement les taux d'interception les plus bas.",
+      "unit": "missiles"
+    },
+    "monthlyPanel": "{{unit}} mensuels — lancés vs détruits",
+    "peakNote": "Mois record sur la période : {{month}} — {{launched}} {{unit}} signalés, {{destroyed}} détruits (taux d'interception de {{rate}}%)."
+  },
+  "chart": {
+    "launched": "Lancés",
+    "destroyed": "Détruits",
+    "interceptionRate": "Taux d'interception",
+    "interceptionRateRight": "Taux d'interception (axe droit)",
+    "total": "Total",
+    "share": "Part des lancements",
+    "shareSuffix": "% des lancements"
+  },
+  "dateRange": {
+    "label": "Plage de dates",
+    "all": "Toute la période"
+  },
+  "analytics": {
+    "kicker": "Analyses",
+    "title": "Composition par catégorie et interception",
+    "intro": "Composition mensuelle des lancements signalés pour les UAVs, les systèmes de croisière et balistiques, avec performance d'interception et calendrier de l'escalade depuis octobre 2022.",
+    "uavMonthly": "Lancements d'UAVs · mensuels",
+    "uavMonthlySub": "Munitions rodeuses et UAVs de reconnaissance",
+    "uavMonthlyNote": "Inclut les types Shahed-136/131, Lancet, Orlan, ZALA, Supercam et autres UAVs signalés dans les communiqués quotidiens.",
+    "cruiseBalMonthly": "Lancements croisière et balistique · mensuels",
+    "cruiseBalMonthlySub": "Cumulés, agrégats mensuels",
+    "cruiseBalMonthlyNote": "Les vagues d'attaques mixtes attribuent les décomptes à chaque catégorie référencée ; léger chevauchement entre croisière et balistique lors de ces nuits.",
+    "sharePanel": "Part et performance d'interception",
+    "sharePanelSub": "Global · confirmés / lancés",
+    "calendarPanel": "Calendrier de l'escalade",
+    "calendarPanelSub": "Année × mois · lancements signalés",
+    "all": "Tous",
+    "less": "Moins",
+    "more": "Plus · Pic {{n}}",
+    "monthCellTitle": "{{month}} {{year}} : {{n}} lancements signalés"
+  },
+  "arsenal": {
+    "kicker": "Arsenal · catalogue des armes",
+    "title": "Systèmes d'armes russes utilisés contre l'Ukraine",
+    "intro": "Profils de référence pour les UAVs, les systèmes de croisière, balistiques, SAM et bombes guidées suivis dans le jeu de données. Filtrez par catégorie, origine ou recherchez par modèle, désignation NATO ou fabricant. Les profils sont à titre indicatif et peuvent contenir des inexactitudes.",
+    "source": "Données de référence en open-source, compilées en interne ; vérifiées par croisement avec CSIS Missile Threat et sources publiques",
+    "note": "Données de référence — les chiffres tels que le coût unitaire et l'entrée en service sont des estimations et peuvent varier selon les sources.",
+    "all": "Tous",
+    "uavs": "UAVs",
+    "cruise": "Croisière",
+    "ballistic": "Balistique",
+    "sam": "SAM",
+    "guidedBombs": "Bombes guidées",
+    "allOrigins": "Toutes origines",
+    "search": "Rechercher un modèle, nom NATO…",
+    "system": "Système",
+    "category": "Catégorie",
+    "origin": "Origine",
+    "launched": "Lancés",
+    "intercepted": "Interceptés",
+    "rate": "Taux",
+    "inService": "En service",
+    "guidance": "Guidage",
+    "unitCost": "Coût unitaire (est.)",
+    "noMatch": "Aucun système ne correspond à ces filtres.",
+    "system_one": "système",
+    "system_other": "systèmes",
+    "showing": "affichage",
+    "showFewer": "Voir moins",
+    "showAll": "Voir les {{n}} systèmes",
+    "natoPrefix": "NATO ·"
+  },
+  "methodologyInline": {
+    "kicker": "Méthodologie",
+    "title": "Comment les chiffres sont compilés",
+    "p1Pre": "Les rapports quotidiens du commandement de la Force aérienne ukrainienne sont extraits d'un miroir CSV public (Petro Ivaniuk, Kaggle) et agrégés par mois civil en UTC.",
+    "launched": "lancés",
+    "destroyed": "détruits",
+    "reachedTarget": "zone cible atteinte",
+    "p1Post": "reflète les valeurs rapportées par les sources ukrainiennes ; reflète uniquement les interceptions confirmées. Les armes brouillées par EW, égarées ou impactant sans interception ne sont pas comptabilisées comme détruites et sont signalées sous 'zone cible atteinte'.",
+    "p2": "Les lignes mélangeant plusieurs types d'armes dans une même attaque (ex: \"X-101/X-555 et Iskander-K\") attribuent les décomptes à chaque catégorie référencée. Cela produit un léger chevauchement entre les catégories croisière et balistique lors de certaines nuits d'attaques mixtes.",
+    "p3Pre": "Période couverte : Octobre 2022 – présent. Tous les chiffres doivent être considérés comme ",
+    "p3Reported": "rapportés",
+    "p3Mid": " plutôt que vérifiés de manière indépendante. Consultez la ",
+    "p3FullMethodology": "méthodologie complète",
+    "p3And": " et la ",
+    "p3SourceList": "liste des sources",
+    "p3End": "."
+  },
+  "related": {
+    "kicker": "Lectures complémentaires",
+    "title": "Sources liées",
+    "intro": "Ce tracker couvre uniquement le volume des menaces aériennes signalées. Les projets liés ci-dessous couvrent les composants, les pertes d'équipement, l'analyse de campagne et les flux d'aide.",
+    "open": "Ouvrir ↗",
+    "items": {
+      "gur": {
+        "name": "GUR · war-sanctions",
+        "blurb": "Composants étrangers identifiés dans les missiles et UAVs russes. Maintenu par le renseignement de défense de l'Ukraine (HUR).",
+        "tag": "Composants"
+      },
+      "uaf": {
+        "name": "Force aérienne ukrainienne",
+        "blurb": "Rapports quotidiens originaux sur les armes lancées et interceptées — la source amont de ce jeu de données.",
+        "tag": "Primaire"
+      },
+      "oryx": {
+        "name": "Oryx",
+        "blurb": "Registre open-source vérifié par photos des pertes d'équipement des deux côtés de la guerre.",
+        "tag": "Pertes vérifiées"
+      },
+      "isw": {
+        "name": "ISW · Mises à jour quotidiennes",
+        "blurb": "Institute for the Study of War — évaluations quotidiennes de la campagne et cartes opérationnelles.",
+        "tag": "Analyse"
+      },
+      "csis": {
+        "name": "CSIS · Missile Threat",
+        "blurb": "Profils de référence pour les armes de croisière, balistiques et hypersoniques utilisées contre l'Ukraine.",
+        "tag": "Référence"
+      },
+      "kiel": {
+        "name": "Kiel · Ukraine Support Tracker",
+        "blurb": "Quantifie l'aide militaire, financière et humanitaire promise à l'Ukraine par les gouvernements occidentaux.",
+        "tag": "Aide"
+      }
+    }
+  },
+  "donate": {
+    "kicker": "Comment aider",
+    "title": "Organisations de dons vérifiées",
+    "intro": "Organisations ukrainiennes et internationales reconnues couvrant le soutien militaire et l'aide humanitaire. UA Intel ne sollicite pas de fonds et n'est pas affilié aux entités listées.",
+    "cta": "Faire un don ↗",
+    "tags": {
+      "mixed": "Mixte",
+      "military": "Militaire",
+      "humanitarian": "Humanitaire"
+    },
+    "items": {
+      "u24": "Plateforme officielle de collecte de fonds du Bureau du Président de l'Ukraine — défense, déminage, aide médicale, reconstruction.",
+      "comeBackAlive": "Association caritative ukrainienne soutenant les forces armées — équipement, formation, assistance aux vétérans (depuis 2014).",
+      "prytula": "Finance des UAVs de reconnaissance, des véhicules et des équipements de protection ; gère également des projets humanitaires.",
+      "razom": "Organisation à but non lucratif basée aux États-Unis livrant des fournitures médicales tactiques et intervenant en cas d'urgence.",
+      "hospitallers": "Bataillon de paramédicaux volontaires évacuant les soldats et civils blessés de la ligne de front.",
+      "voices": "Soutien psychologique et humanitaire pour les enfants touchés par la guerre."
+    }
+  },
+  "footer": {
+    "tagline": "UA Intel · agrégats mensuels basés sur les rapports de la Force aérienne ukrainienne",
+    "lastDataPoint": "Dernière donnée :",
+    "downloadCsv": "Télécharger CSV ↓",
+    "methodology": "Méthodologie",
+    "sources": "Sources",
+    "disclaimer": "Clause de non-responsabilité",
+    "dataNote": "Note sur les données.",
+    "dataNoteBody": "Les chiffres sont compilés à partir de sources ouvertes et peuvent contenir des erreurs, des omissions ou des révisions. Le jeu de données reflète les lancements signalés et les interceptions confirmées ; les valeurs pour les armes brouillées par EW, égarées ou non vérifiées ne sont pas incluses. Les chiffres sont revus et mis à jour régulièrement."
+  },
+  "doc": {
+    "back": "← Retour au tableau de bord",
+    "topBack": "UA Intel"
+  },
+  "methodologyPage": {
+    "eyebrow": "Méthodologie",
+    "title": "Comment nous transformons les rapports quotidiens en intelligence.",
+    "intro": "Chaque chiffre sur UA Defense Tracker provient d'une source primaire unique et entièrement ouverte : les bulletins quotidiens de défense aérienne publiés par le commandement de la Force aérienne des forces armées ukrainiennes. Cette page documente le processus exact, les définitions et les limites du dashboard.",
+    "s1Title": "Source primaire",
+    "s1p1": "Nous agrégeons les rapports quotidiens publiés sur les canaux officiels du <strong>Commandement de la Force aérienne des forces armées ukrainiennes</strong> (Повітряні сили ЗСУ). Le miroir CSV structuré est maintenu par le jeu de données open-source <a>“Massive Missile Attacks on Ukraine”</a> sur Kaggle, qui convertit les publications quotidiennes Telegram/Facebook en une série temporelle normalisée.",
+    "s1p2": "La couverture commence en <strong>octobre 2022</strong>, premier mois avec une divulgation quotidienne cohérente des nombres lancés et détruits par modèle d'arme, et s'étend jusqu'au dernier bulletin publié.",
+    "s3Title": "Définitions",
+    "s3p1": "<strong>Lancé.</strong> Le nombre d'armes d'un modèle donné que la défense aérienne ukrainienne a observé pénétrer dans l'espace aérien ukrainien ou être tirées vers le territoire ukrainien durant la période de rapport.",
+    "s3p2": "<strong>Détruit.</strong> Le nombre d'armes que la défense aérienne ukrainienne signale comme interceptées, neutralisées ou supprimées avant d'atteindre leur cible.",
+    "s3p3": "<strong>Quantité non-interceptée.</strong> Calculée comme <code>lancé − détruit</code> — le nombre d'armes dont l'interception n'a pas été confirmée. C'est une limite supérieure des impacts, car certaines armes échouent en vol, sont brouillées par EW ou atterrissent dans des zones non peuplées.",
+    "s3p4": "<strong>Taux d'interception.</strong> <code>détruit ÷ lancé</code>, exprimé en pourcentage. Calculé par catégorie et par mois.",
+    "s4Title": "Mapping des catégories",
+    "s4p1": "Chaque ligne du CSV source liste un ou plusieurs modèles d'armes. Nous attribuons les lignes à trois familles d'armes :",
+    "s4l1": "<strong>UAVs (Shahed, etc.).</strong> Munitions rodeuses identifiées comme <em>Shahed-136/131</em>.",
+    "s4l2": "<strong>Missiles de croisière / air-sol.</strong> Kalibr, X-101 / X-555, X-22, X-59 / X-69, Iskander-K, P-800 Oniks et autres systèmes de croisière.",
+    "s4l3": "<strong>Balistique.</strong> Iskander-M / KN-23, Kinzhal, 3M22 Zircon, S-300/S-400 tirés en mode surface-surface et systèmes de classe ICBM.",
+    "s4p2": "Les lignes de modèles mixtes (ex. « Kalibr + Iskander-M ») contribuent à <strong>chaque catégorie qu'elles listent</strong>. C'est une approche conservatrice pour les totaux inter-catégories, mais elle correspond à la façon dont la Force aérienne signale les salves combinées.",
+    "s5Title": "Agrégation",
+    "s5p1": "Les entrées quotidiennes sont regroupées par <strong>date de début</strong> de la période de rapport en mois civils (UTC). Les graphiques affichent l'axe mensuel continu depuis octobre 2022, incluant les mois sans activité, afin que les modèles d'escalade ne soient pas visuellement compressés.",
+    "s6Title": "Limites",
+    "s6l1": "<strong>Biais d'une source unique.</strong> Tous les chiffres proviennent d'une partie au conflit. Nous ne croisons pas les affirmations du MoD russe, qui sont systématiquement incohérentes.",
+    "s6l2": "<strong>Plancher de détection.</strong> Les systèmes très petits ou furtifs peuvent être sous-comptés dans les armes « lancées ».",
+    "s6l3": "<strong>Attribution de la destruction.</strong> Certaines armes s'écrasent, sont brouillées ou sont abattues par EW plutôt que par interception cinétique. La Force aérienne les compte comme « détruites » ; nous suivons cette convention.",
+    "s6l4": "<strong>Corrections en milieu de mois.</strong> Les totaux sont parfois révisés dans des bulletins ultérieurs ; nous reflétons toujours le dernier CSV.",
+    "s7Title": "Vérification que vous pouvez faire vous-même",
+    "s7p1": "Chaque chiffre sur ce site est reproductible à partir du CSV public. Vous pouvez télécharger le fichier brut et reproduire n'importe quel graphique dans un tableur :",
+    "s7Download": "↓ Télécharger le CSV brut",
+    "s7Upstream": "Voir le jeu de données amont",
+    "s2Title": "Cadence de mise à jour",
+    "s2p1": "Le jeu de données amont est actualisé lorsque de nouveaux bulletins quotidiens sont émis — généralement quelques heures après le briefing matinal de la Force aérienne. Notre dashboard relit le CSV à chaque chargement de page, de sorte que l'indicateur « Dernière mise à jour » reflète le <strong>point de données</strong> le plus récent dans le fichier, et non l'heure de votre visite.",
+    "s2callLabel": "Atmosphère de données en direct — ce que cela signifie",
+    "s2callBody": "Nous n'interrogeons pas un flux en continu. L'interface est construite autour d'une cadence quotidienne quasi-temps réel. Considérez les variations à l'heure comme du bruit ; fiez-vous aux mouvements à l'échelle du jour et du mois."
+  },
+  "sourcesPage": {
+    "eyebrow": "Sources et Vérification",
+    "title": "D'où vient chaque chiffre.",
+    "intro": "La transparence du sourcing est la propriété la plus importante de l'OSINT. Cette page liste chaque source alimentant le dashboard, son rôle et comment la vérifier indépendamment.",
+    "calloutLabel": "Une source primaire · nombreuses références croisées",
+    "calloutBody": "Chaque donnée numérique sur UA Defense Tracker provient d'une source primaire unique — le commandement de la Force aérienne des forces armées ukrainiennes. Les autres sources ci-dessous fournissent un contexte indépendant, pas d'entrées numériques.",
+    "s1Title": "Registre des sources",
+    "s2Title": "Comment vérifier un chiffre",
+    "s2l1Pre": "Téléchargez le ",
+    "s2l1Link": "CSV brut",
+    "s2l1Post": " servi avec ce site (identique au miroir Kaggle au moment de la récupération).",
+    "s2l2": "Filtrez les lignes par plage de dates et modèle d'arme correspondant au graphique que vous souhaitez vérifier.",
+    "s2l3Pre": "Faites la somme des colonnes ",
+    "s2l3Launched": "lancés",
+    "s2l3And": " et ",
+    "s2l3Destroyed": "détruits",
+    "s2l3Post": ".",
+    "s2l4": "Croisez avec le bulletin original de la Force aérienne pour ce jour-là sur la source primaire ci-dessus.",
+    "s3Title": "Ce que nous ne sourçons explicitement pas",
+    "s3l1": "<strong>Affirmations du MoD russe.</strong> Exclues en raison d'incohérences documentées de manière répétée.",
+    "s3l2": "<strong>Observations sur les réseaux sociaux sans provenance.</strong> Non intégrées ; l'OSINT nécessite des chaînes reproductibles.",
+    "s3l3": "<strong>Chiffres des victimes.</strong> Hors du champ d'application de ce dashboard.",
+    "roles": {
+      "Primary": "Primaire",
+      "Mirror": "Miroir",
+      "Secondary": "Secondaire",
+      "Reference": "Référence"
+    },
+    "items": {
+      "afc": "Bulletins quotidiens détaillant les armes lancées contre l'Ukraine et les interceptions de défense aérienne, par modèle. La source unique de chaque chiffre sur ce dashboard.",
+      "kaggle": "Miroir CSV open-source des rapports quotidiens de la Force aérienne, normalisé en une série temporelle structurée. Nous récupérons ce fichier à chaque chargement de page.",
+      "genstaff": "Totaux quotidiens sur les pertes de personnel et d'équipement des deux côtés. Contexte utile mais non utilisé comme donnée numérique ici.",
+      "oryx": "Registre vérifié par photos des pertes d'équipement des deux côtés. Confirmation visuelle indépendante ; la méthodologie diffère de la nôtre et les chiffres ne sont pas directement comparables.",
+      "liveuamap": "Carte des incidents géolocalisés en temps réel. Utile pour contextualiser où les frappes se produisent ; non utilisé comme donnée numérique.",
+      "isw": "Évaluations analytiques quotidiennes de la guerre. Recommandé pour le contexte narratif derrière les chiffres présentés ici."
+    }
+  },
+  "disclaimerPage": {
+    "eyebrow": "Clause de non-responsabilité",
+    "title": "Ce que ce site est — et ce qu'il n'est pas.",
+    "intro": "UA Defense Tracker est une visualisation OSINT indépendante et non commerciale. Lisez cette page avant de citer les chiffres.",
+    "calloutLabel": "Indépendance",
+    "calloutBody": "Ce projet n'est <strong>pas affilié au</strong> Gouvernement de l'Ukraine, aux Forces armées ukrainiennes, à l'NATO, à l'Union européenne ou à tout service de renseignement. C'est une couche de visualisation ouverte sur un jeu de données public.",
+    "s1Title": "Nature des données",
+    "s1p1": "Tous les chiffres proviennent des bulletins quotidiens officiels du commandement de la Force aérienne des forces armées ukrainiennes. À ce titre, ils reflètent les rapports d'une partie à un conflit armé actif. Les chiffres peuvent être révisés rétroactivement. Nous servons toujours la dernière version du jeu de données amont.",
+    "s2Title": "Brouillard de guerre",
+    "s2p1Pre": "Dans tout conflit actif, les chiffres en temps réel sont imparfaits. L'observation, l'attribution et l'évaluation des résultats sont sujettes à l'incertitude opérationnelle. Lisez la page ",
+    "s2p1Link": "Méthodologie",
+    "s2p1Post": " pour une liste complète des limites avant de tirer des conclusions.",
+    "s3Title": "Utilisation des visualisations",
+    "s3p1": "Vous êtes invités à partager, intégrer, capturer et citer les visualisations de ce site à des fins journalistiques, analytiques, éducatives et de recherche, à condition de :",
+    "s3l1": "Attribuer les données sous-jacentes au commandement de la Force aérienne des forces armées ukrainiennes.",
+    "s3l2": "Lier vers ce dashboard lorsque cela est possible.",
+    "s3l3": "Ne pas présenter les chiffres dérivés comme s'ils avaient été vérifiés indépendamment par nous.",
+    "s4Title": "Pas de conseils opérationnels",
+    "s4p1": "Rien sur ce site ne constitue un conseil militaire, des informations de ciblage, une évaluation des menaces pour la protection des civils ou des conseils d'investissement. Le dashboard est une vue analytique rétrospective et en quasi-temps réel, pas un système d'alerte précoce.",
+    "s5Title": "Confidentialité et sécurité",
+    "s5l1": "<strong>Aucune donnée personnelle n'est collectée.</strong> Le site n'a pas de connexion, pas de commentaires et pas de comptes utilisateurs.",
+    "s5l2": "<strong>Architecture statique, en lecture seule.</strong> Le dashboard est une application entièrement côté client : il lit un fichier CSV public et génère des graphiques dans votre navigateur. Il n'y a pas de backend stockant des requêtes ou des comportements.",
+    "s5l3": "<strong>Sécurité du transport.</strong> Toutes les ressources, y compris le CSV, sont servies via HTTPS.",
+    "s5l4": "<strong>Pas de traceurs tiers</strong> au-delà de ce que votre hébergeur peut ajouter au niveau du réseau.",
+    "s6Title": "Corrections",
+    "s6p1": "Si vous remarquez une erreur d'agrégation, de mapping ou d'étiquetage, veuillez ouvrir un ticket sur le dépôt source ou contacter le mainteneur. Les erreurs sont corrigées sur place ; les changements majeurs sont notés dans le journal des modifications du jeu de données amont."
+  },
+  "panel": {
+    "source": "Source :"
+  }
+}
