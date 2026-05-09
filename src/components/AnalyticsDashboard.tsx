@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -9,25 +10,17 @@ import {
   Tooltip,
 } from "recharts";
 import type { Dataset, MonthPoint } from "@/lib/shahed-data";
-import { Panel, SourceLabel } from "@/components/ui/panel";
+import { Panel } from "@/components/ui/panel";
 import { rampColor } from "@/lib/threat-ramp";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
-const PRIMARY_SOURCE = "Air Force Command of the Armed Forces of Ukraine (weekly reports, via Kaggle)";
 
 type CategoryKey = "uavs" | "cruise" | "ballistic";
 
-// Grayscale ramp — UAVs lightest, ballistic darkest (highest threat / lowest intercept).
 const CAT_COLORS: Record<CategoryKey, string> = {
-  uavs:      "hsl(220 10% 62%)",   // light gray   — UAVs
-  cruise:    "hsl(220 12% 42%)",   // mid gray     — cruise
-  ballistic: "hsl(220 18% 22%)",   // dark gray    — ballistic
-};
-
-const CAT_LABELS: Record<CategoryKey, string> = {
-  uavs: "UAVs",
-  cruise: "Cruise",
-  ballistic: "Ballistic",
+  uavs:      "hsl(220 10% 62%)",
+  cruise:    "hsl(220 12% 42%)",
+  ballistic: "hsl(220 18% 22%)",
 };
 
 interface Props {
@@ -36,11 +29,7 @@ interface Props {
   ballistic: Dataset;
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Stacked area — composition over time                                      */
-/* -------------------------------------------------------------------------- */
-
-function StackedTooltip({ active, payload, label }: any) {
+function StackedTooltip({ active, payload, label, totalLabel }: any) {
   if (!active || !payload?.length) return null;
   const total = payload.reduce((s: number, p: any) => s + (p.value ?? 0), 0);
   return (
@@ -57,7 +46,7 @@ function StackedTooltip({ active, payload, label }: any) {
           </div>
         ))}
         <div className="mt-1 flex items-center justify-between gap-6 border-t border-border pt-1 text-muted-foreground">
-          <span>Total</span>
+          <span>{totalLabel}</span>
           <span className="num font-semibold text-foreground">{fmt(total)}</span>
         </div>
       </div>
@@ -71,10 +60,14 @@ function CompositionAreaChart({
   data,
   series,
   height = 300,
+  labels,
+  totalLabel,
 }: {
   data: Array<{ label: string; uavs: number; cruise: number; ballistic: number }>;
   series: SeriesKey[];
   height?: number;
+  labels: Record<CategoryKey, string>;
+  totalLabel: string;
 }) {
   const ticks = useMemo(() => data.filter((_, i) => i % 4 === 0).map((m) => m.label), [data]);
   return (
@@ -96,13 +89,13 @@ function CompositionAreaChart({
             width={48}
             tickFormatter={(v) => fmt(v as number)}
           />
-          <Tooltip content={<StackedTooltip />} cursor={{ stroke: "hsl(var(--foreground))", strokeOpacity: 0.2 }} />
+          <Tooltip content={<StackedTooltip totalLabel={totalLabel} />} cursor={{ stroke: "hsl(var(--foreground))", strokeOpacity: 0.2 }} />
           {series.map((k) => (
             <Area
               key={k}
               type="monotone"
               dataKey={k}
-              name={CAT_LABELS[k]}
+              name={labels[k]}
               stackId="1"
               stroke={CAT_COLORS[k]}
               strokeWidth={1.25}
@@ -136,38 +129,42 @@ function useCompositionData({ shahed, cruise, ballistic }: Props) {
 }
 
 function CompositionPair(props: Props) {
+  const { t } = useTranslation();
   const data = useCompositionData(props);
+  const labels: Record<CategoryKey, string> = {
+    uavs: t("category.uavs"),
+    cruise: t("category.cruise"),
+    ballistic: t("category.ballistic"),
+  };
+  const totalLabel = t("chart.total");
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <Panel
-        title="UAV launches · monthly"
-        subtitle="Loitering munitions & reconnaissance UAVs"
-        source={PRIMARY_SOURCE}
-        note="Includes Shahed-136/131, Lancet, Orlan, ZALA, Supercam and other UAV types reported in daily Air Force communiqués."
+        title={t("analytics.uavMonthly")}
+        subtitle={t("analytics.uavMonthlySub")}
+        source={t("primarySourceShort")}
+        note={t("analytics.uavMonthlyNote")}
       >
-        <CompositionAreaChart data={data} series={["uavs"]} />
+        <CompositionAreaChart data={data} series={["uavs"]} labels={labels} totalLabel={totalLabel} />
       </Panel>
       <Panel
-        title="Cruise & ballistic launches · monthly"
-        subtitle="Stacked, monthly aggregates"
-        source={PRIMARY_SOURCE}
-        note="Mixed-fire rows attribute counts to every category referenced; minor overlap between cruise and ballistic on those nights."
+        title={t("analytics.cruiseBalMonthly")}
+        subtitle={t("analytics.cruiseBalMonthlySub")}
+        source={t("primarySourceShort")}
+        note={t("analytics.cruiseBalMonthlyNote")}
       >
-        <CompositionAreaChart data={data} series={["ballistic", "cruise"]} />
+        <CompositionAreaChart data={data} series={["ballistic", "cruise"]} labels={labels} totalLabel={totalLabel} />
       </Panel>
     </div>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Share & interception performance                                          */
-/* -------------------------------------------------------------------------- */
-
 function ShareInterception({ shahed, cruise, ballistic }: Props) {
+  const { t } = useTranslation();
   const rows = [
-    { key: "uavs",      label: CAT_LABELS.uavs,      color: CAT_COLORS.uavs,      ds: shahed },
-    { key: "cruise",    label: CAT_LABELS.cruise,    color: CAT_COLORS.cruise,    ds: cruise },
-    { key: "ballistic", label: CAT_LABELS.ballistic, color: CAT_COLORS.ballistic, ds: ballistic },
+    { key: "uavs",      label: t("category.uavs"),      color: CAT_COLORS.uavs,      ds: shahed },
+    { key: "cruise",    label: t("category.cruise"),    color: CAT_COLORS.cruise,    ds: cruise },
+    { key: "ballistic", label: t("category.ballistic"), color: CAT_COLORS.ballistic, ds: ballistic },
   ];
   const grandLaunched = rows.reduce((s, r) => s + r.ds.totals.launched, 0);
 
@@ -182,7 +179,7 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
               <span className="flex items-center gap-2 text-foreground">
                 <span className="h-2 w-2 rounded-sm" style={{ background: r.color }} />
                 {r.label}
-                <span className="text-muted-foreground">· {share.toFixed(1)}% of launches</span>
+                <span className="text-muted-foreground">· {share.toFixed(1)}{t("chart.shareSuffix")}</span>
               </span>
               <span className="num text-muted-foreground">
                 <span className="text-foreground">{pct.toFixed(1)}%</span>
@@ -196,8 +193,8 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
               <div className="h-full" style={{ width: `${pct}%`, background: r.color }} />
             </div>
             <div className="mt-1 flex justify-between font-mono text-[9.5px] uppercase tracking-[0.14em] text-muted-foreground">
-              <span>Share of launches</span>
-              <span>Interception rate</span>
+              <span>{t("chart.share")}</span>
+              <span>{t("chart.interceptionRate")}</span>
             </div>
           </li>
         );
@@ -206,11 +203,8 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Calendar heatmap                                                          */
-/* -------------------------------------------------------------------------- */
-
 function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
+  const { t } = useTranslation();
   const [cat, setCat] = useState<"all" | CategoryKey>("all");
 
   const { grid, years, max } = useMemo(() => {
@@ -222,7 +216,6 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
     const add = (m: MonthPoint, val: number) => {
       const y = m.date.getUTCFullYear();
       const mo = m.date.getUTCMonth();
-      // Skip the current (incomplete) calendar month
       if (y === curY && mo === curM) return;
       yearsSet.add(y);
       const k = `${y}-${mo}`;
@@ -239,6 +232,9 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
 
   const monthLabels = ["J","F","M","A","M","J","J","A","S","O","N","D"];
 
+  const catLabel = (c: "all" | CategoryKey) =>
+    c === "all" ? t("analytics.all") : t(`category.${c}`);
+
   return (
     <div>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
@@ -253,12 +249,12 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
                   : "border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground"
               }`}
             >
-              {c === "all" ? "All" : CAT_LABELS[c]}
+              {catLabel(c)}
             </button>
           ))}
         </div>
         <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-          <span>Less</span>
+          <span>{t("analytics.less")}</span>
           <div className="flex gap-1">
             {[0.15, 0.35, 0.55, 0.75, 1].map((i) => (
               <div
@@ -268,7 +264,7 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
               />
             ))}
           </div>
-          <span>More · Peak {fmt(max)}</span>
+          <span>{t("analytics.more", { n: fmt(max) })}</span>
         </div>
       </div>
       <div className="overflow-x-auto">
@@ -302,7 +298,7 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
                             ? rampColor(intensity, 0.25 + intensity * 0.75)
                             : "hsl(var(--card))",
                         }}
-                        title={`${monthLabels[mo]} ${y}: ${fmt(v)} reported launches`}
+                        title={t("analytics.monthCellTitle", { month: monthLabels[mo], year: y, n: fmt(v) })}
                       />
                     </td>
                   );
@@ -316,30 +312,26 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Section                                                                   */
-/* -------------------------------------------------------------------------- */
-
 export function AnalyticsDashboard(props: Props) {
+  const { t } = useTranslation();
   return (
     <section id="analytics" className="scroll-mt-24 border-t border-border bg-secondary/40">
       <div className="container py-12 md:py-16">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-3xl">
-            <div className="src-label mb-2">Analytics</div>
+            <div className="src-label mb-2">{t("analytics.kicker")}</div>
             <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
-              Cross-category composition and interception
+              {t("analytics.title")}
             </h2>
             <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
-              Monthly composition of reported launches across UAVs, cruise and ballistic systems,
-              with interception performance and a calendar of escalation since October 2022.
+              {t("analytics.intro")}
             </p>
           </div>
           <div className="flex items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
             {(Object.keys(CAT_COLORS) as CategoryKey[]).map((k) => (
               <span key={k} className="flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS[k] }} />
-                {CAT_LABELS[k]}
+                {t(`category.${k}`)}
               </span>
             ))}
           </div>
@@ -347,20 +339,19 @@ export function AnalyticsDashboard(props: Props) {
 
         <CompositionPair {...props} />
 
-
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <Panel
-            title="Share & interception performance"
-            subtitle="All-time · confirmed / launched"
-            source={PRIMARY_SOURCE}
+            title={t("analytics.sharePanel")}
+            subtitle={t("analytics.sharePanelSub")}
+            source={t("primarySourceShort")}
           >
             <ShareInterception {...props} />
           </Panel>
 
           <Panel
-            title="Escalation calendar"
-            subtitle="Year × month · reported launches"
-            source={PRIMARY_SOURCE}
+            title={t("analytics.calendarPanel")}
+            subtitle={t("analytics.calendarPanelSub")}
+            source={t("primarySourceShort")}
           >
             <HeatmapMonthlyIntensity {...props} />
           </Panel>
