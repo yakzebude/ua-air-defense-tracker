@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -16,11 +17,11 @@ interface Props {
 }
 
 const fmt = (n: number) => n.toLocaleString("en-US");
-const COLOR_LAUNCHED  = "hsl(var(--series-launched))";   // ink
-const COLOR_DESTROYED = "hsl(var(--series-destroyed))";  // amber
-const COLOR_RATE      = "hsl(var(--series-rate))";       // mid-gray
+const COLOR_LAUNCHED  = "hsl(var(--series-launched))";
+const COLOR_DESTROYED = "hsl(var(--series-destroyed))";
+const COLOR_RATE      = "hsl(var(--series-rate))";
 
-function ChartTooltip({ active, payload, label }: any) {
+function ChartTooltip({ active, payload, label, t }: any) {
   if (!active || !payload?.length) return null;
   const p = payload[0]?.payload as MonthPoint;
   return (
@@ -30,19 +31,19 @@ function ChartTooltip({ active, payload, label }: any) {
         <div className="flex items-center justify-between gap-6 text-foreground">
           <span className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_LAUNCHED }} />
-            Launched (reported)
+            {t("kpi.launchedReported")}
           </span>
           <span className="num font-semibold">{fmt(p.launched)}</span>
         </div>
         <div className="flex items-center justify-between gap-6 text-foreground">
           <span className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_DESTROYED }} />
-            Destroyed (confirmed)
+            {t("kpi.destroyedConfirmed")}
           </span>
           <span className="num font-semibold">{fmt(p.destroyed)}</span>
         </div>
         <div className="mt-1 flex items-center justify-between gap-6 border-t border-border pt-1 text-muted-foreground">
-          <span>Interception rate</span>
+          <span>{t("chart.interceptionRate")}</span>
           <span className="num font-semibold text-foreground">{(p.rate * 100).toFixed(1)}%</span>
         </div>
       </div>
@@ -51,9 +52,8 @@ function ChartTooltip({ active, payload, label }: any) {
 }
 
 export function MonthlyTrendChart({ data }: Props) {
+  const { t } = useTranslation();
   const enriched = useMemo(() => {
-    // Exclude the currently-running (incomplete) calendar month from the
-    // visual series so stacked/bar charts only show complete months.
     const now = new Date();
     const curY = now.getUTCFullYear();
     const curM = now.getUTCMonth();
@@ -96,28 +96,14 @@ export function MonthlyTrendChart({ data }: Props) {
             width={42}
             tickFormatter={(v) => `${v}%`}
           />
-          <Tooltip content={<ChartTooltip />} cursor={{ stroke: "hsl(var(--foreground))", strokeOpacity: 0.18 }} />
-          <Bar
-            yAxisId="count"
-            dataKey="launched"
-            name="Launched"
-            fill={COLOR_LAUNCHED}
-            fillOpacity={0.85}
-            barSize={10}
-          />
-          <Bar
-            yAxisId="count"
-            dataKey="destroyed"
-            name="Destroyed"
-            fill={COLOR_DESTROYED}
-            fillOpacity={0.9}
-            barSize={10}
-          />
+          <Tooltip content={<ChartTooltip t={t} />} cursor={{ stroke: "hsl(var(--foreground))", strokeOpacity: 0.18 }} />
+          <Bar yAxisId="count" dataKey="launched" name={t("chart.launched")} fill={COLOR_LAUNCHED} fillOpacity={0.85} barSize={10} />
+          <Bar yAxisId="count" dataKey="destroyed" name={t("chart.destroyed")} fill={COLOR_DESTROYED} fillOpacity={0.9} barSize={10} />
           <Line
             yAxisId="rate"
             type="monotone"
             dataKey="ratePct"
-            name="Interception rate"
+            name={t("chart.interceptionRate")}
             stroke={COLOR_RATE}
             strokeWidth={1.25}
             strokeDasharray="3 3"
@@ -127,13 +113,13 @@ export function MonthlyTrendChart({ data }: Props) {
       </ResponsiveContainer>
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
         <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_LAUNCHED }} /> Launched
+          <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_LAUNCHED }} /> {t("chart.launched")}
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_DESTROYED }} /> Destroyed
+          <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_DESTROYED }} /> {t("chart.destroyed")}
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="h-[2px] w-3" style={{ background: COLOR_RATE }} /> Interception rate (right axis)
+          <span className="h-[2px] w-3" style={{ background: COLOR_RATE }} /> {t("chart.interceptionRateRight")}
         </span>
       </div>
     </div>
