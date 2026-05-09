@@ -49,7 +49,7 @@ export function Panel({
       <div className={cn("p-5 md:p-6", bodyClassName)}>{children}</div>
       {(source || note) && (
         <footer className="space-y-1 border-t border-border px-5 py-3 md:px-6">
-          {source && <div className="src-label">Source: {source}</div>}
+          {source && <div className="src-label">{source}</div>}
           {note && (
             <div className="text-[11px] leading-snug text-muted-foreground">
               {note}
