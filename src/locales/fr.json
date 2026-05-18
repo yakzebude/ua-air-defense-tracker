@@ -6,7 +6,7 @@
     "uk": "Українська"
   },
   "nav": {
-    "uaIntel": "UA Intel",
+    "uaIntel": "UA Defense Tracker",
     "subtitle": "Air-Threat Tracker",
     "lastDataPoint": "Dernière donnée",
     "summary": "Résumé",
@@ -196,7 +196,7 @@
   "donate": {
     "kicker": "Comment aider",
     "title": "Organisations de dons vérifiées",
-    "intro": "Organisations ukrainiennes et internationales reconnues couvrant le soutien militaire et l'aide humanitaire. UA Intel ne sollicite pas de fonds et n'est pas affilié aux entités listées.",
+    "intro": "Organisations ukrainiennes et internationales reconnues couvrant le soutien militaire et l'aide humanitaire. UA Defense Tracker ne sollicite pas de fonds et n'est pas affilié aux entités listées.",
     "cta": "Faire un don ↗",
     "tags": {
       "mixed": "Mixte",
@@ -213,7 +213,7 @@
     }
   },
   "footer": {
-    "tagline": "UA Intel · agrégats mensuels basés sur les rapports de la Force aérienne ukrainienne",
+    "tagline": "UA Defense Tracker · agrégats mensuels basés sur les rapports de la Force aérienne ukrainienne",
     "lastDataPoint": "Dernière donnée :",
     "downloadCsv": "Télécharger CSV ↓",
     "methodology": "Méthodologie",
@@ -224,7 +224,7 @@
   },
   "doc": {
     "back": "← Retour au tableau de bord",
-    "topBack": "UA Intel"
+    "topBack": "UA Defense Tracker"
   },
   "methodologyPage": {
     "eyebrow": "Méthodologie",
