@@ -97,8 +97,8 @@ export function MonthlyTrendChart({ data }: Props) {
             tickFormatter={(v) => `${v}%`}
           />
           <Tooltip content={<ChartTooltip t={t} />} cursor={{ stroke: "hsl(var(--foreground))", strokeOpacity: 0.18 }} />
-          <Bar yAxisId="count" dataKey="launched" name={t("chart.launched")} fill={COLOR_LAUNCHED} fillOpacity={0.85} barSize={10} />
-          <Bar yAxisId="count" dataKey="destroyed" name={t("chart.destroyed")} fill={COLOR_DESTROYED} fillOpacity={0.9} barSize={10} />
+          <Bar yAxisId="count" dataKey="launched" name={t("chart.launched")} fill={COLOR_LAUNCHED} fillOpacity={0.85} maxBarSize={28} />
+          <Bar yAxisId="count" dataKey="destroyed" name={t("chart.destroyed")} fill={COLOR_DESTROYED} fillOpacity={0.9} maxBarSize={28} />
           <Line
             yAxisId="rate"
             type="monotone"
