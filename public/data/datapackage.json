@@ -1,0 +1,93 @@
+{
+  "profile": "tabular-data-package",
+  "name": "ua-defense-tracker",
+  "title": "UA Defense Tracker — Ukraine air defense aggregated data",
+  "description": "Daily reports of aerial threats (UAVs, cruise missiles, ballistic missiles) launched at Ukraine and confirmed interceptions by Ukrainian air defence forces. Aggregated from the official daily bulletins of the Air Force Command of the Armed Forces of Ukraine (Повітряні сили ЗСУ), normalized into a structured time series. Coverage starts October 2022.",
+  "homepage": "https://ua-airdefense-tracker.org/",
+  "version": "1.0.0",
+  "created": "2026-05-27",
+  "keywords": [
+    "ukraine",
+    "russia",
+    "war",
+    "air-defense",
+    "osint",
+    "shahed",
+    "cruise-missile",
+    "ballistic-missile",
+    "interception-rate"
+  ],
+  "licenses": [
+    {
+      "name": "ODC-BY-1.0",
+      "title": "Open Data Commons Attribution License v1.0",
+      "path": "https://opendatacommons.org/licenses/by/1-0/"
+    }
+  ],
+  "contributors": [
+    {
+      "title": "Petro Ivaniuk",
+      "role": "author",
+      "path": "https://www.kaggle.com/piterfm"
+    },
+    {
+      "title": "UA Defense Tracker",
+      "role": "publisher",
+      "path": "https://ua-airdefense-tracker.org/"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Air Force Command of the Armed Forces of Ukraine — daily bulletins",
+      "path": "https://www.facebook.com/kpszsu"
+    },
+    {
+      "title": "Massive Missile Attacks on Ukraine — Kaggle CSV mirror",
+      "path": "https://www.kaggle.com/datasets/piterfm/massive-missile-attacks-on-ukraine"
+    }
+  ],
+  "temporal": {
+    "start": "2022-10-01",
+    "end": "open"
+  },
+  "spatial": {
+    "name": "Ukraine",
+    "geonameId": 690791
+  },
+  "resources": [
+    {
+      "name": "missile-attacks-daily",
+      "path": "missile_attacks_daily.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "profile": "tabular-data-resource",
+      "schema": {
+        "fields": [
+          { "name": "time_start", "type": "datetime", "format": "%Y-%m-%d %H:%M", "description": "Start of the reporting window (UTC)." },
+          { "name": "time_end", "type": "datetime", "format": "%Y-%m-%d %H:%M", "description": "End of the reporting window (UTC)." },
+          { "name": "model", "type": "string", "description": "Weapon model(s) reported in the window. May contain multiple models joined with 'and'." },
+          { "name": "launch_place", "type": "string", "description": "Reported launch location(s)." },
+          { "name": "target", "type": "string", "description": "Reported target country / region." },
+          { "name": "target_main", "type": "string", "description": "Primary regional target where reported." },
+          { "name": "launched", "type": "number", "description": "Number of weapons of the listed model(s) launched in the window." },
+          { "name": "destroyed", "type": "number", "description": "Number reported as intercepted, suppressed or otherwise neutralized." },
+          { "name": "not_reach_goal", "type": "number", "description": "Number reported as not reaching their target (jammed, lost, crashed)." },
+          { "name": "still_attacking", "type": "number", "description": "Number still in flight at the end of the window." },
+          { "name": "border_crossing", "type": "string", "description": "Border-crossing metadata (JSON-like)." },
+          { "name": "is_shahed", "type": "boolean", "description": "Convenience flag for Shahed-family loitering munitions." },
+          { "name": "num_hit_location", "type": "number", "description": "Number of reported impact locations." },
+          { "name": "num_fall_fragment_location", "type": "number", "description": "Number of reported fragment-fall locations." },
+          { "name": "carrier", "type": "string", "description": "Launch carrier where reported (e.g. Tu-95)." },
+          { "name": "turbojet", "type": "number", "description": "Turbojet UAV count where reported." },
+          { "name": "turbojet_destroyed", "type": "number", "description": "Turbojet UAV interceptions where reported." },
+          { "name": "affected region", "type": "string", "description": "Affected Ukrainian regions (free-form / JSON-like)." },
+          { "name": "destroyed_details", "type": "string", "description": "Free-form interception detail." },
+          { "name": "launched_details", "type": "string", "description": "Free-form launch detail." },
+          { "name": "launch_place_details", "type": "string", "description": "Free-form launch-location detail." },
+          { "name": "source", "type": "string", "description": "Permalink fragment of the upstream AFU bulletin." }
+        ]
+      }
+    }
+  ]
+}

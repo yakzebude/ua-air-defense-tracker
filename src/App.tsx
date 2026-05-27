@@ -9,6 +9,8 @@ import Methodology from "./pages/Methodology.tsx";
 import Sources from "./pages/Sources.tsx";
 import Disclaimer from "./pages/Disclaimer.tsx";
 import Changelog from "./pages/Changelog.tsx";
+import About from "./pages/About.tsx";
+import Imprint from "./pages/Imprint.tsx";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +26,8 @@ const App = () => (
           <Route path="/sources" element={<Sources />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/changelog" element={<Changelog />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/imprint" element={<Imprint />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

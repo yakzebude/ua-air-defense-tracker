@@ -18,7 +18,9 @@
     "methodology": "Méthodologie",
     "sources": "Sources",
     "help": "Comment aider",
-    "changelog": "Journal"
+    "changelog": "Journal",
+    "about": "À propos",
+    "imprint": "Mentions légales"
   },
   "theme": {
     "toLight": "Passer au mode clair",
@@ -222,7 +224,15 @@
     "sources": "Sources",
     "disclaimer": "Clause de non-responsabilité",
     "dataNote": "Note sur les données.",
-    "dataNoteBody": "Les chiffres sont compilés à partir de sources ouvertes et peuvent contenir des erreurs, des omissions ou des révisions. Le jeu de données reflète les lancements signalés et les interceptions confirmées ; les valeurs pour les armes brouillées par EW, égarées ou non vérifiées ne sont pas incluses. Les chiffres sont revus et mis à jour régulièrement."
+    "dataNoteBody": "Les chiffres sont compilés à partir de sources ouvertes et peuvent contenir des erreurs, des omissions ou des révisions. Le jeu de données reflète les lancements signalés et les interceptions confirmées ; les valeurs pour les armes brouillées par EW, égarées ou non vérifiées ne sont pas incluses. Les chiffres sont revus et mis à jour régulièrement.",
+    "colAbout": "À propos",
+    "colData": "Données",
+    "colLegal": "Mentions",
+    "colMeta": "Statut",
+    "curatedBy": "Compilé par",
+    "dataPackage": "Paquet de données (JSON)",
+    "license": "Licence :",
+    "availableIn": "Disponible en"
   },
   "doc": {
     "back": "← Retour au tableau de bord",
@@ -352,5 +362,48 @@
       "release": "Mise en prod",
       "methodology": "Méthodologie"
     }
+  },
+  "aboutPage": {
+    "eyebrow": "À propos",
+    "title": "Qui gère ce tracker, et selon quelles règles.",
+    "intro": "UA Defense Tracker est une visualisation OSINT indépendante. Sa valeur dépend de la transparence sur les personnes derrière, les limites de son périmètre et les règles de citation.",
+    "s1Title": "Conservateur des données",
+    "role": "Conservateur des données et mainteneur de la source amont.",
+    "bio": "Petro Ivaniuk agrège depuis octobre 2022 les bulletins quotidiens de défense aérienne du Commandement de la Force aérienne des Forces armées d'Ukraine en une série temporelle structurée et lisible par machine. Le jeu de données Kaggle qu'il maintient est la source unique de chaque chiffre présenté ici.",
+    "s2Title": "Mission & périmètre",
+    "missionP1": "Le site existe pour rendre lisible un flux spécifique de données publiques ukrainiennes de défense aérienne aux journalistes, chercheurs et collaborateurs politiques qui ne travaillent pas avec des CSV bruts. Il est construit autour d'agrégats mensuels, d'une méthodologie transparente et de citations en un clic.",
+    "missionP2": "Il couvre les lancements rapportés et les interceptions confirmées d'UAV, missiles de croisière et missiles balistiques au-dessus de l'Ukraine. Les pertes humaines, pertes d'équipement, incidents géolocalisés et déclarations du MoD russe sont explicitement hors périmètre.",
+    "notLabel": "Ce que ce site n'est pas",
+    "notBody": "Ce n'est <strong>pas</strong> une publication officielle de l'AFU, ni un système d'alerte précoce, ni un flux de ciblage, ni un chiffre vérifié indépendamment. Considérez chaque chiffre comme <em>rapporté</em>.",
+    "s3Title": "Principes éditoriaux",
+    "principle1Label": "Source primaire unique.",
+    "principle1": "Chaque chiffre numérique remonte à une seule source — le Commandement de la Force aérienne des Forces armées d'Ukraine.",
+    "principle2Label": "Reproductibilité.",
+    "principle2": "Chaque graphique peut être reconstruit à partir du CSV brut publié à côté de ce site.",
+    "principle3Label": "Corrections visibles.",
+    "principle3": "Les révisions importantes du jeu de données ou de l'interface sont consignées dans le journal public.",
+    "principle4Label": "Licence ouverte.",
+    "principle4": "Les agrégations peuvent être réutilisées avec attribution.",
+    "s4Title": "Comment citer",
+    "citationIntro": "Si vous citez un chiffre de ce site, veuillez utiliser l'un des formats ci-dessous afin que l'instantané reste auditable."
+  },
+  "imprintPage": {
+    "eyebrow": "Mentions légales",
+    "title": "Mentions légales.",
+    "intro": "Informations conformes au § 5 TMG et au § 18 MStV (Allemagne).",
+    "todoLabel": "Espace réservé",
+    "todoBody": "Les champs ci-dessous sont des espaces réservés. L'exploitant du site doit les remplacer par des informations de contact valides avant publication dans un contexte germanophone.",
+    "s1Title": "Exploitant",
+    "operator": "Exploitant",
+    "address": "Adresse",
+    "email": "E-mail",
+    "responsible": "Responsable au sens du § 18 al. 2 MStV",
+    "s2Title": "Responsabilité",
+    "liabilityContent": "L'exploitant est responsable de ses propres contenus sur ce site conformément aux lois générales. L'exploitant n'est pas tenu de surveiller les informations transmises ou stockées par des tiers, ni de rechercher des circonstances indiquant une activité illégale.",
+    "liabilityLinks": "Ce site contient des liens vers des sites externes. L'exploitant n'a aucune influence sur leur contenu et n'en assume aucune responsabilité. Les fournisseurs respectifs sont seuls responsables du contenu des pages liées.",
+    "s3Title": "Droits d'auteur & licence des données",
+    "copyright": "Le code du site, la mise en page et les contenus écrits originaux sont, sauf mention contraire, © de l'exploitant.",
+    "dataLicensePre": "Le jeu de données agrégé sous-jacent est fourni sous la ",
+    "dataLicensePost": ". L'attribution au Commandement de la Force aérienne des Forces armées d'Ukraine et à UA Defense Tracker est requise."
   }
 }

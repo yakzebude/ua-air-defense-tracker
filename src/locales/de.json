@@ -18,7 +18,9 @@
     "methodology": "Methodik",
     "sources": "Quellen",
     "help": "Wie man hilft",
-    "changelog": "Änderungen"
+    "changelog": "Änderungen",
+    "about": "Über",
+    "imprint": "Impressum"
   },
   "theme": {
     "toLight": "Zum hellen Modus wechseln",
@@ -222,7 +224,15 @@
     "sources": "Quellen",
     "disclaimer": "Haftungsausschluss",
     "dataNote": "Datenhinweis.",
-    "dataNoteBody": "Zahlen stammen aus offenen Quellen und können Fehler, Auslassungen oder Revisionen enthalten. Der Datensatz spiegelt gemeldete Starts und bestätigte Abfangungen wider; Werte für gestörte, verschollene oder unverifizierte Waffen sind nicht enthalten. Zahlen werden rollierend geprüft und aktualisiert."
+    "dataNoteBody": "Zahlen stammen aus offenen Quellen und können Fehler, Auslassungen oder Revisionen enthalten. Der Datensatz spiegelt gemeldete Starts und bestätigte Abfangungen wider; Werte für gestörte, verschollene oder unverifizierte Waffen sind nicht enthalten. Zahlen werden rollierend geprüft und aktualisiert.",
+    "colAbout": "Über",
+    "colData": "Daten",
+    "colLegal": "Rechtliches",
+    "colMeta": "Status",
+    "curatedBy": "Zusammengeführt von",
+    "dataPackage": "Daten-Paket (JSON)",
+    "license": "Lizenz:",
+    "availableIn": "Verfügbar in"
   },
   "doc": {
     "back": "← Zurück zum Dashboard",
@@ -352,5 +362,48 @@
       "release": "Release",
       "methodology": "Methodik"
     }
+  },
+  "aboutPage": {
+    "eyebrow": "Über",
+    "title": "Wer diesen Tracker betreibt — und unter welchen Bedingungen.",
+    "intro": "UA Defense Tracker ist eine unabhängige OSINT-Visualisierung. Ihr Wert hängt davon ab, die Personen dahinter zu nennen, den Rahmen ehrlich zu benennen und klare Zitierregeln zu definieren.",
+    "s1Title": "Daten-Kurator",
+    "role": "Daten-Kurator und Maintainer der Primärquelle.",
+    "bio": "Petro Ivaniuk aggregiert seit Oktober 2022 fortlaufend die täglichen Luftverteidigungsberichte des Air Force Command of the Armed Forces of Ukraine zu einer strukturierten, maschinenlesbaren Zeitreihe. Der von ihm gepflegte Kaggle-Datensatz ist die einzige Quelle aller Zahlen auf dieser Seite.",
+    "s2Title": "Mission & Rahmen",
+    "missionP1": "Die Seite existiert, um einen spezifischen Strom öffentlicher ukrainischer Luftverteidigungsdaten für Journalisten, Forscher und Referenten zugänglich zu machen, die nicht mit Roh-CSVs arbeiten. Sie ist um monatliche Aggregate, transparente Methodik und Zitate per Klick aufgebaut.",
+    "missionP2": "Erfasst werden gemeldete Starts und bestätigte Abfangungen von UAVs, Marschflugkörpern und ballistischen Raketen über der Ukraine. Opferzahlen, Ausrüstungsverluste, geokalisierte Vorfälle und Behauptungen des russischen MoD liegen ausdrücklich außerhalb des Rahmens.",
+    "notLabel": "Was diese Seite nicht ist",
+    "notBody": "Dies ist <strong>keine</strong> offizielle Veröffentlichung der AFU, kein Echtzeit- / Frühwarnsystem, kein Zielinformations-Feed und keine unabhängig verifizierte Zahl. Behandeln Sie jede Zahl als <em>gemeldet</em>.",
+    "s3Title": "Redaktionelle Grundsätze",
+    "principle1Label": "Eine Primärquelle.",
+    "principle1": "Jede numerische Angabe lässt sich auf eine Quelle zurückführen — das Air Force Command of the Armed Forces of Ukraine.",
+    "principle2Label": "Reproduzierbarkeit.",
+    "principle2": "Jedes Diagramm lässt sich aus der neben dieser Seite veröffentlichten Roh-CSV rekonstruieren.",
+    "principle3Label": "Sichtbare Korrekturen.",
+    "principle3": "Wesentliche Revisionen am Datensatz oder am Interface werden im öffentlichen Changelog protokolliert.",
+    "principle4Label": "Offene Lizenz.",
+    "principle4": "Aggregationen dürfen mit Quellenangabe weiterverwendet werden.",
+    "s4Title": "Wie zitieren",
+    "citationIntro": "Wenn Sie eine Zahl von dieser Seite zitieren, verwenden Sie bitte eines der folgenden Formate, damit der Stand später nachvollziehbar bleibt."
+  },
+  "imprintPage": {
+    "eyebrow": "Impressum",
+    "title": "Rechtliche Angaben.",
+    "intro": "Angaben gemäß § 5 TMG und § 18 Medienstaatsvertrag.",
+    "todoLabel": "Platzhalter",
+    "todoBody": "Die untenstehenden Felder sind Platzhalter. Der Betreiber muss sie vor der Veröffentlichung im deutschsprachigen Kontext durch gültige Kontaktangaben ersetzen.",
+    "s1Title": "Betreiber",
+    "operator": "Betreiber",
+    "address": "Anschrift",
+    "email": "E-Mail",
+    "responsible": "Verantwortlich i.S.d. § 18 Abs. 2 MStV",
+    "s2Title": "Haftung",
+    "liabilityContent": "Der Betreiber ist für eigene Inhalte auf dieser Seite nach den allgemeinen Gesetzen verantwortlich. Der Betreiber ist nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.",
+    "liabilityLinks": "Diese Seite enthält Links zu externen Webseiten. Auf deren Inhalte hat der Betreiber keinen Einfluss und übernimmt keine Haftung dafür. Für die Inhalte der verlinkten Seiten sind ausschließlich die jeweiligen Anbieter verantwortlich.",
+    "s3Title": "Urheberrecht & Datenlizenz",
+    "copyright": "Seitencode, Layout und originale schriftliche Inhalte sind, sofern nicht anders gekennzeichnet, © des Betreibers.",
+    "dataLicensePre": "Der zugrundeliegende aggregierte Datensatz wird unter der ",
+    "dataLicensePost": " bereitgestellt. Eine Namensnennung des Air Force Command of the Armed Forces of Ukraine sowie des UA Defense Tracker ist erforderlich."
   }
 }

@@ -544,16 +544,56 @@ const Index = () => {
       </div>
 
       <footer className="border-t border-border">
-        <div className="container flex flex-col items-start justify-between gap-3 py-6 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground md:flex-row md:items-center">
-          <p>{t("footer.tagline")}</p>
-          <div className="flex flex-wrap items-center gap-3">
-            <span>{t("footer.lastDataPoint")} <span className="text-foreground">{lastUpdatedLabel ?? "—"}</span></span>
-            <a href="/data/missile_attacks_daily.csv" download className="rounded-sm border border-border px-2.5 py-1 text-foreground transition-colors hover:bg-secondary">
-              {t("footer.downloadCsv")}
-            </a>
-            <Link to="/methodology" className="hover:text-foreground">{t("footer.methodology")}</Link>
-            <Link to="/sources" className="hover:text-foreground">{t("footer.sources")}</Link>
-            <Link to="/disclaimer" className="hover:text-foreground">{t("footer.disclaimer")}</Link>
+        <div className="container grid gap-8 py-10 md:grid-cols-4">
+          <div>
+            <div className="src-label mb-3">{t("footer.colAbout")}</div>
+            <ul className="space-y-2 text-[13px]">
+              <li><Link to="/about" className="text-foreground hover:underline underline-offset-4">{t("nav.about")}</Link></li>
+              <li><Link to="/changelog" className="text-foreground hover:underline underline-offset-4">{t("nav.changelog")}</Link></li>
+              <li className="text-muted-foreground">{t("footer.curatedBy")} <span className="text-foreground">Petro Ivaniuk</span></li>
+            </ul>
+          </div>
+          <div>
+            <div className="src-label mb-3">{t("footer.colData")}</div>
+            <ul className="space-y-2 text-[13px]">
+              <li><Link to="/methodology" className="text-foreground hover:underline underline-offset-4">{t("nav.methodology")}</Link></li>
+              <li><Link to="/sources" className="text-foreground hover:underline underline-offset-4">{t("nav.sources")}</Link></li>
+              <li>
+                <a href="/data/missile_attacks_daily.csv" download className="text-foreground hover:underline underline-offset-4">
+                  {t("footer.downloadCsv")}
+                </a>
+              </li>
+              <li>
+                <a href="/data/datapackage.json" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline underline-offset-4">
+                  {t("footer.dataPackage")}
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <div className="src-label mb-3">{t("footer.colLegal")}</div>
+            <ul className="space-y-2 text-[13px]">
+              <li><Link to="/imprint" className="text-foreground hover:underline underline-offset-4">{t("nav.imprint")}</Link></li>
+              <li><Link to="/disclaimer" className="text-foreground hover:underline underline-offset-4">{t("footer.disclaimer")}</Link></li>
+              <li className="text-muted-foreground">
+                {t("footer.license")}{" "}
+                <a href="https://opendatacommons.org/licenses/by/1-0/" target="_blank" rel="noopener noreferrer external" className="text-foreground hover:underline underline-offset-4">
+                  ODC-BY 1.0
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <div className="src-label mb-3">{t("footer.colMeta")}</div>
+            <ul className="space-y-2 text-[13px] text-muted-foreground">
+              <li>{t("footer.lastDataPoint")} <span className="text-foreground num">{lastUpdatedLabel ?? "—"}</span></li>
+              <li>{t("footer.availableIn")} <span className="text-foreground">EN · DE · FR · UK</span></li>
+            </ul>
+          </div>
+        </div>
+        <div className="border-t border-border">
+          <div className="container py-4 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground">
+            {t("footer.tagline")}
           </div>
         </div>
       </footer>
