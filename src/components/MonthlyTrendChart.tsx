@@ -61,10 +61,10 @@ export function MonthlyTrendChart({ data }: Props) {
       .filter((m) => !(m.date.getUTCFullYear() === curY && m.date.getUTCMonth() === curM))
       .map((m) => ({ ...m, ratePct: +(m.rate * 100).toFixed(2) }));
   }, [data]);
-  const ticks = useMemo(
-    () => enriched.filter((_, i) => i % 4 === 0).map((m) => m.label),
-    [enriched],
-  );
+  const ticks = useMemo(() => {
+    const step = enriched.length <= 6 ? 1 : enriched.length <= 14 ? 2 : 4;
+    return enriched.filter((_, i) => i % step === 0).map((m) => m.label);
+  }, [enriched]);
 
   return (
     <div className="h-[360px] w-full">
