@@ -105,7 +105,8 @@
     "all": "Alle",
     "less": "Weniger",
     "more": "Mehr · Spitze {{n}}",
-    "monthCellTitle": "{{month}} {{year}}: {{n}} gemeldete Starts"
+    "monthCellTitle": "{{month}} {{year}}: {{n}} gemeldete Starts",
+    "swipeHint": "Wischen"
   },
   "arsenal": {
     "kicker": "Arsenal · Waffenkatatalog",

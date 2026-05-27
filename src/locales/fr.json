@@ -105,7 +105,8 @@
     "all": "Tous",
     "less": "Moins",
     "more": "Plus · Pic {{n}}",
-    "monthCellTitle": "{{month}} {{year}} : {{n}} lancements signalés"
+    "monthCellTitle": "{{month}} {{year}} : {{n}} lancements signalés",
+    "swipeHint": "Glisser"
   },
   "arsenal": {
     "kicker": "Arsenal · catalogue des armes",

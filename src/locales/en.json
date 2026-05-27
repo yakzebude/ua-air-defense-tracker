@@ -105,7 +105,8 @@
     "all": "All",
     "less": "Less",
     "more": "More · Peak {{n}}",
-    "monthCellTitle": "{{month}} {{year}}: {{n}} reported launches"
+    "monthCellTitle": "{{month}} {{year}}: {{n}} reported launches",
+    "swipeHint": "Swipe"
   },
   "arsenal": {
     "kicker": "Arsenal · weapon catalog",

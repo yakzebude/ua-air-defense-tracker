@@ -105,7 +105,8 @@
     "all": "Всі",
     "less": "Менше",
     "more": "Більше · Пік {{n}}",
-    "monthCellTitle": "{{month}} {{year}}: повідомлено про {{n}} запусків"
+    "monthCellTitle": "{{month}} {{year}}: повідомлено про {{n}} запусків",
+    "swipeHint": "Гортайте"
   },
   "arsenal": {
     "kicker": "Арсенал · каталог озброєння",
