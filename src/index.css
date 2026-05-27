@@ -88,16 +88,16 @@
     --ring: 220 14% 92%;
 
     --ink: 220 14% 92%;
-    --signal: 38 88% 58%;
-    --signal-soft: 38 40% 18%;
+    --signal: 0 75% 60%;
+    --signal-soft: 0 50% 20%;
 
-    --ua-yellow: 38 88% 58%;
+    --ua-yellow: 0 75% 60%;
     --ua-blue: 220 14% 92%;
     --cyber: 220 8% 60%;
     --cyber-glow: 220 8% 60%;
 
     --series-launched: 220 14% 80%;
-    --series-destroyed: 38 88% 58%;
+    --series-destroyed: 0 75% 60%;
     --series-rate: 220 8% 55%;
     --grid: 220 12% 18%;
 
