@@ -50,9 +50,12 @@ export function DocPageLayout({ eyebrow, title, intro, children }: Props) {
         <div className="container flex flex-wrap items-center justify-between gap-3 py-5 font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
           <Link to="/" className="hover:text-foreground">{t("doc.back")}</Link>
           <div className="flex flex-wrap gap-4">
+            <Link to="/about" className="hover:text-foreground">{t("nav.about")}</Link>
             <Link to="/methodology" className="hover:text-foreground">{t("nav.methodology")}</Link>
             <Link to="/sources" className="hover:text-foreground">{t("nav.sources")}</Link>
+            <Link to="/changelog" className="hover:text-foreground">{t("nav.changelog")}</Link>
             <Link to="/disclaimer" className="hover:text-foreground">{t("footer.disclaimer")}</Link>
+            <Link to="/imprint" className="hover:text-foreground">{t("nav.imprint")}</Link>
           </div>
         </div>
       </footer>
