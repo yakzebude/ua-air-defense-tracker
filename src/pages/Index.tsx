@@ -126,9 +126,9 @@ function RelatedSourcesSection() {
     <section id="related" className="scroll-mt-32 border-t border-border">
       <div className="container py-12 md:py-16">
         <div className="mb-8 max-w-3xl">
-          <div className="src-label mb-2">{t("related.kicker")}</div>
+          <div className="src-label mb-3">{t("related.kicker")}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("related.title")}</h2>
-          <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">{t("related.intro")}</p>
+          <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">{t("related.intro")}</p>
         </div>
         <div className="grid gap-px overflow-hidden rounded-sm border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
           {RELATED_SOURCES.map((s) => (
@@ -166,9 +166,9 @@ function HowToHelpSection() {
     <section id="help" className="scroll-mt-32 border-t border-border">
       <div className="container py-12 md:py-16">
         <div className="mb-8 max-w-3xl">
-          <div className="src-label mb-2">{t("donate.kicker")}</div>
+          <div className="src-label mb-3">{t("donate.kicker")}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("donate.title")}</h2>
-          <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">{t("donate.intro")}</p>
+          <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">{t("donate.intro")}</p>
         </div>
         <div className="grid gap-px overflow-hidden rounded-sm border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
           {DONATE_ORGS.map((s) => (
@@ -217,9 +217,9 @@ function CategorySection({
     <section id={id} className="scroll-mt-32 border-t border-border">
       <div className="container py-12 md:py-16">
         <div className="mb-8 max-w-3xl">
-          <div className="src-label mb-2">{kicker}</div>
+          <div className="src-label mb-3">{kicker}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{title}</h2>
-          <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">{description}</p>
+          <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">{description}</p>
         </div>
 
         <div className="mb-6 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-6 md:grid-cols-4">
@@ -302,10 +302,10 @@ const Index = () => {
           <h1 className="max-w-4xl text-3xl font-semibold leading-[1.15] tracking-tight md:text-[2.75rem]">
             {t("masthead.title")}
           </h1>
-          <p className="mt-4 max-w-3xl text-[14px] leading-relaxed text-muted-foreground md:text-[15px]">
+          <p className="mt-5 max-w-3xl text-[14px] leading-[1.7] text-muted-foreground md:text-[15px]">
             {t("masthead.intro")}
           </p>
-          <div className="src-label mt-4 flex flex-wrap items-center gap-x-4 gap-y-1">
+          <div className="src-label mt-5 flex flex-wrap items-center gap-x-4 gap-y-1">
             <span>{t("nav.lastDataPoint")}: <span className="text-foreground">{lastUpdatedLabel ?? "—"}</span></span>
             <span aria-hidden>·</span>
             <Link to="/sources" className="hover:text-foreground">{t("masthead.primarySource")}</Link>
