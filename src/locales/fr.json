@@ -38,7 +38,7 @@
     "leakerPctSuffix": "% des lancements"
   },
   "masthead": {
-    "kicker": "OSINT · Air-threat tracker",
+    "kicker": "OSINT",
     "title": "Défense aérienne ukrainienne — données agrégées",
     "intro": "Nombre mensuel de menaces aériennes signalées et d'interceptions confirmées au-dessus de l'Ukraine, d'octobre 2022 à aujourd'hui. Les données sont compilées à partir des rapports quotidiens du commandement de la Force aérienne ukrainienne et agrégées par mois civil. Les chiffres sont sujets à révision.",
     "primarySource": "Source principale ↗",
