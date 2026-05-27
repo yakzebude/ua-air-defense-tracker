@@ -1,105 +1,59 @@
-# Redesign: Professional OSINT / Defense Analytics Look
+# Plan: Glaubwürdigkeit stärken & Journalisten-Workflow verbessern
 
-Goal: strip the marketing/cyber aesthetic and rebuild the surface to read like Bloomberg Terminal / Reuters Graphics / NATO briefings — calm, dense, trustworthy.
+Fokus laut deiner Auswahl: **Höhere Glaubwürdigkeit** für die Zielgruppe **Journalisten & Medien**. Sechs gezielte Maßnahmen, geordnet nach Wirkung.
 
-## 1. Design system reset (`src/index.css`, `tailwind.config.ts`)
+## 1. Datenfrische-Indikator im StatusBar
 
-**Palette — 2 colors + neutral grays only**
-- Primary accent: deep navy/ink `--accent-primary` (used for headlines, key numbers, primary chart series)
-- Signal accent: muted amber `--accent-signal` (used sparingly for active state, alerts, the single most important KPI)
-- Everything else: neutral gray scale (`--neutral-50` … `--neutral-900`)
-- Remove: cyber blue, purple, multi-stop gradients, `--cyber-glow`
+Im obersten StatusBar neben dem letzten Datenpunkt ein kleines visuelles Signal:
+- grüner Punkt: Daten ≤ 3 Tage alt
+- gelb: 4–10 Tage
+- rot: > 10 Tage
 
-**Chart series** reduced to: ink, amber, mid-gray. No purple/orange ramp.
+Tooltip erklärt: "Letzter Eintrag im Datensatz; nicht die Zeit deines Besuchs". Macht für Journalisten sofort sichtbar, ob die Zahlen für eine Story noch tragen.
 
-**Effects removed**
-- Delete `.glow-cyber`, `.glow-yellow`, `.text-glow-yellow`, `.scan-line`, `.pulse-soft`, `bg-tactical-grid` hero usage, radial vignettes, animated background grids
-- Replace with: 1px hairline borders, single subtle shadow token `--shadow-card: 0 1px 2px rgba(0,0,0,.04), 0 1px 1px rgba(0,0,0,.03)`
-- Single border-radius: `--radius: 4px`
+## 2. Quellenlink pro Monat im Chart-Tooltip
 
-**Typography**
-- Headings: keep Space Grotesk but reduce weight to 500, tighten size scale
-- Body: Inter 14/20
-- Mono: IBM Plex Mono for all numbers (tabular)
+In `MonthlyTrendChart` und Composition-Charts: der Tooltip eines Monats bekommt einen kleinen "Quelle ↗"-Link, der auf den Kaggle-Datensatz mit Filter auf diesen Monat verweist (bzw. auf den Air-Force-Telegram-Kanal). So kann ein Journalist eine zitierte Zahl direkt rückverfolgen.
 
-## 2. Component refactor — uniform card primitive
+## 3. Changelog / Revisionsverlauf
 
-Create `src/components/ui/panel.tsx` — the single card primitive used everywhere:
-```
-<Panel title="..." subtitle="..." source="Source: ..." note="..." />
-```
-Identical padding (24px), border (1px hairline), radius (4px), shadow (`--shadow-card`). All sections converted: SummaryStats, AnalyticsDashboard, MonthlyTrendChart, Weapons Catalog, How to Help.
+Neue Route `/changelog` (im SectionNav verlinkt), die folgendes auflistet:
+- Datum der letzten Datenaktualisierungen (aus CSV-Mtime ableiten oder manuell pflegen)
+- Bekannte Revisionen einzelner Monate (z. B. "Mai 2024: Marschflugkörper-Zahl von 87 → 91 nach Air-Force-Korrektur")
+- Versionshinweise des Trackers selbst
 
-Delete the per-card "liquid glass" / accent-rotation styling in `HowToHelpSection`.
+Start mit einer einfachen, statisch gepflegten Markdown-/TS-Liste; erweiterbar.
 
-## 3. Hero / Index page
+## 4. Teilbare URLs (Deep-Links)
 
-- Remove animated background, glow dot, marketing copy
-- Replace with a sober masthead: small kicker "OSINT · Air Threat Tracker", H1 "Ukraine Air Defense — Operational Data", one-line standfirst with date range, last-updated timestamp, primary source line
-- KPI strip directly under masthead: 4 large numbers (Launched / Destroyed / Interception rate / Reached target), each with a tiny source label
+Filter-State (Kategorie, Zeitraum, Heatmap-Filter) in URL-Query-Parameter syncen, z. B.
+`/?range=2024-01,2024-09&cat=ballistic`. Beim Laden wird der State aus der URL gelesen. Ermöglicht Journalisten, eine konkrete Ansicht in Artikeln zu verlinken — ein klassisches Vertrauenssignal.
 
-## 4. Source attribution + uncertainty disclosure
+## 5. Pro-Panel-Daten-Export
 
-- Add `<SourceLabel>` micro-component (10px uppercase, muted) rendered under every stat, chart, and table
-- Wire real source strings from `shahed-data.ts` / `missiles-data.ts` / `weapons_catalog.csv` provenance
-- Add a persistent thin banner above the footer: "Data is compiled from open sources and may contain errors. Figures are reviewed and updated regularly. Last update: <date>."
-- Add status qualifiers in copy: `reported`, `confirmed`, `estimated`, `unverified` where applicable
+Jedes Panel (Drohnen, Cruise, Ballistik, Composition, Heatmap) bekommt oben rechts ein dezentes "↓ CSV"-Icon, das **nur die im Panel sichtbaren, gefilterten Daten** als CSV exportiert. Dazu eine "Copy citation"-Aktion, die einen vorformatierten Zitat-String in die Zwischenablage legt:
+> "Air Force Command of Ukraine, via Petro Ivaniuk (Kaggle), aggregated by UA Defense Tracker, retrieved [Datum]."
 
-## 5. Filters
+## 6. SEO & Social-Preview
 
-Add a sticky filter bar (`src/components/FilterBar.tsx`) above the analytics + arsenal sections:
-- Country (origin) — from weapons catalog
-- Date range — existing `DateRangeFilter`, restyled
-- Weapon system / category
-- Source
+- `<title>` und `<meta description>` in `index.html` auf "UA Defense Tracker — Ukraine air defense, aggregated OSINT data" setzen
+- `og:title`, `og:description`, `og:url`, `og:type=website` ergänzen
+- Ein dediziertes OG-Image (1200×630) im Stil des Dashboards generieren — KPI-Header-Look mit Total Launched / Intercepted / Rate, sodass geteilte Links auf X/LinkedIn/Slack professionell aussehen
+- JSON-LD `Dataset` Schema einbetten (passt perfekt zu diesem Projekt und hilft bei Google-Dataset-Search)
 
-State lifted into `Index.tsx`, passed to AnalyticsDashboard, MonthlyTrendChart, WeaponsCatalogSection.
+## Technische Details
 
-## 6. Tables
+- Datenfrische: Differenz zwischen `lastUpdatedLabel.date` und `Date.now()` in Tagen; Farbtoken `--signal` (rot), eine neue `--signal-warn` (gelb), `--signal-ok` (grün) in `index.css`
+- Tooltip-Link: `StackedTooltip` / `ChartTooltip` erweitern, externe URL pro Monat aus `m.date` ableiten
+- URL-State: `useSearchParams` von `react-router-dom`, zentraler Hook `useFilterParams`, debounced Schreibvorgang
+- CSV-Export: kleine Utility-Funktion `toCSV(rows, headers)`, `Blob` + `URL.createObjectURL`
+- Changelog-Route: neue Datei `src/pages/Changelog.tsx` + Eintrag in `App.tsx` Router; Daten in `src/data/changelog.ts`
+- JSON-LD `Dataset`: inline `<script type="application/ld+json">` in `index.html` mit `creator`, `temporalCoverage`, `distribution` (CSV-URL), `license`
+- OG-Image: `imagegen` mit Quality `premium` wegen Text-Lesbarkeit, gespeichert als `public/og-image.jpg`
 
-Rebuild Weapons Catalog as a real table (not card grid):
-- Sticky `<thead>`, zebra rows (`even:bg-neutral-50/40`), sortable columns (model, category, origin, in service, unit cost)
-- Horizontal scroll on mobile with frozen first column
-- Source label in caption
+## Nicht im Plan
 
-## 7. Charts
+- Tagesgenaue Ansicht, Replay-Animation, Vergleichsmodus (sind eher "Interaktivität" — können in einer späteren Runde folgen)
+- Druck-Layout, größere visuelle Animationen, neue Charts
 
-Apply across `MonthlyTrendChart`, `AnalyticsDashboard`, `InterceptionRateChart`:
-- Remove gradients, glow filters, soft fills > 0.15 opacity
-- Two series only: ink (Launched) + amber (Destroyed) — interception rate as a thin gray line on secondary axis
-- Visible axis ticks + labels, gridlines only horizontal at 20% opacity, source caption under each chart, units in axis title
-
-## 8. Copy pass
-
-Rewrite emotional/marketing strings to neutral analytical tone in `Index.tsx`, `HowToHelpSection`, `Methodology.tsx`, `Sources.tsx`, `Disclaimer.tsx`. Examples:
-- "Ukraine's Defense Analytics." → "Ukraine Air Defense — Operational Data"
-- "Verified airstrike and aerial attack data…" → "Daily counts of reported aerial threats and confirmed interceptions, October 2022 – present."
-- "How to Help" donate cards → plain list with org name, mandate, link, source
-
-## 9. Mobile
-
-- Single-column stacking ≤ 768px
-- KPI strip becomes 2x2
-- Filter bar collapses into a `<details>` drawer
-- Tables: horizontal scroll + first-column freeze
-
-## Technical scope
-
-Files edited:
-- `src/index.css`, `tailwind.config.ts` — token reset
-- `src/pages/Index.tsx` — masthead, KPI strip, filter wiring, copy
-- `src/components/SummaryStats.tsx`, `AnalyticsDashboard.tsx`, `MonthlyTrendChart.tsx`, `InterceptionRateChart.tsx`, `WeaponsCatalogSection.tsx`, `DateRangeFilter.tsx`, `DocPageLayout.tsx` — restyle, remove glow, add source labels
-- `src/pages/Methodology.tsx`, `Sources.tsx`, `Disclaimer.tsx` — copy pass
-
-Files created:
-- `src/components/ui/panel.tsx` — uniform card primitive
-- `src/components/SourceLabel.tsx` — source/uncertainty micro-component
-- `src/components/FilterBar.tsx` — country / date / weapon / source filters
-- `src/components/WeaponsTable.tsx` — sortable sticky table replacing card grid
-
-Files removed/inlined:
-- `HowToHelpSection` block in `Index.tsx` rewritten to plain list
-
-No backend or data-model changes. Pure presentation + filter state.
-
-Confirm and I'll implement.
+Soll ich diesen Plan so umsetzen, oder Punkte streichen / priorisieren?
