@@ -112,12 +112,12 @@ function KPI({
 }
 
 const RELATED_SOURCES = [
-  { key: "gur",  href: "https://war-sanctions.gur.gov.ua/en/components" },
-  { key: "uaf",  href: "https://www.facebook.com/kpszsu" },
-  { key: "oryx", href: "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html" },
-  { key: "isw",  href: "https://www.understandingwar.org/backgrounder/russian-offensive-campaign-assessment" },
-  { key: "csis", href: "https://missilethreat.csis.org/" },
-  { key: "kiel", href: "https://www.ifw-kiel.de/topics/war-against-ukraine/ukraine-support-tracker/" },
+  { key: "gur",  href: "https://war-sanctions.gur.gov.ua/en/components", color: "#0057B8" },
+  { key: "uaf",  href: "https://www.facebook.com/kpszsu", color: "#1E90FF" },
+  { key: "oryx", href: "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html", color: "#D35400" },
+  { key: "isw",  href: "https://www.understandingwar.org/backgrounder/russian-offensive-campaign-assessment", color: "#1F4E79" },
+  { key: "csis", href: "https://missilethreat.csis.org/", color: "#C41E3A" },
+  { key: "kiel", href: "https://www.ifw-kiel.de/topics/war-against-ukraine/ukraine-support-tracker/", color: "#003366" },
 ];
 
 function RelatedSourcesSection() {
@@ -130,16 +130,22 @@ function RelatedSourcesSection() {
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("related.title")}</h2>
           <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">{t("related.intro")}</p>
         </div>
-        <div className="grid gap-px overflow-hidden rounded-sm border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {RELATED_SOURCES.map((s) => (
             <a
               key={s.href}
               href={s.href}
               target="_blank"
               rel="noopener noreferrer external"
-              className="group flex flex-col gap-2 bg-card p-5 transition-colors hover:bg-secondary"
+              style={{ borderTopColor: s.color }}
+              className="group relative flex flex-col gap-2 rounded-sm border border-border bg-card p-5 transition-colors hover:bg-secondary/50 border-t-2"
             >
-              <div className="src-label">{t(`related.items.${s.key}.tag`)}</div>
+              <span
+                style={{ backgroundColor: `${s.color}14`, color: s.color }}
+                className="inline-flex self-start rounded px-2 py-0.5 text-[10.5px] font-mono font-medium uppercase tracking-[0.18em]"
+              >
+                {t(`related.items.${s.key}.tag`)}
+              </span>
               <h3 className="text-[15px] font-semibold leading-snug text-foreground">{t(`related.items.${s.key}.name`)}</h3>
               <p className="text-[13px] leading-relaxed text-muted-foreground">{t(`related.items.${s.key}.blurb`)}</p>
               <div className="src-label mt-auto pt-2 transition-colors group-hover:text-foreground">{t("related.open")}</div>
@@ -152,12 +158,12 @@ function RelatedSourcesSection() {
 }
 
 const DONATE_ORGS = [
-  { key: "u24",          name: "UNITED24",                     href: "https://u24.gov.ua/",                              tag: "mixed" },
-  { key: "comeBackAlive",name: "Come Back Alive",              href: "https://savelife.in.ua/en/",                       tag: "military" },
-  { key: "prytula",      name: "Serhiy Prytula Foundation",    href: "https://prytulafoundation.org/en",                 tag: "mixed" },
-  { key: "razom",        name: "Razom for Ukraine",            href: "https://razomforukraine.org/",                     tag: "humanitarian" },
-  { key: "hospitallers", name: "Hospitallers Medical Battalion", href: "https://www.hospitallers.life/needs-hospitallers", tag: "humanitarian" },
-  { key: "voices",       name: "Voices of Children",           href: "https://voices.org.ua/en/",                        tag: "humanitarian" },
+  { key: "u24",          name: "UNITED24",                     href: "https://u24.gov.ua/",                              tag: "mixed", color: "#0057B8" },
+  { key: "comeBackAlive",name: "Come Back Alive",              href: "https://savelife.in.ua/en/",                       tag: "military", color: "#556B2F" },
+  { key: "prytula",      name: "Serhiy Prytula Foundation",    href: "https://prytulafoundation.org/en",                 tag: "mixed", color: "#E67E22" },
+  { key: "razom",        name: "Razom for Ukraine",            href: "https://razomforukraine.org/",                     tag: "humanitarian", color: "#0077B6" },
+  { key: "hospitallers", name: "Hospitallers Medical Battalion", href: "https://www.hospitallers.life/needs-hospitallers", tag: "humanitarian", color: "#C0392B" },
+  { key: "voices",       name: "Voices of Children",           href: "https://voices.org.ua/en/",                        tag: "humanitarian", color: "#F5A623" },
 ];
 
 function HowToHelpSection() {
@@ -170,16 +176,22 @@ function HowToHelpSection() {
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("donate.title")}</h2>
           <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">{t("donate.intro")}</p>
         </div>
-        <div className="grid gap-px overflow-hidden rounded-sm border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {DONATE_ORGS.map((s) => (
             <a
               key={s.href}
               href={s.href}
               target="_blank"
               rel="noopener noreferrer external"
-              className="group flex flex-col gap-2 bg-card p-5 transition-colors hover:bg-secondary"
+              style={{ borderTopColor: s.color }}
+              className="group relative flex flex-col gap-2 rounded-sm border border-border bg-card p-5 transition-colors hover:bg-secondary/50 border-t-2"
             >
-              <div className="src-label">{t(`donate.tags.${s.tag}`)}</div>
+              <span
+                style={{ backgroundColor: `${s.color}14`, color: s.color }}
+                className="inline-flex self-start rounded px-2 py-0.5 text-[10.5px] font-mono font-medium uppercase tracking-[0.18em]"
+              >
+                {t(`donate.tags.${s.tag}`)}
+              </span>
               <h3 className="text-[15px] font-semibold leading-snug text-foreground">{s.name}</h3>
               <p className="text-[13px] leading-relaxed text-muted-foreground">{t(`donate.items.${s.key}`)}</p>
               <div className="src-label mt-auto pt-2 transition-colors group-hover:text-foreground">{t("donate.cta")}</div>
