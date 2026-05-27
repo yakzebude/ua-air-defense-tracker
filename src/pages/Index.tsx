@@ -382,12 +382,12 @@ const Index = () => {
       <section id="methodology" className="scroll-mt-32 border-t border-border">
         <div className="container grid gap-8 py-12 md:grid-cols-12 md:py-16">
           <div className="md:col-span-4">
-            <div className="src-label mb-2">{t("methodologyInline.kicker")}</div>
+            <div className="src-label mb-3">{t("methodologyInline.kicker")}</div>
             <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
               {t("methodologyInline.title")}
             </h2>
           </div>
-          <div className="space-y-3 text-[14px] leading-relaxed text-muted-foreground md:col-span-8">
+          <div className="space-y-4 text-[14px] leading-[1.7] text-muted-foreground md:col-span-8">
             <p>
               {t("methodologyInline.p1Pre")}{" "}
               <strong className="text-foreground">{t("methodologyInline.launched")}</strong>{" "}
