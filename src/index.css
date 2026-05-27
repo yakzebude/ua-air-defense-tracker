@@ -36,18 +36,18 @@
 
     /* Two functional accents only */
     --ink: 220 15% 12%;
-    --signal: 38 92% 45%;            /* muted amber */
-    --signal-soft: 38 80% 92%;
+    --signal: 0 72% 46%;             /* signal red */
+    --signal-soft: 0 70% 94%;
 
     /* Legacy aliases kept so untouched components don't break */
-    --ua-yellow: 38 92% 45%;
+    --ua-yellow: 0 72% 46%;
     --ua-blue: 220 15% 12%;
     --cyber: 220 8% 38%;
     --cyber-glow: 220 8% 38%;
 
-    /* Chart series — ink, amber, mid-gray */
+    /* Chart series — ink, signal red, mid-gray */
     --series-launched: 220 15% 22%;
-    --series-destroyed: 38 92% 45%;
+    --series-destroyed: 0 72% 46%;
     --series-rate: 220 8% 50%;
     --grid: 220 13% 90%;
 
