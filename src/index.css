@@ -38,6 +38,9 @@
     --ink: 220 15% 12%;
     --signal: 0 72% 46%;             /* signal red */
     --signal-soft: 0 70% 94%;
+    --signal-ok: 145 55% 38%;        /* freshness: green */
+    --signal-warn: 38 88% 48%;       /* freshness: amber */
+
 
     /* Legacy aliases kept so untouched components don't break */
     --ua-yellow: 0 72% 46%;
@@ -90,6 +93,9 @@
     --ink: 220 14% 92%;
     --signal: 0 75% 60%;
     --signal-soft: 0 50% 20%;
+    --signal-ok: 145 50% 55%;
+    --signal-warn: 38 85% 60%;
+
 
     --ua-yellow: 0 75% 60%;
     --ua-blue: 220 14% 92%;
