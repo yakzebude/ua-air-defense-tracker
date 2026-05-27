@@ -154,6 +154,15 @@ function CompositionPair(props: Props) {
     ballistic: t("category.ballistic"),
   };
   const totalLabel = t("chart.total");
+  const csvRows = data.map((d) => ({
+    month: d.label,
+    uavs: d.uavs,
+    cruise: d.cruise,
+    ballistic: d.ballistic,
+    total: d.uavs + d.cruise + d.ballistic,
+  }));
+  const csvHeaders = ["month", "uavs", "cruise", "ballistic", "total"];
+
   return (
     <SwipeRow hint={t("analytics.swipeHint")}>
       <div className="min-w-[85%] snap-start md:min-w-0">
@@ -162,6 +171,14 @@ function CompositionPair(props: Props) {
           subtitle={t("analytics.uavMonthlySub")}
           source={t("primarySourceShort")}
           note={t("analytics.uavMonthlyNote")}
+          action={
+            <PanelActions
+              filename="ua-defense-tracker_uav-monthly.csv"
+              panelTitle={t("analytics.uavMonthly")}
+              rows={csvRows.map(({ month, uavs }) => ({ month, uavs }))}
+              headers={["month", "uavs"]}
+            />
+          }
         >
           <CompositionAreaChart data={data} series={["uavs"]} labels={labels} totalLabel={totalLabel} />
         </Panel>
@@ -172,6 +189,14 @@ function CompositionPair(props: Props) {
           subtitle={t("analytics.cruiseBalMonthlySub")}
           source={t("primarySourceShort")}
           note={t("analytics.cruiseBalMonthlyNote")}
+          action={
+            <PanelActions
+              filename="ua-defense-tracker_cruise-ballistic-monthly.csv"
+              panelTitle={t("analytics.cruiseBalMonthly")}
+              rows={csvRows.map(({ month, cruise, ballistic }) => ({ month, cruise, ballistic }))}
+              headers={["month", "cruise", "ballistic"]}
+            />
+          }
         >
           <CompositionAreaChart data={data} series={["ballistic", "cruise"]} labels={labels} totalLabel={totalLabel} />
         </Panel>
@@ -179,6 +204,7 @@ function CompositionPair(props: Props) {
     </SwipeRow>
   );
 }
+
 
 function ShareInterception({ shahed, cruise, ballistic }: Props) {
   const { t } = useTranslation();
