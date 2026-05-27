@@ -128,6 +128,21 @@ function useCompositionData({ shahed, cruise, ballistic }: Props) {
   }, [shahed, cruise, ballistic]);
 }
 
+function SwipeRow({ children, hint }: { children: React.ReactNode; hint: string }) {
+  return (
+    <div>
+      <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-3 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0 [scrollbar-width:thin]">
+        {children}
+      </div>
+      <div className="mt-1 flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground md:hidden">
+        <span aria-hidden>←</span>
+        <span>{hint}</span>
+        <span aria-hidden>→</span>
+      </div>
+    </div>
+  );
+}
+
 function CompositionPair(props: Props) {
   const { t } = useTranslation();
   const data = useCompositionData(props);
@@ -138,24 +153,28 @@ function CompositionPair(props: Props) {
   };
   const totalLabel = t("chart.total");
   return (
-    <div className="grid gap-4 md:grid-cols-2">
-      <Panel
-        title={t("analytics.uavMonthly")}
-        subtitle={t("analytics.uavMonthlySub")}
-        source={t("primarySourceShort")}
-        note={t("analytics.uavMonthlyNote")}
-      >
-        <CompositionAreaChart data={data} series={["uavs"]} labels={labels} totalLabel={totalLabel} />
-      </Panel>
-      <Panel
-        title={t("analytics.cruiseBalMonthly")}
-        subtitle={t("analytics.cruiseBalMonthlySub")}
-        source={t("primarySourceShort")}
-        note={t("analytics.cruiseBalMonthlyNote")}
-      >
-        <CompositionAreaChart data={data} series={["ballistic", "cruise"]} labels={labels} totalLabel={totalLabel} />
-      </Panel>
-    </div>
+    <SwipeRow hint={t("analytics.swipeHint")}>
+      <div className="min-w-[85%] snap-start md:min-w-0">
+        <Panel
+          title={t("analytics.uavMonthly")}
+          subtitle={t("analytics.uavMonthlySub")}
+          source={t("primarySourceShort")}
+          note={t("analytics.uavMonthlyNote")}
+        >
+          <CompositionAreaChart data={data} series={["uavs"]} labels={labels} totalLabel={totalLabel} />
+        </Panel>
+      </div>
+      <div className="min-w-[85%] snap-start md:min-w-0">
+        <Panel
+          title={t("analytics.cruiseBalMonthly")}
+          subtitle={t("analytics.cruiseBalMonthlySub")}
+          source={t("primarySourceShort")}
+          note={t("analytics.cruiseBalMonthlyNote")}
+        >
+          <CompositionAreaChart data={data} series={["ballistic", "cruise"]} labels={labels} totalLabel={totalLabel} />
+        </Panel>
+      </div>
+    </SwipeRow>
   );
 }
 
