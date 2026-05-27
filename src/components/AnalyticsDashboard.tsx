@@ -11,7 +11,9 @@ import {
 } from "recharts";
 import type { Dataset, MonthPoint } from "@/lib/shahed-data";
 import { Panel } from "@/components/ui/panel";
+import { PanelActions } from "@/components/PanelActions";
 import { rampColor } from "@/lib/threat-ramp";
+
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 
