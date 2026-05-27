@@ -70,14 +70,14 @@ export function WeaponsCatalogSection() {
   };
 
   return (
-    <section id="arsenal" className="scroll-mt-24 border-t border-border">
+    <section id="arsenal" className="scroll-mt-32 border-t border-border">
       <div className="container py-12 md:py-16">
         <div className="mb-6 max-w-3xl">
-          <div className="src-label mb-2">{t("arsenal.kicker")}</div>
+          <div className="src-label mb-3">{t("arsenal.kicker")}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
             {t("arsenal.title")}
           </h2>
-          <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
+          <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">
             {t("arsenal.intro")}
           </p>
         </div>
