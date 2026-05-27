@@ -358,22 +358,27 @@ export function AnalyticsDashboard(props: Props) {
 
         <CompositionPair {...props} />
 
-        <div className="mt-4 grid gap-4 md:grid-cols-2">
-          <Panel
-            title={t("analytics.sharePanel")}
-            subtitle={t("analytics.sharePanelSub")}
-            source={t("primarySourceShort")}
-          >
-            <ShareInterception {...props} />
-          </Panel>
-
-          <Panel
-            title={t("analytics.calendarPanel")}
-            subtitle={t("analytics.calendarPanelSub")}
-            source={t("primarySourceShort")}
-          >
-            <HeatmapMonthlyIntensity {...props} />
-          </Panel>
+        <div className="mt-4">
+          <SwipeRow hint={t("analytics.swipeHint")}>
+            <div className="min-w-[85%] snap-start md:min-w-0">
+              <Panel
+                title={t("analytics.sharePanel")}
+                subtitle={t("analytics.sharePanelSub")}
+                source={t("primarySourceShort")}
+              >
+                <ShareInterception {...props} />
+              </Panel>
+            </div>
+            <div className="min-w-[85%] snap-start md:min-w-0">
+              <Panel
+                title={t("analytics.calendarPanel")}
+                subtitle={t("analytics.calendarPanelSub")}
+                source={t("primarySourceShort")}
+              >
+                <HeatmapMonthlyIntensity {...props} />
+              </Panel>
+            </div>
+          </SwipeRow>
         </div>
       </div>
     </section>
