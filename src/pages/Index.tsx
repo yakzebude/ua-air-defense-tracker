@@ -33,8 +33,15 @@ const FRESHNESS_VAR: Record<NonNullable<ReturnType<typeof freshnessTier>>, strin
 };
 
 
-function StatusBar({ lastUpdated }: { lastUpdated: string | null }) {
+function StatusBar({
+  lastUpdated,
+  lastUpdatedDate,
+}: {
+  lastUpdated: string | null;
+  lastUpdatedDate: Date | null;
+}) {
   const { t } = useTranslation();
+  const tier = freshnessTier(lastUpdatedDate);
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background">
       <div className="container flex items-center justify-between gap-6 py-2 font-mono text-[10.5px] uppercase tracking-[0.16em]">
@@ -44,7 +51,20 @@ function StatusBar({ lastUpdated }: { lastUpdated: string | null }) {
         </div>
         <div className="flex items-center gap-6 text-muted-foreground">
           <span className="hidden md:inline">{t("nav.lastDataPoint")}</span>
-          <span className="num text-foreground">{lastUpdated ?? "—"}</span>
+          <span
+            className="inline-flex items-center gap-1.5"
+            title={tier ? t(`freshness.${tier}`) : undefined}
+            aria-label={tier ? t(`freshness.${tier}`) : undefined}
+          >
+            {tier && (
+              <span
+                aria-hidden
+                className="h-1.5 w-1.5 rounded-full"
+                style={{ background: `hsl(var(${FRESHNESS_VAR[tier]}))` }}
+              />
+            )}
+            <span className="num text-foreground">{lastUpdated ?? "—"}</span>
+          </span>
           <span aria-hidden className="hidden h-3 w-px bg-border md:inline-block" />
           <LanguageSwitcher />
           <span aria-hidden className="hidden h-3 w-px bg-border md:inline-block" />
@@ -108,10 +128,17 @@ function SectionNav() {
             </a>
           );
         })}
+        <Link
+          to="/changelog"
+          className="ml-auto whitespace-nowrap rounded-sm px-2.5 py-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+        >
+          {t("nav.changelog")}
+        </Link>
       </div>
     </nav>
   );
 }
+
 
 function KPI({
   label, value, numeric, decimals = 0, suffix = "", sub, signal = false,
