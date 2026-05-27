@@ -69,7 +69,7 @@ export function MonthlyTrendChart({ data }: Props) {
   return (
     <div className="h-[360px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={enriched} margin={{ top: 8, right: 48, left: 0, bottom: 4 }}>
+        <ComposedChart data={enriched} margin={{ top: 8, right: 48, left: 0, bottom: 4 }} barCategoryGap="18%" barGap={2}>
           <CartesianGrid stroke="hsl(var(--grid))" vertical={false} />
           <XAxis
             dataKey="label"
