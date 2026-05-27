@@ -315,15 +315,15 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
 export function AnalyticsDashboard(props: Props) {
   const { t } = useTranslation();
   return (
-    <section id="analytics" className="scroll-mt-24 border-t border-border bg-secondary/40">
+    <section id="analytics" className="scroll-mt-32 border-t border-border bg-secondary/40">
       <div className="container py-12 md:py-16">
-        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-3xl">
-            <div className="src-label mb-2">{t("analytics.kicker")}</div>
+            <div className="src-label mb-3">{t("analytics.kicker")}</div>
             <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
               {t("analytics.title")}
             </h2>
-            <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
+            <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">
               {t("analytics.intro")}
             </p>
           </div>
