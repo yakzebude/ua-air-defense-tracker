@@ -393,6 +393,18 @@ export function AnalyticsDashboard(props: Props) {
                 title={t("analytics.sharePanel")}
                 subtitle={t("analytics.sharePanelSub")}
                 source={t("primarySourceShort")}
+                action={
+                  <PanelActions
+                    filename="ua-defense-tracker_share-interception.csv"
+                    panelTitle={t("analytics.sharePanel")}
+                    rows={[
+                      { category: "uavs", launched: props.shahed.totals.launched, destroyed: props.shahed.totals.destroyed, interception_rate_pct: +(props.shahed.totals.rate * 100).toFixed(2) },
+                      { category: "cruise", launched: props.cruise.totals.launched, destroyed: props.cruise.totals.destroyed, interception_rate_pct: +(props.cruise.totals.rate * 100).toFixed(2) },
+                      { category: "ballistic", launched: props.ballistic.totals.launched, destroyed: props.ballistic.totals.destroyed, interception_rate_pct: +(props.ballistic.totals.rate * 100).toFixed(2) },
+                    ]}
+                    headers={["category", "launched", "destroyed", "interception_rate_pct"]}
+                  />
+                }
               >
                 <ShareInterception {...props} />
               </Panel>
@@ -402,12 +414,32 @@ export function AnalyticsDashboard(props: Props) {
                 title={t("analytics.calendarPanel")}
                 subtitle={t("analytics.calendarPanelSub")}
                 source={t("primarySourceShort")}
+                action={
+                  <PanelActions
+                    filename="ua-defense-tracker_calendar-heatmap.csv"
+                    panelTitle={t("analytics.calendarPanel")}
+                    rows={(() => {
+                      const map = new Map<string, { month: string; uavs: number; cruise: number; ballistic: number }>();
+                      const add = (m: MonthPoint, key: CategoryKey) => {
+                        const k = m.key;
+                        if (!map.has(k)) map.set(k, { month: k, uavs: 0, cruise: 0, ballistic: 0 });
+                        map.get(k)![key] += m.launched;
+                      };
+                      props.shahed.months.forEach((m) => add(m, "uavs"));
+                      props.cruise.months.forEach((m) => add(m, "cruise"));
+                      props.ballistic.months.forEach((m) => add(m, "ballistic"));
+                      return Array.from(map.values()).sort((a, b) => a.month.localeCompare(b.month));
+                    })()}
+                    headers={["month", "uavs", "cruise", "ballistic"]}
+                  />
+                }
               >
                 <HeatmapMonthlyIntensity {...props} />
               </Panel>
             </div>
           </SwipeRow>
         </div>
+
       </div>
     </section>
   );
