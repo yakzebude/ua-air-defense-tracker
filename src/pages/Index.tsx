@@ -297,12 +297,65 @@ function CategorySection({
           subtitle={rangeLabel}
           source={t("primarySource")}
           note={peak ? t("category.peakNote", { month: peak.label, launched: fmt(peak.launched), unit: unitNoun, destroyed: fmt(peak.destroyed), rate: (peak.rate * 100).toFixed(1) }) : undefined}
+          action={
+            <PanelActions
+              filename={`ua-defense-tracker_${id}_${range[0]}-${range[1]}.csv`}
+              panelTitle={typeof title === "string" ? title : id}
+              rows={filtered.map((m) => ({
+                month: m.label,
+                month_key: m.key,
+                launched: m.launched,
+                destroyed: m.destroyed,
+                interception_rate_pct: +(m.rate * 100).toFixed(2),
+              }))}
+              headers={["month", "month_key", "launched", "destroyed", "interception_rate_pct"]}
+            />
+          }
         >
           <MonthlyTrendChart data={filtered} />
         </Panel>
+
       </div>
     </section>
   );
+}
+
+/** Sync a [start,end] range with a single URL search param ("a-b"). */
+function useUrlRange(
+  key: string,
+  range: [number, number] | null,
+  setRange: (r: [number, number]) => void,
+  maxIndex: number | null,
+) {
+  const [params, setParams] = useSearchParams();
+
+  // Hydrate from URL once both maxIndex and current null range are ready.
+  useEffect(() => {
+    if (maxIndex == null) return;
+    const raw = params.get(key);
+    if (!raw) return;
+    const [a, b] = raw.split("-").map((n) => parseInt(n, 10));
+    if (Number.isFinite(a) && Number.isFinite(b)) {
+      const lo = Math.max(0, Math.min(a, maxIndex));
+      const hi = Math.max(lo, Math.min(b, maxIndex));
+      if (!range || range[0] !== lo || range[1] !== hi) setRange([lo, hi]);
+    }
+    // intentionally only on key/maxIndex; do not retrigger on range
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key, maxIndex]);
+
+  // Write current range back to the URL (omit when at full extent).
+  useEffect(() => {
+    if (!range || maxIndex == null) return;
+    const isFull = range[0] === 0 && range[1] === maxIndex;
+    const next = new URLSearchParams(params);
+    if (isFull) next.delete(key);
+    else next.set(key, `${range[0]}-${range[1]}`);
+    if (next.toString() !== params.toString()) {
+      setParams(next, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key, range?.[0], range?.[1], maxIndex]);
 }
 
 const Index = () => {
@@ -327,6 +380,10 @@ const Index = () => {
       .catch((e) => setError(String(e)));
   }, []);
 
+  useUrlRange("dr", shahedRange, setShahedRange, shahed ? shahed.months.length - 1 : null);
+  useUrlRange("cr", cruiseRange, setCruiseRange, cruise ? cruise.months.length - 1 : null);
+  useUrlRange("br", ballisticRange, setBallisticRange, ballistic ? ballistic.months.length - 1 : null);
+
   const ready = shahed && cruise && ballistic;
 
   const grand = useMemo(() => {
@@ -336,7 +393,7 @@ const Index = () => {
     return { launched, destroyed, rate: launched > 0 ? destroyed / launched : 0 };
   }, [ready, shahed, cruise, ballistic]);
 
-  const lastUpdatedLabel = useMemo(() => {
+  const latest = useMemo(() => {
     const lastWithData = (d: Dataset | null): MonthPoint | null => {
       if (!d) return null;
       for (let i = d.months.length - 1; i >= 0; i--) if (d.months[i].launched > 0) return d.months[i];
@@ -345,15 +402,19 @@ const Index = () => {
     const candidates = [lastWithData(shahed), lastWithData(cruise), lastWithData(ballistic)]
       .filter((m): m is MonthPoint => !!m)
       .sort((a, b) => b.date.getTime() - a.date.getTime());
-    return candidates[0]?.label ?? null;
+    return candidates[0] ?? null;
   }, [shahed, cruise, ballistic]);
+
+  const lastUpdatedLabel = latest?.label ?? null;
+  const lastUpdatedDate = latest?.date ?? null;
 
   const reached = Math.max(grand.launched - grand.destroyed, 0);
 
   return (
     <main className="min-h-screen bg-background">
-      <StatusBar lastUpdated={lastUpdatedLabel} />
+      <StatusBar lastUpdated={lastUpdatedLabel} lastUpdatedDate={lastUpdatedDate} />
       <SectionNav />
+
 
       <section id="summary" className="border-b border-border">
         <div className="container py-10 md:py-14">
