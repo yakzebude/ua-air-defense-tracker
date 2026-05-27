@@ -123,9 +123,9 @@ const RELATED_SOURCES = [
 function RelatedSourcesSection() {
   const { t } = useTranslation();
   return (
-    <section id="related" className="scroll-mt-24 border-t border-border">
+    <section id="related" className="scroll-mt-32 border-t border-border">
       <div className="container py-12 md:py-16">
-        <div className="mb-6 max-w-3xl">
+        <div className="mb-8 max-w-3xl">
           <div className="src-label mb-2">{t("related.kicker")}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("related.title")}</h2>
           <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">{t("related.intro")}</p>
@@ -163,9 +163,9 @@ const DONATE_ORGS = [
 function HowToHelpSection() {
   const { t } = useTranslation();
   return (
-    <section id="help" className="scroll-mt-24 border-t border-border">
+    <section id="help" className="scroll-mt-32 border-t border-border">
       <div className="container py-12 md:py-16">
-        <div className="mb-6 max-w-3xl">
+        <div className="mb-8 max-w-3xl">
           <div className="src-label mb-2">{t("donate.kicker")}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("donate.title")}</h2>
           <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">{t("donate.intro")}</p>
@@ -214,9 +214,9 @@ function CategorySection({
   const rangeLabel = filtered.length ? `${filtered[0].label} – ${filtered[filtered.length - 1].label}` : "";
 
   return (
-    <section id={id} className="scroll-mt-24 border-t border-border">
+    <section id={id} className="scroll-mt-32 border-t border-border">
       <div className="container py-12 md:py-16">
-        <div className="mb-6 max-w-3xl">
+        <div className="mb-8 max-w-3xl">
           <div className="src-label mb-2">{kicker}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{title}</h2>
           <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">{description}</p>
@@ -379,7 +379,7 @@ const Index = () => {
 
       <WeaponsCatalogSection />
 
-      <section id="methodology" className="scroll-mt-24 border-t border-border">
+      <section id="methodology" className="scroll-mt-32 border-t border-border">
         <div className="container grid gap-8 py-12 md:grid-cols-12 md:py-16">
           <div className="md:col-span-4">
             <div className="src-label mb-2">{t("methodologyInline.kicker")}</div>
