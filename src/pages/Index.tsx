@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Trans, useTranslation } from "react-i18next";
 import { loadShahedData, type Dataset, type MonthPoint } from "@/lib/shahed-data";
 import { loadAllMissileCategories } from "@/lib/missiles-data";
@@ -11,8 +11,27 @@ import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 import { WeaponsCatalogSection } from "@/components/WeaponsCatalogSection";
 import { Panel, SourceLabel } from "@/components/ui/panel";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
+import { PanelActions } from "@/components/PanelActions";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
+
+/** Compute freshness tier of the latest reported data point. */
+function freshnessTier(latest: Date | null): "fresh" | "stale" | "veryStale" | null {
+  if (!latest) return null;
+  // End-of-month for the latest reported month, then days since then.
+  const eom = new Date(Date.UTC(latest.getUTCFullYear(), latest.getUTCMonth() + 1, 0));
+  const diffDays = Math.floor((Date.now() - eom.getTime()) / 86_400_000);
+  if (diffDays <= 3) return "fresh";
+  if (diffDays <= 10) return "stale";
+  return "veryStale";
+}
+
+const FRESHNESS_VAR: Record<NonNullable<ReturnType<typeof freshnessTier>>, string> = {
+  fresh: "--signal-ok",
+  stale: "--signal-warn",
+  veryStale: "--signal",
+};
+
 
 function StatusBar({ lastUpdated }: { lastUpdated: string | null }) {
   const { t } = useTranslation();
