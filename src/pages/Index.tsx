@@ -18,15 +18,17 @@ function StatusBar({ lastUpdated }: { lastUpdated: string | null }) {
   const { t } = useTranslation();
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background">
-      <div className="container flex items-center justify-between gap-4 py-2 font-mono text-[10.5px] uppercase tracking-[0.16em]">
+      <div className="container flex items-center justify-between gap-6 py-2 font-mono text-[10.5px] uppercase tracking-[0.16em]">
         <div className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-signal" />
           <span className="font-semibold tracking-[0.2em] text-foreground">{t("nav.uaIntel")}</span>
         </div>
-        <div className="flex items-center gap-4 text-muted-foreground">
+        <div className="flex items-center gap-6 text-muted-foreground">
           <span className="hidden md:inline">{t("nav.lastDataPoint")}</span>
           <span className="num text-foreground">{lastUpdated ?? "—"}</span>
+          <span aria-hidden className="hidden h-3 w-px bg-border md:inline-block" />
           <LanguageSwitcher />
+          <span aria-hidden className="hidden h-3 w-px bg-border md:inline-block" />
           <ThemeToggle />
         </div>
       </div>

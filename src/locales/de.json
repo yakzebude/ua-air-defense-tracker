@@ -38,7 +38,7 @@
     "leakerPctSuffix": "% der Starts"
   },
   "masthead": {
-    "kicker": "OSINT · Air-threat tracker",
+    "kicker": "OSINT",
     "title": "Ukraine Luftverteidigung — Aggregierte Daten",
     "intro": "Monatliche Anzahl gemeldeter Bedrohungen aus der Luft und bestätigter Abfangungen über der Ukraine, Okt 2022 – heute. Die Daten stammen aus täglichen Berichten des Ukrainian Air Force Command und werden auf Kalendermonate aggregiert. Zahlen unterliegen Revisionen.",
     "primarySource": "Primärquelle ↗",
@@ -105,7 +105,8 @@
     "all": "Alle",
     "less": "Weniger",
     "more": "Mehr · Spitze {{n}}",
-    "monthCellTitle": "{{month}} {{year}}: {{n}} gemeldete Starts"
+    "monthCellTitle": "{{month}} {{year}}: {{n}} gemeldete Starts",
+    "swipeHint": "Wischen"
   },
   "arsenal": {
     "kicker": "Arsenal · Waffenkatatalog",

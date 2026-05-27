@@ -61,15 +61,15 @@ export function MonthlyTrendChart({ data }: Props) {
       .filter((m) => !(m.date.getUTCFullYear() === curY && m.date.getUTCMonth() === curM))
       .map((m) => ({ ...m, ratePct: +(m.rate * 100).toFixed(2) }));
   }, [data]);
-  const ticks = useMemo(
-    () => enriched.filter((_, i) => i % 4 === 0).map((m) => m.label),
-    [enriched],
-  );
+  const ticks = useMemo(() => {
+    const step = enriched.length <= 6 ? 1 : enriched.length <= 14 ? 2 : 4;
+    return enriched.filter((_, i) => i % step === 0).map((m) => m.label);
+  }, [enriched]);
 
   return (
     <div className="h-[360px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={enriched} margin={{ top: 8, right: 48, left: 0, bottom: 4 }}>
+        <ComposedChart data={enriched} margin={{ top: 8, right: 48, left: 0, bottom: 4 }} barCategoryGap="18%" barGap={2}>
           <CartesianGrid stroke="hsl(var(--grid))" vertical={false} />
           <XAxis
             dataKey="label"
@@ -97,8 +97,8 @@ export function MonthlyTrendChart({ data }: Props) {
             tickFormatter={(v) => `${v}%`}
           />
           <Tooltip content={<ChartTooltip t={t} />} cursor={{ stroke: "hsl(var(--foreground))", strokeOpacity: 0.18 }} />
-          <Bar yAxisId="count" dataKey="launched" name={t("chart.launched")} fill={COLOR_LAUNCHED} fillOpacity={0.85} barSize={10} />
-          <Bar yAxisId="count" dataKey="destroyed" name={t("chart.destroyed")} fill={COLOR_DESTROYED} fillOpacity={0.9} barSize={10} />
+          <Bar yAxisId="count" dataKey="launched" name={t("chart.launched")} fill={COLOR_LAUNCHED} fillOpacity={0.85} maxBarSize={28} />
+          <Bar yAxisId="count" dataKey="destroyed" name={t("chart.destroyed")} fill={COLOR_DESTROYED} fillOpacity={0.9} maxBarSize={28} />
           <Line
             yAxisId="rate"
             type="monotone"
