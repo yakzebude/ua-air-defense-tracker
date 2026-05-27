@@ -11,7 +11,9 @@ import {
 } from "recharts";
 import type { Dataset, MonthPoint } from "@/lib/shahed-data";
 import { Panel } from "@/components/ui/panel";
+import { PanelActions } from "@/components/PanelActions";
 import { rampColor } from "@/lib/threat-ramp";
+
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 
@@ -152,6 +154,15 @@ function CompositionPair(props: Props) {
     ballistic: t("category.ballistic"),
   };
   const totalLabel = t("chart.total");
+  const csvRows = data.map((d) => ({
+    month: d.label,
+    uavs: d.uavs,
+    cruise: d.cruise,
+    ballistic: d.ballistic,
+    total: d.uavs + d.cruise + d.ballistic,
+  }));
+  const csvHeaders = ["month", "uavs", "cruise", "ballistic", "total"];
+
   return (
     <SwipeRow hint={t("analytics.swipeHint")}>
       <div className="min-w-[85%] snap-start md:min-w-0">
@@ -160,6 +171,14 @@ function CompositionPair(props: Props) {
           subtitle={t("analytics.uavMonthlySub")}
           source={t("primarySourceShort")}
           note={t("analytics.uavMonthlyNote")}
+          action={
+            <PanelActions
+              filename="ua-defense-tracker_uav-monthly.csv"
+              panelTitle={t("analytics.uavMonthly")}
+              rows={csvRows.map(({ month, uavs }) => ({ month, uavs }))}
+              headers={["month", "uavs"]}
+            />
+          }
         >
           <CompositionAreaChart data={data} series={["uavs"]} labels={labels} totalLabel={totalLabel} />
         </Panel>
@@ -170,6 +189,14 @@ function CompositionPair(props: Props) {
           subtitle={t("analytics.cruiseBalMonthlySub")}
           source={t("primarySourceShort")}
           note={t("analytics.cruiseBalMonthlyNote")}
+          action={
+            <PanelActions
+              filename="ua-defense-tracker_cruise-ballistic-monthly.csv"
+              panelTitle={t("analytics.cruiseBalMonthly")}
+              rows={csvRows.map(({ month, cruise, ballistic }) => ({ month, cruise, ballistic }))}
+              headers={["month", "cruise", "ballistic"]}
+            />
+          }
         >
           <CompositionAreaChart data={data} series={["ballistic", "cruise"]} labels={labels} totalLabel={totalLabel} />
         </Panel>
@@ -177,6 +204,7 @@ function CompositionPair(props: Props) {
     </SwipeRow>
   );
 }
+
 
 function ShareInterception({ shahed, cruise, ballistic }: Props) {
   const { t } = useTranslation();
@@ -365,6 +393,18 @@ export function AnalyticsDashboard(props: Props) {
                 title={t("analytics.sharePanel")}
                 subtitle={t("analytics.sharePanelSub")}
                 source={t("primarySourceShort")}
+                action={
+                  <PanelActions
+                    filename="ua-defense-tracker_share-interception.csv"
+                    panelTitle={t("analytics.sharePanel")}
+                    rows={[
+                      { category: "uavs", launched: props.shahed.totals.launched, destroyed: props.shahed.totals.destroyed, interception_rate_pct: +(props.shahed.totals.rate * 100).toFixed(2) },
+                      { category: "cruise", launched: props.cruise.totals.launched, destroyed: props.cruise.totals.destroyed, interception_rate_pct: +(props.cruise.totals.rate * 100).toFixed(2) },
+                      { category: "ballistic", launched: props.ballistic.totals.launched, destroyed: props.ballistic.totals.destroyed, interception_rate_pct: +(props.ballistic.totals.rate * 100).toFixed(2) },
+                    ]}
+                    headers={["category", "launched", "destroyed", "interception_rate_pct"]}
+                  />
+                }
               >
                 <ShareInterception {...props} />
               </Panel>
@@ -374,12 +414,32 @@ export function AnalyticsDashboard(props: Props) {
                 title={t("analytics.calendarPanel")}
                 subtitle={t("analytics.calendarPanelSub")}
                 source={t("primarySourceShort")}
+                action={
+                  <PanelActions
+                    filename="ua-defense-tracker_calendar-heatmap.csv"
+                    panelTitle={t("analytics.calendarPanel")}
+                    rows={(() => {
+                      const map = new Map<string, { month: string; uavs: number; cruise: number; ballistic: number }>();
+                      const add = (m: MonthPoint, key: CategoryKey) => {
+                        const k = m.key;
+                        if (!map.has(k)) map.set(k, { month: k, uavs: 0, cruise: 0, ballistic: 0 });
+                        map.get(k)![key] += m.launched;
+                      };
+                      props.shahed.months.forEach((m) => add(m, "uavs"));
+                      props.cruise.months.forEach((m) => add(m, "cruise"));
+                      props.ballistic.months.forEach((m) => add(m, "ballistic"));
+                      return Array.from(map.values()).sort((a, b) => a.month.localeCompare(b.month));
+                    })()}
+                    headers={["month", "uavs", "cruise", "ballistic"]}
+                  />
+                }
               >
                 <HeatmapMonthlyIntensity {...props} />
               </Panel>
             </div>
           </SwipeRow>
         </div>
+
       </div>
     </section>
   );

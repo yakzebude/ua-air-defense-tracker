@@ -17,7 +17,8 @@
     "arsenal": "Arsenal",
     "methodology": "Méthodologie",
     "sources": "Sources",
-    "help": "Comment aider"
+    "help": "Comment aider",
+    "changelog": "Journal"
   },
   "theme": {
     "toLight": "Passer au mode clair",
@@ -326,6 +327,30 @@
     "s6p1": "Si vous remarquez une erreur d'agrégation, de mapping ou d'étiquetage, veuillez ouvrir un ticket sur le dépôt source ou contacter le mainteneur. Les erreurs sont corrigées sur place ; les changements majeurs sont notés dans le journal des modifications du jeu de données amont."
   },
   "panel": {
-    "source": "Source :"
+    "source": "Source :",
+    "exportCsv": "Télécharger les données de ce panneau en CSV",
+    "exportCsvShort": "CSV",
+    "copyCitation": "Copier une citation pour ce panneau",
+    "copyCitationShort": "Citer",
+    "citationCopied": "Copié",
+    "verifySource": "Ouvrir le jeu de données source",
+    "verify": "Vérifier"
+  },
+  "freshness": {
+    "label": "Fraîcheur des données",
+    "fresh": "À jour — dernier point dans les 3 derniers jours",
+    "stale": "Légèrement périmé — dernier point datant de 4 à 10 jours",
+    "veryStale": "Périmé — dernier point datant de plus de 10 jours"
+  },
+  "changelog": {
+    "eyebrow": "Journal",
+    "title": "Mises à jour, révisions et évolutions du tracker.",
+    "intro": "Nous journalisons chaque rafraîchissement du jeu de données, chaque révision connue de chiffres historiques et chaque évolution du tracker. Une figure citée depuis ce site reste auditable.",
+    "kinds": {
+      "data": "Données",
+      "revision": "Révision",
+      "release": "Mise en prod",
+      "methodology": "Méthodologie"
+    }
   }
 }

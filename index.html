@@ -3,24 +3,61 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>UA Defense Tracker — Real-Time Ukraine Defense Intelligence</title>
-    <meta name="description" content="Verified battlefield data on UAVs, cruise and ballistic missiles launched at Ukraine and intercepted by Ukrainian air defences. Updated from Air Force Command daily reports.">
+    <title>UA Defense Tracker — Ukraine air defense, aggregated OSINT data</title>
+    <meta name="description" content="Verified monthly data on UAVs, cruise and ballistic missiles launched at Ukraine and intercepted by Ukrainian air defences. Aggregated from Air Force Command daily reports, curated by Petro Ivaniuk." />
     <meta name="author" content="UA Defense Tracker" />
-    <link rel="canonical" href="/" />
+    <link rel="canonical" href="https://ua-defense-tracker.lovable.app/" />
 
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ua-defense-tracker.lovable.app/" />
+    <meta property="og:title" content="UA Defense Tracker — Ukraine air defense, aggregated OSINT data" />
+    <meta property="og:description" content="Monthly OSINT analysis of UAVs, cruise and ballistic missiles launched at Ukraine and intercepted by air defences, since October 2022." />
+    <meta property="og:image" content="https://ua-defense-tracker.lovable.app/og-image.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="UA Defense Tracker — Ukraine air defense, aggregated OSINT data" />
+    <meta name="twitter:description" content="Monthly OSINT analysis of UAVs, cruise and ballistic missiles launched at Ukraine and intercepted by air defences, since October 2022." />
+    <meta name="twitter:image" content="https://ua-defense-tracker.lovable.app/og-image.jpg" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-    <meta property="og:title" content="UA Defense Tracker — Real-Time Ukraine Defense Intelligence">
-  <meta name="twitter:title" content="UA Defense Tracker — Real-Time Ukraine Defense Intelligence">
-  <meta property="og:description" content="Monthly visual analysis of drones, ballistic and cruise missiles launched at Ukraine and intercepted by air defences, Jan 2023 – Mar 2026.">
-  <meta name="twitter:description" content="Monthly visual analysis of drones, ballistic and cruise missiles launched at Ukraine and intercepted by air defences, Jan 2023 – Mar 2026.">
-  <meta property="og:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/96ef6f5e-7b4a-49ee-9bd6-5453a10d420e/id-preview-f9caf498--2ba771b8-1210-4cff-91eb-0b9a295aed9e.lovable.app-1776963539647.png">
-  <meta name="twitter:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/96ef6f5e-7b4a-49ee-9bd6-5453a10d420e/id-preview-f9caf498--2ba771b8-1210-4cff-91eb-0b9a295aed9e.lovable.app-1776963539647.png">
-</head>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Dataset",
+        "name": "UA Defense Tracker — Ukraine air defense aggregated data",
+        "alternateName": "Ukraine air-threat monthly aggregates",
+        "description": "Monthly counts of reported aerial threats (UAVs, cruise missiles, ballistic missiles) launched at Ukraine and confirmed interceptions by Ukrainian air defence forces, aggregated from Ukrainian Air Force Command daily reports since October 2022.",
+        "url": "https://ua-defense-tracker.lovable.app/",
+        "license": "https://opendatacommons.org/licenses/by/1-0/",
+        "isAccessibleForFree": true,
+        "keywords": [
+          "Ukraine", "air defense", "OSINT", "Shahed", "cruise missile",
+          "ballistic missile", "interception rate", "Russia", "war"
+        ],
+        "temporalCoverage": "2022-10-01/..",
+        "spatialCoverage": { "@type": "Place", "name": "Ukraine" },
+        "creator": {
+          "@type": "Person",
+          "name": "Petro Ivaniuk",
+          "url": "https://www.kaggle.com/piterfm"
+        },
+        "publisher": { "@type": "Organization", "name": "UA Defense Tracker" },
+        "sourceOrganization": {
+          "@type": "Organization",
+          "name": "Air Force Command of the Armed Forces of Ukraine"
+        },
+        "distribution": [
+          {
+            "@type": "DataDownload",
+            "encodingFormat": "text/csv",
+            "contentUrl": "https://ua-defense-tracker.lovable.app/data/missile_attacks_daily.csv"
+          }
+        ]
+      }
+    </script>
+  </head>
 
   <body>
     <div id="root"></div>

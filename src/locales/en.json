@@ -17,7 +17,8 @@
     "arsenal": "Arsenal",
     "methodology": "Methodology",
     "sources": "Sources",
-    "help": "How to help"
+    "help": "How to help",
+    "changelog": "Changelog"
   },
   "theme": {
     "toLight": "Switch to light mode",
@@ -326,6 +327,30 @@
     "s6p1": "If you spot an aggregation, mapping, or labeling error, please open an issue on the source repository or contact the maintainer. Errors are fixed in-place; major changes are noted in the changelog of the upstream dataset."
   },
   "panel": {
-    "source": "Source:"
+    "source": "Source:",
+    "exportCsv": "Download this panel's data as CSV",
+    "exportCsvShort": "CSV",
+    "copyCitation": "Copy a citation for this panel",
+    "copyCitationShort": "Cite",
+    "citationCopied": "Copied",
+    "verifySource": "Open the primary source dataset",
+    "verify": "Verify"
+  },
+  "freshness": {
+    "label": "Data freshness",
+    "fresh": "Up to date — last data point within 3 days",
+    "stale": "Slightly stale — last data point 4–10 days old",
+    "veryStale": "Stale — last data point over 10 days old"
+  },
+  "changelog": {
+    "eyebrow": "Changelog",
+    "title": "Data updates, revisions and shipped changes.",
+    "intro": "We log every dataset refresh, known revision of historical figures and every change to the tracker itself. If you cite a number from this site, you can audit when and how that number changed.",
+    "kinds": {
+      "data": "Data",
+      "revision": "Revision",
+      "release": "Release",
+      "methodology": "Methodology"
+    }
   }
 }

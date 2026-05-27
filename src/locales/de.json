@@ -17,7 +17,8 @@
     "arsenal": "Arsenal",
     "methodology": "Methodik",
     "sources": "Quellen",
-    "help": "Wie man hilft"
+    "help": "Wie man hilft",
+    "changelog": "Änderungen"
   },
   "theme": {
     "toLight": "Zum hellen Modus wechseln",
@@ -326,6 +327,30 @@
     "s6p1": "Wenn Sie einen Fehler bei der Aggregation, Zuordnung oder Beschriftung entdecken, öffnen Sie bitte ein Issue im Quell-Repository oder kontaktieren Sie den Maintainer. Fehler werden direkt korrigiert; größere Änderungen werden im Changelog des vorgelagerten Datensatzes vermerkt."
   },
   "panel": {
-    "source": "Quelle:"
+    "source": "Quelle:",
+    "exportCsv": "Daten dieses Panels als CSV herunterladen",
+    "exportCsvShort": "CSV",
+    "copyCitation": "Zitierhinweis für dieses Panel kopieren",
+    "copyCitationShort": "Zitat",
+    "citationCopied": "Kopiert",
+    "verifySource": "Primärquellen-Datensatz öffnen",
+    "verify": "Prüfen"
+  },
+  "freshness": {
+    "label": "Datenfrische",
+    "fresh": "Aktuell — letzter Datenpunkt jünger als 3 Tage",
+    "stale": "Leicht veraltet — letzter Datenpunkt 4–10 Tage alt",
+    "veryStale": "Veraltet — letzter Datenpunkt älter als 10 Tage"
+  },
+  "changelog": {
+    "eyebrow": "Änderungen",
+    "title": "Daten-Updates, Revisionen und ausgelieferte Änderungen.",
+    "intro": "Wir protokollieren jede Datensatz-Aktualisierung, jede bekannte Revision historischer Werte und jede Änderung am Tracker selbst. Wer eine Zahl von dieser Seite zitiert, kann nachvollziehen, wann und wie sie sich geändert hat.",
+    "kinds": {
+      "data": "Daten",
+      "revision": "Revision",
+      "release": "Release",
+      "methodology": "Methodik"
+    }
   }
 }
