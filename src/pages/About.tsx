@@ -47,7 +47,23 @@ export default function About() {
             </ul>
           </div>
         </div>
+
+        <div className="mt-8 flex flex-col gap-5 border-t border-border pt-6 md:flex-row md:items-start">
+          <div
+            aria-hidden
+            className="flex h-20 w-20 shrink-0 items-center justify-center rounded-sm border border-border bg-secondary font-mono text-lg font-semibold tracking-[0.18em] text-foreground"
+          >
+            AA
+          </div>
+          <div className="space-y-3">
+            <p>
+              <strong>Alexander Anton-Boicuk</strong> — {t("aboutPage.maintainerRole")}
+            </p>
+            <p>{t("aboutPage.maintainerBio")}</p>
+          </div>
+        </div>
       </DocSection>
+
 
       <DocSection num="02" title={t("aboutPage.s2Title")}>
         <p>{t("aboutPage.missionP1")}</p>
