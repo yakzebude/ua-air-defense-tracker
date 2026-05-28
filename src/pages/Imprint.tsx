@@ -17,9 +17,6 @@ export default function Imprint() {
       <DocSection num="01" title={t("imprintPage.s1Title")}>
         <dl className="grid gap-y-3 gap-x-6 md:grid-cols-[minmax(180px,auto)_1fr] [&_dt]:font-mono [&_dt]:text-[11px] [&_dt]:uppercase [&_dt]:tracking-[0.16em] [&_dt]:text-muted-foreground [&_dd]:text-foreground">
           <dt>{t("imprintPage.operator")}</dt>
-      <DocSection num="01" title={t("imprintPage.s1Title")}>
-        <dl className="grid gap-y-3 gap-x-6 md:grid-cols-[minmax(180px,auto)_1fr] [&_dt]:font-mono [&_dt]:text-[11px] [&_dt]:uppercase [&_dt]:tracking-[0.16em] [&_dt]:text-muted-foreground [&_dd]:text-foreground">
-          <dt>{t("imprintPage.operator")}</dt>
           <dd>Alexander Anton-Boicuk</dd>
           <dt>{t("imprintPage.address")}</dt>
           <dd>[ TODO — Straße, PLZ, Ort, Land ]</dd>
@@ -34,8 +31,11 @@ export default function Imprint() {
         </dl>
       </DocSection>
 
+      <DocSection num="02" title={t("imprintPage.s2Title")}>
+        <p>{t("imprintPage.liabilityContent")}</p>
         <p>{t("imprintPage.liabilityLinks")}</p>
       </DocSection>
+
 
       <DocSection num="03" title={t("imprintPage.s3Title")}>
         <p>{t("imprintPage.copyright")}</p>
