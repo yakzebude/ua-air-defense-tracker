@@ -42,7 +42,9 @@ function StatusBar({
 }) {
   const { t } = useTranslation();
   const tier = freshnessTier(lastUpdatedDate);
+  return (
     <header className="sticky top-0 z-40 border-b border-border bg-background">
+
       <div className="container flex items-center justify-between gap-3 py-2 font-mono text-[10.5px] uppercase tracking-[0.16em]">
         <div className="flex min-w-0 items-center gap-2">
           <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-signal" />
