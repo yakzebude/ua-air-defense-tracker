@@ -1,6 +1,6 @@
 # Open-Data-Portale: Einreichungs-Leitfaden
 
-Dieser Leitfaden beschreibt Schritt für Schritt die Aufnahme des UA Defense
+Dieser Leitfaden beschreibt Schritt für Schritt die Aufnahme des UA AirDefense
 Tracker Datensatzes in drei zentrale offene Daten-Portale, damit
 Journalisten, EU-Stäbe und Forscher den Datensatz dort finden, wo sie
 ohnehin suchen.
