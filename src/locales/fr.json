@@ -6,7 +6,7 @@
     "uk": "Українська"
   },
   "nav": {
-    "uaIntel": "UA Defense Tracker",
+    "uaIntel": "UA AirDefense Tracker",
     "subtitle": "Air-Threat Tracker",
     "lastDataPoint": "Dernière donnée",
     "summary": "Résumé",
@@ -200,7 +200,7 @@
   "donate": {
     "kicker": "Comment aider",
     "title": "Organisations de dons vérifiées",
-    "intro": "Organisations ukrainiennes et internationales reconnues couvrant le soutien militaire et l'aide humanitaire. UA Defense Tracker ne sollicite pas de fonds et n'est pas affilié aux entités listées.",
+    "intro": "Organisations ukrainiennes et internationales reconnues couvrant le soutien militaire et l'aide humanitaire. UA AirDefense Tracker ne sollicite pas de fonds et n'est pas affilié aux entités listées.",
     "cta": "Faire un don ↗",
     "tags": {
       "mixed": "Mixte",
@@ -217,7 +217,7 @@
     }
   },
   "footer": {
-    "tagline": "UA Defense Tracker · agrégats mensuels basés sur les rapports de la Force aérienne ukrainienne",
+    "tagline": "UA AirDefense Tracker · agrégats mensuels basés sur les rapports de la Force aérienne ukrainienne",
     "lastDataPoint": "Dernière donnée :",
     "downloadCsv": "Télécharger CSV ↓",
     "methodology": "Méthodologie",
@@ -237,12 +237,12 @@
   },
   "doc": {
     "back": "← Retour au tableau de bord",
-    "topBack": "UA Defense Tracker"
+    "topBack": "UA AirDefense Tracker"
   },
   "methodologyPage": {
     "eyebrow": "Méthodologie",
     "title": "Comment nous transformons les rapports quotidiens en intelligence.",
-    "intro": "Chaque chiffre sur UA Defense Tracker provient d'une source primaire unique et entièrement ouverte : les bulletins quotidiens de défense aérienne publiés par le commandement de la Force aérienne des forces armées ukrainiennes. Cette page documente le processus exact, les définitions et les limites du dashboard.",
+    "intro": "Chaque chiffre sur UA AirDefense Tracker provient d'une source primaire unique et entièrement ouverte : les bulletins quotidiens de défense aérienne publiés par le commandement de la Force aérienne des forces armées ukrainiennes. Cette page documente le processus exact, les définitions et les limites du dashboard.",
     "s1Title": "Source primaire",
     "s1p1": "Nous agrégeons les rapports quotidiens publiés sur les canaux officiels du <strong>Commandement de la Force aérienne des forces armées ukrainiennes</strong> (Повітряні сили ЗСУ). Le miroir CSV structuré est maintenu par le jeu de données open-source <a>“Massive Missile Attacks on Ukraine”</a> sur Kaggle, qui convertit les publications quotidiennes Telegram/Facebook en une série temporelle normalisée.",
     "s1p2": "La couverture commence en <strong>octobre 2022</strong>, premier mois avec une divulgation quotidienne cohérente des nombres lancés et détruits par modèle d'arme, et s'étend jusqu'au dernier bulletin publié.",
@@ -278,7 +278,7 @@
     "title": "D'où vient chaque chiffre.",
     "intro": "La transparence du sourcing est la propriété la plus importante de l'OSINT. Cette page liste chaque source alimentant le dashboard, son rôle et comment la vérifier indépendamment.",
     "calloutLabel": "Une source primaire · nombreuses références croisées",
-    "calloutBody": "Chaque donnée numérique sur UA Defense Tracker provient d'une source primaire unique — le commandement de la Force aérienne des forces armées ukrainiennes. Les autres sources ci-dessous fournissent un contexte indépendant, pas d'entrées numériques.",
+    "calloutBody": "Chaque donnée numérique sur UA AirDefense Tracker provient d'une source primaire unique — le commandement de la Force aérienne des forces armées ukrainiennes. Les autres sources ci-dessous fournissent un contexte indépendant, pas d'entrées numériques.",
     "s1Title": "Registre des sources",
     "s2Title": "Comment vérifier un chiffre",
     "s2l1Pre": "Téléchargez le ",
@@ -313,7 +313,7 @@
   "disclaimerPage": {
     "eyebrow": "Clause de non-responsabilité",
     "title": "Ce que ce site est — et ce qu'il n'est pas.",
-    "intro": "UA Defense Tracker est une visualisation OSINT indépendante et non commerciale. Lisez cette page avant de citer les chiffres.",
+    "intro": "UA AirDefense Tracker est une visualisation OSINT indépendante et non commerciale. Lisez cette page avant de citer les chiffres.",
     "calloutLabel": "Indépendance",
     "calloutBody": "Ce projet n'est <strong>pas affilié au</strong> Gouvernement de l'Ukraine, aux Forces armées ukrainiennes, à l'NATO, à l'Union européenne ou à tout service de renseignement. C'est une couche de visualisation ouverte sur un jeu de données public.",
     "s1Title": "Nature des données",
@@ -367,7 +367,7 @@
   "aboutPage": {
     "eyebrow": "À propos",
     "title": "Qui gère ce tracker, et selon quelles règles.",
-    "intro": "UA Defense Tracker est une visualisation OSINT indépendante. Sa valeur dépend de la transparence sur les personnes derrière, les limites de son périmètre et les règles de citation.",
+    "intro": "UA AirDefense Tracker est une visualisation OSINT indépendante. Sa valeur dépend de la transparence sur les personnes derrière, les limites de son périmètre et les règles de citation.",
     "s1Title": "Conservateur des données",
     "role": "Conservateur des données et mainteneur de la source amont.",
     "bio": "Petro Ivaniuk agrège depuis octobre 2022 les bulletins quotidiens de défense aérienne du Commandement de la Force aérienne des Forces armées d'Ukraine en une série temporelle structurée et lisible par machine. Le jeu de données Kaggle qu'il maintient est la source unique de chaque chiffre présenté ici.",
@@ -407,6 +407,6 @@
     "s3Title": "Droits d'auteur & licence des données",
     "copyright": "Le code du site, la mise en page et les contenus écrits originaux sont, sauf mention contraire, © de l'exploitant.",
     "dataLicensePre": "Le jeu de données agrégé sous-jacent est fourni sous la ",
-    "dataLicensePost": ". L'attribution au Commandement de la Force aérienne des Forces armées d'Ukraine et à UA Defense Tracker est requise."
+    "dataLicensePost": ". L'attribution au Commandement de la Force aérienne des Forces armées d'Ukraine et à UA AirDefense Tracker est requise."
   }
 }

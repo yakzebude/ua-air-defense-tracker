@@ -6,7 +6,7 @@
     "uk": "Українська"
   },
   "nav": {
-    "uaIntel": "UA Defense Tracker",
+    "uaIntel": "UA AirDefense Tracker",
     "subtitle": "Air-Threat Tracker",
     "lastDataPoint": "Last data point",
     "summary": "Summary",
@@ -200,7 +200,7 @@
   "donate": {
     "kicker": "How to help",
     "title": "Vetted donation organisations",
-    "intro": "Established Ukrainian and international organisations covering military support and humanitarian relief. UA Defense Tracker does not solicit funds and is not affiliated with the entities listed.",
+    "intro": "Established Ukrainian and international organisations covering military support and humanitarian relief. UA AirDefense Tracker does not solicit funds and is not affiliated with the entities listed.",
     "cta": "Donate ↗",
     "tags": {
       "mixed": "Mixed",
@@ -217,7 +217,7 @@
     }
   },
   "footer": {
-    "tagline": "UA Defense Tracker · monthly aggregates from Ukrainian Air Force weekly reports",
+    "tagline": "UA AirDefense Tracker · monthly aggregates from Ukrainian Air Force weekly reports",
     "lastDataPoint": "Last data point:",
     "downloadCsv": "Download CSV ↓",
     "methodology": "Methodology",
@@ -237,12 +237,12 @@
   },
   "doc": {
     "back": "← Back to dashboard",
-    "topBack": "UA Defense Tracker"
+    "topBack": "UA AirDefense Tracker"
   },
   "methodologyPage": {
     "eyebrow": "Methodology",
     "title": "How we turn daily reports into intelligence.",
-    "intro": "Every figure on UA Defense Tracker is derived from a single, fully open primary source: the daily air-defense bulletins issued by the Air Force Command of the Armed Forces of Ukraine. This page documents the exact pipeline, definitions, and limitations behind the dashboard.",
+    "intro": "Every figure on UA AirDefense Tracker is derived from a single, fully open primary source: the daily air-defense bulletins issued by the Air Force Command of the Armed Forces of Ukraine. This page documents the exact pipeline, definitions, and limitations behind the dashboard.",
     "s1Title": "Primary source",
     "s1p1": "We aggregate the daily reports published on the official channels of the <strong>Air Force Command of the Armed Forces of Ukraine</strong> (Повітряні сили ЗСУ). The structured CSV mirror is maintained by the open-source dataset <a>“Massive Missile Attacks on Ukraine”</a> on Kaggle, which converts the daily Telegram/Facebook posts into a normalized time series.",
     "s1p2": "Coverage starts <strong>October 2022</strong>, the first month with consistent daily disclosure of both launched and destroyed counts per weapon model, and runs to the latest published bulletin.",
@@ -278,7 +278,7 @@
     "title": "Where every number comes from.",
     "intro": "Transparent sourcing is the single most important property of OSINT. This page lists every source feeding the dashboard, what role it plays, and how to independently verify it.",
     "calloutLabel": "One primary source · many cross-references",
-    "calloutBody": "Every numerical figure on UA Defense Tracker resolves to a single primary source — the Air Force Command of the Armed Forces of Ukraine. The other sources below provide independent context, not numerical input.",
+    "calloutBody": "Every numerical figure on UA AirDefense Tracker resolves to a single primary source — the Air Force Command of the Armed Forces of Ukraine. The other sources below provide independent context, not numerical input.",
     "s1Title": "Source registry",
     "s2Title": "How to verify a number",
     "s2l1Pre": "Download the ",
@@ -313,7 +313,7 @@
   "disclaimerPage": {
     "eyebrow": "Disclaimer",
     "title": "What this site is — and what it isn't.",
-    "intro": "UA Defense Tracker is an independent, non-commercial OSINT visualization. Read this page before citing the figures.",
+    "intro": "UA AirDefense Tracker is an independent, non-commercial OSINT visualization. Read this page before citing the figures.",
     "calloutLabel": "Independence",
     "calloutBody": "This project is <strong>not affiliated with</strong> the Government of Ukraine, the Armed Forces of Ukraine, NATO, the European Union, or any intelligence service. It is an open visualization layer over a public dataset.",
     "s1Title": "Nature of the data",
@@ -367,7 +367,7 @@
   "aboutPage": {
     "eyebrow": "About",
     "title": "Who runs this tracker, and on what terms.",
-    "intro": "UA Defense Tracker is an independent OSINT visualization. Its value depends on naming the people behind it, the limits of its scope, and the rules under which it can be cited.",
+    "intro": "UA AirDefense Tracker is an independent OSINT visualization. Its value depends on naming the people behind it, the limits of its scope, and the rules under which it can be cited.",
     "s1Title": "Data curator",
     "role": "Data curator and upstream maintainer.",
     "bio": "Petro Ivaniuk aggregates the daily air-defense bulletins of the Air Force Command of the Armed Forces of Ukraine into a structured, machine-readable time series, continuously since October 2022. The upstream Kaggle dataset he maintains is the single source of every figure on this site.",
@@ -407,6 +407,6 @@
     "s3Title": "Copyright & data license",
     "copyright": "Site code, layout and original written content are © the operator unless otherwise noted.",
     "dataLicensePre": "The underlying aggregated dataset is provided under the ",
-    "dataLicensePost": ". Attribution to the Air Force Command of the Armed Forces of Ukraine and to UA Defense Tracker is required."
+    "dataLicensePost": ". Attribution to the Air Force Command of the Armed Forces of Ukraine and to UA AirDefense Tracker is required."
   }
 }

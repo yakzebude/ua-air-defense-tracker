@@ -29,7 +29,7 @@ referenziert und erhöht die Glaubwürdigkeit jeder weiteren Einreichung.
    - `missile_attacks_daily.csv`
    - `datapackage.json`
    - `README.md`
-4. **Title:** *UA Defense Tracker — Ukraine air defense aggregated data*
+4. **Title:** *UA AirDefense Tracker — Ukraine air defense aggregated data*
 5. **Authors:** Ivaniuk, Petro (ORCID ergänzen, falls vorhanden).
 6. **Description:** Inhalt von `README.md` einfügen (Markdown wird gerendert).
 7. **License:** *Open Data Commons Attribution (ODC-BY) v1.0*.
@@ -68,7 +68,7 @@ erreicht ein anderes Publikum als Zenodo.
    eine beantragen („Request a new organisation") — Review durch HDX-Team
    dauert 2–5 Tage.
 3. **Dataset name:** *ukraine-air-defense-aggregated-data*
-4. **Title:** *UA Defense Tracker — Ukraine air defense aggregated data*
+4. **Title:** *UA AirDefense Tracker — Ukraine air defense aggregated data*
 5. **Source:** Air Force Command of the Armed Forces of Ukraine
 6. **License:** Open Data Commons Attribution License (ODC-BY 1.0)
 7. **Methodology:** „Other" → Link auf https://ua-airdefense-tracker.org/methodology

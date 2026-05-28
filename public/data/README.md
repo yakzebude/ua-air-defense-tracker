@@ -1,4 +1,4 @@
-# UA Defense Tracker — Ukraine air defense aggregated data
+# UA AirDefense Tracker — Ukraine air defense aggregated data
 
 Daily reports of aerial threats launched at Ukraine and confirmed interceptions
 by Ukrainian air defence forces. Coverage starts **October 2022** and continues
@@ -24,7 +24,7 @@ to the present.
    Kaggle dataset.
 2. Each row covers one reporting window (typically overnight) and lists one or
    more weapon models, the count launched, and the count reported as destroyed.
-3. The UA Defense Tracker site aggregates these rows to calendar months (UTC),
+3. The UA AirDefense Tracker site aggregates these rows to calendar months (UTC),
    then groups models into three families:
    - **UAVs** — Shahed-136/131 and other loitering / reconnaissance UAVs.
    - **Cruise** — Kalibr, X-101/X-555, X-22, X-32, X-59/X-69, Iskander-K, Oniks, etc.
@@ -44,7 +44,7 @@ https://ua-airdefense-tracker.org/changelog
 
 **APA**
 
-> Ivaniuk, P. (2026). *UA Defense Tracker — Ukraine air defense aggregated data*
+> Ivaniuk, P. (2026). *UA AirDefense Tracker — Ukraine air defense aggregated data*
 > [Dataset]. https://ua-airdefense-tracker.org/
 
 **BibTeX**
@@ -52,7 +52,7 @@ https://ua-airdefense-tracker.org/changelog
 ```bibtex
 @dataset{ivaniuk_ua_airdefense_2026,
   author = {Ivaniuk, Petro},
-  title  = {UA Defense Tracker — Ukraine air defense aggregated data},
+  title  = {UA AirDefense Tracker — Ukraine air defense aggregated data},
   year   = {2026},
   url    = {https://ua-airdefense-tracker.org/},
   note   = {Aggregated from Ukrainian Air Force Command daily reports}
@@ -61,7 +61,7 @@ https://ua-airdefense-tracker.org/changelog
 
 ## What this dataset is not
 
-- Not an official AFU release. UA Defense Tracker is independent and
+- Not an official AFU release. UA AirDefense Tracker is independent and
   not affiliated with the Government of Ukraine, the Armed Forces of Ukraine,
   NATO or the European Union.
 - Not a real-time / early-warning feed. Treat hour-level changes as noise.
