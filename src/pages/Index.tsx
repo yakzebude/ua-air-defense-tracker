@@ -42,17 +42,19 @@ function StatusBar({
 }) {
   const { t } = useTranslation();
   const tier = freshnessTier(lastUpdatedDate);
-  return (
     <header className="sticky top-0 z-40 border-b border-border bg-background">
-      <div className="container flex items-center justify-between gap-6 py-2 font-mono text-[10.5px] uppercase tracking-[0.16em]">
-        <div className="flex items-center gap-2">
-          <span className="h-1.5 w-1.5 rounded-full bg-signal" />
-          <span className="font-semibold tracking-[0.2em] text-foreground">{t("nav.uaIntel")}</span>
+      <div className="container flex items-center justify-between gap-3 py-2 font-mono text-[10.5px] uppercase tracking-[0.16em]">
+        <div className="flex min-w-0 items-center gap-2">
+          <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-signal" />
+          <span className="truncate font-semibold tracking-[0.2em] text-foreground">
+            <span className="sm:hidden">UA DT</span>
+            <span className="hidden sm:inline">{t("nav.uaIntel")}</span>
+          </span>
         </div>
-        <div className="flex items-center gap-6 text-muted-foreground">
+        <div className="flex shrink-0 items-center gap-3 text-muted-foreground sm:gap-6">
           <span className="hidden md:inline">{t("nav.lastDataPoint")}</span>
           <span
-            className="inline-flex items-center gap-1.5"
+            className="hidden items-center gap-1.5 sm:inline-flex"
             title={tier ? t(`freshness.${tier}`) : undefined}
             aria-label={tier ? t(`freshness.${tier}`) : undefined}
           >
@@ -74,6 +76,7 @@ function StatusBar({
     </header>
   );
 }
+
 
 function SectionNav() {
   const { t } = useTranslation();
@@ -551,8 +554,10 @@ const Index = () => {
               <li><Link to="/about" className="text-foreground hover:underline underline-offset-4">{t("nav.about")}</Link></li>
               <li><Link to="/changelog" className="text-foreground hover:underline underline-offset-4">{t("nav.changelog")}</Link></li>
               <li className="text-muted-foreground">{t("footer.curatedBy")} <span className="text-foreground">Petro Ivaniuk</span></li>
+              <li className="text-muted-foreground">{t("footer.responsibleBy")} <span className="text-foreground">Alexander Anton-Boicuk</span></li>
             </ul>
           </div>
+
           <div>
             <div className="src-label mb-3">{t("footer.colData")}</div>
             <ul className="space-y-2 text-[13px]">
