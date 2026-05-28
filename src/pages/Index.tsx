@@ -49,7 +49,8 @@ function StatusBar({
         <div className="flex min-w-0 items-center gap-2">
           <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-signal" />
           <span className="truncate font-semibold tracking-[0.2em] text-foreground">
-            <span className="sm:hidden">UA DT</span>
+            <span className="sm:hidden">UA ADT</span>
+
             <span className="hidden sm:inline">{t("nav.uaIntel")}</span>
           </span>
         </div>

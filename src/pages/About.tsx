@@ -104,13 +104,13 @@ export default function About() {
         <div className="space-y-3">
           <div className="src-label">APA</div>
           <pre className="overflow-x-auto rounded-sm border border-border bg-secondary/60 p-3 font-mono text-[12px] leading-relaxed text-foreground">
-{`Ivaniuk, P. (${new Date().getUTCFullYear()}). UA Defense Tracker — Ukraine air defense aggregated data [Dataset]. https://ua-airdefense-tracker.org/`}
+{`Ivaniuk, P. (${new Date().getUTCFullYear()}). UA AirDefense Tracker — Ukraine air defense aggregated data [Dataset]. https://ua-airdefense-tracker.org/`}
           </pre>
           <div className="src-label">BibTeX</div>
           <pre className="overflow-x-auto rounded-sm border border-border bg-secondary/60 p-3 font-mono text-[12px] leading-relaxed text-foreground">
 {`@dataset{ivaniuk_ua_airdefense_${new Date().getUTCFullYear()},
   author = {Ivaniuk, Petro},
-  title  = {UA Defense Tracker — Ukraine air defense aggregated data},
+  title  = {UA AirDefense Tracker — Ukraine air defense aggregated data},
   year   = {${new Date().getUTCFullYear()}},
   url    = {https://ua-airdefense-tracker.org/},
   note   = {Aggregated from Ukrainian Air Force Command daily reports}

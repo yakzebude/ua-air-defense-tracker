@@ -1,7 +1,7 @@
 {
   "profile": "tabular-data-package",
   "name": "ua-defense-tracker",
-  "title": "UA Defense Tracker — Ukraine air defense aggregated data",
+  "title": "UA AirDefense Tracker — Ukraine air defense aggregated data",
   "description": "Daily reports of aerial threats (UAVs, cruise missiles, ballistic missiles) launched at Ukraine and confirmed interceptions by Ukrainian air defence forces. Aggregated from the official daily bulletins of the Air Force Command of the Armed Forces of Ukraine (Повітряні сили ЗСУ), normalized into a structured time series. Coverage starts October 2022.",
   "homepage": "https://ua-airdefense-tracker.org/",
   "version": "1.0.0",
@@ -31,7 +31,7 @@
       "path": "https://www.kaggle.com/piterfm"
     },
     {
-      "title": "UA Defense Tracker",
+      "title": "UA AirDefense Tracker",
       "role": "publisher",
       "path": "https://ua-airdefense-tracker.org/"
     }
