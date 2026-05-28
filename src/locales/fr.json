@@ -386,7 +386,9 @@
     "principle4Label": "Licence ouverte.",
     "principle4": "Les agrégations peuvent être réutilisées avec attribution.",
     "s4Title": "Comment citer",
-    "citationIntro": "Si vous citez un chiffre de ce site, veuillez utiliser l'un des formats ci-dessous afin que l'instantané reste auditable."
+    "citationIntro": "Si vous citez un chiffre de ce site, veuillez utiliser l'un des formats ci-dessous afin que l'instantané reste auditable.",
+    "maintainerRole": "Responsable du site",
+    "maintainerBio": "Exploite et maintient cette présentation web indépendante du jeu de données ; responsable des choix éditoriaux, des traductions, du design et de la conformité légale (Mentions légales / § 18 MStV)."
   },
   "imprintPage": {
     "eyebrow": "Mentions légales",
