@@ -17,7 +17,10 @@ export default function Imprint() {
       <DocSection num="01" title={t("imprintPage.s1Title")}>
         <dl className="grid gap-y-3 gap-x-6 md:grid-cols-[minmax(180px,auto)_1fr] [&_dt]:font-mono [&_dt]:text-[11px] [&_dt]:uppercase [&_dt]:tracking-[0.16em] [&_dt]:text-muted-foreground [&_dd]:text-foreground">
           <dt>{t("imprintPage.operator")}</dt>
-          <dd>[ TODO — Name / Organisation ]</dd>
+      <DocSection num="01" title={t("imprintPage.s1Title")}>
+        <dl className="grid gap-y-3 gap-x-6 md:grid-cols-[minmax(180px,auto)_1fr] [&_dt]:font-mono [&_dt]:text-[11px] [&_dt]:uppercase [&_dt]:tracking-[0.16em] [&_dt]:text-muted-foreground [&_dd]:text-foreground">
+          <dt>{t("imprintPage.operator")}</dt>
+          <dd>Alexander Anton-Boicuk</dd>
           <dt>{t("imprintPage.address")}</dt>
           <dd>[ TODO — Straße, PLZ, Ort, Land ]</dd>
           <dt>{t("imprintPage.email")}</dt>
@@ -27,12 +30,10 @@ export default function Imprint() {
             </a>
           </dd>
           <dt>{t("imprintPage.responsible")}</dt>
-          <dd>[ TODO — Name verantwortliche Person ]</dd>
+          <dd>Alexander Anton-Boicuk</dd>
         </dl>
       </DocSection>
 
-      <DocSection num="02" title={t("imprintPage.s2Title")}>
-        <p>{t("imprintPage.liabilityContent")}</p>
         <p>{t("imprintPage.liabilityLinks")}</p>
       </DocSection>
 

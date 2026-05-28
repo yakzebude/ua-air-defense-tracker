@@ -232,7 +232,8 @@
     "curatedBy": "Куратор:",
     "dataPackage": "Пакет даних (JSON)",
     "license": "Ліцензія:",
-    "availableIn": "Доступно"
+    "availableIn": "Доступно",
+    "responsibleBy": "Відповідальний:"
   },
   "doc": {
     "back": "← Назад до панелі",

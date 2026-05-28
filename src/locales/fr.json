@@ -232,7 +232,8 @@
     "curatedBy": "Compilé par",
     "dataPackage": "Paquet de données (JSON)",
     "license": "Licence :",
-    "availableIn": "Disponible en"
+    "availableIn": "Disponible en",
+    "responsibleBy": "Responsable :"
   },
   "doc": {
     "back": "← Retour au tableau de bord",

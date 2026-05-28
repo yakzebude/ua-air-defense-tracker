@@ -232,7 +232,8 @@
     "curatedBy": "Curated by",
     "dataPackage": "Data package (JSON)",
     "license": "License:",
-    "availableIn": "Available in"
+    "availableIn": "Available in",
+    "responsibleBy": "Responsible:"
   },
   "doc": {
     "back": "← Back to dashboard",
