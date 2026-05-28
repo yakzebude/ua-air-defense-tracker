@@ -232,7 +232,8 @@
     "curatedBy": "Curated by",
     "dataPackage": "Data package (JSON)",
     "license": "License:",
-    "availableIn": "Available in"
+    "availableIn": "Available in",
+    "responsibleBy": "Responsible:"
   },
   "doc": {
     "back": "← Back to dashboard",
@@ -385,7 +386,9 @@
     "principle4Label": "Open license.",
     "principle4": "Aggregations may be reused with attribution.",
     "s4Title": "How to cite",
-    "citationIntro": "If you cite a figure from this site, please use one of the formats below so the snapshot can be audited later."
+    "citationIntro": "If you cite a figure from this site, please use one of the formats below so the snapshot can be audited later.",
+    "maintainerRole": "Site maintainer & responsible party",
+    "maintainerBio": "Operates and maintains this independent web presentation of the dataset, responsible for editorial decisions, translations, design, and legal compliance (Imprint / § 18 MStV)."
   },
   "imprintPage": {
     "eyebrow": "Imprint",

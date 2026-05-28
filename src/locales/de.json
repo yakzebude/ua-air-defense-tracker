@@ -232,7 +232,8 @@
     "curatedBy": "Zusammengeführt von",
     "dataPackage": "Daten-Paket (JSON)",
     "license": "Lizenz:",
-    "availableIn": "Verfügbar in"
+    "availableIn": "Verfügbar in",
+    "responsibleBy": "Verantwortlich:"
   },
   "doc": {
     "back": "← Zurück zum Dashboard",
@@ -385,7 +386,9 @@
     "principle4Label": "Offene Lizenz.",
     "principle4": "Aggregationen dürfen mit Quellenangabe weiterverwendet werden.",
     "s4Title": "Wie zitieren",
-    "citationIntro": "Wenn Sie eine Zahl von dieser Seite zitieren, verwenden Sie bitte eines der folgenden Formate, damit der Stand später nachvollziehbar bleibt."
+    "citationIntro": "Wenn Sie eine Zahl von dieser Seite zitieren, verwenden Sie bitte eines der folgenden Formate, damit der Stand später nachvollziehbar bleibt.",
+    "maintainerRole": "Betreiber & Verantwortlicher",
+    "maintainerBio": "Betreibt und pflegt diese unabhängige Web-Aufbereitung des Datensatzes, verantwortlich für redaktionelle Entscheidungen, Übersetzungen, Design und rechtliche Anforderungen (Impressum / § 18 MStV)."
   },
   "imprintPage": {
     "eyebrow": "Impressum",
