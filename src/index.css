@@ -47,7 +47,7 @@
 
     /* Funktionsfarben — sparsam */
     --series-launched: 0 65% 38%;         /* karmesin — Bedrohungen / Einschläge */
-    --series-destroyed: 75 55% 28%;       /* oliv — erfolgreiche Abschüsse */
+    --series-destroyed: 210 22% 42%;      /* stahlblau — erfolgreiche Abschüsse */
     --series-rate: 215 10% 45%;           /* neutrales mittelgrau — gesamt */
     --grid: 215 16% 88%;
 
@@ -99,7 +99,7 @@
     --cyber-glow: 215 12% 70%;
 
     --series-launched: 0 65% 38%;         /* #991b1b karmesin */
-    --series-destroyed: 75 55% 26%;       /* #3f6212 oliv */
+    --series-destroyed: 210 25% 55%;      /* stahlblau — erfolgreiche Abschüsse */
     --series-rate: 215 10% 60%;           /* mittelgrau — gesamt */
     --grid: 215 18% 32%;
 
