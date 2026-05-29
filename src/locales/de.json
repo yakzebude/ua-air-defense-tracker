@@ -54,7 +54,9 @@
     "loadFailed": "Laden des Datensatzes fehlgeschlagen:",
     "lastUpdated": "Zuletzt aktualisiert",
     "sourcesLabel": "Quellen",
-    "sourcesBody": "Offizielle Tagesberichte des Oberkommandos der Luftstreitkräfte der Ukraine, aggregiert von Petro Ivaniuk (Kaggle-Datensatz). Abgeglichen mit OSINT-Analysten und CSIS Missile Threat für Referenzdaten zu Waffensystemen."
+    "sourcesBody": "Offizielle Tagesberichte des Oberkommandos der Luftstreitkräfte der Ukraine, aggregiert von Petro Ivaniuk (Kaggle-Datensatz). Abgeglichen mit OSINT-Analysten und CSIS Missile Threat für Referenzdaten zu Waffensystemen.",
+    "refreshBadge": "Daten werden täglich aktualisiert. Letzte Aktualisierung",
+    "timeframe": "Zeitraum"
   },
   "primarySource": "Air Force Command of the Armed Forces of Ukraine (wöchentliche Berichte, via Kaggle Datensatz, Petro Ivaniuk)",
   "primarySourceShort": "Air Force Command of the Armed Forces of Ukraine (via Kaggle)",
@@ -238,7 +240,8 @@
     "dataPackage": "Daten-Paket (JSON)",
     "license": "Lizenz:",
     "availableIn": "Verfügbar in",
-    "responsibleBy": "Verantwortlich:"
+    "responsibleBy": "Verantwortlich:",
+    "provenance": "Daten zusammengestellt aus offiziellen Berichten des Kommandos der Luftstreitkräfte der Ukraine und verifizierten Open-Source-Intelligence-Kanälen (OSINT). Dieses Projekt ist unabhängig und nicht-kommerziell."
   },
   "doc": {
     "back": "← Zurück zum Dashboard",
