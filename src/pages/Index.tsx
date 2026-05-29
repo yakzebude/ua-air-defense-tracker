@@ -302,6 +302,7 @@ function HowToHelpSection() {
 
 type CategorySectionProps = {
   id: string;
+  glossaryKey?: keyof typeof GLOSSARY;
   kicker: string;
   title: string;
   description: string;
@@ -312,7 +313,7 @@ type CategorySectionProps = {
 };
 
 function CategorySection({
-  id, kicker, title, description, unitNoun, dataset, range, onRangeChange,
+  id, glossaryKey, kicker, title, description, unitNoun, dataset, range, onRangeChange,
 }: CategorySectionProps) {
   const { t } = useTranslation();
   const filtered = dataset.months.slice(range[0], range[1] + 1);
@@ -321,6 +322,23 @@ function CategorySection({
   const rate = launched > 0 ? destroyed / launched : 0;
   const peak = filtered.length ? filtered.reduce((a, b) => (b.launched > a.launched ? b : a)) : null;
   const rangeLabel = filtered.length ? `${filtered[0].label} – ${filtered[filtered.length - 1].label}` : "";
+
+  // Month-over-month delta on launches (last full vs prior full month in the dataset).
+  const mom = useMemo(() => {
+    const ms = dataset.months;
+    if (ms.length < 2) return null;
+    const now = new Date();
+    const curY = now.getUTCFullYear();
+    const curM = now.getUTCMonth();
+    const completed = ms.filter((m) => !(m.date.getUTCFullYear() === curY && m.date.getUTCMonth() === curM));
+    if (completed.length < 2) return null;
+    const last = completed[completed.length - 1];
+    const prev = completed[completed.length - 2];
+    if (!prev.launched) return null;
+    const pct = ((last.launched - prev.launched) / prev.launched) * 100;
+    return { pct, last: last.label, prev: prev.label };
+  }, [dataset]);
+
 
   return (
     <section id={id} className="scroll-mt-32 border-t border-border">
