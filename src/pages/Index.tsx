@@ -228,6 +228,7 @@ function RelatedSourcesSection() {
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("related.title")}</h2>
           <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">{t("related.intro")}</p>
         </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {RELATED_SOURCES.map((s) => (
             <a
               key={s.href}
@@ -244,9 +245,8 @@ function RelatedSourcesSection() {
               <div className="src-label mt-auto pt-2 transition-colors group-hover:text-foreground">{t("related.open")}</div>
             </a>
           ))}
-
-          ))}
         </div>
+
       </div>
     </section>
   );
