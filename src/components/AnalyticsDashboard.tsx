@@ -516,7 +516,7 @@ export function AnalyticsDashboard(props: Props) {
 
   const { t } = useTranslation();
   return (
-    <section id="analytics" className="scroll-mt-32 border-t border-border bg-secondary/40">
+    <section id="analytics" className="scroll-mt-32 border-t border-border bg-background">
       <div className="container py-12 md:py-16">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-3xl">
