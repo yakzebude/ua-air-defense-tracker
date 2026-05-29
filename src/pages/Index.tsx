@@ -710,11 +710,19 @@ const Index = () => {
             </ul>
           </div>
         </div>
+        <div className="border-t border-border bg-card">
+          <div className="container py-5">
+            <p className="text-[12.5px] leading-[1.7] text-muted-foreground">
+              {t("footer.provenance")}
+            </p>
+          </div>
+        </div>
         <div className="border-t border-border">
           <div className="container py-4 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground">
             {t("footer.tagline")}
           </div>
         </div>
+
       </footer>
 
       {!ready && !error && (
