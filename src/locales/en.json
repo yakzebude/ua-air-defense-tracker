@@ -413,5 +413,8 @@
     "copyright": "Site code, layout and original written content are © the operator unless otherwise noted.",
     "dataLicensePre": "The underlying aggregated dataset is provided under the ",
     "dataLicensePost": ". Attribution to the Air Force Command of the Armed Forces of Ukraine and to UA AirDefense Tracker is required."
+  },
+  "glossary": {
+    "label": "Key systems"
   }
 }
