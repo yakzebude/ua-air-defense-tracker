@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next";
-import { Globe } from "lucide-react";
 import { SUPPORTED_LANGS, type Lang } from "@/lib/i18n";
 
 const LABELS: Record<Lang, string> = {
@@ -14,7 +13,6 @@ export function LanguageSwitcher() {
   const current = (i18n.resolvedLanguage || i18n.language || "en").slice(0, 2) as Lang;
   return (
     <div className="flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em]">
-      <Globe className="h-3.5 w-3.5 text-muted-foreground" aria-hidden />
       {SUPPORTED_LANGS.map((l) => {
         const active = l === current;
         return (
