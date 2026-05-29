@@ -493,6 +493,17 @@ const Index = () => {
   const lastUpdatedDate = latest?.date ?? null;
 
   const reached = Math.max(grand.launched - grand.destroyed, 0);
+  // Real-time "last refresh" — when this page session was loaded.
+  const refreshedAt = useMemo(() => new Date(), []);
+  const dataTimeframe = useMemo(() => {
+    const pick = (d: Dataset | null) => {
+      if (!d) return null;
+      const first = d.months.find((m) => m.launched > 0) ?? d.months[0];
+      const last = [...d.months].reverse().find((m) => m.launched > 0) ?? d.months[d.months.length - 1];
+      return first && last ? { first: first.label, last: last.label } : null;
+    };
+    return pick(shahed) ?? pick(cruise) ?? pick(ballistic);
+  }, [shahed, cruise, ballistic]);
 
   return (
     <main className="min-h-screen bg-background">
@@ -506,27 +517,40 @@ const Index = () => {
           <h1 className="max-w-4xl text-3xl font-semibold leading-[1.15] tracking-tight md:text-[2.75rem]">
             {t("masthead.title")}
           </h1>
+
+          {/* Prominent refresh badge directly under the title */}
+          <div className="mt-5 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-sm border border-border bg-card px-3.5 py-2 font-mono text-[11.5px]">
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal-ok))] pulse-soft" />
+            <span className="uppercase tracking-[0.16em] text-muted-foreground">
+              {t("masthead.refreshBadge")}
+            </span>
+            <span aria-hidden className="hidden h-3 w-px bg-border sm:inline-block" />
+            <span className="num text-foreground">{fmtUtc(refreshedAt)}</span>
+          </div>
+
           <p className="mt-5 max-w-3xl text-[14px] leading-[1.7] text-muted-foreground md:text-[15px]">
             {t("masthead.intro")}
           </p>
           <div className="src-label mt-5 flex flex-wrap items-center gap-x-4 gap-y-1">
-            <span className="inline-flex items-center gap-1.5">
-              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal-ok))]" />
-              {t("masthead.lastUpdated")}: <span className="text-foreground num">{fmtUtc(lastUpdatedDate)}</span>
-            </span>
-            <span aria-hidden>·</span>
             <Link to="/sources" className="hover:text-foreground">{t("masthead.primarySource")}</Link>
             <Link to="/methodology" className="hover:text-foreground">{t("masthead.methodology")}</Link>
             <Link to="/disclaimer" className="hover:text-foreground">{t("masthead.disclaimer")}</Link>
           </div>
 
           {ready && (
-            <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-7 md:grid-cols-4">
-              <KPI label={t("kpi.totalLaunched")} numeric={grand.launched} sub={t("kpi.totalLaunchedSub")} signal />
-              <KPI label={t("kpi.confirmedDestroyed")} numeric={grand.destroyed} sub={t("kpi.confirmedDestroyedSub")} />
-              <KPI label={t("kpi.interceptionRate")} numeric={grand.rate * 100} decimals={1} suffix="%" sub={`${fmt(grand.destroyed)} ${t("kpi.ofSep")} ${fmt(grand.launched)}`} />
-              <KPI label={t("kpi.reachedTarget")} numeric={reached} sub={t("kpi.reachedTargetSub")} />
-            </div>
+            <>
+              {dataTimeframe && (
+                <div className="src-label mt-7 text-muted-foreground">
+                  {t("masthead.timeframe")}: <span className="text-foreground">{dataTimeframe.first} – {dataTimeframe.last}</span>
+                </div>
+              )}
+              <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-7 md:grid-cols-4">
+                <KPI label={t("kpi.totalLaunched")} numeric={grand.launched} sub={t("kpi.totalLaunchedSub")} signal />
+                <KPI label={t("kpi.confirmedDestroyed")} numeric={grand.destroyed} sub={t("kpi.confirmedDestroyedSub")} />
+                <KPI label={t("kpi.interceptionRate")} numeric={grand.rate * 100} decimals={1} suffix="%" sub={`${fmt(grand.destroyed)} ${t("kpi.ofSep")} ${fmt(grand.launched)}`} />
+                <KPI label={t("kpi.reachedTarget")} numeric={reached} sub={t("kpi.reachedTargetSub")} />
+              </div>
+            </>
           )}
 
           {ready && (
@@ -537,6 +561,8 @@ const Index = () => {
           )}
 
         </div>
+      </section>
+
       </section>
 
       {error && (
