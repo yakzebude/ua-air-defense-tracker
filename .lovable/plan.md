@@ -1,97 +1,53 @@
-## Ziel
+# Plan: Militärisch-dezentes Redesign
 
-Institutionelle Glaubwürdigkeit erhöhen (rechtlich sauberer Footer, sichtbare verantwortliche Person) und die Aufnahme in offene Daten-Portale vorbereiten, damit EU-Stäbe und Forscher den Datensatz finden.
+## 1. Dark Mode Palette (`src/index.css`)
+Komplett neuer `.dark` Block, basierend auf `#1e293b`:
+- `--background: 215 28% 17%` (#1e293b)
+- `--card: 215 25% 21%` (etwas heller, klar abgegrenzt)
+- `--secondary/muted/accent: 215 22% 25%`
+- `--border: 215 18% 32%` (dünn, 1 px, leicht heller als BG)
+- `--foreground: 210 20% 92%`, `--muted-foreground: 215 12% 70%`
 
-## 1. About-Seite (`/about`)
+## 2. Sparsame Akzentfarben (`src/index.css` + `tailwind.config.ts`)
+Drei Funktionsfarben, sonst nur Graustufen:
+- `--series-destroyed` = Olive `84 60% 24%` (#3f6212) — erfolgreiche Abschüsse
+- `--series-launched` = Karmesin `0 72% 35%` (#991b1b) — verfehlte / Einschläge / Gesamtbedrohung
+- `--series-rate` / Total = neutrales Mittelgrau `215 10% 55%`
+- `--signal-ok` → Olive, `--signal-warn` → entsättigtes Bernstein, `--destructive` → Karmesin
+- Light-Mode-Variablen parallel auf gleiche Hues angleichen
+- `CAT_COLORS` in `AnalyticsDashboard.tsx` auf Token (`series-destroyed`, `series-launched`, neutralgrau) umstellen — keine hartkodierten HSL-Werte mehr
 
-Neue Route mit drei Blöcken:
+## 3. Charts: Grid + X-Achse
+In `MonthlyTrendChart.tsx`, `AnalyticsDashboard.tsx`, `InterceptionRateChart.tsx`:
+- `--grid` auf nahezu transparent (`hsl(var(--border) / 0.15)`) bzw. `CartesianGrid` ganz entfernen
+- Tages-Achsen: `angle={-45} textAnchor="end"` und `interval` so wählen, dass nur jeder 5. Tick gezeigt wird (bereits teilweise vorhanden, konsistent überall anwenden)
 
-- **Petro Ivaniuk — Data Curator**: kurze Bio, Rolle (Aggregation der täglichen AFU-Communiqués seit Oktober 2022), Links zu Kaggle, GitHub, optional ORCID/LinkedIn. Platzhalter-Avatar mit Initialen, falls kein Foto vorhanden.
-- **Mission & Scope**: 2–3 Absätze — was die Seite ist (unabhängige OSINT-Aggregation), was sie nicht ist (keine offizielle AFU-Quelle, keine Echtzeit-Lageinformation).
-- **Editorial principles**: Aufzählung — Datenquellen, Aktualisierungsrhythmus, Korrektur-Policy (Verweis auf `/changelog`), Lizenz (ODC-BY 1.0, wie in JSON-LD).
+## 4. Typografie
+- `<link>` für Google Fonts „Space Mono" + „IBM Plex Sans" in `index.html` ergänzen
+- `tailwind.config.ts`:
+  - `sans: ['"IBM Plex Sans"', …]`
+  - `display/serif: ['"Space Mono"', …]` (für Überschriften)
+- `src/index.css`:
+  - `body` → IBM Plex Sans
+  - `h1–h4` → Space Mono, `font-weight: 700`, `letter-spacing: 0`
+  - `.num` weiter tabular
 
-Verlinkt in der Hauptnavigation zwischen „Methodology" und „Sources" sowie im Footer.
+## 5. Eckige Karten / Boxen
+- `--radius: 0.125rem` (≈ `rounded-sm`) global setzen → wirkt auf `.panel`, Buttons, Inputs
+- `.panel` Border bereits 1 px; sicherstellen dass Border-Token leicht heller als BG ist (siehe 1.)
+- Stat-/Infoboxen in `SummaryStats.tsx` & `AnalyticsDashboard.tsx` Klassen `rounded-*` → `rounded-none`/`rounded-sm`
 
-## 2. Impressum / Legal Notice (`/imprint`)
+## 6. Icons
+- Audit aller Komponenten (`AnalyticsDashboard`, `WeaponsCatalogSection`, `Index`, Header etc.) auf farbige / „explosive" Symbole und Emojis
+- Ersetzen durch monochrome Lucide-Linien-Icons: `Crosshair`, `Shield`, `Circle`, `MapPin`, `Radar`, `Target`
+- Icons immer `text-muted-foreground` / `text-foreground`, `strokeWidth={1.5}`, keine Fill-Farben
 
-Eigene Route, in allen vier Sprachen. Felder als Platzhalter, die der Nutzer ausfüllt:
+## Technische Reihenfolge
+1. `index.html` — Font-Links
+2. `tailwind.config.ts` — Fonts, ggf. radius defaults
+3. `src/index.css` — Tokens, Radius, Typo
+4. `src/components/AnalyticsDashboard.tsx` — Farben, Grid, Eckigkeit, Icons
+5. `MonthlyTrendChart.tsx`, `InterceptionRateChart.tsx` — Grid/Achsen
+6. `SummaryStats.tsx`, `WeaponsCatalogSection.tsx`, übrige Seiten — Eckigkeit & Icon-Pass
 
-- Betreiber (Name / ggf. Organisation)
-- Anschrift
-- E-Mail-Kontakt
-- Verantwortlich i.S.d. § 18 Abs. 2 MStV
-- Haftungsausschluss für externe Links
-- Urheberrechtshinweis
-
-Footer-Link „Imprint / Impressum" auf jeder Seite. Hinweis im Plan: tatsächliche Daten muss der Nutzer eintragen — ich setze deutlich markierte `TODO`-Platzhalter.
-
-## 3. Footer-Aufwertung
-
-Aktueller Footer wird zu einem dreispaltigen institutionellen Footer:
-
-```text
-About            Data              Legal
-─────            ────              ─────
-Mission          Methodology       Imprint
-Petro Ivaniuk    Sources           Disclaimer
-Changelog        Download CSV      License (ODC-BY 1.0)
-                                   Contact
-```
-
-Plus eine Zeile: „Available in EN · DE · FR · UK" und „Last updated: …".
-
-## 4. Open-Data-Metadaten (`public/data/`)
-
-Drei statische Dateien, sodass die Einreichung bei Portalen nur noch Copy-Paste ist:
-
-- **`public/data/datapackage.json`** — [Frictionless Data Package](https://specs.frictionlessdata.io/data-package/) Standard. Beschreibt das CSV-Schema, Lizenz, Maintainer, temporal/spatial coverage. Wird von Zenodo, HDX und CKAN-basierten Portalen (inkl. data.europa.eu) gelesen.
-- **`public/data/README.md`** — Markdown-Datenkarte: Beschreibung, Quellen, Aktualisierungsrhythmus, Spaltendefinitionen, Beispielzitation (APA + BibTeX), Lizenz, Kontakt. Pflicht-Anhang für Zenodo-Deposits.
-- **`public/data/SUBMISSION_GUIDE.md`** — interne Anleitung (nicht öffentlich verlinkt, aber auffindbar): Schritt-für-Schritt für die Einreichung bei **data.europa.eu**, **HDX (data.humdata.org)** und **Zenodo**. Welche Felder aus `datapackage.json` wohin gehören, geschätzte Bearbeitungszeit, was nach Annahme zu tun ist (DOI in JSON-LD `identifier` einfügen, Badge auf der Seite).
-
-Diese Dateien werden über die Domain erreichbar und im JSON-LD-`Dataset`-Block als `distribution` referenziert.
-
-## 5. JSON-LD ergänzen
-
-In `index.html` den `Dataset`-Block erweitern:
-
-- `identifier`: Platzhalter für künftige Zenodo-DOI
-- `citation`: empfohlene Zitation als Text
-- `maintainer`: Petro Ivaniuk (zusätzlich zu `creator`)
-- `distribution` um den Datapackage-Eintrag erweitern
-
-## 6. i18n
-
-Neue Schlüssel in `de.json`, `en.json`, `fr.json`, `uk.json`:
-
-- `nav.about`, `nav.imprint`
-- `about.*` (Bio, Mission, Editorial principles — Bio-Text bleibt in EN, da Eigennamen/Berufstitel)
-- `imprint.*` (Feldlabels)
-- `footer.*` (neue Spaltenüberschriften, Lizenztext)
-
-## 7. Routing
-
-- `src/App.tsx`: zwei neue Routes (`/about`, `/imprint`)
-- `src/pages/About.tsx`, `src/pages/Imprint.tsx` — beide nutzen `DocPageLayout`
-- Hauptnav und Footer-Komponente entsprechend ergänzen
-
-## Technische Details
-
-- Keine neuen Dependencies. About/Imprint verwenden bestehende `DocPageLayout`-Komponente.
-- Footer wird als eigene Komponente `src/components/SiteFooter.tsx` extrahiert (aktuell inline in `Index.tsx` / Doc-Layout), damit die neuen Links überall konsistent erscheinen.
-- `datapackage.json` validierbar gegen Frictionless-Spec — Felder: `name`, `title`, `description`, `licenses`, `contributors`, `temporal`, `spatial`, `resources[]` mit `schema.fields[]` aus dem Aufbau von `missile_attacks_daily.csv`.
-- README.md folgt der HDX-Datenkarte-Konvention (HDX akzeptiert standardisierte Markdown-Beschreibungen).
-
-## Outreach-Pfad (nach Implementierung, kein Code)
-
-Reihenfolge:
-1. **Zenodo** zuerst — vergibt sofort einen DOI, der dann in data.europa.eu/HDX-Einträgen verlinkt wird (erhöht Glaubwürdigkeit der späteren Einreichungen).
-2. **HDX** — manuelle Einreichung über UI, dauert 1–2 Wochen Review.
-3. **data.europa.eu** — verweist meist auf nationale Open-Data-Portale; Direkteinreichung über das Portal-Formular.
-
-Schritt-für-Schritt-Anleitung steht in `SUBMISSION_GUIDE.md`.
-
-## Bewusst nicht in diesem Schritt
-
-- Typografie-Umstellung auf Serif (separate Runde)
-- Briefing-PDF-Generator (separate Runde)
-- Outreach-E-Mail-Vorlagen für ISW/RUSI/SEDE/SWP (Folgerunde, sobald DOI vergeben ist)
+Keine Logik- oder Datenänderungen, ausschließlich Präsentations-Layer.

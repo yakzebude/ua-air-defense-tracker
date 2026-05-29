@@ -20,9 +20,9 @@ const fmt = (n: number) => n.toLocaleString("en-US");
 type CategoryKey = "uavs" | "cruise" | "ballistic";
 
 const CAT_COLORS: Record<CategoryKey, string> = {
-  uavs:      "hsl(var(--series-destroyed))",        // neutral slate gray
-  cruise:    "hsl(0 55% 38%)",                       // muted crimson
-  ballistic: "hsl(0 70% 55%)",                       // bright crimson — peak threat
+  uavs:      "hsl(var(--series-rate))",       // neutrales mittelgrau — größte Masse
+  cruise:    "hsl(var(--series-launched))",   // karmesin — verfehlt / Einschlag
+  ballistic: "hsl(var(--series-destroyed))",  // oliv — erfolgreiche Abschüsse
 };
 
 interface Props {
@@ -77,18 +77,19 @@ function CompositionAreaChart({
     <div style={{ height }} className="w-full">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data} margin={{ top: 8, right: 12, left: 0, bottom: angled ? 28 : 4 }}>
-          <CartesianGrid stroke="hsl(var(--grid))" vertical={false} />
+          <CartesianGrid stroke="hsl(var(--border) / 0.15)" vertical={false} />
           <XAxis
             dataKey="label"
             ticks={ticks}
             tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
             tickLine={false}
             axisLine={{ stroke: "hsl(var(--border))" }}
-            angle={angled ? -45 : 0}
-            textAnchor={angled ? "end" : "middle"}
-            height={angled ? 48 : 30}
-            interval={0}
+            angle={-45}
+            textAnchor="end"
+            height={48}
+            interval="preserveStartEnd"
           />
+
           <YAxis
             tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
 
