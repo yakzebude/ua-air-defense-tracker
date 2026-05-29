@@ -533,11 +533,6 @@ const Index = () => {
 
           {ready && (
             <>
-              {dataTimeframe && (
-                <div className="src-label mt-7 text-muted-foreground">
-                  {t("masthead.timeframe")}: <span className="text-foreground">{dataTimeframe.first} – {dataTimeframe.last}</span>
-                </div>
-              )}
               <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-7 md:grid-cols-4">
                 <KPI label={t("kpi.totalLaunched")} numeric={grand.launched} sub={t("kpi.totalLaunchedSub")} signal />
                 <KPI label={t("kpi.confirmedDestroyed")} numeric={grand.destroyed} sub={t("kpi.confirmedDestroyedSub")} />
