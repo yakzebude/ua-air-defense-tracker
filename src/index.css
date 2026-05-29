@@ -100,11 +100,11 @@
     --ua-blue: 213 31% 91%;
     --cyber: 213 27% 84%;
     --cyber-glow: 213 27% 84%;
-
-    --series-launched: 215 19% 35%;           /* #475569 slate */
-    --series-destroyed: 78 67% 23%;           /* #3f6212 olive */
+    --series-launched: 0 70% 45%;             /* crimson red — launched/threat */
+    --series-destroyed: 215 14% 55%;          /* neutral slate gray — intercepted */
     --series-rate: 213 27% 70%;
     --grid: 215 25% 22%;
+
 
     --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.45), 0 1px 1px 0 rgb(0 0 0 / 0.3);
 
