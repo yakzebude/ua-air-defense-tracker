@@ -6,7 +6,7 @@
     "uk": "Українська"
   },
   "nav": {
-    "uaIntel": "UA AirDefense Tracker",
+    "uaIntel": "UA Air Defense Tracker",
     "subtitle": "Air-Threat Tracker",
     "lastDataPoint": "Letzter Datenpunkt",
     "summary": "Zusammenfassung",
@@ -207,7 +207,7 @@
   "donate": {
     "kicker": "Wie man hilft",
     "title": "Geprüfte Spendenorganisationen",
-    "intro": "Etablierte ukrainische und internationale Organisationen für militärische Unterstützung und humanitäre Hilfe. UA AirDefense Tracker sammelt keine Gelder und ist nicht mit den aufgeführten Organisationen verbunden.",
+    "intro": "Etablierte ukrainische und internationale Organisationen für militärische Unterstützung und humanitäre Hilfe. UA Air Defense Tracker sammelt keine Gelder und ist nicht mit den aufgeführten Organisationen verbunden.",
     "cta": "Spenden ↗",
     "tags": {
       "mixed": "Gemischt",
@@ -224,7 +224,7 @@
     }
   },
   "footer": {
-    "tagline": "UA AirDefense Tracker · monatliche Aggregate aus wöchentlichen Berichten der Ukrainian Air Force",
+    "tagline": "UA Air Defense Tracker · monatliche Aggregate aus wöchentlichen Berichten der Ukrainian Air Force",
     "lastDataPoint": "Letzter Datenpunkt:",
     "downloadCsv": "CSV herunterladen ↓",
     "methodology": "​",
@@ -245,12 +245,12 @@
   },
   "doc": {
     "back": "← Zurück zum Dashboard",
-    "topBack": "UA AirDefense Tracker"
+    "topBack": "UA Air Defense Tracker"
   },
   "methodologyPage": {
     "eyebrow": "Methodik",
     "title": "Wie wir tägliche Berichte in Analysen verwandeln.",
-    "intro": "Jede Zahl auf dem UA AirDefense Tracker stammt aus einer einzigen, vollständig offenen Primärquelle: den täglichen Luftverteidigungsberichten des Air Force Command of the Armed Forces of Ukraine. Diese Seite dokumentiert den genauen Prozess, die Definitionen und die Grenzen des Dashboards.",
+    "intro": "Jede Zahl auf dem UA Air Defense Tracker stammt aus einer einzigen, vollständig offenen Primärquelle: den täglichen Luftverteidigungsberichten des Air Force Command of the Armed Forces of Ukraine. Diese Seite dokumentiert den genauen Prozess, die Definitionen und die Grenzen des Dashboards.",
     "s1Title": "Primärquelle",
     "s1p1": "Wir aggregieren die täglichen Berichte, die auf den offiziellen Kanälen des <strong>Air Force Command of the Armed Forces of Ukraine</strong> (Повітряні сили ЗСУ) veröffentlicht werden. Der strukturierte CSV-Mirror wird vom Open-Source-Datensatz <a>“Massive Missile Attacks on Ukraine”</a> auf Kaggle gepflegt, der die täglichen Telegram/Facebook-Posts in eine normalisierte Zeitreihe umwandelt.",
     "s1p2": "Die Erfassung beginnt im <strong>Oktober 2022</strong>, dem ersten Monat mit konsistenter täglicher Offenlegung von gestarteten und zerstörten Anzahlen pro Waffenmodell, und reicht bis zum neuesten veröffentlichten Bericht.",
@@ -286,7 +286,7 @@
     "title": "Woher jede Zahl kommt.",
     "intro": "Transparente Quellenarbeit ist die wichtigste Eigenschaft von OSINT. Diese Seite listet jede Quelle auf, die in das Dashboard einfließt, welche Rolle sie spielt und wie man sie unabhängig überprüft.",
     "calloutLabel": "Eine Primärquelle · viele Querverweise",
-    "calloutBody": "Jede numerische Figur auf dem UA AirDefense Tracker lässt sich auf eine einzige Primärquelle zurückführen — das Air Force Command of the Armed Forces of Ukraine. Die anderen unten stehenden Quellen bieten unabhängigen Kontext, aber keine numerischen Daten.",
+    "calloutBody": "Jede numerische Figur auf dem UA Air Defense Tracker lässt sich auf eine einzige Primärquelle zurückführen — das Air Force Command of the Armed Forces of Ukraine. Die anderen unten stehenden Quellen bieten unabhängigen Kontext, aber keine numerischen Daten.",
     "s1Title": "Quellenverzeichnis",
     "s2Title": "Wie man eine Zahl verifiziert",
     "s2l1Pre": "Laden Sie die ",
@@ -321,7 +321,7 @@
   "disclaimerPage": {
     "eyebrow": "Haftungsausschluss",
     "title": "Was diese Seite ist — und was sie nicht ist.",
-    "intro": "UA AirDefense Tracker ist eine unabhängige, nicht-kommerzielle OSINT-Visualisierung. Lesen Sie diese Seite, bevor Sie die Zahlen zitieren.",
+    "intro": "UA Air Defense Tracker ist eine unabhängige, nicht-kommerzielle OSINT-Visualisierung. Lesen Sie diese Seite, bevor Sie die Zahlen zitieren.",
     "calloutLabel": "Unabhängigkeit",
     "calloutBody": "Dieses Projekt ist <strong>nicht verbunden mit</strong> der Regierung der Ukraine, den Streitkräften der Ukraine, der NATO, der Europäischen Union oder irgendeinem Geheimdienst. Es ist eine offene Visualisierungsebene über einem öffentlichen Datensatz.",
     "s1Title": "Natur der Daten",
@@ -375,7 +375,7 @@
   "aboutPage": {
     "eyebrow": "Über",
     "title": "Wer diesen Tracker betreibt — und unter welchen Bedingungen.",
-    "intro": "UA AirDefense Tracker ist eine unabhängige OSINT-Visualisierung. Ihr Wert hängt davon ab, die Personen dahinter zu nennen, den Rahmen ehrlich zu benennen und klare Zitierregeln zu definieren.",
+    "intro": "UA Air Defense Tracker ist eine unabhängige OSINT-Visualisierung. Ihr Wert hängt davon ab, die Personen dahinter zu nennen, den Rahmen ehrlich zu benennen und klare Zitierregeln zu definieren.",
     "s1Title": "Daten-Kurator",
     "role": "Daten-Kurator und Maintainer der Primärquelle.",
     "bio": "Petro Ivaniuk aggregiert seit Oktober 2022 fortlaufend die täglichen Luftverteidigungsberichte des Air Force Command of the Armed Forces of Ukraine zu einer strukturierten, maschinenlesbaren Zeitreihe. Der von ihm gepflegte Kaggle-Datensatz ist die einzige Quelle aller Zahlen auf dieser Seite.",
@@ -415,7 +415,7 @@
     "s3Title": "Urheberrecht & Datenlizenz",
     "copyright": "Seitencode, Layout und originale schriftliche Inhalte sind, sofern nicht anders gekennzeichnet, © des Betreibers.",
     "dataLicensePre": "Der zugrundeliegende aggregierte Datensatz wird unter der ",
-    "dataLicensePost": " bereitgestellt. Eine Namensnennung des Air Force Command of the Armed Forces of Ukraine sowie des UA AirDefense Tracker ist erforderlich."
+    "dataLicensePost": " bereitgestellt. Eine Namensnennung des Air Force Command of the Armed Forces of Ukraine sowie des UA Air Defense Tracker ist erforderlich."
   },
   "glossary": {
     "label": "Wichtige Systeme"
