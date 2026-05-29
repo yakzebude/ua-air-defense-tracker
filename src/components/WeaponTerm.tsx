@@ -21,7 +21,7 @@ export function WeaponTerm({ term, description, children, compact }: Props) {
           type="button"
           className="inline-flex items-center gap-1 rounded-sm border border-border bg-card px-2 py-0.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground/40"
         >
-          <span className={compact ? "" : "font-semibold"}>{children ?? term}</span>
+          <span className={compact ? "text-[#c20000]" : "font-semibold text-[#c20000]"}>{children ?? term}</span>
           <HelpCircle aria-hidden className="h-3 w-3 text-muted-foreground" />
         </button>
       </TooltipTrigger>
