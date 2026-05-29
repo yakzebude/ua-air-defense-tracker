@@ -126,14 +126,14 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: '"IBM Plex Sans"', 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    font-family: '"Inter"', 'Inter', system-ui, -apple-system, sans-serif;
   }
 
   h1, h2, h3, h4 {
-    font-family: '"Space Mono"', 'Space Mono', 'IBM Plex Mono', ui-monospace, monospace;
-    font-weight: 700;
-    letter-spacing: -0.005em;
-    text-transform: none;
+    font-family: '"Share Tech Mono"', 'Share Tech Mono', 'IBM Plex Mono', ui-monospace, monospace;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
   }
 
   .font-mono, code, kbd, pre {

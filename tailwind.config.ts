@@ -12,10 +12,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['"IBM Plex Sans"', 'system-ui', '-apple-system', 'sans-serif'],
-        // "serif"/"display" repurposed as our hard, military display family (Space Mono)
-        serif: ['"Space Mono"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'],
-        display: ['"Space Mono"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+        sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
+        // "serif"/"display" repurposed as our hard, military display family (Share Tech Mono)
+        serif: ['"Share Tech Mono"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+        display: ['"Share Tech Mono"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'],
         mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       colors: {
