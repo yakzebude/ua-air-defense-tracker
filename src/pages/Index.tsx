@@ -349,12 +349,27 @@ function CategorySection({
           <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">{description}</p>
         </div>
 
+        {glossaryKey && <GlossaryChips category={glossaryKey} />}
+
         <div className="mb-6 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-6 md:grid-cols-4">
           <KPI label={t("kpi.launchedReported")} numeric={launched} sub={rangeLabel} />
           <KPI label={t("kpi.confirmedDestroyed")} numeric={destroyed} sub={t("kpi.confirmedInterceptions")} />
           <KPI label={t("kpi.interceptionRate")} numeric={rate * 100} decimals={1} suffix="%" sub={`${fmt(destroyed)} ${t("kpi.ofSep")} ${fmt(launched)}`} />
           <KPI label={t("kpi.reachedTarget")} numeric={Math.max(launched - destroyed, 0)} sub={launched > 0 ? `${(((launched - destroyed) / launched) * 100).toFixed(1)}${t("kpi.leakerPctSuffix")}` : "—"} />
         </div>
+
+        {mom && (
+          <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-sm border border-border bg-card px-4 py-3 text-[13px]">
+            <span className="src-label">{t("kpi.momLabel")}</span>
+            <span className={`num font-semibold ${mom.pct >= 0 ? "text-signal" : "text-[hsl(var(--signal-ok))]"}`}>
+              {mom.pct >= 0 ? "+" : ""}{mom.pct.toFixed(1)}%
+            </span>
+            <span className="text-muted-foreground">
+              {t("kpi.momDetail", { last: mom.last, prev: mom.prev })}
+            </span>
+          </div>
+        )}
+
 
         <div className="mb-6">
           <DateRangeFilter months={dataset.months} range={range} onChange={onRangeChange} />
