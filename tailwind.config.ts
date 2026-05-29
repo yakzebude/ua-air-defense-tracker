@@ -13,9 +13,9 @@ export default {
     extend: {
       fontFamily: {
         sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
-        // "serif"/"display" repurposed as our hard, military display family (Chakra Petch)
-        serif: ['"Chakra Petch"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'],
-        display: ['"Chakra Petch"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+        // "serif"/"display" repurposed as our hard, military display family (OCR A)
+        serif: ['"OCR A"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+        display: ['"OCR A"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'],
         mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       colors: {
