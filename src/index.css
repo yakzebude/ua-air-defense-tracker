@@ -49,8 +49,9 @@
     --cyber-glow: 220 8% 38%;
 
     /* Chart series — ink, signal red, mid-gray */
-    --series-launched: 220 15% 22%;
-    --series-destroyed: 0 72% 46%;
+    --series-launched: 0 72% 46%;             /* crimson red — launched */
+    --series-destroyed: 220 9% 46%;           /* neutral gray — intercepted */
+
     --series-rate: 220 8% 50%;
     --grid: 220 13% 90%;
 
@@ -100,11 +101,11 @@
     --ua-blue: 213 31% 91%;
     --cyber: 213 27% 84%;
     --cyber-glow: 213 27% 84%;
-
-    --series-launched: 215 19% 35%;           /* #475569 slate */
-    --series-destroyed: 78 67% 23%;           /* #3f6212 olive */
+    --series-launched: 0 70% 45%;             /* crimson red — launched/threat */
+    --series-destroyed: 215 14% 55%;          /* neutral slate gray — intercepted */
     --series-rate: 213 27% 70%;
     --grid: 215 25% 22%;
+
 
     --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.45), 0 1px 1px 0 rgb(0 0 0 / 0.3);
 
