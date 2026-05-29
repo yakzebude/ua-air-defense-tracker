@@ -89,8 +89,9 @@ function CompositionAreaChart({
             height={angled ? 48 : 30}
             interval={0}
           />
-
+          <YAxis
             tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+
             tickLine={false}
             axisLine={false}
             width={48}
