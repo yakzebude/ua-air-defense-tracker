@@ -20,9 +20,9 @@ const fmt = (n: number) => n.toLocaleString("en-US");
 type CategoryKey = "uavs" | "cruise" | "ballistic";
 
 const CAT_COLORS: Record<CategoryKey, string> = {
-  uavs:      "hsl(var(--series-rate))",       // neutrales mittelgrau — größte Masse
-  cruise:    "hsl(var(--series-launched))",   // karmesin — verfehlt / Einschlag
-  ballistic: "hsl(var(--series-destroyed))",  // oliv — erfolgreiche Abschüsse
+  uavs:      "hsl(var(--series-rate))",   // neutrales mittelgrau — größte Masse
+  cruise:    "hsl(0 65% 38%)",            // karmesin
+  ballistic: "hsl(15 78% 48%)",           // orange-rot — abgesetzter Rotton
 };
 
 interface Props {
