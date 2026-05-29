@@ -67,10 +67,6 @@
   }
 
   .dark {
-    /* Dark — deep slate / anthracite (briefing-room palette) */
-    --background: 215 28% 9%;
-    --foreground: 215 18% 92%;
-  .dark {
     /* Dark — professional analyst palette (slate / olive / crimson on #0f172a) */
     --background: 222 47% 11%;                /* #0f172a */
     --foreground: 213 31% 91%;                /* near-white slate */
@@ -95,7 +91,6 @@
     --ring: 213 31% 91%;
 
     --ink: 213 31% 91%;
-    /* Signal = dark crimson (unintercepted strikes / leakers) */
     --signal: 0 70% 35%;                      /* #991b1b */
     --signal-soft: 0 50% 22%;
     --signal-ok: 78 67% 23%;                  /* olive/military green #3f6212 */
@@ -106,7 +101,6 @@
     --cyber: 213 27% 84%;
     --cyber-glow: 213 27% 84%;
 
-    /* Chart series: launched=slate, destroyed=olive, rate-line=slate-mid */
     --series-launched: 215 19% 35%;           /* #475569 slate */
     --series-destroyed: 78 67% 23%;           /* #3f6212 olive */
     --series-rate: 213 27% 70%;
@@ -124,8 +118,6 @@
     --sidebar-ring: 213 31% 91%;
   }
 
-    --sidebar-ring: 215 18% 92%;
-  }
 }
 
 
