@@ -102,23 +102,23 @@ export function WeaponsCatalogSection() {
                 );
               })}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
               <select
                 value={origin}
                 onChange={(e) => setOrigin(e.target.value)}
-                className="rounded-sm border border-border bg-card px-2 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-foreground"
+                className="min-w-0 flex-1 rounded-sm border border-border bg-card px-2 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-foreground sm:flex-none"
               >
                 {origins.map((o) => (
                   <option key={o} value={o}>{o === "all" ? t("arsenal.allOrigins") : o}</option>
                 ))}
               </select>
-              <div className="relative">
+              <div className="relative min-w-0 flex-1 sm:w-56 sm:flex-none">
                 <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                 <input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   placeholder={t("arsenal.search")}
-                  className="w-56 rounded-sm border border-border bg-card py-1.5 pl-7 pr-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-foreground/40"
+                  className="w-full rounded-sm border border-border bg-card py-1.5 pl-7 pr-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-foreground/40"
                 />
               </div>
             </div>
