@@ -525,11 +525,6 @@ const Index = () => {
           <p className="mt-5 max-w-3xl text-[14px] leading-[1.7] text-muted-foreground md:text-[15px]">
             {t("masthead.intro")}
           </p>
-          <div className="src-label mt-5 flex flex-wrap items-center gap-x-4 gap-y-1">
-            <Link to="/sources" className="hover:text-foreground">{t("masthead.primarySource")}</Link>
-            <Link to="/methodology" className="hover:text-foreground">{t("masthead.methodology")}</Link>
-            <Link to="/disclaimer" className="hover:text-foreground">{t("masthead.disclaimer")}</Link>
-          </div>
 
           {ready && (
             <>
