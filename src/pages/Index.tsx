@@ -509,7 +509,10 @@ const Index = () => {
             {t("masthead.intro")}
           </p>
           <div className="src-label mt-5 flex flex-wrap items-center gap-x-4 gap-y-1">
-            <span>{t("nav.lastDataPoint")}: <span className="text-foreground">{lastUpdatedLabel ?? "—"}</span></span>
+            <span className="inline-flex items-center gap-1.5">
+              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal-ok))]" />
+              {t("masthead.lastUpdated")}: <span className="text-foreground num">{fmtUtc(lastUpdatedDate)}</span>
+            </span>
             <span aria-hidden>·</span>
             <Link to="/sources" className="hover:text-foreground">{t("masthead.primarySource")}</Link>
             <Link to="/methodology" className="hover:text-foreground">{t("masthead.methodology")}</Link>
@@ -526,10 +529,12 @@ const Index = () => {
           )}
 
           {ready && (
-            <SourceLabel className="mt-3">
-              {t("masthead.sourceRange", { source: t("primarySource"), last: lastUpdatedLabel })}
-            </SourceLabel>
+            <div className="mt-3 flex flex-wrap items-start gap-x-4 gap-y-1 text-[12px] leading-relaxed text-muted-foreground">
+              <span className="src-label shrink-0 pt-0.5">{t("masthead.sourcesLabel")}</span>
+              <span className="min-w-0">{t("masthead.sourcesBody")}</span>
+            </div>
           )}
+
         </div>
       </section>
 
