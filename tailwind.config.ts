@@ -12,10 +12,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        // "serif" utility is repurposed as our display family (Space Grotesk)
-        serif: ['"Space Grotesk"', 'Inter', 'system-ui', 'sans-serif'],
-        display: ['"Space Grotesk"', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['"IBM Plex Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        // "serif"/"display" repurposed as our hard, military display family (Space Mono)
+        serif: ['"Space Mono"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+        display: ['"Space Mono"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'],
         mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       colors: {

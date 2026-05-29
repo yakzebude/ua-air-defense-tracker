@@ -12,112 +12,108 @@
   :root {
     /* Light — paper / report look */
     --background: 0 0% 100%;
-    --foreground: 220 15% 12%;
+    --foreground: 215 28% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 12%;
+    --card-foreground: 215 28% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 12%;
+    --popover-foreground: 215 28% 12%;
 
-    --primary: 220 15% 12%;          /* ink */
+    --primary: 215 28% 17%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 220 15% 12%;
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 8% 38%;
-    --accent: 220 14% 96%;
-    --accent-foreground: 220 15% 12%;
-    --destructive: 0 65% 42%;
+    --secondary: 215 16% 95%;
+    --secondary-foreground: 215 28% 12%;
+    --muted: 215 16% 95%;
+    --muted-foreground: 215 10% 40%;
+    --accent: 215 16% 95%;
+    --accent-foreground: 215 28% 12%;
+    --destructive: 0 72% 35%;            /* karmesin */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 88%;
-    --input: 220 13% 88%;
-    --ring: 220 15% 12%;
-    --radius: 0.25rem;
+    --border: 215 16% 88%;
+    --input: 215 16% 88%;
+    --ring: 215 28% 17%;
+    --radius: 0.125rem;                   /* eckig, fast keine Rundung */
 
-    /* Two functional accents only */
-    --ink: 220 15% 12%;
-    --signal: 0 72% 46%;             /* signal red */
+    --ink: 215 28% 17%;
+    --signal: 0 72% 35%;
     --signal-soft: 0 70% 94%;
-    --signal-ok: 145 55% 38%;        /* freshness: green */
-    --signal-warn: 38 88% 48%;       /* freshness: amber */
+    --signal-ok: 75 55% 28%;              /* oliv */
+    --signal-warn: 35 50% 45%;            /* gedecktes bernstein */
 
+    --ua-yellow: 75 55% 28%;
+    --ua-blue: 215 28% 17%;
+    --cyber: 215 10% 40%;
+    --cyber-glow: 215 10% 40%;
 
-    /* Legacy aliases kept so untouched components don't break */
-    --ua-yellow: 0 72% 46%;
-    --ua-blue: 220 15% 12%;
-    --cyber: 220 8% 38%;
-    --cyber-glow: 220 8% 38%;
-
-    /* Chart series — ink, signal red, mid-gray */
-    --series-launched: 0 72% 46%;             /* crimson red — launched */
-    --series-destroyed: 220 9% 46%;           /* neutral gray — intercepted */
-
-    --series-rate: 220 8% 50%;
-    --grid: 220 13% 90%;
+    /* Funktionsfarben — sparsam */
+    --series-launched: 0 65% 38%;         /* karmesin — Bedrohungen / Einschläge */
+    --series-destroyed: 75 55% 28%;       /* oliv — erfolgreiche Abschüsse */
+    --series-rate: 215 10% 45%;           /* neutrales mittelgrau — gesamt */
+    --grid: 215 16% 88%;
 
     --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 1px 0 rgb(15 23 42 / 0.03);
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 15% 12%;
-    --sidebar-primary: 220 15% 12%;
+    --sidebar-foreground: 215 28% 17%;
+    --sidebar-primary: 215 28% 17%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 96%;
-    --sidebar-accent-foreground: 220 15% 12%;
-    --sidebar-border: 220 13% 88%;
-    --sidebar-ring: 220 15% 12%;
+    --sidebar-accent: 215 16% 95%;
+    --sidebar-accent-foreground: 215 28% 17%;
+    --sidebar-border: 215 16% 88%;
+    --sidebar-ring: 215 28% 17%;
   }
 
   .dark {
-    /* Dark — earthy analyst palette (warm umber / taupe, no blue cast) */
-    --background: 30 10% 10%;                  /* #1c1916 — warm charcoal */
-    --foreground: 40 18% 92%;                 /* warm off-white */
-    --card: 28 10% 13%;                        /* #24201c */
-    --card-foreground: 40 18% 92%;
-    --popover: 28 10% 13%;
-    --popover-foreground: 40 18% 92%;
+    /* Dark — militärisch, dezent. Basis #1e293b (slate-800) */
+    --background: 215 28% 17%;            /* #1e293b */
+    --foreground: 210 20% 92%;
+    --card: 215 25% 21%;
+    --card-foreground: 210 20% 92%;
+    --popover: 215 25% 21%;
+    --popover-foreground: 210 20% 92%;
 
-    --primary: 40 18% 92%;
-    --primary-foreground: 30 10% 10%;
-    --secondary: 30 9% 18%;                   /* #2f2a25 */
-    --secondary-foreground: 40 18% 92%;
-    --muted: 30 9% 18%;
-    --muted-foreground: 35 12% 78%;           /* warm light taupe — high contrast */
-    --accent: 30 9% 18%;
-    --accent-foreground: 40 18% 92%;
-    --destructive: 8 65% 38%;                 /* burnt crimson */
-    --destructive-foreground: 40 18% 92%;
+    --primary: 210 20% 92%;
+    --primary-foreground: 215 28% 17%;
+    --secondary: 215 22% 25%;
+    --secondary-foreground: 210 20% 92%;
+    --muted: 215 22% 25%;
+    --muted-foreground: 215 12% 70%;
+    --accent: 215 22% 25%;
+    --accent-foreground: 210 20% 92%;
+    --destructive: 0 65% 38%;
+    --destructive-foreground: 210 20% 92%;
 
-    --border: 30 8% 26%;
-    --input: 30 8% 26%;
-    --ring: 40 18% 92%;
+    --border: 215 18% 32%;                /* dünn, leicht heller als BG */
+    --input: 215 18% 32%;
+    --ring: 210 20% 92%;
 
-    --ink: 40 18% 92%;
-    --signal: 8 65% 38%;                      /* burnt crimson */
-    --signal-soft: 8 35% 22%;
-    --signal-ok: 65 35% 30%;                  /* dusty olive */
-    --signal-warn: 32 70% 50%;                /* amber */
+    --ink: 210 20% 92%;
+    --signal: 0 65% 38%;
+    --signal-soft: 0 35% 22%;
+    --signal-ok: 75 50% 28%;              /* oliv */
+    --signal-warn: 35 45% 45%;            /* gedecktes bernstein */
 
-    --ua-yellow: 65 35% 30%;
-    --ua-blue: 40 18% 92%;
-    --cyber: 35 12% 78%;
-    --cyber-glow: 35 12% 78%;
-    --series-launched: 8 70% 48%;             /* burnt sienna / crimson — launched */
-    --series-destroyed: 30 8% 52%;            /* warm taupe gray — intercepted */
-    --series-rate: 35 12% 72%;
-    --grid: 30 8% 22%;
+    --ua-yellow: 75 50% 28%;
+    --ua-blue: 210 20% 92%;
+    --cyber: 215 12% 70%;
+    --cyber-glow: 215 12% 70%;
 
-    --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.5), 0 1px 1px 0 rgb(0 0 0 / 0.35);
+    --series-launched: 0 65% 38%;         /* #991b1b karmesin */
+    --series-destroyed: 75 55% 26%;       /* #3f6212 oliv */
+    --series-rate: 215 10% 60%;           /* mittelgrau — gesamt */
+    --grid: 215 18% 32%;
 
-    --sidebar-background: 30 10% 10%;
-    --sidebar-foreground: 40 18% 92%;
-    --sidebar-primary: 40 18% 92%;
-    --sidebar-primary-foreground: 30 10% 10%;
-    --sidebar-accent: 30 9% 18%;
-    --sidebar-accent-foreground: 40 18% 92%;
-    --sidebar-border: 30 8% 26%;
-    --sidebar-ring: 40 18% 92%;
+    --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.4), 0 1px 1px 0 rgb(0 0 0 / 0.3);
+
+    --sidebar-background: 215 28% 17%;
+    --sidebar-foreground: 210 20% 92%;
+    --sidebar-primary: 210 20% 92%;
+    --sidebar-primary-foreground: 215 28% 17%;
+    --sidebar-accent: 215 22% 25%;
+    --sidebar-accent-foreground: 210 20% 92%;
+    --sidebar-border: 215 18% 32%;
+    --sidebar-ring: 210 20% 92%;
   }
-
 }
 
 
@@ -125,19 +121,19 @@
   * { @apply border-border; }
 
   html {
-    font-feature-settings: "ss01", "cv11", "tnum";
+    font-feature-settings: "tnum";
   }
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-family: '"IBM Plex Sans"', 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
   }
 
   h1, h2, h3, h4 {
-    font-family: 'Inter', system-ui, sans-serif;
-    font-weight: 600;
-    letter-spacing: -0.015em;
+    font-family: '"Space Mono"', 'Space Mono', 'IBM Plex Mono', ui-monospace, monospace;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+    text-transform: none;
   }
 
   .font-mono, code, kbd, pre {
