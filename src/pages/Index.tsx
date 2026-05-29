@@ -549,6 +549,7 @@ const Index = () => {
       {shahed && shahedRange && (
         <CategorySection
           id="drones"
+          glossaryKey="drones"
           kicker={t("category.drones.kicker")}
           title={t("category.drones.title")}
           description={t("category.drones.description")}
@@ -562,6 +563,7 @@ const Index = () => {
       {cruise && cruiseRange && (
         <CategorySection
           id="cruise"
+          glossaryKey="cruise"
           kicker={t("category.cruiseSection.kicker")}
           title={t("category.cruiseSection.title")}
           description={t("category.cruiseSection.description")}
@@ -575,6 +577,7 @@ const Index = () => {
       {ballistic && ballisticRange && (
         <CategorySection
           id="ballistic"
+          glossaryKey="ballistic"
           kicker={t("category.ballisticSection.kicker")}
           title={t("category.ballisticSection.title")}
           description={t("category.ballisticSection.description")}
