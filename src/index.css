@@ -67,58 +67,60 @@
   }
 
   .dark {
-    /* Dark — neutral charcoal terminal */
-    --background: 220 14% 9%;
-    --foreground: 220 14% 92%;
-    --card: 220 14% 11%;
-    --card-foreground: 220 14% 92%;
-    --popover: 220 14% 11%;
-    --popover-foreground: 220 14% 92%;
+    /* Dark — deep slate / anthracite (briefing-room palette) */
+    --background: 215 28% 9%;
+    --foreground: 215 18% 92%;
+    --card: 215 26% 12%;
+    --card-foreground: 215 18% 92%;
+    --popover: 215 26% 12%;
+    --popover-foreground: 215 18% 92%;
 
-    --primary: 220 14% 92%;
-    --primary-foreground: 220 14% 9%;
-    --secondary: 220 12% 15%;
-    --secondary-foreground: 220 14% 92%;
-    --muted: 220 12% 14%;
-    --muted-foreground: 220 8% 60%;
-    --accent: 220 12% 15%;
-    --accent-foreground: 220 14% 92%;
-    --destructive: 0 60% 55%;
-    --destructive-foreground: 220 14% 92%;
+    --primary: 215 18% 92%;
+    --primary-foreground: 215 28% 9%;
+    --secondary: 215 22% 16%;
+    --secondary-foreground: 215 18% 92%;
+    --muted: 215 22% 15%;
+    --muted-foreground: 215 12% 64%;
+    --accent: 215 22% 16%;
+    --accent-foreground: 215 18% 92%;
+    --destructive: 0 55% 42%;
+    --destructive-foreground: 215 18% 92%;
 
-    --border: 220 12% 18%;
-    --input: 220 12% 18%;
-    --ring: 220 14% 92%;
+    --border: 215 20% 20%;
+    --input: 215 20% 20%;
+    --ring: 215 18% 92%;
 
-    --ink: 220 14% 92%;
-    --signal: 0 75% 60%;
-    --signal-soft: 0 50% 20%;
-    --signal-ok: 145 50% 55%;
-    --signal-warn: 38 85% 60%;
+    --ink: 215 18% 92%;
+    /* Intercepts → muted military green ; misses/leakers → matte dark red */
+    --signal: 0 50% 45%;
+    --signal-soft: 0 40% 22%;
+    --signal-ok: 95 28% 48%;
+    --signal-warn: 38 70% 55%;
 
+    --ua-yellow: 95 28% 48%;
+    --ua-blue: 215 18% 92%;
+    --cyber: 215 12% 64%;
+    --cyber-glow: 215 12% 64%;
 
-    --ua-yellow: 0 75% 60%;
-    --ua-blue: 220 14% 92%;
-    --cyber: 220 8% 60%;
-    --cyber-glow: 220 8% 60%;
+    /* Chart series: launched=neutral slate, destroyed=military green, leakers=matte red */
+    --series-launched: 215 14% 70%;
+    --series-destroyed: 95 28% 48%;
+    --series-rate: 215 12% 60%;
+    --grid: 215 20% 20%;
 
-    --series-launched: 220 14% 80%;
-    --series-destroyed: 0 75% 60%;
-    --series-rate: 220 8% 55%;
-    --grid: 220 12% 18%;
+    --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.45), 0 1px 1px 0 rgb(0 0 0 / 0.3);
 
-    --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.4), 0 1px 1px 0 rgb(0 0 0 / 0.25);
-
-    --sidebar-background: 220 14% 9%;
-    --sidebar-foreground: 220 14% 92%;
-    --sidebar-primary: 220 14% 92%;
-    --sidebar-primary-foreground: 220 14% 9%;
-    --sidebar-accent: 220 12% 15%;
-    --sidebar-accent-foreground: 220 14% 92%;
-    --sidebar-border: 220 12% 18%;
-    --sidebar-ring: 220 14% 92%;
+    --sidebar-background: 215 28% 9%;
+    --sidebar-foreground: 215 18% 92%;
+    --sidebar-primary: 215 18% 92%;
+    --sidebar-primary-foreground: 215 28% 9%;
+    --sidebar-accent: 215 22% 16%;
+    --sidebar-accent-foreground: 215 18% 92%;
+    --sidebar-border: 215 20% 20%;
+    --sidebar-ring: 215 18% 92%;
   }
 }
+
 
 @layer base {
   * { @apply border-border; }
