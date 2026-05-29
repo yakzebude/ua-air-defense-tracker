@@ -67,13 +67,13 @@
     --sidebar-ring: 220 15% 12%;
   }
 
-  .dark {
-    /* Dark — professional analyst palette (slate / olive / crimson on #0f172a) */
-    --background: 222 47% 11%;                /* #0f172a */
-    --foreground: 213 31% 91%;                /* near-white slate */
-    --card: 222 44% 13%;
-    --card-foreground: 213 31% 91%;
-    --popover: 222 44% 13%;
+    /* Dark — professional analyst palette (deeper near-black) */
+    --background: 222 47% 5%;                 /* #07090f */
+    --foreground: 213 31% 93%;
+    --card: 222 44% 7%;                       /* #0b0e15 */
+    --card-foreground: 213 31% 93%;
+    --popover: 222 44% 7%;
+    --popover-foreground: 213 31% 93%;
     --popover-foreground: 213 31% 91%;
 
     --primary: 213 31% 91%;
