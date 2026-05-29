@@ -62,23 +62,28 @@ export function MonthlyTrendChart({ data }: Props) {
       .map((m) => ({ ...m, ratePct: +(m.rate * 100).toFixed(2) }));
   }, [data]);
   const ticks = useMemo(() => {
-    const step = enriched.length <= 6 ? 1 : enriched.length <= 14 ? 2 : 4;
-    return enriched.filter((_, i) => i % step === 0).map((m) => m.label);
-  }, [enriched]);
-
-  return (
-    <div className="h-[360px] w-full">
-  const ticks = useMemo(() => {
     const step = enriched.length <= 6 ? 1 : enriched.length <= 14 ? 2 : 5;
     return enriched.filter((_, i) => i % step === 0).map((m) => m.label);
   }, [enriched]);
   const angled = enriched.length > 8;
 
+  return (
+    <div className="h-[360px] w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <ComposedChart data={enriched} margin={{ top: 8, right: 48, left: 0, bottom: angled ? 28 : 4 }} barCategoryGap="18%" barGap={2}>
+          <CartesianGrid stroke="hsl(var(--grid))" vertical={false} />
+          <XAxis
+            dataKey="label"
             ticks={ticks}
             tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
             tickLine={false}
             axisLine={{ stroke: "hsl(var(--border))" }}
+            angle={angled ? -45 : 0}
+            textAnchor={angled ? "end" : "middle"}
+            height={angled ? 48 : 30}
+            interval={0}
           />
+
           <YAxis
             yAxisId="count"
             tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
