@@ -32,7 +32,7 @@ export function buildCitation(panelTitle?: string): string {
   const base =
     "Air Force Command of the Armed Forces of Ukraine, via Petro Ivaniuk (Kaggle: Massive Missile Attacks on Ukraine), aggregated by UA AirDefense Tracker";
   const panel = panelTitle ? ` — ${panelTitle}` : "";
-  return `${base}${panel}. Retrieved ${today}. https://ua-defense-tracker.lovable.app/`;
+  return `${base}${panel}. Retrieved ${today}. https://ua-airdefense-tracker.org/`;
 }
 
 export async function copyToClipboard(text: string): Promise<boolean> {

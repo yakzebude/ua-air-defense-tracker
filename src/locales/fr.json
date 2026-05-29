@@ -38,7 +38,9 @@
     "destroyedConfirmed": "Détruits (confirmés)",
     "confirmedInterceptions": "interceptions confirmées",
     "ofSep": "sur",
-    "leakerPctSuffix": "% des lancements"
+    "leakerPctSuffix": "% des lancements",
+    "momLabel": "Variation mensuelle",
+    "momDetail": "lancements en {{last}} vs {{prev}}"
   },
   "masthead": {
     "kicker": "OSINT",
@@ -49,7 +51,10 @@
     "disclaimer": "Clause de non-responsabilité",
     "sourceRange": "Source : {{source}} · Période : oct. 2022 – {{last}}",
     "loading": "Chargement du jeu de données…",
-    "loadFailed": "Échec du chargement du jeu de données :"
+    "loadFailed": "Échec du chargement du jeu de données :",
+    "lastUpdated": "Dernière mise à jour",
+    "sourcesLabel": "Sources",
+    "sourcesBody": "Rapports quotidiens officiels du Commandement de la Force aérienne des Forces armées d'Ukraine, agrégés par Petro Ivaniuk (jeu de données Kaggle). Croisés avec des analystes OSINT et CSIS Missile Threat pour les fiches techniques des systèmes d'armes."
   },
   "primarySource": "Commandement de la Force aérienne des forces armées ukrainiennes (rapports hebdomadaires, via le jeu de données Kaggle, Petro Ivaniuk)",
   "primarySourceShort": "Commandement de la Force aérienne (via Kaggle)",
@@ -408,5 +413,8 @@
     "copyright": "Le code du site, la mise en page et les contenus écrits originaux sont, sauf mention contraire, © de l'exploitant.",
     "dataLicensePre": "Le jeu de données agrégé sous-jacent est fourni sous la ",
     "dataLicensePost": ". L'attribution au Commandement de la Force aérienne des Forces armées d'Ukraine et à UA AirDefense Tracker est requise."
+  },
+  "glossary": {
+    "label": "Systèmes clés"
   }
 }

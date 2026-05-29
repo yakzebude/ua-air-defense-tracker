@@ -12,8 +12,52 @@ import { WeaponsCatalogSection } from "@/components/WeaponsCatalogSection";
 import { Panel, SourceLabel } from "@/components/ui/panel";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { PanelActions } from "@/components/PanelActions";
+import { WeaponTerm } from "@/components/WeaponTerm";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
+
+/** Compact glossary of representative weapons per category for hover tooltips. */
+const GLOSSARY: Record<string, Array<{ term: string; description: string }>> = {
+  drones: [
+    { term: "Shahed-136 / 131", description: "Iranian-designed delta-wing loitering munition (~50 kg warhead, 1,800+ km range). Mass-launched at night against energy & civilian infrastructure; slow and noisy but cheap (~$20–50k per unit)." },
+    { term: "Lancet-3", description: "Russian loitering munition (~3 kg warhead). Used tactically against artillery, air-defense and armoured vehicles at the front line." },
+    { term: "Orlan-10 / ZALA", description: "Russian reconnaissance UAVs used to spot targets for artillery and missile strikes; unarmed but force-multipliers." },
+  ],
+  cruise: [
+    { term: "Kh-101 / Kh-555", description: "Russian air-launched stealth cruise missile (~450 kg warhead, ~2,500 km range). Subsonic, low-altitude flight; primary strategic strike weapon against infrastructure." },
+    { term: "Kalibr (3M14)", description: "Sea-launched cruise missile fired from Black Sea ships and submarines. Subsonic, GPS/INS-guided, ~450 kg warhead." },
+    { term: "Kh-22 / Kh-32", description: "Heavy Soviet-era anti-ship cruise missile (~1,000 kg warhead). Used in surface-attack mode; very hard to intercept due to terminal-dive profile." },
+    { term: "Iskander-K", description: "Ground-launched 9M728/9M729 cruise missile variant of the Iskander system. Low-altitude, terrain-hugging flight; ~500 km range." },
+  ],
+  ballistic: [
+    { term: "Iskander-M / 9K720", description: "Russian short-range ballistic missile (~480 km, 700 kg warhead). Quasi-ballistic trajectory with mid-course maneuvers; only Patriot-class systems can reliably intercept." },
+    { term: "Kh-47M2 Kinzhal", description: "Air-launched aero-ballistic missile derived from Iskander, carried by MiG-31K. Hypersonic terminal speed (~Mach 10); intercepted by Patriot PAC-3 since May 2023." },
+    { term: "KN-23", description: "North Korean short-range ballistic missile (similar to Iskander). Transferred to Russia since late 2023; lower accuracy but high terminal speed." },
+    { term: "S-300 / S-400 (S2S mode)", description: "Surface-to-air missiles repurposed for surface-to-surface strikes against ground targets. Limited warhead but very fast and used in saturation attacks." },
+  ],
+};
+
+function GlossaryChips({ category }: { category: keyof typeof GLOSSARY }) {
+  const { t } = useTranslation();
+  const items = GLOSSARY[category];
+  if (!items?.length) return null;
+  return (
+    <div className="mb-6 flex flex-wrap items-center gap-2">
+      <span className="src-label mr-1">{t("glossary.label")}</span>
+      {items.map((w) => (
+        <WeaponTerm key={w.term} term={w.term} description={w.description} />
+      ))}
+    </div>
+  );
+}
+
+/** Format "Last updated" timestamp in UTC. */
+function fmtUtc(d: Date | null): string {
+  if (!d) return "—";
+  const eom = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0));
+  return `${eom.toISOString().slice(0, 10)} 23:59 UTC`;
+}
+
 
 /** Compute freshness tier of the latest reported data point. */
 function freshnessTier(latest: Date | null): "fresh" | "stale" | "veryStale" | null {
@@ -258,6 +302,7 @@ function HowToHelpSection() {
 
 type CategorySectionProps = {
   id: string;
+  glossaryKey?: keyof typeof GLOSSARY;
   kicker: string;
   title: string;
   description: string;
@@ -268,7 +313,7 @@ type CategorySectionProps = {
 };
 
 function CategorySection({
-  id, kicker, title, description, unitNoun, dataset, range, onRangeChange,
+  id, glossaryKey, kicker, title, description, unitNoun, dataset, range, onRangeChange,
 }: CategorySectionProps) {
   const { t } = useTranslation();
   const filtered = dataset.months.slice(range[0], range[1] + 1);
@@ -277,6 +322,23 @@ function CategorySection({
   const rate = launched > 0 ? destroyed / launched : 0;
   const peak = filtered.length ? filtered.reduce((a, b) => (b.launched > a.launched ? b : a)) : null;
   const rangeLabel = filtered.length ? `${filtered[0].label} – ${filtered[filtered.length - 1].label}` : "";
+
+  // Month-over-month delta on launches (last full vs prior full month in the dataset).
+  const mom = useMemo(() => {
+    const ms = dataset.months;
+    if (ms.length < 2) return null;
+    const now = new Date();
+    const curY = now.getUTCFullYear();
+    const curM = now.getUTCMonth();
+    const completed = ms.filter((m) => !(m.date.getUTCFullYear() === curY && m.date.getUTCMonth() === curM));
+    if (completed.length < 2) return null;
+    const last = completed[completed.length - 1];
+    const prev = completed[completed.length - 2];
+    if (!prev.launched) return null;
+    const pct = ((last.launched - prev.launched) / prev.launched) * 100;
+    return { pct, last: last.label, prev: prev.label };
+  }, [dataset]);
+
 
   return (
     <section id={id} className="scroll-mt-32 border-t border-border">
@@ -287,12 +349,27 @@ function CategorySection({
           <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">{description}</p>
         </div>
 
+        {glossaryKey && <GlossaryChips category={glossaryKey} />}
+
         <div className="mb-6 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-6 md:grid-cols-4">
           <KPI label={t("kpi.launchedReported")} numeric={launched} sub={rangeLabel} />
           <KPI label={t("kpi.confirmedDestroyed")} numeric={destroyed} sub={t("kpi.confirmedInterceptions")} />
           <KPI label={t("kpi.interceptionRate")} numeric={rate * 100} decimals={1} suffix="%" sub={`${fmt(destroyed)} ${t("kpi.ofSep")} ${fmt(launched)}`} />
           <KPI label={t("kpi.reachedTarget")} numeric={Math.max(launched - destroyed, 0)} sub={launched > 0 ? `${(((launched - destroyed) / launched) * 100).toFixed(1)}${t("kpi.leakerPctSuffix")}` : "—"} />
         </div>
+
+        {mom && (
+          <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-sm border border-border bg-card px-4 py-3 text-[13px]">
+            <span className="src-label">{t("kpi.momLabel")}</span>
+            <span className={`num font-semibold ${mom.pct >= 0 ? "text-signal" : "text-[hsl(var(--signal-ok))]"}`}>
+              {mom.pct >= 0 ? "+" : ""}{mom.pct.toFixed(1)}%
+            </span>
+            <span className="text-muted-foreground">
+              {t("kpi.momDetail", { last: mom.last, prev: mom.prev })}
+            </span>
+          </div>
+        )}
+
 
         <div className="mb-6">
           <DateRangeFilter months={dataset.months} range={range} onChange={onRangeChange} />
@@ -432,7 +509,10 @@ const Index = () => {
             {t("masthead.intro")}
           </p>
           <div className="src-label mt-5 flex flex-wrap items-center gap-x-4 gap-y-1">
-            <span>{t("nav.lastDataPoint")}: <span className="text-foreground">{lastUpdatedLabel ?? "—"}</span></span>
+            <span className="inline-flex items-center gap-1.5">
+              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal-ok))]" />
+              {t("masthead.lastUpdated")}: <span className="text-foreground num">{fmtUtc(lastUpdatedDate)}</span>
+            </span>
             <span aria-hidden>·</span>
             <Link to="/sources" className="hover:text-foreground">{t("masthead.primarySource")}</Link>
             <Link to="/methodology" className="hover:text-foreground">{t("masthead.methodology")}</Link>
@@ -449,10 +529,12 @@ const Index = () => {
           )}
 
           {ready && (
-            <SourceLabel className="mt-3">
-              {t("masthead.sourceRange", { source: t("primarySource"), last: lastUpdatedLabel })}
-            </SourceLabel>
+            <div className="mt-3 flex flex-wrap items-start gap-x-4 gap-y-1 text-[12px] leading-relaxed text-muted-foreground">
+              <span className="src-label shrink-0 pt-0.5">{t("masthead.sourcesLabel")}</span>
+              <span className="min-w-0">{t("masthead.sourcesBody")}</span>
+            </div>
           )}
+
         </div>
       </section>
 
@@ -467,6 +549,7 @@ const Index = () => {
       {shahed && shahedRange && (
         <CategorySection
           id="drones"
+          glossaryKey="drones"
           kicker={t("category.drones.kicker")}
           title={t("category.drones.title")}
           description={t("category.drones.description")}
@@ -480,6 +563,7 @@ const Index = () => {
       {cruise && cruiseRange && (
         <CategorySection
           id="cruise"
+          glossaryKey="cruise"
           kicker={t("category.cruiseSection.kicker")}
           title={t("category.cruiseSection.title")}
           description={t("category.cruiseSection.description")}
@@ -493,6 +577,7 @@ const Index = () => {
       {ballistic && ballisticRange && (
         <CategorySection
           id="ballistic"
+          glossaryKey="ballistic"
           kicker={t("category.ballisticSection.kicker")}
           title={t("category.ballisticSection.title")}
           description={t("category.ballisticSection.description")}

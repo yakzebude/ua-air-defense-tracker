@@ -38,7 +38,9 @@
     "destroyedConfirmed": "Zerstört (bestätigt)",
     "confirmedInterceptions": "bestätigte Abfangungen",
     "ofSep": "von",
-    "leakerPctSuffix": "% der Starts"
+    "leakerPctSuffix": "% der Starts",
+    "momLabel": "Veränderung zum Vormonat",
+    "momDetail": "Starts im {{last}} gegenüber {{prev}}"
   },
   "masthead": {
     "kicker": "OSINT",
@@ -49,7 +51,10 @@
     "disclaimer": "Haftungsausschluss",
     "sourceRange": "Quelle: {{source}} · Zeitraum: Okt 2022 – {{last}}",
     "loading": "Datensatz wird geladen…",
-    "loadFailed": "Laden des Datensatzes fehlgeschlagen:"
+    "loadFailed": "Laden des Datensatzes fehlgeschlagen:",
+    "lastUpdated": "Zuletzt aktualisiert",
+    "sourcesLabel": "Quellen",
+    "sourcesBody": "Offizielle Tagesberichte des Oberkommandos der Luftstreitkräfte der Ukraine, aggregiert von Petro Ivaniuk (Kaggle-Datensatz). Abgeglichen mit OSINT-Analysten und CSIS Missile Threat für Referenzdaten zu Waffensystemen."
   },
   "primarySource": "Air Force Command of the Armed Forces of Ukraine (wöchentliche Berichte, via Kaggle Datensatz, Petro Ivaniuk)",
   "primarySourceShort": "Air Force Command of the Armed Forces of Ukraine (via Kaggle)",
@@ -408,5 +413,8 @@
     "copyright": "Seitencode, Layout und originale schriftliche Inhalte sind, sofern nicht anders gekennzeichnet, © des Betreibers.",
     "dataLicensePre": "Der zugrundeliegende aggregierte Datensatz wird unter der ",
     "dataLicensePost": " bereitgestellt. Eine Namensnennung des Air Force Command of the Armed Forces of Ukraine sowie des UA AirDefense Tracker ist erforderlich."
+  },
+  "glossary": {
+    "label": "Wichtige Systeme"
   }
 }
