@@ -356,7 +356,7 @@ function CategorySection({
         {mom && (
           <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-sm border border-border bg-card px-4 py-3 text-[13px]">
             <span className="src-label">{t("kpi.momLabel")}</span>
-            <span className={`num font-semibold ${mom.pct >= 0 ? "text-signal" : "text-[hsl(var(--signal-ok))]"}`}>
+            <span className={`num font-semibold ${mom.pct >= 0 ? "text-[#940000]" : "text-[hsl(var(--signal-ok))]"}`}>
               {mom.pct >= 0 ? "+" : ""}{mom.pct.toFixed(1)}%
             </span>
             <span className="text-muted-foreground">
@@ -514,7 +514,7 @@ const Index = () => {
 
           {/* Prominent refresh badge directly under the title */}
           <div className="mt-5 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-sm border border-border bg-card px-3.5 py-2 font-mono text-[11.5px]">
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal-ok))] pulse-soft" />
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[#db8400] pulse-soft" />
             <span className="uppercase tracking-[0.16em] text-muted-foreground">
               {t("masthead.refreshBadge")}
             </span>
