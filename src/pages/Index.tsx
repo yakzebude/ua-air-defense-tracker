@@ -563,7 +563,6 @@ const Index = () => {
         </div>
       </section>
 
-      </section>
 
       {error && (
         <div className="container py-6 text-sm text-destructive">
