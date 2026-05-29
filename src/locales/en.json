@@ -56,8 +56,6 @@
     "loading": "Loading dataset…",
     "loadFailed": "Failed to load dataset:"
   },
-
-  },
   "primarySource": "Air Force Command of the Armed Forces of Ukraine (weekly reports, via Kaggle dataset, Petro Ivaniuk)",
   "primarySourceShort": "Air Force Command of the Armed Forces of Ukraine (weekly reports, via Kaggle)",
   "category": {
