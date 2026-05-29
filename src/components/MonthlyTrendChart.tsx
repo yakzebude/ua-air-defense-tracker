@@ -68,7 +68,9 @@ export function MonthlyTrendChart({ data }: Props) {
   const angled = enriched.length > 8;
 
   return (
-    <div className="h-[360px] w-full">
+    <div className="w-full">
+      <div className="h-[360px] w-full">
+
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={enriched} margin={{ top: 8, right: 48, left: 0, bottom: angled ? 28 : 4 }} barCategoryGap="18%" barGap={2}>
           <CartesianGrid stroke="hsl(var(--grid))" vertical={false} />
