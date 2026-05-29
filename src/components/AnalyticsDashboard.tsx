@@ -71,11 +71,12 @@ function CompositionAreaChart({
   labels: Record<CategoryKey, string>;
   totalLabel: string;
 }) {
-  const ticks = useMemo(() => data.filter((_, i) => i % 4 === 0).map((m) => m.label), [data]);
+  const ticks = useMemo(() => data.filter((_, i) => i % 5 === 0).map((m) => m.label), [data]);
+  const angled = data.length > 8;
   return (
     <div style={{ height }} className="w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data} margin={{ top: 8, right: 12, left: 0, bottom: 4 }}>
+        <AreaChart data={data} margin={{ top: 8, right: 12, left: 0, bottom: angled ? 28 : 4 }}>
           <CartesianGrid stroke="hsl(var(--grid))" vertical={false} />
           <XAxis
             dataKey="label"
@@ -83,9 +84,14 @@ function CompositionAreaChart({
             tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
             tickLine={false}
             axisLine={{ stroke: "hsl(var(--border))" }}
+            angle={angled ? -45 : 0}
+            textAnchor={angled ? "end" : "middle"}
+            height={angled ? 48 : 30}
+            interval={0}
           />
           <YAxis
             tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+
             tickLine={false}
             axisLine={false}
             width={48}

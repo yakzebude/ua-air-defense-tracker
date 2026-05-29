@@ -54,7 +54,9 @@
     "loadFailed": "Échec du chargement du jeu de données :",
     "lastUpdated": "Dernière mise à jour",
     "sourcesLabel": "Sources",
-    "sourcesBody": "Rapports quotidiens officiels du Commandement de la Force aérienne des Forces armées d'Ukraine, agrégés par Petro Ivaniuk (jeu de données Kaggle). Croisés avec des analystes OSINT et CSIS Missile Threat pour les fiches techniques des systèmes d'armes."
+    "sourcesBody": "Rapports quotidiens officiels du Commandement de la Force aérienne des Forces armées d'Ukraine, agrégés par Petro Ivaniuk (jeu de données Kaggle). Croisés avec des analystes OSINT et CSIS Missile Threat pour les fiches techniques des systèmes d'armes.",
+    "refreshBadge": "Données mises à jour quotidiennement. Dernière actualisation",
+    "timeframe": "Période"
   },
   "primarySource": "Commandement de la Force aérienne des forces armées ukrainiennes (rapports hebdomadaires, via le jeu de données Kaggle, Petro Ivaniuk)",
   "primarySourceShort": "Commandement de la Force aérienne (via Kaggle)",
@@ -238,7 +240,8 @@
     "dataPackage": "Paquet de données (JSON)",
     "license": "Licence :",
     "availableIn": "Disponible en",
-    "responsibleBy": "Responsable :"
+    "responsibleBy": "Responsable :",
+    "provenance": "Données compilées à partir des rapports officiels du Commandement de l'Armée de l'air d'Ukraine et de canaux d'intelligence open source (OSINT) vérifiés. Ce projet est indépendant et non commercial."
   },
   "doc": {
     "back": "← Retour au tableau de bord",

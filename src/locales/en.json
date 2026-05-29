@@ -54,7 +54,9 @@
     "sourcesLabel": "Sources",
     "sourcesBody": "Official daily reports of the Air Force Command of the Armed Forces of Ukraine, aggregated by Petro Ivaniuk (Kaggle dataset). Cross-referenced with OSINT analysts and CSIS Missile Threat for weapon-system reference data.",
     "loading": "Loading dataset…",
-    "loadFailed": "Failed to load dataset:"
+    "loadFailed": "Failed to load dataset:",
+    "refreshBadge": "Data updated daily. Last refresh",
+    "timeframe": "Timeframe"
   },
   "primarySource": "Air Force Command of the Armed Forces of Ukraine (weekly reports, via Kaggle dataset, Petro Ivaniuk)",
   "primarySourceShort": "Air Force Command of the Armed Forces of Ukraine (weekly reports, via Kaggle)",
@@ -238,7 +240,8 @@
     "dataPackage": "Data package (JSON)",
     "license": "License:",
     "availableIn": "Available in",
-    "responsibleBy": "Responsible:"
+    "responsibleBy": "Responsible:",
+    "provenance": "Data compiled from official reports of the Air Force Command of the Armed Forces of Ukraine and verified open-source intelligence (OSINT) channels. This project is independent and non-commercial."
   },
   "doc": {
     "back": "← Back to dashboard",

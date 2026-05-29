@@ -51,12 +51,13 @@ function GlossaryChips({ category }: { category: keyof typeof GLOSSARY }) {
   );
 }
 
-/** Format "Last updated" timestamp in UTC. */
+/** Format an actual date+time in UTC, e.g. "2026-05-29 14:07 UTC". */
 function fmtUtc(d: Date | null): string {
   if (!d) return "—";
-  const eom = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0));
-  return `${eom.toISOString().slice(0, 10)} 23:59 UTC`;
+  const iso = d.toISOString(); // 2026-05-29T14:07:33.000Z
+  return `${iso.slice(0, 10)} ${iso.slice(11, 16)} UTC`;
 }
+
 
 
 /** Compute freshness tier of the latest reported data point. */
@@ -234,13 +235,9 @@ function RelatedSourcesSection() {
               href={s.href}
               target="_blank"
               rel="noopener noreferrer external"
-              style={{ borderTopColor: s.color }}
-              className="group relative flex flex-col gap-2 rounded-sm border border-border bg-card p-5 transition-colors hover:bg-secondary/50 border-t-2"
+              className="group relative flex flex-col gap-2 rounded-sm border border-border bg-card p-5 transition-colors hover:bg-secondary/50 border-t-2 border-t-border"
             >
-              <span
-                style={{ backgroundColor: `${s.color}14`, color: s.color }}
-                className="inline-flex self-start rounded px-2 py-0.5 text-[10.5px] font-mono font-medium uppercase tracking-[0.18em]"
-              >
+              <span className="inline-flex self-start rounded border border-border bg-secondary px-2 py-0.5 text-[10.5px] font-mono font-medium uppercase tracking-[0.18em] text-muted-foreground">
                 {t(`related.items.${s.key}.tag`)}
               </span>
               <h3 className="text-[15px] font-semibold leading-snug text-foreground">{t(`related.items.${s.key}.name`)}</h3>
@@ -249,6 +246,7 @@ function RelatedSourcesSection() {
             </a>
           ))}
         </div>
+
       </div>
     </section>
   );
@@ -280,13 +278,9 @@ function HowToHelpSection() {
               href={s.href}
               target="_blank"
               rel="noopener noreferrer external"
-              style={{ borderTopColor: s.color }}
-              className="group relative flex flex-col gap-2 rounded-sm border border-border bg-card p-5 transition-colors hover:bg-secondary/50 border-t-2"
+              className="group relative flex flex-col gap-2 rounded-sm border border-border bg-card p-5 transition-colors hover:bg-secondary/50 border-t-2 border-t-border"
             >
-              <span
-                style={{ backgroundColor: `${s.color}14`, color: s.color }}
-                className="inline-flex self-start rounded px-2 py-0.5 text-[10.5px] font-mono font-medium uppercase tracking-[0.18em]"
-              >
+              <span className="inline-flex self-start rounded border border-border bg-secondary px-2 py-0.5 text-[10.5px] font-mono font-medium uppercase tracking-[0.18em] text-muted-foreground">
                 {t(`donate.tags.${s.tag}`)}
               </span>
               <h3 className="text-[15px] font-semibold leading-snug text-foreground">{s.name}</h3>
@@ -294,6 +288,7 @@ function HowToHelpSection() {
               <div className="src-label mt-auto pt-2 transition-colors group-hover:text-foreground">{t("donate.cta")}</div>
             </a>
           ))}
+
         </div>
       </div>
     </section>
@@ -492,6 +487,17 @@ const Index = () => {
   const lastUpdatedDate = latest?.date ?? null;
 
   const reached = Math.max(grand.launched - grand.destroyed, 0);
+  // Real-time "last refresh" — when this page session was loaded.
+  const refreshedAt = useMemo(() => new Date(), []);
+  const dataTimeframe = useMemo(() => {
+    const pick = (d: Dataset | null) => {
+      if (!d) return null;
+      const first = d.months.find((m) => m.launched > 0) ?? d.months[0];
+      const last = [...d.months].reverse().find((m) => m.launched > 0) ?? d.months[d.months.length - 1];
+      return first && last ? { first: first.label, last: last.label } : null;
+    };
+    return pick(shahed) ?? pick(cruise) ?? pick(ballistic);
+  }, [shahed, cruise, ballistic]);
 
   return (
     <main className="min-h-screen bg-background">
@@ -505,27 +511,40 @@ const Index = () => {
           <h1 className="max-w-4xl text-3xl font-semibold leading-[1.15] tracking-tight md:text-[2.75rem]">
             {t("masthead.title")}
           </h1>
+
+          {/* Prominent refresh badge directly under the title */}
+          <div className="mt-5 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-sm border border-border bg-card px-3.5 py-2 font-mono text-[11.5px]">
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal-ok))] pulse-soft" />
+            <span className="uppercase tracking-[0.16em] text-muted-foreground">
+              {t("masthead.refreshBadge")}
+            </span>
+            <span aria-hidden className="hidden h-3 w-px bg-border sm:inline-block" />
+            <span className="num text-foreground">{fmtUtc(refreshedAt)}</span>
+          </div>
+
           <p className="mt-5 max-w-3xl text-[14px] leading-[1.7] text-muted-foreground md:text-[15px]">
             {t("masthead.intro")}
           </p>
           <div className="src-label mt-5 flex flex-wrap items-center gap-x-4 gap-y-1">
-            <span className="inline-flex items-center gap-1.5">
-              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal-ok))]" />
-              {t("masthead.lastUpdated")}: <span className="text-foreground num">{fmtUtc(lastUpdatedDate)}</span>
-            </span>
-            <span aria-hidden>·</span>
             <Link to="/sources" className="hover:text-foreground">{t("masthead.primarySource")}</Link>
             <Link to="/methodology" className="hover:text-foreground">{t("masthead.methodology")}</Link>
             <Link to="/disclaimer" className="hover:text-foreground">{t("masthead.disclaimer")}</Link>
           </div>
 
           {ready && (
-            <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-7 md:grid-cols-4">
-              <KPI label={t("kpi.totalLaunched")} numeric={grand.launched} sub={t("kpi.totalLaunchedSub")} signal />
-              <KPI label={t("kpi.confirmedDestroyed")} numeric={grand.destroyed} sub={t("kpi.confirmedDestroyedSub")} />
-              <KPI label={t("kpi.interceptionRate")} numeric={grand.rate * 100} decimals={1} suffix="%" sub={`${fmt(grand.destroyed)} ${t("kpi.ofSep")} ${fmt(grand.launched)}`} />
-              <KPI label={t("kpi.reachedTarget")} numeric={reached} sub={t("kpi.reachedTargetSub")} />
-            </div>
+            <>
+              {dataTimeframe && (
+                <div className="src-label mt-7 text-muted-foreground">
+                  {t("masthead.timeframe")}: <span className="text-foreground">{dataTimeframe.first} – {dataTimeframe.last}</span>
+                </div>
+              )}
+              <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-7 md:grid-cols-4">
+                <KPI label={t("kpi.totalLaunched")} numeric={grand.launched} sub={t("kpi.totalLaunchedSub")} signal />
+                <KPI label={t("kpi.confirmedDestroyed")} numeric={grand.destroyed} sub={t("kpi.confirmedDestroyedSub")} />
+                <KPI label={t("kpi.interceptionRate")} numeric={grand.rate * 100} decimals={1} suffix="%" sub={`${fmt(grand.destroyed)} ${t("kpi.ofSep")} ${fmt(grand.launched)}`} />
+                <KPI label={t("kpi.reachedTarget")} numeric={reached} sub={t("kpi.reachedTargetSub")} />
+              </div>
+            </>
           )}
 
           {ready && (
@@ -537,6 +556,7 @@ const Index = () => {
 
         </div>
       </section>
+
 
       {error && (
         <div className="container py-6 text-sm text-destructive">
@@ -684,11 +704,19 @@ const Index = () => {
             </ul>
           </div>
         </div>
+        <div className="border-t border-border bg-card">
+          <div className="container py-5">
+            <p className="text-[12.5px] leading-[1.7] text-muted-foreground">
+              {t("footer.provenance")}
+            </p>
+          </div>
+        </div>
         <div className="border-t border-border">
           <div className="container py-4 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground">
             {t("footer.tagline")}
           </div>
         </div>
+
       </footer>
 
       {!ready && !error && (
