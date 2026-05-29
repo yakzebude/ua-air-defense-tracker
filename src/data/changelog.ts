@@ -34,6 +34,6 @@ export const CHANGELOG: ChangelogEntry[] = [
     kind: "release",
     title: "Brand rename",
     body:
-      "Project renamed to UA AirDefense Tracker. Yellow accent retired in favour of a single signal-red so charts read as analysis, not branding.",
+      "Project renamed to UA Air Defense Tracker. Yellow accent retired in favour of a single signal-red so charts read as analysis, not branding.",
   },
 ];

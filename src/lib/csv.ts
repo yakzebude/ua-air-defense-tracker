@@ -30,7 +30,7 @@ export function downloadCSV(filename: string, csv: string) {
 export function buildCitation(panelTitle?: string): string {
   const today = new Date().toISOString().slice(0, 10);
   const base =
-    "Air Force Command of the Armed Forces of Ukraine, via Petro Ivaniuk (Kaggle: Massive Missile Attacks on Ukraine), aggregated by UA AirDefense Tracker";
+    "Air Force Command of the Armed Forces of Ukraine, via Petro Ivaniuk (Kaggle: Massive Missile Attacks on Ukraine), aggregated by UA Air Defense Tracker";
   const panel = panelTitle ? ` — ${panelTitle}` : "";
   return `${base}${panel}. Retrieved ${today}. https://ua-airdefense-tracker.org/`;
 }
