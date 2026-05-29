@@ -49,8 +49,9 @@
     --cyber-glow: 220 8% 38%;
 
     /* Chart series — ink, signal red, mid-gray */
-    --series-launched: 220 15% 22%;
-    --series-destroyed: 0 72% 46%;
+    --series-launched: 0 72% 46%;             /* crimson red — launched */
+    --series-destroyed: 220 9% 46%;           /* neutral gray — intercepted */
+
     --series-rate: 220 8% 50%;
     --grid: 220 13% 90%;
 
