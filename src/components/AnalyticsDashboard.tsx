@@ -359,7 +359,155 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
   );
 }
 
+type PagerKey = "uavs" | "cruiseBal" | "share" | "calendar";
+
+function AnalyticsPager(props: Props) {
+  const { t } = useTranslation();
+  const [active, setActive] = useState<PagerKey>("uavs");
+  const data = useCompositionData(props);
+  const labels: Record<CategoryKey, string> = {
+    uavs: t("category.uavs"),
+    cruise: t("category.cruise"),
+    ballistic: t("category.ballistic"),
+  };
+  const totalLabel = t("chart.total");
+
+  const compRows = data.map((d) => ({
+    month: d.label,
+    uavs: d.uavs,
+    cruise: d.cruise,
+    ballistic: d.ballistic,
+  }));
+
+  const tabs: { key: PagerKey; label: string }[] = [
+    { key: "uavs", label: t("analytics.uavMonthly") },
+    { key: "cruiseBal", label: t("analytics.cruiseBalMonthly") },
+    { key: "share", label: t("analytics.sharePanel") },
+    { key: "calendar", label: t("analytics.calendarPanel") },
+  ];
+
+  return (
+    <div>
+      <div
+        role="tablist"
+        aria-label={t("analytics.title")}
+        className="-mx-4 mb-4 flex snap-x snap-mandatory gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:flex-wrap md:overflow-visible md:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {tabs.map((tab, i) => {
+          const isActive = active === tab.key;
+          return (
+            <button
+              key={tab.key}
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => setActive(tab.key)}
+              className={`snap-start shrink-0 whitespace-nowrap border px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors ${
+                isActive
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/40"
+              }`}
+            >
+              <span className="mr-2 opacity-60">{String(i + 1).padStart(2, "0")}</span>
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {active === "uavs" && (
+        <Panel
+          title={t("analytics.uavMonthly")}
+          subtitle={t("analytics.uavMonthlySub")}
+          source={t("primarySourceShort")}
+          note={t("analytics.uavMonthlyNote")}
+          action={
+            <PanelActions
+              filename="ua-airdefense-tracker_uav-monthly.csv"
+              panelTitle={t("analytics.uavMonthly")}
+              rows={compRows.map(({ month, uavs }) => ({ month, uavs }))}
+              headers={["month", "uavs"]}
+            />
+          }
+        >
+          <CompositionAreaChart data={data} series={["uavs"]} labels={labels} totalLabel={totalLabel} />
+        </Panel>
+      )}
+
+      {active === "cruiseBal" && (
+        <Panel
+          title={t("analytics.cruiseBalMonthly")}
+          subtitle={t("analytics.cruiseBalMonthlySub")}
+          source={t("primarySourceShort")}
+          note={t("analytics.cruiseBalMonthlyNote")}
+          action={
+            <PanelActions
+              filename="ua-airdefense-tracker_cruise-ballistic-monthly.csv"
+              panelTitle={t("analytics.cruiseBalMonthly")}
+              rows={compRows.map(({ month, cruise, ballistic }) => ({ month, cruise, ballistic }))}
+              headers={["month", "cruise", "ballistic"]}
+            />
+          }
+        >
+          <CompositionAreaChart data={data} series={["ballistic", "cruise"]} labels={labels} totalLabel={totalLabel} />
+        </Panel>
+      )}
+
+      {active === "share" && (
+        <Panel
+          title={t("analytics.sharePanel")}
+          subtitle={t("analytics.sharePanelSub")}
+          source={t("primarySourceShort")}
+          action={
+            <PanelActions
+              filename="ua-airdefense-tracker_share-interception.csv"
+              panelTitle={t("analytics.sharePanel")}
+              rows={[
+                { category: "uavs", launched: props.shahed.totals.launched, destroyed: props.shahed.totals.destroyed, interception_rate_pct: +(props.shahed.totals.rate * 100).toFixed(2) },
+                { category: "cruise", launched: props.cruise.totals.launched, destroyed: props.cruise.totals.destroyed, interception_rate_pct: +(props.cruise.totals.rate * 100).toFixed(2) },
+                { category: "ballistic", launched: props.ballistic.totals.launched, destroyed: props.ballistic.totals.destroyed, interception_rate_pct: +(props.ballistic.totals.rate * 100).toFixed(2) },
+              ]}
+              headers={["category", "launched", "destroyed", "interception_rate_pct"]}
+            />
+          }
+        >
+          <ShareInterception {...props} />
+        </Panel>
+      )}
+
+      {active === "calendar" && (
+        <Panel
+          title={t("analytics.calendarPanel")}
+          subtitle={t("analytics.calendarPanelSub")}
+          source={t("primarySourceShort")}
+          action={
+            <PanelActions
+              filename="ua-airdefense-tracker_calendar-heatmap.csv"
+              panelTitle={t("analytics.calendarPanel")}
+              rows={(() => {
+                const map = new Map<string, { month: string; uavs: number; cruise: number; ballistic: number }>();
+                const add = (m: MonthPoint, key: CategoryKey) => {
+                  const k = m.key;
+                  if (!map.has(k)) map.set(k, { month: k, uavs: 0, cruise: 0, ballistic: 0 });
+                  map.get(k)![key] += m.launched;
+                };
+                props.shahed.months.forEach((m) => add(m, "uavs"));
+                props.cruise.months.forEach((m) => add(m, "cruise"));
+                props.ballistic.months.forEach((m) => add(m, "ballistic"));
+                return Array.from(map.values()).sort((a, b) => a.month.localeCompare(b.month));
+              })()}
+              headers={["month", "uavs", "cruise", "ballistic"]}
+            />
+          }
+        >
+          <HeatmapMonthlyIntensity {...props} />
+        </Panel>
+      )}
+    </div>
+  );
+}
+
 export function AnalyticsDashboard(props: Props) {
+
   const { t } = useTranslation();
   return (
     <section id="analytics" className="scroll-mt-32 border-t border-border bg-secondary/40">
