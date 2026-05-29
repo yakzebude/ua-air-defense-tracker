@@ -50,14 +50,18 @@ export function InterceptionRateChart({ data }: Props) {
   return (
     <div className="h-[320px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={enriched} margin={{ top: 16, right: 24, left: 8, bottom: 8 }}>
-          <CartesianGrid stroke="hsl(var(--grid))" vertical={false} />
+        <ComposedChart data={enriched} margin={{ top: 16, right: 24, left: 8, bottom: 28 }}>
+          <CartesianGrid stroke="hsl(var(--border) / 0.15)" vertical={false} />
           <XAxis
             dataKey="label"
             ticks={ticks}
             tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
             tickLine={false}
             axisLine={{ stroke: "hsl(var(--border))" }}
+            angle={-45}
+            textAnchor="end"
+            height={48}
+            interval="preserveStartEnd"
           />
           <YAxis
             tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
