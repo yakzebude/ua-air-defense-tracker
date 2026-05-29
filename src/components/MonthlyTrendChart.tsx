@@ -68,7 +68,9 @@ export function MonthlyTrendChart({ data }: Props) {
   const angled = enriched.length > 8;
 
   return (
-    <div className="h-[360px] w-full">
+    <div className="w-full">
+      <div className="h-[360px] w-full">
+
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={enriched} margin={{ top: 8, right: 48, left: 0, bottom: angled ? 28 : 4 }} barCategoryGap="18%" barGap={2}>
           <CartesianGrid stroke="hsl(var(--grid))" vertical={false} />
@@ -117,14 +119,15 @@ export function MonthlyTrendChart({ data }: Props) {
           />
         </ComposedChart>
       </ResponsiveContainer>
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
+      </div>
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
         <span className="flex items-center gap-1.5">
           <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_LAUNCHED }} /> {t("chart.launched")}
         </span>
         <span className="flex items-center gap-1.5">
           <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_DESTROYED }} /> {t("chart.destroyed")}
         </span>
-        <span className="flex items-center gap-1.5">
+        <span className="flex items-center gap-1.5 basis-full sm:basis-auto">
           <span className="h-[2px] w-3" style={{ background: COLOR_RATE }} /> {t("chart.interceptionRateRight")}
         </span>
       </div>
