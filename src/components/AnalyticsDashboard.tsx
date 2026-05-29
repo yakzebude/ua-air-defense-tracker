@@ -20,9 +20,9 @@ const fmt = (n: number) => n.toLocaleString("en-US");
 type CategoryKey = "uavs" | "cruise" | "ballistic";
 
 const CAT_COLORS: Record<CategoryKey, string> = {
-  uavs:      "hsl(220 10% 62%)",
-  cruise:    "hsl(220 12% 42%)",
-  ballistic: "hsl(220 18% 22%)",
+  uavs:      "hsl(var(--series-destroyed))",        // neutral slate gray
+  cruise:    "hsl(0 55% 38%)",                       // muted crimson
+  ballistic: "hsl(0 70% 55%)",                       // bright crimson — peak threat
 };
 
 interface Props {
