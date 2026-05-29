@@ -51,12 +51,13 @@ function GlossaryChips({ category }: { category: keyof typeof GLOSSARY }) {
   );
 }
 
-/** Format "Last updated" timestamp in UTC. */
+/** Format an actual date+time in UTC, e.g. "2026-05-29 14:07 UTC". */
 function fmtUtc(d: Date | null): string {
   if (!d) return "—";
-  const eom = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0));
-  return `${eom.toISOString().slice(0, 10)} 23:59 UTC`;
+  const iso = d.toISOString(); // 2026-05-29T14:07:33.000Z
+  return `${iso.slice(0, 10)} ${iso.slice(11, 16)} UTC`;
 }
+
 
 
 /** Compute freshness tier of the latest reported data point. */
