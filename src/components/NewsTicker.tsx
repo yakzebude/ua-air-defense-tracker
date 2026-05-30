@@ -21,25 +21,15 @@ export const NewsTicker = () => {
   const [error, setError] = useState(false);
   const timerRef = useRef<number | null>(null);
 
-  // Fetch helper — pass current language so the edge function can translate titles
+  // Fetch helper — calls edge function directly with ?lang= so it can translate titles
   const load = async (currentLang: string) => {
     try {
-      const { data, error } = await supabase.functions.invoke("air-attack-news", {
-        body: null,
-        // include lang as query string via the underlying fetch
-        method: "GET",
-        // @ts-expect-error supabase-js supports query via options in newer versions; fallback below
-        query: { lang: currentLang },
-      } as any);
-      let payload = data;
-      if (error || !payload) {
-        // Fallback: direct fetch with query string
-        const url = `${(supabase as any).functionsUrl ?? ""}/air-attack-news?lang=${currentLang}`;
-        const res = await fetch(url || `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.functions.supabase.co/air-attack-news?lang=${currentLang}`, {
-          headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string },
-        });
-        payload = await res.json();
-      }
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID as string;
+      const apikey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+      const url = `https://${projectId}.functions.supabase.co/air-attack-news?lang=${currentLang}`;
+      const res = await fetch(url, { headers: { apikey, Authorization: `Bearer ${apikey}` } });
+      if (!res.ok) throw new Error(String(res.status));
+      const payload = await res.json();
       const next: NewsItem[] = payload?.items ?? [];
       const seen = new Set<string>();
       setItems(next.filter((i) => (seen.has(i.id) ? false : seen.add(i.id))));
