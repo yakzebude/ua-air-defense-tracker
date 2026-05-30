@@ -15,12 +15,13 @@
     "cruise": "Croisière",
     "ballistic": "Balistique",
     "arsenal": "Arsenal",
-    "methodology": "​",
-    "sources": "​",
+    "methodology": "Méthodologie",
+    "sources": "Sources",
     "help": "Comment aider",
     "changelog": "Journal",
     "about": "À propos",
-    "imprint": "Mentions légales"
+    "imprint": "Mentions légales",
+    "contact": "Contact"
   },
   "theme": {
     "toLight": "Passer au mode clair",

@@ -15,12 +15,13 @@
     "cruise": "Cruise",
     "ballistic": "Ballistic",
     "arsenal": "Arsenal",
-    "methodology": "​",
-    "sources": "​",
+    "methodology": "Methodology",
+    "sources": "Sources",
     "help": "How to help",
     "changelog": "Changelog",
     "about": "About",
-    "imprint": "Imprint"
+    "imprint": "Imprint",
+    "contact": "Contact"
   },
   "theme": {
     "toLight": "Switch to light mode",
