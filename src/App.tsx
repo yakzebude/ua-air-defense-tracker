@@ -11,6 +11,8 @@ import Disclaimer from "./pages/Disclaimer.tsx";
 import Changelog from "./pages/Changelog.tsx";
 import About from "./pages/About.tsx";
 import Imprint from "./pages/Imprint.tsx";
+import Contact from "./pages/Contact.tsx";
+import Unsubscribe from "./pages/Unsubscribe.tsx";
 import NewsTicker from "./components/NewsTicker.tsx";
 
 const queryClient = new QueryClient();
@@ -30,6 +32,8 @@ const App = () => (
           <Route path="/changelog" element={<Changelog />} />
           <Route path="/about" element={<About />} />
           <Route path="/imprint" element={<Imprint />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/unsubscribe" element={<Unsubscribe />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
