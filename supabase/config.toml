@@ -1,1 +1,4 @@
 project_id = "sbujjvrxaeazxlgwqtem"
+
+[functions.air-attack-news]
+verify_jwt = false
