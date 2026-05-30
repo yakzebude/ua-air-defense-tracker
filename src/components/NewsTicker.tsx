@@ -14,18 +14,33 @@ interface NewsItem {
 const REFRESH_MS = 5 * 60 * 1000; // 5 minutes
 
 export const NewsTicker = () => {
+  const { i18n, t } = useTranslation();
+  const lang = (i18n.resolvedLanguage || i18n.language || "en").slice(0, 2);
   const [items, setItems] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const timerRef = useRef<number | null>(null);
 
-  // Fetch helper — uses Supabase functions.invoke (handles auth/CORS)
-  const load = async () => {
+  // Fetch helper — pass current language so the edge function can translate titles
+  const load = async (currentLang: string) => {
     try {
-      const { data, error } = await supabase.functions.invoke("air-attack-news");
-      if (error) throw error;
-      const next: NewsItem[] = data?.items ?? [];
-      // Extra client-side dedupe by id, just in case
+      const { data, error } = await supabase.functions.invoke("air-attack-news", {
+        body: null,
+        // include lang as query string via the underlying fetch
+        method: "GET",
+        // @ts-expect-error supabase-js supports query via options in newer versions; fallback below
+        query: { lang: currentLang },
+      } as any);
+      let payload = data;
+      if (error || !payload) {
+        // Fallback: direct fetch with query string
+        const url = `${(supabase as any).functionsUrl ?? ""}/air-attack-news?lang=${currentLang}`;
+        const res = await fetch(url || `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.functions.supabase.co/air-attack-news?lang=${currentLang}`, {
+          headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string },
+        });
+        payload = await res.json();
+      }
+      const next: NewsItem[] = payload?.items ?? [];
       const seen = new Set<string>();
       setItems(next.filter((i) => (seen.has(i.id) ? false : seen.add(i.id))));
       setError(false);
@@ -37,15 +52,15 @@ export const NewsTicker = () => {
   };
 
   useEffect(() => {
-    load();
-    // Poll every 5 minutes; skip when tab is hidden to save bandwidth
+    setLoading(true);
+    load(lang);
     timerRef.current = window.setInterval(() => {
-      if (document.visibilityState === "visible") load();
+      if (document.visibilityState === "visible") load(lang);
     }, REFRESH_MS);
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, []);
+  }, [lang]);
 
   // Status / fallback content
   const status =
