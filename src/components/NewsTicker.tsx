@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { supabase } from "@/integrations/supabase/client";
+
 
 // Item shape returned by the `air-attack-news` edge function
 interface NewsItem {
@@ -14,7 +14,7 @@ interface NewsItem {
 const REFRESH_MS = 5 * 60 * 1000; // 5 minutes
 
 export const NewsTicker = () => {
-  const { i18n, t } = useTranslation();
+  const { i18n } = useTranslation();
   const lang = (i18n.resolvedLanguage || i18n.language || "en").slice(0, 2);
   const [items, setItems] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
