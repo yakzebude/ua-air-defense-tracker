@@ -180,6 +180,13 @@
   }
   .pulse-soft { animation: pulse-soft 2.6s ease-in-out infinite; }
 
+  /* News ticker — continuous right-to-left scroll. Items are duplicated in the
+     component, so translating by -50% creates a seamless loop. */
+  @keyframes ticker-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
   /* Source / uncertainty micro-label */
   .src-label {
     font-family: 'IBM Plex Mono', ui-monospace, monospace;

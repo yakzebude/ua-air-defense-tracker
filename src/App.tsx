@@ -11,6 +11,7 @@ import Disclaimer from "./pages/Disclaimer.tsx";
 import Changelog from "./pages/Changelog.tsx";
 import About from "./pages/About.tsx";
 import Imprint from "./pages/Imprint.tsx";
+import NewsTicker from "./components/NewsTicker.tsx";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <NewsTicker />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/methodology" element={<Methodology />} />

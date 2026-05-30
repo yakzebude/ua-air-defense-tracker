@@ -1,53 +1,81 @@
-# Plan: Militärisch-dezentes Redesign
+# Live News Ticker — Russische Luftangriffe auf die Ukraine
 
-## 1. Dark Mode Palette (`src/index.css`)
-Komplett neuer `.dark` Block, basierend auf `#1e293b`:
-- `--background: 215 28% 17%` (#1e293b)
-- `--card: 215 25% 21%` (etwas heller, klar abgegrenzt)
-- `--secondary/muted/accent: 215 22% 25%`
-- `--border: 215 18% 32%` (dünn, 1 px, leicht heller als BG)
-- `--foreground: 210 20% 92%`, `--muted-foreground: 215 12% 70%`
+## Ziel
+Ein full-width Lauftext-Ticker oben auf jeder Seite, der alle 5 Minuten aktuelle Meldungen zu russischen Luftangriffen aus mehreren RSS-Feeds bezieht, serverseitig filtert und im Frontend als laufende Zeile anzeigt.
 
-## 2. Sparsame Akzentfarben (`src/index.css` + `tailwind.config.ts`)
-Drei Funktionsfarben, sonst nur Graustufen:
-- `--series-destroyed` = Olive `84 60% 24%` (#3f6212) — erfolgreiche Abschüsse
-- `--series-launched` = Karmesin `0 72% 35%` (#991b1b) — verfehlte / Einschläge / Gesamtbedrohung
-- `--series-rate` / Total = neutrales Mittelgrau `215 10% 55%`
-- `--signal-ok` → Olive, `--signal-warn` → entsättigtes Bernstein, `--destructive` → Karmesin
-- Light-Mode-Variablen parallel auf gleiche Hues angleichen
-- `CAT_COLORS` in `AnalyticsDashboard.tsx` auf Token (`series-destroyed`, `series-launched`, neutralgrau) umstellen — keine hartkodierten HSL-Werte mehr
+## Architektur
 
-## 3. Charts: Grid + X-Achse
-In `MonthlyTrendChart.tsx`, `AnalyticsDashboard.tsx`, `InterceptionRateChart.tsx`:
-- `--grid` auf nahezu transparent (`hsl(var(--border) / 0.15)`) bzw. `CartesianGrid` ganz entfernen
-- Tages-Achsen: `angle={-45} textAnchor="end"` und `interval` so wählen, dass nur jeder 5. Tick gezeigt wird (bereits teilweise vorhanden, konsistent überall anwenden)
+```text
+RSS-Feeds  ──►  Edge Function (Lovable Cloud)  ──►  JSON  ──►  React-Komponente (Ticker)
+   (Kyiv Indep.,        - fetch + parse                              - auto-refresh 5 min
+    Ukrainska Pravda,   - keyword-filter                             - marquee r→l
+    Reuters Ukraine,    - dedupe + cache 5 min                       - pause on hover
+    Euromaidan Press)   - return top 30                              - click → neuer Tab
+```
 
-## 4. Typografie
-- `<link>` für Google Fonts „Space Mono" + „IBM Plex Sans" in `index.html` ergänzen
-- `tailwind.config.ts`:
-  - `sans: ['"IBM Plex Sans"', …]`
-  - `display/serif: ['"Space Mono"', …]` (für Überschriften)
-- `src/index.css`:
-  - `body` → IBM Plex Sans
-  - `h1–h4` → Space Mono, `font-weight: 700`, `letter-spacing: 0`
-  - `.num` weiter tabular
+## Backend — Supabase Edge Function `air-attack-news`
 
-## 5. Eckige Karten / Boxen
-- `--radius: 0.125rem` (≈ `rounded-sm`) global setzen → wirkt auf `.panel`, Buttons, Inputs
-- `.panel` Border bereits 1 px; sicherstellen dass Border-Token leicht heller als BG ist (siehe 1.)
-- Stat-/Infoboxen in `SummaryStats.tsx` & `AnalyticsDashboard.tsx` Klassen `rounded-*` → `rounded-none`/`rounded-sm`
+Datei: `supabase/functions/air-attack-news/index.ts`
 
-## 6. Icons
-- Audit aller Komponenten (`AnalyticsDashboard`, `WeaponsCatalogSection`, `Index`, Header etc.) auf farbige / „explosive" Symbole und Emojis
-- Ersetzen durch monochrome Lucide-Linien-Icons: `Crosshair`, `Shield`, `Circle`, `MapPin`, `Radar`, `Target`
-- Icons immer `text-muted-foreground` / `text-foreground`, `strokeWidth={1.5}`, keine Fill-Farben
+- Lovable Cloud aktivieren (falls noch nicht geschehen) — liefert Edge-Function-Runtime.
+- Function holt parallel mehrere RSS/Atom-Feeds:
+  - `https://kyivindependent.com/rss/` (primär, englisch, hochwertig)
+  - `https://www.pravda.com.ua/eng/rss/` (Ukrainska Pravda EN)
+  - `https://euromaidanpress.com/feed/`
+  - `https://www.ukrinform.net/rss/block-lastnews` (Ukrinform EN)
+  - Optional ukr.net: kein offizieller Feed → vorerst weggelassen, Liste leicht erweiterbar via Array.
+- XML-Parsing via `fast-xml-parser` (npm-Specifier).
+- Keyword-Filter (case-insensitive, Titel + Description):
+  `missile, drone, shahed, ballistic, kalibr, iskander, kinzhal, air raid, air defense, air strike, attack, strike, kyiv, odesa, kharkiv, lviv, dnipro, zaporizhzhia, mykolaiv`.
+- Dedupe per normalisiertem Titel.
+- Sortierung nach `pubDate` desc, Limit 30.
+- In-Memory-Cache (Map) mit 5 min TTL pro Function-Instanz.
+- CORS-Header gesetzt, `verify_jwt = false` (öffentlich).
+- Response-Schema:
+  ```json
+  {
+    "updatedAt": "2026-05-30T12:00:00Z",
+    "items": [
+      { "id": "sha1(url)", "title": "...", "url": "https://...", "source": "Kyiv Independent", "publishedAt": "2026-05-30T11:42:00Z" }
+    ]
+  }
+  ```
+- Fehlerbehandlung: Einzelne fehlschlagende Feeds werden übersprungen; bei 0 Items → `{ items: [] }` mit 200.
 
-## Technische Reihenfolge
-1. `index.html` — Font-Links
-2. `tailwind.config.ts` — Fonts, ggf. radius defaults
-3. `src/index.css` — Tokens, Radius, Typo
-4. `src/components/AnalyticsDashboard.tsx` — Farben, Grid, Eckigkeit, Icons
-5. `MonthlyTrendChart.tsx`, `InterceptionRateChart.tsx` — Grid/Achsen
-6. `SummaryStats.tsx`, `WeaponsCatalogSection.tsx`, übrige Seiten — Eckigkeit & Icon-Pass
+## Frontend — React-Komponente
 
-Keine Logik- oder Datenänderungen, ausschließlich Präsentations-Layer.
+Datei: `src/components/NewsTicker.tsx`
+
+- Fetch via `supabase.functions.invoke('air-attack-news')` beim Mount + `setInterval(5*60*1000)`.
+- State: `items`, `loading`, `error`.
+- Rendering:
+  - Full-width Leiste, `bg-[#111]`, weiße Schrift, mono-Font passend zum bestehenden OSINT-Stil.
+  - Linke „LIVE“-Badge mit pulsierendem roten Punkt (nutzt existierende `--signal` HSL-Token via inline-Style auf #111-Background ok, oder eigenes Badge).
+  - Marquee: zwei duplizierte Spans in einem Flex-Container, CSS-Keyframe `translateX(0 → -50%)` linear infinite ~60s.
+  - Klasse `group` + `group-hover:[animation-play-state:paused]` für Pause beim Hover.
+  - Items als `<a target="_blank" rel="noopener noreferrer">` mit Titel + kleinem Quellen-Tag, getrennt durch ` • `.
+  - Ladezustand: „Loading air attack updates…“.
+  - Fallback bei leer/Fehler: „No recent air attack updates available“.
+- Keyframe in `src/index.css` ergänzt (`@keyframes ticker-scroll`).
+- Mount in `src/App.tsx` ganz oben innerhalb `<BrowserRouter>`, vor `<Routes>`, damit auf allen Seiten sichtbar.
+- Höhe fixiert (~36px), keine Layout-Shifts.
+
+## Caching & Performance
+- Server: In-Memory 5 min TTL.
+- Client: kein zusätzliches Caching nötig, Intervall reicht; Komponente prüft `document.visibilityState` und pausiert Fetch wenn Tab inaktiv.
+
+## Erweiterbarkeit
+- Feed-Liste als Array oben in der Edge Function → neue Quellen mit einer Zeile.
+- Keyword-Liste ebenfalls als Array.
+
+## Out of Scope (jetzt)
+- ukr.net Scraping (kein Feed, rechtlich heikel) — als Kommentar markiert, später nachrüstbar.
+- i18n der Ticker-Strings (englisch belassen, da Feeds englisch).
+- Persistenter DB-Cache (in-memory reicht für 5-min-Refresh).
+
+## Schritte
+1. Lovable Cloud aktivieren (falls nötig).
+2. Edge Function `air-attack-news` anlegen (Fetch, Parse, Filter, Cache, CORS).
+3. `NewsTicker.tsx` + Keyframe in `index.css`.
+4. In `App.tsx` einbinden.
+5. Visuell prüfen (Preview, Desktop + Mobile-Viewport).
