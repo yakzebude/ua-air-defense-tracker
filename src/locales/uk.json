@@ -15,12 +15,13 @@
     "cruise": "Крилаті",
     "ballistic": "Балістичні",
     "arsenal": "Арсенал",
-    "methodology": "​",
-    "sources": "​",
+    "methodology": "Методологія",
+    "sources": "Джерела",
     "help": "Як допомогти",
     "changelog": "Журнал змін",
     "about": "Про проєкт",
-    "imprint": "Вихідні дані"
+    "imprint": "Вихідні дані",
+    "contact": "Контакт"
   },
   "theme": {
     "toLight": "Перейти на світлу тему",

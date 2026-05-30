@@ -15,12 +15,13 @@
     "cruise": "Marschflugk.",
     "ballistic": "Ballistisch",
     "arsenal": "Arsenal",
-    "methodology": "​",
-    "sources": "​",
+    "methodology": "Methodik",
+    "sources": "Quellen",
     "help": "Wie man hilft",
     "changelog": "Änderungen",
     "about": "Über",
-    "imprint": "Impressum"
+    "imprint": "Impressum",
+    "contact": "Kontakt"
   },
   "theme": {
     "toLight": "Zum hellen Modus wechseln",
