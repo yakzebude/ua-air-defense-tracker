@@ -2,6 +2,7 @@
 // Fetches multiple Ukraine news RSS feeds, filters items related to Russian air
 // attacks (missiles, drones, Shahed, air defense, strikes on UA cities) and
 // returns a deduplicated JSON list. Cached in-memory for 5 minutes.
+// Supports optional ?lang=de|fr|uk translation via Lovable AI Gateway.
 
 import { XMLParser } from "npm:fast-xml-parser@4.5.0";
 
@@ -10,8 +11,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Feeds — easily extendable. ukr.net has no stable public feed, so we use
-// multiple English-language Ukrainian / Ukraine-focused sources.
 const FEEDS: { url: string; source: string }[] = [
   { url: "https://kyivindependent.com/rss/", source: "Kyiv Independent" },
   { url: "https://www.pravda.com.ua/eng/rss/", source: "Ukrainska Pravda" },
@@ -19,7 +18,6 @@ const FEEDS: { url: string; source: string }[] = [
   { url: "https://www.ukrinform.net/rss/block-lastnews", source: "Ukrinform" },
 ];
 
-// Keywords (lower-case). An item matches if title+description contain any.
 const KEYWORDS = [
   "missile", "missiles", "drone", "drones", "shahed", "ballistic", "kalibr",
   "iskander", "kinzhal", "kh-101", "air raid", "air defense", "air defence",
@@ -35,9 +33,17 @@ interface NewsItem {
   publishedAt: string;
 }
 
-// In-memory cache (per function instance)
-let cache: { at: number; payload: { updatedAt: string; items: NewsItem[] } } | null = null;
+// Base (English) cache + per-language translation cache
 const TTL_MS = 5 * 60 * 1000;
+let baseCache: { at: number; items: NewsItem[] } | null = null;
+const langCache = new Map<string, { at: number; items: NewsItem[] }>();
+
+const SUPPORTED_LANGS = new Set(["en", "de", "fr", "uk"]);
+const LANG_NAMES: Record<string, string> = {
+  de: "German",
+  fr: "French",
+  uk: "Ukrainian",
+};
 
 async function sha1(input: string): Promise<string> {
   const buf = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(input));
@@ -60,7 +66,6 @@ async function fetchFeed(feedUrl: string, source: string): Promise<NewsItem[]> {
     const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_" });
     const doc = parser.parse(xml);
 
-    // Support RSS 2.0 and Atom
     const rssItems = doc?.rss?.channel?.item ?? doc?.channel?.item ?? [];
     const atomEntries = doc?.feed?.entry ?? [];
     const rawItems = Array.isArray(rssItems) ? rssItems : rssItems ? [rssItems] : [];
@@ -107,20 +112,12 @@ async function fetchFeed(feedUrl: string, source: string): Promise<NewsItem[]> {
   }
 }
 
-Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
-
-  // Return cached payload if fresh
-  if (cache && Date.now() - cache.at < TTL_MS) {
-    return new Response(JSON.stringify(cache.payload), {
-      headers: { ...corsHeaders, "content-type": "application/json", "cache-control": "public, max-age=60" },
-    });
-  }
+async function loadBase(): Promise<NewsItem[]> {
+  if (baseCache && Date.now() - baseCache.at < TTL_MS) return baseCache.items;
 
   const results = await Promise.all(FEEDS.map((f) => fetchFeed(f.url, f.source)));
   const flat = results.flat();
 
-  // Dedupe by normalized title
   const seen = new Set<string>();
   const deduped: NewsItem[] = [];
   for (const it of flat) {
@@ -130,13 +127,76 @@ Deno.serve(async (req) => {
     deduped.push(it);
   }
 
-  // Sort newest first, cap to 30
   deduped.sort((a, b) => +new Date(b.publishedAt) - +new Date(a.publishedAt));
   const items = deduped.slice(0, 30);
+  baseCache = { at: Date.now(), items };
+  // Invalidate per-language caches when base refreshes
+  langCache.clear();
+  return items;
+}
 
-  const payload = { updatedAt: new Date().toISOString(), items };
-  cache = { at: Date.now(), payload };
+// Translate titles in one batched LLM call via Lovable AI Gateway.
+async function translateTitles(items: NewsItem[], lang: string): Promise<NewsItem[]> {
+  const apiKey = Deno.env.get("LOVABLE_API_KEY");
+  const target = LANG_NAMES[lang];
+  if (!apiKey || !target || items.length === 0) return items;
 
+  const numbered = items.map((it, i) => `${i + 1}. ${it.title}`).join("\n");
+  const prompt = `Translate each news headline to ${target}. Keep proper nouns (cities, names) as-is. Return ONLY a JSON array of strings in the same order, no commentary.\n\n${numbered}`;
+
+  try {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash-lite",
+        messages: [
+          { role: "system", content: "You are a professional news translator. Output ONLY a JSON array of translated strings." },
+          { role: "user", content: prompt },
+        ],
+      }),
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!res.ok) return items;
+    const data = await res.json();
+    let content: string = data?.choices?.[0]?.message?.content ?? "";
+    // Strip code fences if present
+    content = content.replace(/```json|```/g, "").trim();
+    const arr = JSON.parse(content);
+    if (!Array.isArray(arr)) return items;
+    return items.map((it, i) => ({
+      ...it,
+      title: typeof arr[i] === "string" && arr[i].trim() ? arr[i] : it.title,
+    }));
+  } catch (_e) {
+    return items;
+  }
+}
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+
+  const url = new URL(req.url);
+  const langRaw = (url.searchParams.get("lang") || "en").toLowerCase().slice(0, 2);
+  const lang = SUPPORTED_LANGS.has(langRaw) ? langRaw : "en";
+
+  const base = await loadBase();
+
+  let items = base;
+  if (lang !== "en") {
+    const cached = langCache.get(lang);
+    if (cached && Date.now() - cached.at < TTL_MS) {
+      items = cached.items;
+    } else {
+      items = await translateTitles(base, lang);
+      langCache.set(lang, { at: Date.now(), items });
+    }
+  }
+
+  const payload = { updatedAt: new Date().toISOString(), lang, items };
   return new Response(JSON.stringify(payload), {
     headers: { ...corsHeaders, "content-type": "application/json", "cache-control": "public, max-age=60" },
   });
