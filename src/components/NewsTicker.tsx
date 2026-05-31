@@ -82,7 +82,7 @@ export const NewsTicker = () => {
             </div>
           ) : (
             <div
-              className="flex h-full items-center whitespace-nowrap will-change-transform [animation:ticker-scroll_90s_linear_infinite] group-hover:[animation-play-state:paused]"
+              className="flex h-full items-center whitespace-nowrap will-change-transform [animation:ticker-scroll_60s_linear_infinite] group-hover:[animation-play-state:paused]"
             >
               {/* Render the list twice for a seamless loop */}
               {[0, 1].map((dup) => (
