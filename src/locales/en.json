@@ -56,7 +56,7 @@
     "sourcesBody": "Official reports of the Air Force Command of the Armed Forces of Ukraine, aggregated by data analyst Petro Ivaniuk, shared via kaggle.com.",
     "loading": "Loading dataset…",
     "loadFailed": "Failed to load dataset:",
-    "refreshBadge": "Data updated daily. Last refresh",
+    "refreshBadge": "Last refresh",
     "timeframe": "Timeframe"
   },
   "primarySource": "Air Force Command of the Armed Forces of Ukraine (weekly reports, via Kaggle dataset, Petro Ivaniuk)",
