@@ -539,7 +539,7 @@ const Index = () => {
               {t("masthead.refreshBadge")}
             </span>
             <span aria-hidden className="hidden h-3 w-px bg-border sm:inline-block" />
-            <span className="num text-foreground">{fmtUtc(refreshedAt)}</span>
+            <span className="num text-foreground">{fmtUtc(latestDataPoint)}</span>
           </div>
 
           <p className="mt-5 max-w-3xl text-[14px] leading-[1.7] text-muted-foreground md:text-[15px]">
