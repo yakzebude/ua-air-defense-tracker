@@ -564,7 +564,7 @@ const Index = () => {
 
           {ready && (
             <>
-              <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-7 md:grid-cols-4">
+              <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-border py-7 md:grid-cols-4">
                 <KPI label={t("kpi.totalLaunched")} numeric={grand.launched} sub={t("kpi.totalLaunchedSub")} signal info={{ label: t("masthead.sourcesLabel"), body: t("masthead.sourcesBody") }} />
                 <KPI label={t("kpi.confirmedDestroyed")} numeric={grand.destroyed} sub={t("kpi.confirmedDestroyedSub")} info={{ label: t("masthead.sourcesLabel"), body: t("masthead.sourcesBody") }} />
                 <KPI label={t("kpi.interceptionRate")} numeric={grand.rate * 100} decimals={1} suffix="%" sub={`${fmt(grand.destroyed)} ${t("kpi.ofSep")} ${fmt(grand.launched)}`} info={{ label: t("masthead.sourcesLabel"), body: t("masthead.sourcesBody") }} />
