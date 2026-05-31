@@ -197,3 +197,12 @@
     color: hsl(var(--muted-foreground));
   }
 }
+
+@layer utilities {
+  /* Pulsing fill for active air-raid alert oblasts on the map. */
+  @keyframes air-alert-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.55; }
+  }
+  .air-alert-pulse { animation: air-alert-pulse 1.8s ease-in-out infinite; transform-origin: center; }
+}

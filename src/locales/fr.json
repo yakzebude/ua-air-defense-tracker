@@ -21,7 +21,8 @@
     "changelog": "Journal",
     "about": "À propos",
     "imprint": "Mentions légales",
-    "contact": "Contact"
+    "contact": "Contact",
+    "alerts": "Alertes live"
   },
   "theme": {
     "toLight": "Passer au mode clair",
@@ -420,5 +421,28 @@
   },
   "glossary": {
     "label": "Systèmes clés"
+  },
+  "airAlerts": {
+    "kicker": "Temps réel",
+    "title": "Alertes aériennes en direct — Ukraine",
+    "subtitle": "Statut des alertes aériennes par oblast, mis à jour toutes les 5 minutes. Rouge = alerte active.",
+    "active": "ALERTE",
+    "clear": "Fin d'alerte",
+    "legendAlert": "Alerte active",
+    "legendClear": "Aucune alerte",
+    "activeNow": "{{count}} oblasts en alerte",
+    "loading": "Chargement…",
+    "error": "Source indisponible",
+    "stale": "en cache",
+    "lastUpdate": "Dernière mise à jour",
+    "source": "Source",
+    "viewFull": "Carte complète",
+    "status": "Statut",
+    "changedAt": "Dernier changement de statut",
+    "openSource": "Ouvrir sur alerts.com.ua",
+    "backHome": "Retour",
+    "pageTitle": "Alertes aériennes en direct — Ukraine",
+    "refreshNote": "Actualisé toutes les 5 min",
+    "pageIntro": "Statut en direct des alertes aériennes pour chaque oblast ukrainien. Cliquez sur un oblast pour plus de détails. Données via alerts.com.ua, actualisées toutes les 5 minutes."
   }
 }

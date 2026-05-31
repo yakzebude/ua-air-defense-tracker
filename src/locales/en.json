@@ -21,7 +21,8 @@
     "changelog": "Changelog",
     "about": "About",
     "imprint": "Imprint",
-    "contact": "Contact"
+    "contact": "Contact",
+    "alerts": "Live alerts"
   },
   "theme": {
     "toLight": "Switch to light mode",
@@ -420,5 +421,28 @@
   },
   "glossary": {
     "label": "Key systems"
+  },
+  "airAlerts": {
+    "kicker": "Real-time",
+    "title": "Live air-raid alerts across Ukraine",
+    "subtitle": "Oblast-level air-raid alert status, auto-refreshed every 5 minutes. Red = active alert.",
+    "active": "ALERT",
+    "clear": "All clear",
+    "legendAlert": "Active alert",
+    "legendClear": "All clear",
+    "activeNow": "{{count}} oblasts on alert",
+    "loading": "Loading…",
+    "error": "Source unreachable",
+    "stale": "cached",
+    "lastUpdate": "Last update",
+    "source": "Source",
+    "viewFull": "Full map",
+    "status": "Status",
+    "changedAt": "Last status change",
+    "openSource": "Open at alerts.com.ua",
+    "backHome": "Back",
+    "pageTitle": "Live air-raid alerts — Ukraine",
+    "refreshNote": "Refreshes every 5 min",
+    "pageIntro": "Live air-raid alert status for every Ukrainian oblast. Click an oblast to inspect its current status and last change. Data via alerts.com.ua, refreshed every 5 minutes."
   }
 }

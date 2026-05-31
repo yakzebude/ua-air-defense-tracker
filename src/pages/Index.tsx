@@ -15,6 +15,7 @@ import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { PanelActions } from "@/components/PanelActions";
 import { WeaponTerm } from "@/components/WeaponTerm";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { AirAlertsMap } from "@/components/AirAlertsMap";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 
@@ -125,6 +126,7 @@ function SectionNav() {
   const items = [
     { id: "summary", label: t("nav.summary") },
     { id: "analytics", label: t("nav.analytics") },
+    { id: "alerts", label: t("nav.alerts") },
     { id: "drones", label: t("nav.drones") },
     { id: "cruise", label: t("nav.cruise") },
     { id: "ballistic", label: t("nav.ballistic") },
@@ -585,6 +587,24 @@ const Index = () => {
       )}
 
       {ready && <AnalyticsDashboard shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />}
+
+      <section id="alerts" className="scroll-mt-32 border-t border-border">
+        <div className="container py-10 md:py-14">
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <div className="src-label mb-1">{t("airAlerts.kicker")}</div>
+              <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
+                {t("airAlerts.title")}
+              </h2>
+              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                {t("airAlerts.subtitle")}
+              </p>
+            </div>
+          </div>
+          <AirAlertsMap variant="compact" />
+        </div>
+      </section>
+
 
       {shahed && shahedRange && (
         <CategorySection
