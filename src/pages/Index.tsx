@@ -444,6 +444,7 @@ const Index = () => {
   const [ballistic, setBallistic] = useState<Dataset | null>(null);
   const [ballisticRange, setBallisticRange] = useState<[number, number] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [latestDataPoint, setLatestDataPoint] = useState<Date | null>(null);
 
   useEffect(() => {
     loadShahedData()
@@ -455,6 +456,26 @@ const Index = () => {
         setBallistic(b); setBallisticRange([0, b.months.length - 1]);
       })
       .catch((e) => setError(String(e)));
+
+    // Determine the most recent raw daily data point timestamp from both CSVs.
+    Promise.all([
+      fetch("/data/shahed_attacks_daily.csv").then((r) => r.ok ? r.text() : ""),
+      fetch("/data/missile_attacks_daily.csv").then((r) => r.ok ? r.text() : ""),
+    ]).then(([a, b]) => {
+      let maxMs = 0;
+      for (const text of [a, b]) {
+        if (!text) continue;
+        const parsed = Papa.parse<Record<string, string>>(text, { header: true, skipEmptyLines: true });
+        for (const row of parsed.data) {
+          const s = (row.time_end || row.time_start || "").trim();
+          if (!s) continue;
+          const iso = s.length <= 10 ? `${s}T00:00:00Z` : `${s.replace(" ", "T")}:00Z`;
+          const t = Date.parse(iso);
+          if (!isNaN(t) && t > maxMs) maxMs = t;
+        }
+      }
+      if (maxMs > 0) setLatestDataPoint(new Date(maxMs));
+    }).catch(() => {});
   }, []);
 
   useUrlRange("dr", shahedRange, setShahedRange, shahed ? shahed.months.length - 1 : null);
