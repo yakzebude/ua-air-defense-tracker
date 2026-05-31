@@ -55,7 +55,7 @@
     "loadFailed": "Laden des Datensatzes fehlgeschlagen:",
     "lastUpdated": "Zuletzt aktualisiert",
     "sourcesLabel": "Quellen",
-    "sourcesBody": "Offizielle Tagesberichte des Oberkommandos der Luftstreitkräfte der Ukraine, aggregiert von Petro Ivaniuk (Kaggle-Datensatz). Abgeglichen mit OSINT-Analysten und CSIS Missile Threat für Referenzdaten zu Waffensystemen.",
+    "sourcesBody": "Offizielle Berichte des Oberkommandos der Luftstreitkräfte der Ukraine, aggregiert von Petro Ivaniuk (Kaggle-Datensatz).",
     "refreshBadge": "Daten werden täglich aktualisiert. Letzte Aktualisierung",
     "timeframe": "Zeitraum"
   },
