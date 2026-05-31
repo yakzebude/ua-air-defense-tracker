@@ -55,7 +55,7 @@
     "loadFailed": "Laden des Datensatzes fehlgeschlagen:",
     "lastUpdated": "Zuletzt aktualisiert",
     "sourcesLabel": "Quellen",
-    "sourcesBody": "Offizielle Berichte des Oberkommandos der Luftstreitkräfte der Ukraine, aggregiert vom Datenanalysten Petro Ivaniuk und veröffentlicht über kaggle.com.",
+    "sourcesBody": "Offizielle Berichte des Oberkommandos der Luftstreitkräfte der Ukraine, aggregiert vom Datenanalysten Petro Ivaniuk, veröffentlicht über kaggle.com.",
     "refreshBadge": "Daten werden täglich aktualisiert. Letzte Aktualisierung",
     "timeframe": "Zeitraum"
   },
