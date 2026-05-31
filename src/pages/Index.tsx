@@ -201,8 +201,8 @@ function KPI({
       <div className="flex items-center gap-1.5 text-[10.5px] font-mono font-medium uppercase tracking-[0.18em] text-muted-foreground">
         <span>{label}</span>
         {info && (
-          <Tooltip>
-            <TooltipTrigger asChild>
+          <Popover>
+            <PopoverTrigger asChild>
               <button
                 type="button"
                 aria-label={info.label}
@@ -210,12 +210,12 @@ function KPI({
               >
                 i
               </button>
-            </TooltipTrigger>
-            <TooltipContent side="top" align="start" className="max-w-xs text-[12px] leading-relaxed normal-case tracking-normal">
+            </PopoverTrigger>
+            <PopoverContent side="top" align="start" className="max-w-xs text-[12px] leading-relaxed normal-case tracking-normal">
               <div className="src-label mb-1">{info.label}</div>
               <div>{info.body}</div>
-            </TooltipContent>
-          </Tooltip>
+            </PopoverContent>
+          </Popover>
         )}
       </div>
       <div className={`mt-1.5 num font-semibold leading-none text-[2rem] md:text-[2.5rem] ${signal ? "text-signal" : "text-foreground"}`}>
