@@ -565,20 +565,15 @@ const Index = () => {
           {ready && (
             <>
               <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-7 md:grid-cols-4">
-                <KPI label={t("kpi.totalLaunched")} numeric={grand.launched} sub={t("kpi.totalLaunchedSub")} signal />
-                <KPI label={t("kpi.confirmedDestroyed")} numeric={grand.destroyed} sub={t("kpi.confirmedDestroyedSub")} />
-                <KPI label={t("kpi.interceptionRate")} numeric={grand.rate * 100} decimals={1} suffix="%" sub={`${fmt(grand.destroyed)} ${t("kpi.ofSep")} ${fmt(grand.launched)}`} />
-                <KPI label={t("kpi.reachedTarget")} numeric={reached} sub={t("kpi.reachedTargetSub")} />
+                <KPI label={t("kpi.totalLaunched")} numeric={grand.launched} sub={t("kpi.totalLaunchedSub")} signal info={{ label: t("masthead.sourcesLabel"), body: t("masthead.sourcesBody") }} />
+                <KPI label={t("kpi.confirmedDestroyed")} numeric={grand.destroyed} sub={t("kpi.confirmedDestroyedSub")} info={{ label: t("masthead.sourcesLabel"), body: t("masthead.sourcesBody") }} />
+                <KPI label={t("kpi.interceptionRate")} numeric={grand.rate * 100} decimals={1} suffix="%" sub={`${fmt(grand.destroyed)} ${t("kpi.ofSep")} ${fmt(grand.launched)}`} info={{ label: t("masthead.sourcesLabel"), body: t("masthead.sourcesBody") }} />
+                <KPI label={t("kpi.reachedTarget")} numeric={reached} sub={t("kpi.reachedTargetSub")} info={{ label: t("masthead.sourcesLabel"), body: t("masthead.sourcesBody") }} />
               </div>
             </>
           )}
 
-          {ready && (
-            <div className="mt-3 flex flex-wrap items-start gap-x-4 gap-y-1 text-[12px] leading-relaxed text-muted-foreground">
-              <span className="src-label shrink-0 pt-0.5">{t("masthead.sourcesLabel")}</span>
-              <span className="min-w-0">{t("masthead.sourcesBody")}</span>
-            </div>
-          )}
+
 
         </div>
       </section>
