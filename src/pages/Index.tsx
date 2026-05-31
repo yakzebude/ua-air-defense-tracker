@@ -211,9 +211,9 @@ function KPI({
                 i
               </button>
             </TooltipTrigger>
-            <TooltipContent side="top" align="start" className="max-w-xs text-[12px] leading-relaxed normal-case tracking-normal">
-              <div className="src-label mb-1 font-mono uppercase tracking-[0.18em]">{info.label}</div>
-              <div>{info.body}</div>
+            <TooltipContent side="top" align="start" className="max-w-xs font-sans text-[12px] font-light leading-relaxed normal-case tracking-normal">
+              <div className="mb-1 font-sans text-[10px] font-light uppercase tracking-[0.18em]">{info.label}</div>
+              <div className="font-sans font-light">{info.body}</div>
             </TooltipContent>
           </Tooltip>
         )}
