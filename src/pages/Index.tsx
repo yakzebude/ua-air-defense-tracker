@@ -14,7 +14,7 @@ import { Panel, SourceLabel } from "@/components/ui/panel";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { PanelActions } from "@/components/PanelActions";
 import { WeaponTerm } from "@/components/WeaponTerm";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 
@@ -201,8 +201,8 @@ function KPI({
       <div className="flex items-center gap-1.5 text-[10.5px] font-mono font-medium uppercase tracking-[0.18em] text-muted-foreground">
         <span>{label}</span>
         {info && (
-          <Tooltip>
-            <TooltipTrigger asChild>
+          <Popover>
+            <PopoverTrigger asChild>
               <button
                 type="button"
                 aria-label={info.label}
@@ -210,12 +210,12 @@ function KPI({
               >
                 i
               </button>
-            </TooltipTrigger>
-            <TooltipContent side="top" align="start" className="max-w-xs text-[12px] leading-relaxed normal-case tracking-normal">
+            </PopoverTrigger>
+            <PopoverContent side="top" align="start" className="max-w-xs text-[12px] leading-relaxed normal-case tracking-normal">
               <div className="src-label mb-1">{info.label}</div>
               <div>{info.body}</div>
-            </TooltipContent>
-          </Tooltip>
+            </PopoverContent>
+          </Popover>
         )}
       </div>
       <div className={`mt-1.5 num font-semibold leading-none text-[2rem] md:text-[2.5rem] ${signal ? "text-signal" : "text-foreground"}`}>
@@ -564,7 +564,7 @@ const Index = () => {
 
           {ready && (
             <>
-              <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-7 md:grid-cols-4">
+              <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-border py-7 md:grid-cols-4">
                 <KPI label={t("kpi.totalLaunched")} numeric={grand.launched} sub={t("kpi.totalLaunchedSub")} signal info={{ label: t("masthead.sourcesLabel"), body: t("masthead.sourcesBody") }} />
                 <KPI label={t("kpi.confirmedDestroyed")} numeric={grand.destroyed} sub={t("kpi.confirmedDestroyedSub")} info={{ label: t("masthead.sourcesLabel"), body: t("masthead.sourcesBody") }} />
                 <KPI label={t("kpi.interceptionRate")} numeric={grand.rate * 100} decimals={1} suffix="%" sub={`${fmt(grand.destroyed)} ${t("kpi.ofSep")} ${fmt(grand.launched)}`} info={{ label: t("masthead.sourcesLabel"), body: t("masthead.sourcesBody") }} />
