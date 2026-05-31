@@ -56,7 +56,7 @@
     "lastUpdated": "Zuletzt aktualisiert",
     "sourcesLabel": "Quellen",
     "sourcesBody": "Offizielle Berichte des Oberkommandos der Luftstreitkräfte der Ukraine, aggregiert vom Datenanalysten Petro Ivaniuk, veröffentlicht über kaggle.com.",
-    "refreshBadge": "Daten werden täglich aktualisiert. Letzte Aktualisierung",
+    "refreshBadge": "Letzte Aktualisierung",
     "timeframe": "Zeitraum"
   },
   "primarySource": "Air Force Command of the Armed Forces of Ukraine (wöchentliche Berichte, via Kaggle Datensatz, Petro Ivaniuk)",
