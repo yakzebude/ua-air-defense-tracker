@@ -105,13 +105,6 @@ function StatusBar({
             title={tier ? t(`freshness.${tier}`) : undefined}
             aria-label={tier ? t(`freshness.${tier}`) : undefined}
           >
-            {tier && (
-              <span
-                aria-hidden
-                className="h-1.5 w-1.5 rounded-full"
-                style={{ background: `hsl(var(${FRESHNESS_VAR[tier]}))` }}
-              />
-            )}
             <span className="num text-foreground">{lastUpdated ?? "—"}</span>
           </span>
           <span aria-hidden className="hidden h-3 w-px bg-border md:inline-block" />
