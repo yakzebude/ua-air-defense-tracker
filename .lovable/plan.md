@@ -1,81 +1,104 @@
-# Live News Ticker — Russische Luftangriffe auf die Ukraine
 
-## Ziel
-Ein full-width Lauftext-Ticker oben auf jeder Seite, der alle 5 Minuten aktuelle Meldungen zu russischen Luftangriffen aus mehreren RSS-Feeds bezieht, serverseitig filtert und im Frontend als laufende Zeile anzeigt.
+# Live-Karte: Luftalarme Ukraine
+
+## Datenquelle
+
+**alerts.in.ua** – offizielle API hinter neptun.in.ua, alerts.in.ua, vielen Telegram-Bots. Liefert Status für alle 27 Oblaste und ~1.500 Hromadas (Rajone/Gemeinden) inkl. Startzeit jedes Alarms.
+
+- Endpoint: `https://api.alerts.in.ua/v1/alerts/active.json`
+- Auth: Bearer Token (kostenlos per E-Mail an `api@alerts.in.ua` mit kurzer Projektbeschreibung; meist innerhalb 1–2 Tagen).
+- Rate Limit: alle 30 Sek. erlaubt → unser 5-Min-Intervall ist unkritisch.
+- Lizenz: Attribution erforderlich („Data: alerts.in.ua").
+
+Token wird als Secret `ALERTS_IN_UA_TOKEN` hinterlegt.
 
 ## Architektur
 
 ```text
-RSS-Feeds  ──►  Edge Function (Lovable Cloud)  ──►  JSON  ──►  React-Komponente (Ticker)
-   (Kyiv Indep.,        - fetch + parse                              - auto-refresh 5 min
-    Ukrainska Pravda,   - keyword-filter                             - marquee r→l
-    Reuters Ukraine,    - dedupe + cache 5 min                       - pause on hover
-    Euromaidan Press)   - return top 30                              - click → neuer Tab
+alerts.in.ua API
+        │  (Bearer Token, alle 60s gecached)
+        ▼
+Edge Function  air-alerts   ─►  JSON  ─►  React-Komponente AirAlertsMap
+- fetch + normalisieren                   - Auto-Refresh 5 Min
+- in-memory Cache 60s                     - Choropleth (SVG)
+- CORS, public                            - Hover-Tooltip, Click-Panel
 ```
 
-## Backend — Supabase Edge Function `air-attack-news`
+## Backend — Edge Function `air-alerts`
 
-Datei: `supabase/functions/air-attack-news/index.ts`
+Datei: `supabase/functions/air-alerts/index.ts`
 
-- Lovable Cloud aktivieren (falls noch nicht geschehen) — liefert Edge-Function-Runtime.
-- Function holt parallel mehrere RSS/Atom-Feeds:
-  - `https://kyivindependent.com/rss/` (primär, englisch, hochwertig)
-  - `https://www.pravda.com.ua/eng/rss/` (Ukrainska Pravda EN)
-  - `https://euromaidanpress.com/feed/`
-  - `https://www.ukrinform.net/rss/block-lastnews` (Ukrinform EN)
-  - Optional ukr.net: kein offizieller Feed → vorerst weggelassen, Liste leicht erweiterbar via Array.
-- XML-Parsing via `fast-xml-parser` (npm-Specifier).
-- Keyword-Filter (case-insensitive, Titel + Description):
-  `missile, drone, shahed, ballistic, kalibr, iskander, kinzhal, air raid, air defense, air strike, attack, strike, kyiv, odesa, kharkiv, lviv, dnipro, zaporizhzhia, mykolaiv`.
-- Dedupe per normalisiertem Titel.
-- Sortierung nach `pubDate` desc, Limit 30.
-- In-Memory-Cache (Map) mit 5 min TTL pro Function-Instanz.
-- CORS-Header gesetzt, `verify_jwt = false` (öffentlich).
-- Response-Schema:
+- Holt `active.json` mit Bearer-Token.
+- Normalisiert auf:
   ```json
   {
-    "updatedAt": "2026-05-30T12:00:00Z",
-    "items": [
-      { "id": "sha1(url)", "title": "...", "url": "https://...", "source": "Kyiv Independent", "publishedAt": "2026-05-30T11:42:00Z" }
+    "updatedAt": "2026-05-31T12:00:00Z",
+    "oblasts": [
+      { "id": "UA-32", "name": "Kyiv Oblast", "active": true, "since": "2026-05-31T11:42:00Z", "type": "air_raid" }
+    ],
+    "hromadas": [
+      { "id": "UA-32-1234", "name": "...", "oblastId": "UA-32", "active": true, "since": "...", "type": "air_raid" }
     ]
   }
   ```
-- Fehlerbehandlung: Einzelne fehlschlagende Feeds werden übersprungen; bei 0 Items → `{ items: [] }` mit 200.
+- In-Memory Cache 60s.
+- CORS public, `verify_jwt = false` (Standard für Lovable-Edge-Functions).
+- Fehler-Fallback: leere Listen + Fehlerflag.
 
-## Frontend — React-Komponente
+## Geo-Daten
 
-Datei: `src/components/NewsTicker.tsx`
+Zwei statische GeoJSON-Dateien in `public/geo/`:
+- `ua-oblasts.geo.json` (~120 KB, 27 Polygone)
+- `ua-hromadas.geo.json` (~1.5 MB, ~1500 Polygone, vereinfacht via mapshaper auf ~10 % der Originalpunkte)
 
-- Fetch via `supabase.functions.invoke('air-attack-news')` beim Mount + `setInterval(5*60*1000)`.
-- State: `items`, `loading`, `error`.
-- Rendering:
-  - Full-width Leiste, `bg-[#111]`, weiße Schrift, mono-Font passend zum bestehenden OSINT-Stil.
-  - Linke „LIVE“-Badge mit pulsierendem roten Punkt (nutzt existierende `--signal` HSL-Token via inline-Style auf #111-Background ok, oder eigenes Badge).
-  - Marquee: zwei duplizierte Spans in einem Flex-Container, CSS-Keyframe `translateX(0 → -50%)` linear infinite ~60s.
-  - Klasse `group` + `group-hover:[animation-play-state:paused]` für Pause beim Hover.
-  - Items als `<a target="_blank" rel="noopener noreferrer">` mit Titel + kleinem Quellen-Tag, getrennt durch ` • `.
-  - Ladezustand: „Loading air attack updates…“.
-  - Fallback bei leer/Fehler: „No recent air attack updates available“.
-- Keyframe in `src/index.css` ergänzt (`@keyframes ticker-scroll`).
-- Mount in `src/App.tsx` ganz oben innerhalb `<BrowserRouter>`, vor `<Routes>`, damit auf allen Seiten sichtbar.
-- Höhe fixiert (~36px), keine Layout-Shifts.
+Quelle: OpenStreetMap / `simplemaps` / `deepstatemap` (CC-BY). IDs werden mit den alerts.in.ua-IDs gematcht (KOATUU-Codes).
 
-## Caching & Performance
-- Server: In-Memory 5 min TTL.
-- Client: kein zusätzliches Caching nötig, Intervall reicht; Komponente prüft `document.visibilityState` und pausiert Fetch wenn Tab inaktiv.
+Werden lazy-geladen — `hromadas` nur, wenn der Nutzer in die Detailansicht zoomt oder die Karte auf `/alerts` öffnet, damit die Startseite nicht durch 1.5 MB belastet wird.
 
-## Erweiterbarkeit
-- Feed-Liste als Array oben in der Edge Function → neue Quellen mit einer Zeile.
-- Keyword-Liste ebenfalls als Array.
+## Frontend
 
-## Out of Scope (jetzt)
-- ukr.net Scraping (kein Feed, rechtlich heikel) — als Kommentar markiert, später nachrüstbar.
-- i18n der Ticker-Strings (englisch belassen, da Feeds englisch).
-- Persistenter DB-Cache (in-memory reicht für 5-min-Refresh).
+### Komponente `src/components/AirAlertsMap.tsx`
+- Rendering mit **react-simple-maps** (leichtgewichtig, SVG, keine API-Keys, gut zoom-/pan-bar). Wird via `bun add react-simple-maps d3-geo` installiert.
+- Props: `variant: "compact" | "full"`.
+  - `compact` (Startseite): nur Oblaste, fixe Höhe ~420 px, kein Zoom, Klick öffnet `/alerts`.
+  - `full` (/alerts): Oblaste + Hromadas, Zoom/Pan, Seitenpanel.
+- Aktive Oblaste/Hromadas: rot mit sanfter Puls-Animation (CSS-Keyframe analog zu existierender `pulse-soft`-Klasse).
+- Inaktive: dunkles Neutralgrau passend zum bestehenden OSINT-Theme.
+- Tooltip beim Hover: Name, Dauer („active for 23 min"), Typ.
+- Legende unten: Anzahl aktiver Oblaste, „Last update HH:MM:SS", Quelle „alerts.in.ua".
+- Auto-Refresh `setInterval(5 * 60 * 1000)`, pausiert wenn Tab inaktiv (`document.visibilityState`).
+
+### Detailpanel `src/components/AirAlertsPanel.tsx`
+Slide-in rechts (Sheet-Komponente aus shadcn). Bei Klick auf Oblast:
+- Aktueller Status + Dauer
+- Liste der aktiven Hromadas innerhalb dieser Oblast
+- Link zur offiziellen Quelle alerts.in.ua/?oblast=…
+
+### Integration
+
+1. **Startseite** (`src/pages/Index.tsx`): neuer Block „Live air-raid alerts" zwischen Statistiken und Waffenkatalog, `<AirAlertsMap variant="compact" />`, mit „View full map →"-Link auf `/alerts`.
+2. **Neue Route** `/alerts` (`src/pages/Alerts.tsx`): Vollbild-Karte mit Detailpanel, eingebunden in `src/App.tsx` und der Hauptnavigation.
+3. **i18n**: neue Keys in `en.json`, `de.json`, `fr.json`, `uk.json` (Titel, Legende, Panel-Labels, Tooltips).
+
+## Refresh-Verhalten
+- Client: 5-Min-Intervall, pausiert bei inaktivem Tab, sofortiger Re-Fetch beim Tab-Wechsel zurück.
+- Server: 60-Sek-Cache pro Edge-Function-Instanz (verhindert API-Hammering bei vielen Clients).
+
+## Out of Scope (für später)
+- Historie / Alarm-Dauer-Charts (alerts.in.ua bietet `regions_history.json` — kann später ergänzt werden).
+- Push-Notifications.
+- Mobile-optimiertes Bottom-Sheet statt Side-Panel (kommt bei Bedarf).
 
 ## Schritte
-1. Lovable Cloud aktivieren (falls nötig).
-2. Edge Function `air-attack-news` anlegen (Fetch, Parse, Filter, Cache, CORS).
-3. `NewsTicker.tsx` + Keyframe in `index.css`.
-4. In `App.tsx` einbinden.
-5. Visuell prüfen (Preview, Desktop + Mobile-Viewport).
+1. Token bei alerts.in.ua anfragen (User-Aktion, parallel möglich) und als Secret `ALERTS_IN_UA_TOKEN` hinterlegen.
+2. Edge Function `air-alerts` erstellen.
+3. GeoJSON-Dateien generieren/herunterladen und nach `public/geo/` legen.
+4. `react-simple-maps` + `d3-geo` installieren.
+5. Komponenten `AirAlertsMap` + `AirAlertsPanel` bauen.
+6. Block auf Startseite + neue Route `/alerts` einbinden, Navigation ergänzen.
+7. i18n-Strings ergänzen (4 Sprachen).
+8. Visuell prüfen (Desktop + Mobile).
+
+## Was ich von dir brauche, bevor es losgeht
+- **Token bei alerts.in.ua anfordern**: Mail an `api@alerts.in.ua` mit kurzem Text wie „Requesting API access for ua-airdefense-tracker.org — non-commercial OSINT tracker, will display attribution". Sobald du den Token hast, sage Bescheid, dann setze ich den Secret-Dialog für `ALERTS_IN_UA_TOKEN` auf.
+- Falls die Token-Vergabe zu lange dauert: ich kann initial gegen den ungetokenten, weniger zuverlässigen Endpoint `war.ukrzen.in.ua` bauen und später umstellen — sag Bescheid, falls du das willst.
