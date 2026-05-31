@@ -191,14 +191,31 @@ function SectionNav() {
 
 
 function KPI({
-  label, value, numeric, decimals = 0, suffix = "", sub, signal = false,
+  label, value, numeric, decimals = 0, suffix = "", sub, signal = false, info,
 }: {
-  label: string; value?: string; numeric?: number; decimals?: number; suffix?: string; sub?: string; signal?: boolean;
+  label: string; value?: string; numeric?: number; decimals?: number; suffix?: string; sub?: string; signal?: boolean; info?: { label: string; body: string };
 }) {
   return (
     <div className="min-w-0">
-      <div className="text-[10.5px] font-mono font-medium uppercase tracking-[0.18em] text-muted-foreground">
-        {label}
+      <div className="flex items-center gap-1.5 text-[10.5px] font-mono font-medium uppercase tracking-[0.18em] text-muted-foreground">
+        <span>{label}</span>
+        {info && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                aria-label={info.label}
+                className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full border border-muted-foreground/40 text-[9px] leading-none text-muted-foreground transition-colors hover:border-foreground hover:text-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground"
+              >
+                i
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top" align="start" className="max-w-xs text-[12px] leading-relaxed normal-case tracking-normal">
+              <div className="src-label mb-1">{info.label}</div>
+              <div>{info.body}</div>
+            </TooltipContent>
+          </Tooltip>
+        )}
       </div>
       <div className={`mt-1.5 num font-semibold leading-none text-[2rem] md:text-[2.5rem] ${signal ? "text-signal" : "text-foreground"}`}>
         {numeric !== undefined ? <AnimatedNumber value={numeric} decimals={decimals} suffix={suffix} /> : value}
