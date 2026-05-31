@@ -507,8 +507,6 @@ const Index = () => {
   const lastUpdatedDate = latest?.date ?? null;
 
   const reached = Math.max(grand.launched - grand.destroyed, 0);
-  // Real-time "last refresh" — when this page session was loaded.
-  const refreshedAt = useMemo(() => new Date(), []);
   const dataTimeframe = useMemo(() => {
     const pick = (d: Dataset | null) => {
       if (!d) return null;
