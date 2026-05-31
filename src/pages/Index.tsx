@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Trans, useTranslation } from "react-i18next";
+import Papa from "papaparse";
 import { loadShahedData, type Dataset, type MonthPoint } from "@/lib/shahed-data";
 import { loadAllMissileCategories } from "@/lib/missiles-data";
 import { MonthlyTrendChart } from "@/components/MonthlyTrendChart";
@@ -92,7 +93,6 @@ function StatusBar({
 
       <div className="container flex items-center justify-between gap-3 py-2 font-mono text-[10.5px] uppercase tracking-[0.16em]">
         <div className="flex min-w-0 items-center gap-2">
-          <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-signal" />
           <span className="truncate font-semibold tracking-[0.2em] text-foreground">
             <span className="sm:hidden">UA ADT</span>
 
@@ -106,13 +106,6 @@ function StatusBar({
             title={tier ? t(`freshness.${tier}`) : undefined}
             aria-label={tier ? t(`freshness.${tier}`) : undefined}
           >
-            {tier && (
-              <span
-                aria-hidden
-                className="h-1.5 w-1.5 rounded-full"
-                style={{ background: `hsl(var(${FRESHNESS_VAR[tier]}))` }}
-              />
-            )}
             <span className="num text-foreground">{lastUpdated ?? "—"}</span>
           </span>
           <span aria-hidden className="hidden h-3 w-px bg-border md:inline-block" />
@@ -451,6 +444,7 @@ const Index = () => {
   const [ballistic, setBallistic] = useState<Dataset | null>(null);
   const [ballisticRange, setBallisticRange] = useState<[number, number] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [latestDataPoint, setLatestDataPoint] = useState<Date | null>(null);
 
   useEffect(() => {
     loadShahedData()
@@ -462,6 +456,26 @@ const Index = () => {
         setBallistic(b); setBallisticRange([0, b.months.length - 1]);
       })
       .catch((e) => setError(String(e)));
+
+    // Determine the most recent raw daily data point timestamp from both CSVs.
+    Promise.all([
+      fetch("/data/shahed_attacks_daily.csv").then((r) => r.ok ? r.text() : ""),
+      fetch("/data/missile_attacks_daily.csv").then((r) => r.ok ? r.text() : ""),
+    ]).then(([a, b]) => {
+      let maxMs = 0;
+      for (const text of [a, b]) {
+        if (!text) continue;
+        const parsed = Papa.parse<Record<string, string>>(text, { header: true, skipEmptyLines: true });
+        for (const row of parsed.data) {
+          const s = (row.time_end || row.time_start || "").trim();
+          if (!s) continue;
+          const iso = s.length <= 10 ? `${s}T00:00:00Z` : `${s.replace(" ", "T")}:00Z`;
+          const t = Date.parse(iso);
+          if (!isNaN(t) && t > maxMs) maxMs = t;
+        }
+      }
+      if (maxMs > 0) setLatestDataPoint(new Date(maxMs));
+    }).catch(() => {});
   }, []);
 
   useUrlRange("dr", shahedRange, setShahedRange, shahed ? shahed.months.length - 1 : null);
@@ -493,8 +507,6 @@ const Index = () => {
   const lastUpdatedDate = latest?.date ?? null;
 
   const reached = Math.max(grand.launched - grand.destroyed, 0);
-  // Real-time "last refresh" — when this page session was loaded.
-  const refreshedAt = useMemo(() => new Date(), []);
   const dataTimeframe = useMemo(() => {
     const pick = (d: Dataset | null) => {
       if (!d) return null;
@@ -525,7 +537,7 @@ const Index = () => {
               {t("masthead.refreshBadge")}
             </span>
             <span aria-hidden className="hidden h-3 w-px bg-border sm:inline-block" />
-            <span className="num text-foreground">{fmtUtc(refreshedAt)}</span>
+            <span className="num text-foreground">{fmtUtc(latestDataPoint)}</span>
           </div>
 
           <p className="mt-5 max-w-3xl text-[14px] leading-[1.7] text-muted-foreground md:text-[15px]">
