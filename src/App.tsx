@@ -13,6 +13,7 @@ import About from "./pages/About.tsx";
 import Imprint from "./pages/Imprint.tsx";
 import Contact from "./pages/Contact.tsx";
 import Unsubscribe from "./pages/Unsubscribe.tsx";
+import Alerts from "./pages/Alerts.tsx";
 import NewsTicker from "./components/NewsTicker.tsx";
 
 const queryClient = new QueryClient();
