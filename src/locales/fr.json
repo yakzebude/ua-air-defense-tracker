@@ -55,7 +55,7 @@
     "loadFailed": "Échec du chargement du jeu de données :",
     "lastUpdated": "Dernière mise à jour",
     "sourcesLabel": "Sources",
-    "sourcesBody": "Rapports officiels du Commandement de la Force aérienne des Forces armées d'Ukraine, agrégés par l'analyste de données Petro Ivaniuk et partagés via kaggle.com.",
+    "sourcesBody": "Rapports officiels du Commandement de la Force aérienne des Forces armées d'Ukraine, agrégés par l'analyste de données Petro Ivaniuk, partagés via kaggle.com.",
     "refreshBadge": "Données mises à jour quotidiennement. Dernière actualisation",
     "timeframe": "Période"
   },

@@ -53,7 +53,7 @@
     "sourceRange": "Source: {{source}} · Range: ​",
     "lastUpdated": "Last updated",
     "sourcesLabel": "Sources",
-    "sourcesBody": "Official reports of the Air Force Command of the Armed Forces of Ukraine, aggregated by data analyst Petro Ivaniuk and shared via kaggle.com.",
+    "sourcesBody": "Official reports of the Air Force Command of the Armed Forces of Ukraine, aggregated by data analyst Petro Ivaniuk, shared via kaggle.com.",
     "loading": "Loading dataset…",
     "loadFailed": "Failed to load dataset:",
     "refreshBadge": "Data updated daily. Last refresh",
