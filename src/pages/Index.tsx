@@ -92,7 +92,6 @@ function StatusBar({
 
       <div className="container flex items-center justify-between gap-3 py-2 font-mono text-[10.5px] uppercase tracking-[0.16em]">
         <div className="flex min-w-0 items-center gap-2">
-          <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-signal" />
           <span className="truncate font-semibold tracking-[0.2em] text-foreground">
             <span className="sm:hidden">UA ADT</span>
 
