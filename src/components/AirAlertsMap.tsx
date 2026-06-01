@@ -140,7 +140,8 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
   const activeRaionCount = (data?.raions ?? []).length;
   const height = variant === "full" ? 640 : 420;
 
-  const showRaions = variant === "full";
+  // Raion layer disabled by user request — full map shows oblast-level only.
+  const showRaions = false;
 
   return (
     <div className="relative">

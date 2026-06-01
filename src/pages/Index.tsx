@@ -16,6 +16,7 @@ import { PanelActions } from "@/components/PanelActions";
 import { WeaponTerm } from "@/components/WeaponTerm";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AirAlertsMap } from "@/components/AirAlertsMap";
+import { AirThreatFeed } from "@/components/AirThreatFeed";
 import { MiniAlertsMap } from "@/components/MiniAlertsMap";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
@@ -598,22 +599,7 @@ const Index = () => {
 
       {ready && <AnalyticsDashboard shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />}
 
-      <section id="alerts" className="scroll-mt-32 border-t border-border">
-        <div className="container py-10 md:py-14">
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <div className="src-label mb-1">{t("airAlerts.kicker")}</div>
-              <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
-                {t("airAlerts.title")}
-              </h2>
-              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-                {t("airAlerts.subtitle")}
-              </p>
-            </div>
-          </div>
-          <AirAlertsMap variant="compact" />
-        </div>
-      </section>
+      {/* The full live-alerts section now lives further down (after Ballistic). */}
 
 
       {shahed && shahedRange && (
@@ -647,6 +633,41 @@ const Index = () => {
       {ballistic && ballisticRange && (
         <CategorySection
           id="ballistic"
+          glossaryKey="ballistic"
+          kicker={t("category.ballisticSection.kicker")}
+          title={t("category.ballisticSection.title")}
+          description={t("category.ballisticSection.description")}
+          unitNoun={t("category.ballisticSection.unit")}
+          dataset={ballistic}
+          range={ballisticRange}
+          onRangeChange={setBallisticRange}
+        />
+      )}
+
+      {/* Full live air-alerts map + threat feed, positioned after Ballistic */}
+      <section id="alerts" className="scroll-mt-32 border-t border-border">
+        <div className="container py-10 md:py-14">
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <div className="src-label mb-1">{t("airAlerts.kicker")}</div>
+              <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
+                {t("airAlerts.title")}
+              </h2>
+              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                {t("airAlerts.subtitle")}
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div className="lg:col-span-2">
+              <AirAlertsMap variant="full" />
+            </div>
+            <div className="lg:col-span-1">
+              <AirThreatFeed />
+            </div>
+          </div>
+        </div>
+      </section>
           glossaryKey="ballistic"
           kicker={t("category.ballisticSection.kicker")}
           title={t("category.ballisticSection.title")}
