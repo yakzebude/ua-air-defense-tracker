@@ -11,7 +11,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const TOKEN = Deno.env.get("UKRAINEALARM_API_TOKEN") ?? "";
+const TOKEN = (Deno.env.get("UKRAINEALARM_API_TOKEN") ?? "").trim();
 const BASE = "https://api.ukrainealarm.com";
 
 // Map Ukrainian oblast names (as returned by ukrainealarm.com /api/v3/regions)
@@ -160,7 +160,11 @@ async function loadAlerts() {
     headers: { Authorization: TOKEN },
     signal: AbortSignal.timeout(10000),
   });
-  if (!res.ok) throw new Error(`ukrainealarm /alerts HTTP ${res.status}`);
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    console.error(`[air-alerts] /alerts ${res.status} tokenLen=${TOKEN.length} body=${body.slice(0, 200)}`);
+    throw new Error(`ukrainealarm /alerts HTTP ${res.status}`);
+  }
   const alerts = (await res.json()) as AlertEntry[];
 
   // Map region id -> { since, types[] } for all currently active alerts.
