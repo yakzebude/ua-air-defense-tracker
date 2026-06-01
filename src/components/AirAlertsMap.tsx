@@ -277,12 +277,12 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
       <div className="mt-1 text-[10px] font-mono text-muted-foreground">
         {t("airAlerts.source")}:{" "}
         <a
-          href="https://alerts.com.ua"
+          href="https://www.ukrainealarm.com"
           target="_blank"
           rel="noopener noreferrer"
           className="underline-offset-4 hover:underline"
         >
-          alerts.com.ua
+          ukrainealarm.com
         </a>
       </div>
 
