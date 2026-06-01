@@ -41,6 +41,16 @@ function relTime(iso: string): string {
   return `${Math.floor(h / 24)}d ago`;
 }
 
+/** Strip emoji / pictographic glyphs from feed text per user request. */
+function stripEmoji(s: string): string {
+  return s
+    .replace(/[\p{Extended_Pictographic}\p{Emoji_Component}\uFE0F]/gu, "")
+    .replace(/[ \t]{2,}/g, " ")
+    .replace(/^[ \t]+|[ \t]+$/gm, "")
+    .trim();
+}
+
+
 const PROJECT_ID = import.meta.env.VITE_SUPABASE_PROJECT_ID as string;
 const APIKEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
 
@@ -198,7 +208,7 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
                   {relTime(m.ts)}
                 </span>
               </div>
-              <p className="mt-1.5 whitespace-pre-line text-sm leading-snug">{displayText}</p>
+              <p className="mt-1.5 whitespace-pre-line text-sm leading-snug">{stripEmoji(displayText)}</p>
               <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-mono text-muted-foreground">
                 <a
                   href={m.url}
