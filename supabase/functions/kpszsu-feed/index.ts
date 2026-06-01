@@ -76,29 +76,26 @@ async function loadFeed(): Promise<{ updatedAt: string; channel: string; message
   if (!res.ok) throw new Error(`t.me HTTP ${res.status}`);
   const html = await res.text();
 
-  // Parse each message block. The widget structure is stable:
-  //   <div class="tgme_widget_message" ... data-post="kpszsu/12345">
-  //     ... <div class="tgme_widget_message_text js-message_text">…</div>
-  //     ... <time datetime="2026-06-01T06:34:24+00:00">…</time>
-  const blockRe = /<div class="tgme_widget_message[^"]*"[^>]*data-post="([^"]+)"[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/g;
+  // Split into per-message chunks. Each Telegram widget post starts with
+  // `tgme_widget_message ` and includes a `data-post="channel/NNN"` attribute.
+  const chunks = html.split(/<div class="tgme_widget_message\b/).slice(1);
   const out: FeedMessage[] = [];
-  let m: RegExpExecArray | null;
-  while ((m = blockRe.exec(html)) !== null) {
-    const block = m[0];
-    const post = m[1]; // e.g. "kpszsu/12345"
-    const textMatch = block.match(/<div class="tgme_widget_message_text[^"]*"[^>]*>([\s\S]*?)<\/div>/);
-    const timeMatch = block.match(/<time[^>]*datetime="([^"]+)"/);
-    if (!textMatch || !timeMatch) continue;
+  for (const raw of chunks) {
+    const postMatch = raw.match(/data-post="([^"]+)"/);
+    const timeMatch = raw.match(/<time[^>]*datetime="([^"]+)"/);
+    const textMatch = raw.match(/<div class="tgme_widget_message_text[^"]*"[^>]*>([\s\S]*?)<\/div>\s*(?:<div class="tgme_widget_message_(?:reply_markup|footer|info|metadata)|<a class="tgme_widget_message)/);
+    if (!postMatch || !timeMatch || !textMatch) continue;
     const text = decodeHtml(textMatch[1]);
     if (!text) continue;
     out.push({
-      id: post,
-      url: `https://t.me/${post}`,
+      id: postMatch[1],
+      url: `https://t.me/${postMatch[1]}`,
       ts: timeMatch[1],
       text,
       tags: detectTags(text),
     });
   }
+
 
   // Newest last in the page → sort desc, cap.
   out.sort((a, b) => (a.ts < b.ts ? 1 : -1));
