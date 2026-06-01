@@ -308,15 +308,16 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
         {hovered && (() => {
           if (hovered.kind === "oblast") {
             const o = byIso.get(hovered.iso);
-            if (!o) return null;
+            const stat = OBLAST_STATS.regions[hovered.iso];
             return (
               <div
-                className="pointer-events-none absolute z-10 rounded border border-border bg-background/95 px-3 py-2 text-xs font-mono shadow-lg backdrop-blur"
+                className="pointer-events-none absolute z-10 rounded border border-border bg-background/95 px-3 py-2 text-xs font-mono shadow-lg backdrop-blur min-w-[180px]"
                 style={{ left: hovered.x + 12, top: Math.max(hovered.y - 8, 4), transform: "translateY(-100%)" }}
               >
-                <div className="font-semibold text-foreground">{o.nameEn || o.name}</div>
-                <div className="mt-0.5 text-muted-foreground">
-                  {o.active ? (
+                <div className="font-semibold text-foreground">{hovered.nameEn}</div>
+                <div className="text-[10px] text-muted-foreground">{hovered.name}</div>
+                <div className="mt-1 text-muted-foreground">
+                  {o?.active ? (
                     <>
                       <span className="text-[hsl(var(--signal))]">● {t("airAlerts.active")}</span>
                       <span className="ml-2">{durationLabel(o.changedAt, true)}</span>
@@ -325,13 +326,32 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                     <span>{t("airAlerts.clear")}</span>
                   )}
                 </div>
-                {o.active && o.types && o.types.length > 0 && (
+                {o?.active && o.types && o.types.length > 0 && (
                   <div className="mt-1 flex flex-wrap gap-1">
                     {o.types.map((tp) => (
                       <span key={tp} className="rounded bg-[hsl(var(--signal)/0.2)] px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-foreground">
                         {typeLabel(tp, t)}
                       </span>
                     ))}
+                  </div>
+                )}
+                {stat && (
+                  <div className="mt-2 pt-2 border-t border-border/60 space-y-0.5 text-[10px]">
+                    <div className="flex justify-between gap-3">
+                      <span className="text-muted-foreground uppercase tracking-wider">{t("airAlerts.statsAlerts")}</span>
+                      <span className="tabular-nums text-foreground">{fmtNum(stat.alarms)}</span>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <span className="text-muted-foreground uppercase tracking-wider">{t("airAlerts.statsExplosions")}</span>
+                      <span className="tabular-nums text-foreground">{fmtNum(stat.explosionReports)}</span>
+                    </div>
+                    {stat.artilleryThreats !== undefined && (
+                      <div className="flex justify-between gap-3">
+                        <span className="text-muted-foreground uppercase tracking-wider">{t("airAlerts.statsArtillery")}</span>
+                        <span className="tabular-nums text-foreground">{fmtNum(stat.artilleryThreats)}</span>
+                      </div>
+                    )}
+                    <div className="pt-1 text-[9px] text-muted-foreground/70">{t("airAlerts.statsSince", { date: OBLAST_STATS.periodStart })}</div>
                   </div>
                 )}
               </div>
