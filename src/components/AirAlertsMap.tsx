@@ -3,10 +3,33 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import oblastStatsData from "@/data/oblastStats.json";
 
 const REFRESH_MS = 5 * 60 * 1000;
 const OBLASTS_GEO = "/geo/ua-oblasts.geo.json";
 const RAIONS_GEO = "/geo/ua-raions.geo.json";
+
+interface OblastStat {
+  slug: string;
+  alarms?: number;
+  avgDuration?: string;
+  longest?: string;
+  explosionReports?: number;
+  artilleryThreats?: number;
+}
+const OBLAST_STATS = oblastStatsData as {
+  source: string;
+  sourceUrl: string;
+  asOf: string;
+  periodStart: string;
+  note: string;
+  regions: Record<string, OblastStat>;
+};
+
+function fmtNum(n?: number): string {
+  if (n === undefined || n === null) return "—";
+  return n.toLocaleString("en-US").replace(/,/g, " ");
+}
 
 export interface OblastAlert {
   id: number | string;
