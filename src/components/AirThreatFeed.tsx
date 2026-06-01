@@ -165,19 +165,6 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
         </div>
       </div>
 
-      {needsTranslation && (
-        <div className="flex items-center justify-between gap-2 border-b border-border bg-secondary/40 px-4 py-1.5 text-[10px] font-mono uppercase tracking-[0.14em] text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5">
-            <span
-              className={`inline-block h-1.5 w-1.5 rounded-full ${
-                translating ? "bg-[hsl(var(--signal))] animate-pulse" : "bg-muted-foreground/60"
-              }`}
-              aria-hidden
-            />
-            {translating ? t("threatFeed.translating") : t("threatFeed.translatedBy")}
-          </span>
-        </div>
-      )}
 
       <ul className="divide-y divide-border max-h-[520px] overflow-y-auto">
         {msgs.map((m) => {
