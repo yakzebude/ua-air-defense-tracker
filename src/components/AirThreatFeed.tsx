@@ -60,7 +60,6 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [translations, setTranslations] = useState<Record<string, string>>({});
-  const [translating, setTranslating] = useState(false);
   const [showOriginal, setShowOriginal] = useState<Record<string, boolean>>({});
   const timerRef = useRef<number | null>(null);
   const [, setTick] = useState(0);
@@ -110,7 +109,6 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
 
     let cancelled = false;
     (async () => {
-      setTranslating(true);
       try {
         const res = await fetch(
           `https://${PROJECT_ID}.functions.supabase.co/translate-messages`,
@@ -141,8 +139,6 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
         });
       } catch {
         /* translation is best-effort */
-      } finally {
-        if (!cancelled) setTranslating(false);
       }
     })();
     return () => {
@@ -165,19 +161,6 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
         </div>
       </div>
 
-      {needsTranslation && (
-        <div className="flex items-center justify-between gap-2 border-b border-border bg-secondary/40 px-4 py-1.5 text-[10px] font-mono uppercase tracking-[0.14em] text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5">
-            <span
-              className={`inline-block h-1.5 w-1.5 rounded-full ${
-                translating ? "bg-[hsl(var(--signal))] animate-pulse" : "bg-muted-foreground/60"
-              }`}
-              aria-hidden
-            />
-            {translating ? t("threatFeed.translating") : t("threatFeed.translatedBy")}
-          </span>
-        </div>
-      )}
 
       <ul className="divide-y divide-border max-h-[520px] overflow-y-auto">
         {msgs.map((m) => {
