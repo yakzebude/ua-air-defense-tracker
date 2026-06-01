@@ -29,17 +29,19 @@ interface FeedMessage {
 let cache: { at: number; payload: unknown } | null = null;
 
 // Lowercased keyword → tag mapping. Matched case-insensitively against text.
+// Uses Unicode-aware lookarounds to handle Cyrillic word boundaries reliably.
 const KEYWORDS: Array<[RegExp, ThreatTag]> = [
-  // Drones (Shahed, Geran, UAV)
-  [/бпла|шахед|shahed|герань|ударн[іи] дрон/iu, "drone"],
+  // Drones — 🛵 scooter emoji is kpszsu's convention for Shahed; also explicit terms.
+  [/🛵|(?<!\p{L})бпла|шахед|shahed|геран|італмас|гербера|ударн[іи] дрон/iu, "drone"],
   // Cruise missiles
-  [/крилат[іи] ракет|калібр|kalibr|х-101|x-101|х-555|x-555|х-22|x-22|х-32|x-32|х-59|x-59/iu, "cruise"],
+  [/крилат[іиа]|калібр|kalibr|х[-\s]?101|x[-\s]?101|х[-\s]?555|x[-\s]?555|х[-\s]?22|х[-\s]?32|х[-\s]?59/iu, "cruise"],
   // Ballistic
-  [/баліст|іскандер|iskander|кинджал|kinzhal|кн-23|kn-23/iu, "ballistic"],
-  // Glide bombs (КАБ)
-  [/каб[иі]?\b|кериван[аі] авіабомб|глайдбомб|glide bomb/iu, "kab"],
-  // Fast targets — usually missiles, generic
-  [/швидкісн[іи] цілі|швидкісна ціль|aerial speed|реактивн[іи]/iu, "fast"],
+  [/баліст|іскандер|iskander|кинджал|kinzhal|кн[-\s]?23|kn[-\s]?23/iu, "ballistic"],
+  // Glide bombs (КАБ) — stem "каб" followed by Ukrainian endings (и/і/ів/ами/ом/у/а)
+  // or end of word. Cyrillic word boundary via Unicode property class.
+  [/(?<!\p{L})каб(?:и|і|ів|ам[ии]?|ом|у|а)?(?!\p{L})|кериван[аі] авіабомб|глайдбомб|glide bomb/iu, "kab"],
+  // Fast / unspecified speed targets (often missiles, before classification)
+  [/швидкісн[іиа]|aerial speed|реактивн[іи]/iu, "fast"],
   // All clear
   [/відбій|all clear/iu, "all_clear"],
 ];
@@ -49,9 +51,12 @@ function detectTags(text: string): ThreatTag[] {
   for (const [re, tag] of KEYWORDS) {
     if (re.test(text)) found.add(tag);
   }
+  // 🚀 alone (without specific missile keyword) → treat as generic "fast" missile.
+  if (found.size === 0 && /🚀/u.test(text)) found.add("fast");
   if (found.size === 0) found.add("info");
   return Array.from(found);
 }
+
 
 function decodeHtml(s: string): string {
   return s
