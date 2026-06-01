@@ -117,7 +117,11 @@ async function loadRegions(): Promise<Map<string, RegionMeta>> {
     headers: { Authorization: TOKEN },
     signal: AbortSignal.timeout(10000),
   });
-  if (!res.ok) throw new Error(`ukrainealarm /regions HTTP ${res.status}`);
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    console.error(`[air-alerts] /regions ${res.status} tokenLen=${TOKEN.length} body=${body.slice(0, 200)}`);
+    throw new Error(`ukrainealarm /regions HTTP ${res.status}`);
+  }
   const json = await res.json();
   // Response shape: { states: [{ regionId, regionName, regionType, regionChildIds: [{regionId,...}] }] }
   const map = new Map<string, RegionMeta>();
