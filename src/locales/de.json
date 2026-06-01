@@ -456,5 +456,20 @@
     "pageTitle": "Live-Luftalarme — Ukraine",
     "refreshNote": "Aktualisiert alle 5 Min",
     "pageIntro": "Live-Luftalarm-Status für jede ukrainische Oblast und Rajon. Klicke auf eine Oblast, um Rajone und aktuelle Bedrohungstypen zu sehen. Daten via ukrainealarm.com, alle 5 Minuten aktualisiert."
+  },
+  "threatFeed": {
+    "title": "Live-Bedrohungs-Feed",
+    "subtitle": "Kommando Luftstreitkräfte UA — alle 60 s aktualisiert",
+    "sourceLabel": "Kommando der ukr. Luftstreitkräfte",
+    "empty": "Keine aktuellen Bedrohungen gemeldet.",
+    "tags": {
+      "drone": "Drohne",
+      "cruise": "Marschflugkörper",
+      "ballistic": "Ballistisch",
+      "kab": "Gleitbombe",
+      "fast": "Schnellziel",
+      "all_clear": "Entwarnung",
+      "info": "Info"
+    }
   }
 }

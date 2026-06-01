@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { AirAlertsMap } from "@/components/AirAlertsMap";
+import { AirThreatFeed } from "@/components/AirThreatFeed";
 
 export default function Alerts() {
   const { t } = useTranslation();
@@ -19,7 +20,14 @@ export default function Alerts() {
         <p className="mb-6 max-w-2xl text-sm text-muted-foreground">
           {t("airAlerts.pageIntro")}
         </p>
-        <AirAlertsMap variant="full" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <AirAlertsMap variant="full" />
+          </div>
+          <div className="lg:col-span-1">
+            <AirThreatFeed />
+          </div>
+        </div>
       </section>
     </main>
   );
