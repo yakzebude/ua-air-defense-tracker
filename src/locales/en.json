@@ -442,9 +442,19 @@
     "activeRaions_one": "{{count}} active raion",
     "activeRaions_other": "{{count}} active raions",
     "openSource": "Open at ukrainealarm.com",
+    "threatType": "Threat type",
+    "threatTypeNote": "Source API does not distinguish drones vs cruise missiles.",
+    "types": {
+      "air": "Air raid",
+      "artillery": "Artillery",
+      "urban": "Street fighting",
+      "chemical": "Chemical",
+      "nuclear": "Nuclear",
+      "info": "Info"
+    },
     "backHome": "Back",
     "pageTitle": "Live air-raid alerts — Ukraine",
     "refreshNote": "Refreshes every 5 min",
-    "pageIntro": "Live air-raid alert status for every Ukrainian oblast. Click an oblast to inspect its current status and last change. Data via alerts.com.ua, refreshed every 5 minutes."
+    "pageIntro": "Live air-raid alert status for every Ukrainian oblast and raion. Click an oblast for its raions and current threat types. Data via ukrainealarm.com, refreshed every 5 minutes."
   }
 }
