@@ -10,10 +10,18 @@ const KYIV_CITY_ISO = "UA-30";
 const KYIV_CITY_COORDS: [number, number] = [30.5234, 50.4501];
 
 export interface OblastAlert {
-  id: number;
+  id: number | string;
   iso: string;
   name: string;
   nameEn: string;
+  active: boolean;
+  changedAt: string;
+}
+
+export interface RaionAlert {
+  id: string;
+  oblastIso: string;
+  name: string;
   active: boolean;
   changedAt: string;
 }
@@ -22,9 +30,11 @@ interface ApiPayload {
   updatedAt: string;
   source: string;
   oblasts: OblastAlert[];
+  raions?: RaionAlert[];
   stale?: boolean;
   error?: string;
 }
+
 
 interface Props {
   variant?: "compact" | "full";
@@ -299,9 +309,30 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                 <div className="src-label mb-1">{t("airAlerts.changedAt")}</div>
                 <div>{new Date(selected.changedAt).toUTCString()}</div>
               </div>
+              {(() => {
+                const list = (data?.raions ?? []).filter((r) => r.oblastIso === selected.iso);
+                if (!list.length) return null;
+                return (
+                  <div>
+                    <div className="src-label mb-2">
+                      {t("airAlerts.activeRaions", { count: list.length })}
+                    </div>
+                    <ul className="space-y-1 text-xs">
+                      {list.map((r) => (
+                        <li key={r.id} className="flex items-center justify-between gap-3">
+                          <span className="truncate">{r.name}</span>
+                          <span className="text-[hsl(var(--signal))] tabular-nums">
+                            {durationLabel(r.changedAt, true)}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })()}
               <div className="pt-4 border-t border-border">
                 <a
-                  href={`https://alerts.com.ua`}
+                  href={`https://alerts.in.ua`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs underline underline-offset-4 hover:text-foreground"
@@ -309,6 +340,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   {t("airAlerts.openSource")} →
                 </a>
               </div>
+
             </div>
           )}
         </SheetContent>
