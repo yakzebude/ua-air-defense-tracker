@@ -6,6 +6,9 @@ verify_jwt = false
 [functions.air-alerts]
 verify_jwt = false
 
+[functions.kpszsu-feed]
+verify_jwt = false
+
 [functions.process-email-queue]
 verify_jwt = true
 
