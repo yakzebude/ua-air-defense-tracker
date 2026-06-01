@@ -162,11 +162,6 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
         <div className="text-[10px] font-mono text-muted-foreground">
           {loading && <span>{t("airAlerts.loading")}</span>}
           {error && !data && <span className="text-[hsl(var(--signal))]">{t("airAlerts.error")}</span>}
-          {data && !loading && (
-            <span>
-              {t("airAlerts.lastUpdate")}: {new Date(data.updatedAt).toUTCString().slice(17, 22)} UTC
-            </span>
-          )}
         </div>
       </div>
 
