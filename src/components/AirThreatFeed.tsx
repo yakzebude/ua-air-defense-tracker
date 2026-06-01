@@ -109,7 +109,6 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
 
     let cancelled = false;
     (async () => {
-      setTranslating(true);
       try {
         const res = await fetch(
           `https://${PROJECT_ID}.functions.supabase.co/translate-messages`,
@@ -140,8 +139,6 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
         });
       } catch {
         /* translation is best-effort */
-      } finally {
-        if (!cancelled) setTranslating(false);
       }
     })();
     return () => {
