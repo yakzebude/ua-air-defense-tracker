@@ -1,6 +1,7 @@
 // Edge Function: air-alerts
-// Fetches current air-raid alert state from the public alerts.com.ua endpoint
-// (https://alerts.com.ua/api/states). No auth required, updates ~every minute.
+// Fetches current air-raid alert state from the official alerts.in.ua API.
+// Docs: https://devs.alerts.in.ua/  —  endpoint /v1/alerts/active.json
+// Auth: Bearer token (env ALERTS_IN_UA_TOKEN). Upstream updates ~every 60s.
 // Returns normalized JSON: oblasts (mapped to ISO-3166-2 UA-XX). Cached 30s.
 
 const corsHeaders = {
@@ -8,15 +9,38 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const SOURCE_URL = "https://alerts.com.ua/api/states";
+const SOURCE_URL = "https://api.alerts.in.ua/v1/alerts/active.json";
 
-// alerts.com.ua state id -> ISO-3166-2 code used by our GeoJSON.
-const ID_TO_ISO: Record<number, string> = {
-  1: "UA-05", 2: "UA-07", 3: "UA-12", 4: "UA-14", 5: "UA-18",
-  6: "UA-21", 7: "UA-23", 8: "UA-26", 9: "UA-32", 10: "UA-35",
-  11: "UA-09", 12: "UA-46", 13: "UA-48", 14: "UA-51", 15: "UA-53",
-  16: "UA-56", 17: "UA-59", 18: "UA-61", 19: "UA-63", 20: "UA-65",
-  21: "UA-68", 22: "UA-71", 23: "UA-77", 24: "UA-74", 25: "UA-30",
+// alerts.in.ua location_uid (string) -> ISO-3166-2 used by our GeoJSON.
+// uids are the official KOATUU-derived region ids documented by alerts.in.ua.
+const UID_TO_ISO: Record<string, string> = {
+  "3": "UA-71",  // Cherkasy
+  "4": "UA-74",  // Chernihiv
+  "5": "UA-77",  // Chernivtsi
+  "6": "UA-12",  // Dnipropetrovsk
+  "7": "UA-14",  // Donetsk
+  "8": "UA-26",  // Ivano-Frankivsk
+  "9": "UA-63",  // Kharkiv
+  "10": "UA-65", // Kherson
+  "11": "UA-68", // Khmelnytskyi
+  "12": "UA-35", // Kirovohrad
+  "13": "UA-32", // Kyiv Oblast
+  "14": "UA-09", // Luhansk
+  "15": "UA-46", // Lviv
+  "16": "UA-48", // Mykolaiv
+  "17": "UA-51", // Odesa
+  "18": "UA-53", // Poltava
+  "19": "UA-56", // Rivne
+  "20": "UA-59", // Sumy
+  "21": "UA-61", // Ternopil
+  "22": "UA-05", // Vinnytsia
+  "23": "UA-07", // Volyn
+  "24": "UA-21", // Zakarpattia
+  "25": "UA-23", // Zaporizhzhia
+  "26": "UA-18", // Zhytomyr
+  "27": "UA-43", // Crimea
+  "28": "UA-40", // Sevastopol
+  "29": "UA-30", // Kyiv City
 };
 
 const ISO_TO_EN: Record<string, string> = {
@@ -28,7 +52,7 @@ const ISO_TO_EN: Record<string, string> = {
   "UA-56": "Rivne Oblast", "UA-59": "Sumy Oblast", "UA-61": "Ternopil Oblast",
   "UA-63": "Kharkiv Oblast", "UA-65": "Kherson Oblast", "UA-68": "Khmelnytskyi Oblast",
   "UA-71": "Cherkasy Oblast", "UA-77": "Chernivtsi Oblast", "UA-74": "Chernihiv Oblast",
-  "UA-30": "Kyiv City",
+  "UA-30": "Kyiv City", "UA-43": "Crimea", "UA-40": "Sevastopol",
 };
 
 interface OblastAlert {
@@ -41,45 +65,86 @@ interface OblastAlert {
   types: string[];
 }
 
-interface UpstreamState {
+interface UpstreamAlert {
   id: number;
-  name: string;
-  name_en: string;
-  alert: boolean;
-  changed: string;
+  location_uid: string;
+  location_title: string;
+  location_title_en?: string;
+  location_type: string; // "oblast" | "raion" | "hromada" | "city" | ...
+  started_at: string;
+  finished_at: string | null;
+  alert_type: string; // "air_raid" | "artillery_shelling" | ...
 }
 
 const ALERTS_TTL = 30 * 1000;
 let cache: { at: number; payload: unknown } | null = null;
 
 async function loadAlerts() {
+  const token = Deno.env.get("ALERTS_IN_UA_TOKEN");
+  if (!token) throw new Error("ALERTS_IN_UA_TOKEN not configured");
+
   const res = await fetch(SOURCE_URL, {
-    headers: { "user-agent": "ua-airdefense-tracker.org (contact via site)" },
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "user-agent": "ua-airdefense-tracker.org",
+    },
     signal: AbortSignal.timeout(10000),
   });
   if (!res.ok) {
-    throw new Error(`alerts.com.ua HTTP ${res.status}`);
+    const body = await res.text().catch(() => "");
+    throw new Error(`alerts.in.ua HTTP ${res.status}: ${body.slice(0, 200)}`);
   }
-  const json = await res.json() as { states: UpstreamState[]; last_update?: string };
+  const json = await res.json() as {
+    alerts: UpstreamAlert[];
+    meta?: { last_updated_at?: string };
+  };
 
-  const oblasts: OblastAlert[] = [];
-  for (const s of json.states ?? []) {
-    const iso = ID_TO_ISO[s.id];
-    if (!iso) continue;
-    oblasts.push({
-      id: String(s.id),
-      iso,
-      name: s.name,
-      nameEn: ISO_TO_EN[iso] ?? s.name_en,
-      active: !!s.alert,
-      changedAt: s.changed ?? new Date(0).toISOString(),
-      types: s.alert ? ["AIR"] : [],
-    });
+  // Reduce active alerts down to one record per oblast. An oblast counts as
+  // active if it has an oblast-level air_raid alert OR any sub-region (raion /
+  // hromada / city) within it has an active air_raid alert.
+  const activeByIso = new Map<string, { changedAt: string; types: Set<string>; name: string }>();
+
+  for (const a of json.alerts ?? []) {
+    if (a.finished_at) continue; // only active
+    const iso = UID_TO_ISO[String(a.location_uid)];
+    // For sub-region alerts, location_uid is the sub-region's uid, not the oblast's.
+    // The API also returns oblast-level alerts separately, so this still surfaces
+    // every active oblast — sub-region-only activity is intentionally not aggregated
+    // here to keep parity with the choropleth, but we extend with oblast_uid below.
+    const oblastUid = (a as unknown as { oblast_uid?: string }).oblast_uid;
+    const fallbackIso = oblastUid ? UID_TO_ISO[String(oblastUid)] : undefined;
+    const targetIso = iso ?? fallbackIso;
+    if (!targetIso) continue;
+
+    const existing = activeByIso.get(targetIso);
+    if (existing) {
+      existing.types.add(a.alert_type);
+      if (a.started_at > existing.changedAt) existing.changedAt = a.started_at;
+    } else {
+      activeByIso.set(targetIso, {
+        changedAt: a.started_at,
+        types: new Set([a.alert_type]),
+        name: a.location_title,
+      });
+    }
   }
+
+  const oblasts: OblastAlert[] = Object.keys(ISO_TO_EN).map((iso) => {
+    const hit = activeByIso.get(iso);
+    return {
+      id: iso,
+      iso,
+      name: hit?.name ?? ISO_TO_EN[iso],
+      nameEn: ISO_TO_EN[iso],
+      active: !!hit,
+      changedAt: hit?.changedAt ?? new Date(0).toISOString(),
+      types: hit ? Array.from(hit.types).map((t) => t.toUpperCase()) : [],
+    };
+  });
 
   return {
-    updatedAt: json.last_update ?? new Date().toISOString(),
-    source: "alerts.com.ua",
+    updatedAt: json.meta?.last_updated_at ?? new Date().toISOString(),
+    source: "alerts.in.ua",
     oblasts,
     raions: [] as never[],
   };
