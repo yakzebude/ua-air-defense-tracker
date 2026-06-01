@@ -462,6 +462,10 @@
     "subtitle": "Kommando Luftstreitkräfte UA — alle 60 s aktualisiert",
     "sourceLabel": "Kommando der ukr. Luftstreitkräfte",
     "empty": "Keine aktuellen Bedrohungen gemeldet.",
+    "translatedBy": "KI-Übersetzung aus dem Ukrainischen",
+    "translating": "Übersetze…",
+    "showOriginal": "Original anzeigen",
+    "showTranslated": "Übersetzung anzeigen",
     "tags": {
       "drone": "Drohne",
       "cruise": "Marschflugkörper",

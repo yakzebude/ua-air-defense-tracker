@@ -462,6 +462,10 @@
     "subtitle": "Commandement de l’armée de l’air UA — toutes les 60 s",
     "sourceLabel": "Commandement des forces aériennes ukrainiennes",
     "empty": "Aucune menace récente signalée.",
+    "translatedBy": "Traduction IA depuis l’ukrainien",
+    "translating": "Traduction…",
+    "showOriginal": "Voir l’original",
+    "showTranslated": "Voir la traduction",
     "tags": {
       "drone": "Drone",
       "cruise": "Croisière",
