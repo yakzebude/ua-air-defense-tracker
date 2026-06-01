@@ -103,11 +103,11 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [hovered, setHovered] = useState<
-    | { kind: "oblast"; iso: string; x: number; y: number }
+    | { kind: "oblast"; iso: string; name: string; nameEn: string; x: number; y: number }
     | { kind: "raion"; name: string; oblastIso: string; x: number; y: number }
     | null
   >(null);
-  const [selected, setSelected] = useState<OblastAlert | null>(null);
+  const [selected, setSelected] = useState<{ iso: string; name: string; nameEn: string; alert?: OblastAlert } | null>(null);
   const timerRef = useRef<number | null>(null);
   const [, setTick] = useState(0);
 
