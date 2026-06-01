@@ -439,6 +439,8 @@
     "viewFull": "Carte complète",
     "miniTitle": "Alertes en direct",
     "miniActive": "actives",
+    "allClearBadge": "Aucune alerte",
+    "allClearSub": "Aucune alerte aérienne en cours",
     "status": "Statut",
     "changedAt": "Dernier changement de statut",
     "activeRaions_one": "{{count}} raïon actif",

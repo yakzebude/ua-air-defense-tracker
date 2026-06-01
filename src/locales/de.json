@@ -439,6 +439,8 @@
     "viewFull": "Vollkarte",
     "miniTitle": "Live-Alarme",
     "miniActive": "aktiv",
+    "allClearBadge": "Alles ruhig",
+    "allClearSub": "Keine aktiven Luftalarme",
     "status": "Status",
     "changedAt": "Letzte Statusänderung",
     "activeRaions_one": "{{count}} aktiver Rajon",
