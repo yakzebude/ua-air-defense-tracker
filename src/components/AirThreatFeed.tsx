@@ -48,6 +48,8 @@ function stripEmoji(s: string): string {
     .replace(/[ \t]{2,}/g, " ")
     .replace(/^[ \t]+|[ \t]+$/gm, "")
     .trim();
+}
+
 
 const PROJECT_ID = import.meta.env.VITE_SUPABASE_PROJECT_ID as string;
 const APIKEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
