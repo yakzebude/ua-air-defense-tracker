@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from "react-simple-maps";
+import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 const REFRESH_MS = 5 * 60 * 1000;
-const GEO_URL = "/geo/ua-oblasts.geo.json";
-const KYIV_CITY_ISO = "UA-30";
-const KYIV_CITY_COORDS: [number, number] = [30.5234, 50.4501];
+const OBLASTS_GEO = "/geo/ua-oblasts.geo.json";
+const RAIONS_GEO = "/geo/ua-raions.geo.json";
 
 export interface OblastAlert {
   id: number | string;
@@ -16,6 +15,7 @@ export interface OblastAlert {
   nameEn: string;
   active: boolean;
   changedAt: string;
+  types?: string[];
 }
 
 export interface RaionAlert {
@@ -24,6 +24,7 @@ export interface RaionAlert {
   name: string;
   active: boolean;
   changedAt: string;
+  types?: string[];
 }
 
 interface ApiPayload {
@@ -34,7 +35,6 @@ interface ApiPayload {
   stale?: boolean;
   error?: string;
 }
-
 
 interface Props {
   variant?: "compact" | "full";
@@ -51,15 +51,41 @@ function durationLabel(sinceIso: string, active: boolean): string {
   return r ? `${h}h ${r}m` : `${h}h`;
 }
 
+// Normalize Ukrainian raion name for matching (strip trailing "район", whitespace, lowercase).
+function normRaion(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/\s*район\s*$/u, "")
+    .replace(/['ʼ’`]/g, "")
+    .trim();
+}
+
+// Alert type chip labels. UkraineAlarm exposes coarse types only —
+// drones vs cruise missiles are NOT distinguished by the upstream API.
+function typeLabel(t: string, tt: (k: string) => string): string {
+  switch (t) {
+    case "AIR": return tt("airAlerts.types.air");
+    case "ARTILLERY": return tt("airAlerts.types.artillery");
+    case "URBAN_FIGHTS": return tt("airAlerts.types.urban");
+    case "CHEMICAL": return tt("airAlerts.types.chemical");
+    case "NUCLEAR": return tt("airAlerts.types.nuclear");
+    case "INFO": return tt("airAlerts.types.info");
+    default: return t;
+  }
+}
+
 export function AirAlertsMap({ variant = "compact" }: Props) {
   const { t } = useTranslation();
   const [data, setData] = useState<ApiPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [hovered, setHovered] = useState<{ iso: string; x: number; y: number } | null>(null);
+  const [hovered, setHovered] = useState<
+    | { kind: "oblast"; iso: string; x: number; y: number }
+    | { kind: "raion"; name: string; oblastIso: string; x: number; y: number }
+    | null
+  >(null);
   const [selected, setSelected] = useState<OblastAlert | null>(null);
   const timerRef = useRef<number | null>(null);
-  // Force-rerender every 60s so durations stay current.
   const [, setTick] = useState(0);
 
   useEffect(() => {
@@ -103,10 +129,18 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
     return m;
   }, [data]);
 
-  const kyivCity = byIso.get(KYIV_CITY_ISO);
-  const activeCount = (data?.oblasts ?? []).filter((o) => o.active).length;
+  // Index of active raions: normalized name -> alert. Used to colorize polygons.
+  const activeRaionsByName = useMemo(() => {
+    const m = new Map<string, RaionAlert>();
+    for (const r of data?.raions ?? []) m.set(normRaion(r.name), r);
+    return m;
+  }, [data]);
 
+  const activeCount = (data?.oblasts ?? []).filter((o) => o.active).length;
+  const activeRaionCount = (data?.raions ?? []).length;
   const height = variant === "full" ? 640 : 420;
+
+  const showRaions = variant === "full";
 
   return (
     <div className="relative">
@@ -122,8 +156,9 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           height={height}
           style={{ width: "100%", height: "100%" }}
         >
-          <ZoomableGroup zoom={1} minZoom={1} maxZoom={variant === "full" ? 5 : 1}>
-            <Geographies geography={GEO_URL}>
+          <ZoomableGroup zoom={1} minZoom={1} maxZoom={variant === "full" ? 6 : 1}>
+            {/* Oblast polygons */}
+            <Geographies geography={OBLASTS_GEO}>
               {({ geographies }) =>
                 geographies.map((geo) => {
                   const iso = geo.properties.iso as string;
@@ -134,21 +169,20 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       key={geo.rsmKey}
                       geography={geo}
                       onMouseEnter={(e) => {
-                        const rect = (e.currentTarget.ownerSVGElement as SVGSVGElement | null)
-                          ?.getBoundingClientRect();
                         const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
                           ?.getBoundingClientRect();
                         setHovered({
+                          kind: "oblast",
                           iso,
                           x: e.clientX - (cont?.left ?? 0),
                           y: e.clientY - (cont?.top ?? 0),
                         });
-                        void rect;
                       }}
                       onMouseMove={(e) => {
                         const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
                           ?.getBoundingClientRect();
                         setHovered({
+                          kind: "oblast",
                           iso,
                           x: e.clientX - (cont?.left ?? 0),
                           y: e.clientY - (cont?.top ?? 0),
@@ -159,7 +193,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       }}
                       style={{
                         default: {
-                          fill: isActive ? "hsl(var(--signal) / 0.85)" : "hsl(var(--muted))",
+                          fill: isActive ? "hsl(var(--signal) / 0.55)" : "hsl(var(--muted))",
                           stroke: "hsl(var(--background))",
                           strokeWidth: 0.6,
                           outline: "none",
@@ -167,7 +201,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                           cursor: variant === "full" ? "pointer" : "default",
                         },
                         hover: {
-                          fill: isActive ? "hsl(var(--signal))" : "hsl(var(--muted-foreground) / 0.4)",
+                          fill: isActive ? "hsl(var(--signal) / 0.75)" : "hsl(var(--muted-foreground) / 0.4)",
                           stroke: "hsl(var(--background))",
                           strokeWidth: 0.8,
                           outline: "none",
@@ -182,60 +216,123 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               }
             </Geographies>
 
-            {/* Kyiv City marker — separate from Kyiv Oblast in upstream data */}
-            {kyivCity && (
-              <Marker
-                coordinates={KYIV_CITY_COORDS}
-                onMouseEnter={(e) => {
-                  const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
-                    ?.getBoundingClientRect();
-                  setHovered({
-                    iso: KYIV_CITY_ISO,
-                    x: e.clientX - (cont?.left ?? 0),
-                    y: e.clientY - (cont?.top ?? 0),
-                  });
-                }}
-                onClick={() => {
-                  if (variant === "full") setSelected(kyivCity);
-                }}
-              >
-                <circle
-                  r={5}
-                  fill={kyivCity.active ? "hsl(var(--signal))" : "hsl(var(--foreground))"}
-                  stroke="hsl(var(--background))"
-                  strokeWidth={1.2}
-                  className={kyivCity.active ? "air-alert-pulse" : undefined}
-                  style={{ cursor: variant === "full" ? "pointer" : "default" }}
-                />
-              </Marker>
+            {/* Raion polygons — only on full map. Drawn above oblasts so active raions stand out. */}
+            {showRaions && (
+              <Geographies geography={RAIONS_GEO}>
+                {({ geographies }) =>
+                  geographies.map((geo) => {
+                    const name = geo.properties.name as string;
+                    const oblastIso = geo.properties.iso as string;
+                    const raion = activeRaionsByName.get(normRaion(name));
+                    const isActive = !!raion;
+                    return (
+                      <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        onMouseEnter={(e) => {
+                          const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
+                            ?.getBoundingClientRect();
+                          setHovered({
+                            kind: "raion",
+                            name,
+                            oblastIso,
+                            x: e.clientX - (cont?.left ?? 0),
+                            y: e.clientY - (cont?.top ?? 0),
+                          });
+                        }}
+                        onMouseMove={(e) => {
+                          const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
+                            ?.getBoundingClientRect();
+                          setHovered({
+                            kind: "raion",
+                            name,
+                            oblastIso,
+                            x: e.clientX - (cont?.left ?? 0),
+                            y: e.clientY - (cont?.top ?? 0),
+                          });
+                        }}
+                        style={{
+                          default: {
+                            fill: isActive ? "hsl(var(--signal) / 0.95)" : "transparent",
+                            stroke: "hsl(var(--foreground) / 0.15)",
+                            strokeWidth: 0.3,
+                            outline: "none",
+                            transition: "fill 200ms ease",
+                            pointerEvents: isActive ? "auto" : "none",
+                          },
+                          hover: {
+                            fill: isActive ? "hsl(var(--signal))" : "transparent",
+                            stroke: "hsl(var(--foreground) / 0.3)",
+                            strokeWidth: 0.5,
+                            outline: "none",
+                          },
+                          pressed: { outline: "none" },
+                        }}
+                        className={isActive ? "air-alert-pulse" : undefined}
+                      />
+                    );
+                  })
+                }
+              </Geographies>
             )}
           </ZoomableGroup>
         </ComposableMap>
 
         {/* Hover tooltip */}
         {hovered && (() => {
-          const o = byIso.get(hovered.iso);
-          if (!o) return null;
+          if (hovered.kind === "oblast") {
+            const o = byIso.get(hovered.iso);
+            if (!o) return null;
+            return (
+              <div
+                className="pointer-events-none absolute z-10 rounded border border-border bg-background/95 px-3 py-2 text-xs font-mono shadow-lg backdrop-blur"
+                style={{ left: hovered.x + 12, top: Math.max(hovered.y - 8, 4), transform: "translateY(-100%)" }}
+              >
+                <div className="font-semibold text-foreground">{o.nameEn || o.name}</div>
+                <div className="mt-0.5 text-muted-foreground">
+                  {o.active ? (
+                    <>
+                      <span className="text-[hsl(var(--signal))]">● {t("airAlerts.active")}</span>
+                      <span className="ml-2">{durationLabel(o.changedAt, true)}</span>
+                    </>
+                  ) : (
+                    <span>{t("airAlerts.clear")}</span>
+                  )}
+                </div>
+                {o.active && o.types && o.types.length > 0 && (
+                  <div className="mt-1 flex flex-wrap gap-1">
+                    {o.types.map((tp) => (
+                      <span key={tp} className="rounded bg-[hsl(var(--signal)/0.2)] px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-foreground">
+                        {typeLabel(tp, t)}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          }
+          // raion
+          const r = activeRaionsByName.get(normRaion(hovered.name));
+          if (!r) return null;
           return (
             <div
               className="pointer-events-none absolute z-10 rounded border border-border bg-background/95 px-3 py-2 text-xs font-mono shadow-lg backdrop-blur"
-              style={{
-                left: Math.min(hovered.x + 12, 9999),
-                top: Math.max(hovered.y - 8, 4),
-                transform: "translateY(-100%)",
-              }}
+              style={{ left: hovered.x + 12, top: Math.max(hovered.y - 8, 4), transform: "translateY(-100%)" }}
             >
-              <div className="font-semibold text-foreground">{o.nameEn || o.name}</div>
-              <div className="mt-0.5 text-muted-foreground">
-                {o.active ? (
-                  <>
-                    <span className="text-[hsl(var(--signal))]">● {t("airAlerts.active")}</span>
-                    <span className="ml-2">{durationLabel(o.changedAt, true)}</span>
-                  </>
-                ) : (
-                  <span>{t("airAlerts.clear")}</span>
-                )}
+              <div className="font-semibold text-foreground">{r.name}</div>
+              <div className="mt-0.5">
+                <span className="text-[hsl(var(--signal))]">● {t("airAlerts.active")}</span>
+                <span className="ml-2 text-muted-foreground">{durationLabel(r.changedAt, true)}</span>
               </div>
+              {r.types && r.types.length > 0 && (
+                <div className="mt-1 flex flex-wrap gap-1">
+                  {r.types.map((tp) => (
+                    <span key={tp} className="rounded bg-[hsl(var(--signal)/0.2)] px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-foreground">
+                      {typeLabel(tp, t)}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           );
         })()}
@@ -254,6 +351,11 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           </span>
           <span className="text-foreground">
             {t("airAlerts.activeNow", { count: activeCount })}
+            {showRaions && activeRaionCount > 0 && (
+              <span className="ml-2 text-muted-foreground">
+                · {t("airAlerts.activeRaions", { count: activeRaionCount })}
+              </span>
+            )}
           </span>
         </div>
         <div className="flex items-center gap-3">
@@ -274,16 +376,21 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           )}
         </div>
       </div>
-      <div className="mt-1 text-[10px] font-mono text-muted-foreground">
-        {t("airAlerts.source")}:{" "}
-        <a
-          href="https://www.ukrainealarm.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline-offset-4 hover:underline"
-        >
-          ukrainealarm.com
-        </a>
+      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-mono text-muted-foreground">
+        <span>
+          {t("airAlerts.source")}:{" "}
+          <a
+            href="https://www.ukrainealarm.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline-offset-4 hover:underline"
+          >
+            ukrainealarm.com
+          </a>
+        </span>
+        {showRaions && (
+          <span className="text-muted-foreground/80">{t("airAlerts.threatTypeNote")}</span>
+        )}
       </div>
 
       {/* Detail panel */}
@@ -305,6 +412,21 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   <div className="text-muted-foreground">{t("airAlerts.clear")}</div>
                 )}
               </div>
+              {selected.active && selected.types && selected.types.length > 0 && (
+                <div>
+                  <div className="src-label mb-1">{t("airAlerts.threatType")}</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selected.types.map((tp) => (
+                      <span key={tp} className="rounded bg-[hsl(var(--signal)/0.2)] px-2 py-0.5 text-[11px] uppercase tracking-wider text-foreground">
+                        {typeLabel(tp, t)}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="mt-2 text-[10px] text-muted-foreground/80">
+                    {t("airAlerts.threatTypeNote")}
+                  </p>
+                </div>
+              )}
               <div>
                 <div className="src-label mb-1">{t("airAlerts.changedAt")}</div>
                 <div>{new Date(selected.changedAt).toUTCString()}</div>
@@ -332,7 +454,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               })()}
               <div className="pt-4 border-t border-border">
                 <a
-                  href={`https://alerts.in.ua`}
+                  href="https://www.ukrainealarm.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs underline underline-offset-4 hover:text-foreground"
@@ -340,7 +462,6 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   {t("airAlerts.openSource")} →
                 </a>
               </div>
-
             </div>
           )}
         </SheetContent>
