@@ -439,6 +439,8 @@
     "viewFull": "Full map",
     "miniTitle": "Live alerts",
     "miniActive": "active",
+    "allClearBadge": "All clear",
+    "allClearSub": "No active air-raid alerts",
     "status": "Status",
     "changedAt": "Last status change",
     "activeRaions_one": "{{count}} active raion",
