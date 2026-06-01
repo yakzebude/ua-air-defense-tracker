@@ -437,6 +437,8 @@
     "lastUpdate": "Dernière mise à jour",
     "source": "Source",
     "viewFull": "Carte complète",
+    "miniTitle": "Alertes en direct",
+    "miniActive": "actives",
     "status": "Statut",
     "changedAt": "Dernier changement de statut",
     "activeRaions_one": "{{count}} raïon actif",

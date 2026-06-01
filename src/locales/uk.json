@@ -437,6 +437,8 @@
     "lastUpdate": "Останнє оновлення",
     "source": "Джерело",
     "viewFull": "Повна карта",
+    "miniTitle": "Тривоги наживо",
+    "miniActive": "активні",
     "status": "Статус",
     "changedAt": "Останнє змінення статусу",
     "activeRaions_one": "{{count}} активний район",
