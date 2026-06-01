@@ -37,9 +37,9 @@ const KEYWORDS: Array<[RegExp, ThreatTag]> = [
   [/крилат[іиа]|калібр|kalibr|х[-\s]?101|x[-\s]?101|х[-\s]?555|x[-\s]?555|х[-\s]?22|х[-\s]?32|х[-\s]?59/iu, "cruise"],
   // Ballistic
   [/баліст|іскандер|iskander|кинджал|kinzhal|кн[-\s]?23|kn[-\s]?23/iu, "ballistic"],
-  // Glide bombs (КАБ) — stem "каб" followed by Ukrainian endings (и/і/ів/ами/ом/у/а)
-  // or end of word. Cyrillic word boundary via Unicode property class.
-  [/(?<!\p{L})каб(?:и|і|ів|ам[ии]?|ом|у|а)?(?!\p{L})|кериван[аі] авіабомб|глайдбомб|glide bomb/iu, "kab"],
+  // Glide bombs (КАБ) — simple case-insensitive substring; safe enough since
+  // "каб" as a Ukrainian word stem rarely collides with kpszsu vocabulary.
+  [/каб[иіївамоу]?|кериван[аі] авіабомб|глайдбомб|glide bomb/iu, "kab"],
   // Fast / unspecified speed targets (often missiles, before classification)
   [/швидкісн[іиа]|aerial speed|реактивн[іи]/iu, "fast"],
   // All clear
