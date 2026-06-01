@@ -24,7 +24,7 @@ export default function Alerts() {
           <div className="lg:col-span-2">
             <AirAlertsMap variant="full" />
           </div>
-          <div className="lg:col-span-1 h-full">
+          <div className="lg:col-span-1 lg:h-[720px]">
             <AirThreatFeed />
           </div>
         </div>
