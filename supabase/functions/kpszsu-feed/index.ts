@@ -83,7 +83,7 @@ async function loadFeed(): Promise<{ updatedAt: string; channel: string; message
   for (const raw of chunks) {
     const postMatch = raw.match(/data-post="([^"]+)"/);
     const timeMatch = raw.match(/<time[^>]*datetime="([^"]+)"/);
-    const textMatch = raw.match(/<div class="tgme_widget_message_text[^"]*"[^>]*>([\s\S]*?)<\/div>\s*(?:<div class="tgme_widget_message_(?:reply_markup|footer|info|metadata)|<a class="tgme_widget_message)/);
+    const textMatch = raw.match(/<div class="tgme_widget_message_text[^"]*"[^>]*>([\s\S]*?)<\/div>/);
     if (!postMatch || !timeMatch || !textMatch) continue;
     const text = decodeHtml(textMatch[1]);
     if (!text) continue;
