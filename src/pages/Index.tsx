@@ -668,16 +668,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-          glossaryKey="ballistic"
-          kicker={t("category.ballisticSection.kicker")}
-          title={t("category.ballisticSection.title")}
-          description={t("category.ballisticSection.description")}
-          unitNoun={t("category.ballisticSection.unit")}
-          dataset={ballistic}
-          range={ballisticRange}
-          onRangeChange={setBallisticRange}
-        />
-      )}
 
       <WeaponsCatalogSection />
 
