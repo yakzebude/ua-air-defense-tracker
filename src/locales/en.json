@@ -456,5 +456,20 @@
     "pageTitle": "Live air-raid alerts — Ukraine",
     "refreshNote": "Refreshes every 5 min",
     "pageIntro": "Live air-raid alert status for every Ukrainian oblast and raion. Click an oblast for its raions and current threat types. Data via ukrainealarm.com, refreshed every 5 minutes."
+  },
+  "threatFeed": {
+    "title": "Live threat feed",
+    "subtitle": "Ukrainian Air Force Command — auto-refresh 60s",
+    "sourceLabel": "Ukrainian Air Force Command",
+    "empty": "No recent threats reported.",
+    "tags": {
+      "drone": "Drone",
+      "cruise": "Cruise",
+      "ballistic": "Ballistic",
+      "kab": "Glide bomb",
+      "fast": "Fast target",
+      "all_clear": "All clear",
+      "info": "Info"
+    }
   }
 }
