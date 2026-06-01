@@ -60,7 +60,6 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [translations, setTranslations] = useState<Record<string, string>>({});
-  const [translating, setTranslating] = useState(false);
   const [showOriginal, setShowOriginal] = useState<Record<string, boolean>>({});
   const timerRef = useRef<number | null>(null);
   const [, setTick] = useState(0);
