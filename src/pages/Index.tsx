@@ -16,6 +16,7 @@ import { PanelActions } from "@/components/PanelActions";
 import { WeaponTerm } from "@/components/WeaponTerm";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AirAlertsMap } from "@/components/AirAlertsMap";
+import { MiniAlertsMap } from "@/components/MiniAlertsMap";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 
@@ -545,23 +546,32 @@ const Index = () => {
 
       <section id="summary" className="border-b border-border">
         <div className="container pt-10 pb-7 md:pt-14">
-          <div className="src-label mb-3">{t("masthead.kicker")}</div>
-          <h1 className="max-w-4xl text-3xl font-semibold leading-[1.15] tracking-tight md:text-[2.75rem]">
-            {t("masthead.title")}
-          </h1>
+          <div className="grid gap-6 md:grid-cols-12 md:gap-8">
+            <div className="md:col-span-9">
+              <div className="src-label mb-3">{t("masthead.kicker")}</div>
+              <h1 className="max-w-4xl text-3xl font-semibold leading-[1.15] tracking-tight md:text-[2.75rem]">
+                {t("masthead.title")}
+              </h1>
 
-          {/* Prominent refresh badge directly under the title */}
-          <div className="mt-5 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-sm border border-border bg-card px-3.5 py-2 font-mono text-[11.5px]">
-            <span className="uppercase tracking-[0.16em] text-muted-foreground">
-              {t("masthead.refreshBadge")}
-            </span>
-            <span aria-hidden className="hidden h-3 w-px bg-border sm:inline-block" />
-            <span className="num text-foreground">{fmtUtc(latestDataPoint)}</span>
+              {/* Prominent refresh badge directly under the title */}
+              <div className="mt-5 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-sm border border-border bg-card px-3.5 py-2 font-mono text-[11.5px]">
+                <span className="uppercase tracking-[0.16em] text-muted-foreground">
+                  {t("masthead.refreshBadge")}
+                </span>
+                <span aria-hidden className="hidden h-3 w-px bg-border sm:inline-block" />
+                <span className="num text-foreground">{fmtUtc(latestDataPoint)}</span>
+              </div>
+
+              <p className="mt-5 max-w-3xl text-[14px] leading-[1.7] text-muted-foreground md:text-[15px]">
+                {t("masthead.intro")}
+              </p>
+            </div>
+
+            {/* Top-right live mini map: real-time air-raid alerts with arrow to full view */}
+            <aside className="md:col-span-3 md:pt-1">
+              <MiniAlertsMap href="#alerts" />
+            </aside>
           </div>
-
-          <p className="mt-5 max-w-3xl text-[14px] leading-[1.7] text-muted-foreground md:text-[15px]">
-            {t("masthead.intro")}
-          </p>
 
           {ready && (
             <>
