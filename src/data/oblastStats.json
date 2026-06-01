@@ -1,0 +1,188 @@
+{
+  "source": "air-alarms.in.ua",
+  "sourceUrl": "https://air-alarms.in.ua/en",
+  "asOf": "2026-05-31",
+  "periodStart": "2022-02-24",
+  "note": "Air alerts at oblast level (official sources). Explosion reports and artillery-threat counts from OSINT.",
+  "regions": {
+    "UA-71": {
+      "slug": "cherkasy",
+      "alarms": 3280,
+      "avgDuration": "01:22:25",
+      "longest": "16:33:37",
+      "explosionReports": 189
+    },
+    "UA-74": {
+      "slug": "chernihiv",
+      "alarms": 3814,
+      "avgDuration": "02:18:26",
+      "longest": "49:34:53",
+      "explosionReports": 346,
+      "artilleryThreats": 27
+    },
+    "UA-77": {
+      "slug": "chernivtsi",
+      "alarms": 858,
+      "avgDuration": "01:10:15",
+      "longest": "06:50:45",
+      "explosionReports": 8
+    },
+    "UA-43": {
+      "slug": "crimea",
+      "avgDuration": "00:00:00",
+      "longest": "00:00:00",
+      "explosionReports": 268
+    },
+    "UA-12": {
+      "slug": "dnipro",
+      "alarms": 6909,
+      "avgDuration": "01:45:16",
+      "longest": "71:08:51",
+      "explosionReports": 1327,
+      "artilleryThreats": 28328
+    },
+    "UA-14": {
+      "slug": "donetsk",
+      "alarms": 7435,
+      "avgDuration": "02:14:01",
+      "longest": "87:45:12",
+      "explosionReports": 3066,
+      "artilleryThreats": 2485
+    },
+    "UA-26": {
+      "slug": "ivano_frankivsk",
+      "alarms": 853,
+      "avgDuration": "01:05:41",
+      "longest": "06:06:34",
+      "explosionReports": 68
+    },
+    "UA-63": {
+      "slug": "kharkiv",
+      "alarms": 8415,
+      "avgDuration": "01:43:28",
+      "longest": "50:31:18",
+      "explosionReports": 2170,
+      "artilleryThreats": 9599
+    },
+    "UA-65": {
+      "slug": "kherson",
+      "alarms": 4641,
+      "avgDuration": "01:09:24",
+      "longest": "14:44:57",
+      "explosionReports": 4619,
+      "artilleryThreats": 2873
+    },
+    "UA-68": {
+      "slug": "khmelnytskyi",
+      "alarms": 1237,
+      "avgDuration": "01:21:18",
+      "longest": "10:59:03",
+      "explosionReports": 253
+    },
+    "UA-32": {
+      "slug": "kyiv",
+      "alarms": 4914,
+      "avgDuration": "01:27:56",
+      "longest": "24:00:54",
+      "explosionReports": 865
+    },
+    "UA-35": {
+      "slug": "kropyvnytskyi",
+      "alarms": 4145,
+      "avgDuration": "01:10:58",
+      "longest": "13:25:17",
+      "explosionReports": 144
+    },
+    "UA-09": {
+      "slug": "luhansk"
+    },
+    "UA-46": {
+      "slug": "lviv",
+      "alarms": 859,
+      "avgDuration": "01:04:50",
+      "longest": "06:06:07",
+      "explosionReports": 114
+    },
+    "UA-48": {
+      "slug": "mykolaiv",
+      "alarms": 4717,
+      "avgDuration": "01:06:10",
+      "longest": "24:04:32",
+      "explosionReports": 525,
+      "artilleryThreats": 1470
+    },
+    "UA-51": {
+      "slug": "odesa",
+      "alarms": 3324,
+      "avgDuration": "01:00:32",
+      "longest": "11:33:15",
+      "explosionReports": 896
+    },
+    "UA-53": {
+      "slug": "poltava",
+      "alarms": 5316,
+      "avgDuration": "01:24:31",
+      "longest": "19:40:16",
+      "explosionReports": 460
+    },
+    "UA-56": {
+      "slug": "rivne",
+      "alarms": 1107,
+      "avgDuration": "01:13:28",
+      "longest": "08:11:39",
+      "explosionReports": 52
+    },
+    "UA-59": {
+      "slug": "sumy",
+      "alarms": 5652,
+      "avgDuration": "02:22:43",
+      "longest": "37:46:37",
+      "explosionReports": 3533,
+      "artilleryThreats": 5568
+    },
+    "UA-61": {
+      "slug": "ternopil",
+      "alarms": 968,
+      "avgDuration": "01:10:16",
+      "longest": "07:00:43",
+      "explosionReports": 44
+    },
+    "UA-21": {
+      "slug": "zakarpatiia",
+      "alarms": 748,
+      "avgDuration": "01:02:18",
+      "longest": "06:05:18",
+      "explosionReports": 4
+    },
+    "UA-05": {
+      "slug": "vinnytsia",
+      "alarms": 1801,
+      "avgDuration": "01:19:24",
+      "longest": "11:44:17",
+      "explosionReports": 109
+    },
+    "UA-07": {
+      "slug": "volyn",
+      "alarms": 967,
+      "avgDuration": "01:03:27",
+      "longest": "08:06:12",
+      "explosionReports": 46
+    },
+    "UA-23": {
+      "slug": "zaporizhzhia",
+      "alarms": 7783,
+      "avgDuration": "01:22:44",
+      "longest": "41:35:25",
+      "explosionReports": 1244,
+      "artilleryThreats": 919
+    },
+    "UA-18": {
+      "slug": "zhytomyr",
+      "alarms": 1886,
+      "avgDuration": "01:35:13",
+      "longest": "13:55:52",
+      "explosionReports": 101,
+      "artilleryThreats": 3
+    }
+  }
+}

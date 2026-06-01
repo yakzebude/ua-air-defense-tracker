@@ -3,10 +3,33 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import oblastStatsData from "@/data/oblastStats.json";
 
 const REFRESH_MS = 5 * 60 * 1000;
 const OBLASTS_GEO = "/geo/ua-oblasts.geo.json";
 const RAIONS_GEO = "/geo/ua-raions.geo.json";
+
+interface OblastStat {
+  slug: string;
+  alarms?: number;
+  avgDuration?: string;
+  longest?: string;
+  explosionReports?: number;
+  artilleryThreats?: number;
+}
+const OBLAST_STATS = oblastStatsData as {
+  source: string;
+  sourceUrl: string;
+  asOf: string;
+  periodStart: string;
+  note: string;
+  regions: Record<string, OblastStat>;
+};
+
+function fmtNum(n?: number): string {
+  if (n === undefined || n === null) return "—";
+  return n.toLocaleString("en-US").replace(/,/g, " ");
+}
 
 export interface OblastAlert {
   id: number | string;
@@ -80,11 +103,11 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [hovered, setHovered] = useState<
-    | { kind: "oblast"; iso: string; x: number; y: number }
+    | { kind: "oblast"; iso: string; name: string; nameEn: string; x: number; y: number }
     | { kind: "raion"; name: string; oblastIso: string; x: number; y: number }
     | null
   >(null);
-  const [selected, setSelected] = useState<OblastAlert | null>(null);
+  const [selected, setSelected] = useState<{ iso: string; name: string; nameEn: string; alert?: OblastAlert } | null>(null);
   const timerRef = useRef<number | null>(null);
   const [, setTick] = useState(0);
 
@@ -163,6 +186,8 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               {({ geographies }) =>
                 geographies.map((geo) => {
                   const iso = geo.properties.iso as string;
+                  const name = (geo.properties.name as string) ?? iso;
+                  const nameEn = (geo.properties.name_en as string) ?? name;
                   const alert = byIso.get(iso);
                   const isActive = !!alert?.active;
                   return (
@@ -174,7 +199,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                           ?.getBoundingClientRect();
                         setHovered({
                           kind: "oblast",
-                          iso,
+                          iso, name, nameEn,
                           x: e.clientX - (cont?.left ?? 0),
                           y: e.clientY - (cont?.top ?? 0),
                         });
@@ -184,13 +209,13 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                           ?.getBoundingClientRect();
                         setHovered({
                           kind: "oblast",
-                          iso,
+                          iso, name, nameEn,
                           x: e.clientX - (cont?.left ?? 0),
                           y: e.clientY - (cont?.top ?? 0),
                         });
                       }}
                       onClick={() => {
-                        if (variant === "full" && alert) setSelected(alert);
+                        if (variant === "full") setSelected({ iso, name, nameEn, alert });
                       }}
                       style={{
                         default: {
@@ -283,15 +308,16 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
         {hovered && (() => {
           if (hovered.kind === "oblast") {
             const o = byIso.get(hovered.iso);
-            if (!o) return null;
+            const stat = OBLAST_STATS.regions[hovered.iso];
             return (
               <div
-                className="pointer-events-none absolute z-10 rounded border border-border bg-background/95 px-3 py-2 text-xs font-mono shadow-lg backdrop-blur"
+                className="pointer-events-none absolute z-10 rounded border border-border bg-background/95 px-3 py-2 text-xs font-mono shadow-lg backdrop-blur min-w-[180px]"
                 style={{ left: hovered.x + 12, top: Math.max(hovered.y - 8, 4), transform: "translateY(-100%)" }}
               >
-                <div className="font-semibold text-foreground">{o.nameEn || o.name}</div>
-                <div className="mt-0.5 text-muted-foreground">
-                  {o.active ? (
+                <div className="font-semibold text-foreground">{hovered.nameEn}</div>
+                <div className="text-[10px] text-muted-foreground">{hovered.name}</div>
+                <div className="mt-1 text-muted-foreground">
+                  {o?.active ? (
                     <>
                       <span className="text-[hsl(var(--signal))]">● {t("airAlerts.active")}</span>
                       <span className="ml-2">{durationLabel(o.changedAt, true)}</span>
@@ -300,13 +326,32 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                     <span>{t("airAlerts.clear")}</span>
                   )}
                 </div>
-                {o.active && o.types && o.types.length > 0 && (
+                {o?.active && o.types && o.types.length > 0 && (
                   <div className="mt-1 flex flex-wrap gap-1">
                     {o.types.map((tp) => (
                       <span key={tp} className="rounded bg-[hsl(var(--signal)/0.2)] px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-foreground">
                         {typeLabel(tp, t)}
                       </span>
                     ))}
+                  </div>
+                )}
+                {stat && (
+                  <div className="mt-2 pt-2 border-t border-border/60 space-y-0.5 text-[10px]">
+                    <div className="flex justify-between gap-3">
+                      <span className="text-muted-foreground uppercase tracking-wider">{t("airAlerts.statsAlerts")}</span>
+                      <span className="tabular-nums text-foreground">{fmtNum(stat.alarms)}</span>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <span className="text-muted-foreground uppercase tracking-wider">{t("airAlerts.statsExplosions")}</span>
+                      <span className="tabular-nums text-foreground">{fmtNum(stat.explosionReports)}</span>
+                    </div>
+                    {stat.artilleryThreats !== undefined && (
+                      <div className="flex justify-between gap-3">
+                        <span className="text-muted-foreground uppercase tracking-wider">{t("airAlerts.statsArtillery")}</span>
+                        <span className="tabular-nums text-foreground">{fmtNum(stat.artilleryThreats)}</span>
+                      </div>
+                    )}
+                    <div className="pt-1 text-[9px] text-muted-foreground/70">{t("airAlerts.statsSince", { date: OBLAST_STATS.periodStart })}</div>
                   </div>
                 )}
               </div>
@@ -401,23 +446,26 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
             <SheetTitle>{selected?.nameEn || selected?.name}</SheetTitle>
             <SheetDescription>{selected?.name}</SheetDescription>
           </SheetHeader>
-          {selected && (
+          {selected && (() => {
+            const alertSel = selected.alert;
+            const stat = OBLAST_STATS.regions[selected.iso];
+            return (
             <div className="mt-6 space-y-4 text-sm">
               <div>
                 <div className="src-label mb-1">{t("airAlerts.status")}</div>
-                {selected.active ? (
+                {alertSel?.active ? (
                   <div className="text-[hsl(var(--signal))] font-semibold">
-                    ● {t("airAlerts.active")} — {durationLabel(selected.changedAt, true)}
+                    ● {t("airAlerts.active")} — {durationLabel(alertSel.changedAt, true)}
                   </div>
                 ) : (
                   <div className="text-muted-foreground">{t("airAlerts.clear")}</div>
                 )}
               </div>
-              {selected.active && selected.types && selected.types.length > 0 && (
+              {alertSel?.active && alertSel.types && alertSel.types.length > 0 && (
                 <div>
                   <div className="src-label mb-1">{t("airAlerts.threatType")}</div>
                   <div className="flex flex-wrap gap-1.5">
-                    {selected.types.map((tp) => (
+                    {alertSel.types.map((tp) => (
                       <span key={tp} className="rounded bg-[hsl(var(--signal)/0.2)] px-2 py-0.5 text-[11px] uppercase tracking-wider text-foreground">
                         {typeLabel(tp, t)}
                       </span>
@@ -428,10 +476,57 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   </p>
                 </div>
               )}
-              <div>
-                <div className="src-label mb-1">{t("airAlerts.changedAt")}</div>
-                <div>{new Date(selected.changedAt).toUTCString()}</div>
-              </div>
+              {alertSel && (
+                <div>
+                  <div className="src-label mb-1">{t("airAlerts.changedAt")}</div>
+                  <div>{new Date(alertSel.changedAt).toUTCString()}</div>
+                </div>
+              )}
+
+              {stat && (
+                <div className="pt-4 border-t border-border space-y-2">
+                  <div className="src-label">
+                    {t("airAlerts.statsHeading", { date: OBLAST_STATS.periodStart })}
+                  </div>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                    <div>
+                      <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsAlerts")}</div>
+                      <div className="text-base font-semibold tabular-nums">{fmtNum(stat.alarms)}</div>
+                    </div>
+                    <div>
+                      <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsExplosions")}</div>
+                      <div className="text-base font-semibold tabular-nums">{fmtNum(stat.explosionReports)}</div>
+                    </div>
+                    {stat.avgDuration && (
+                      <div>
+                        <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsAvgDuration")}</div>
+                        <div className="tabular-nums">{stat.avgDuration}</div>
+                      </div>
+                    )}
+                    {stat.longest && (
+                      <div>
+                        <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsLongest")}</div>
+                        <div className="tabular-nums">{stat.longest}</div>
+                      </div>
+                    )}
+                    {stat.artilleryThreats !== undefined && (
+                      <div className="col-span-2">
+                        <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsArtillery")}</div>
+                        <div className="text-base font-semibold tabular-nums">{fmtNum(stat.artilleryThreats)}</div>
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-muted-foreground/80">
+                    {t("airAlerts.statsSource")}:{" "}
+                    <a href={OBLAST_STATS.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-foreground">
+                      {OBLAST_STATS.source}
+                    </a>
+                    {" · "}
+                    {t("airAlerts.statsAsOf", { date: OBLAST_STATS.asOf })}
+                  </p>
+                </div>
+              )}
+
               {(() => {
                 const list = (data?.raions ?? []).filter((r) => r.oblastIso === selected.iso);
                 if (!list.length) return null;
@@ -464,7 +559,8 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                 </a>
               </div>
             </div>
-          )}
+            );
+          })()}
         </SheetContent>
       </Sheet>
     </div>
