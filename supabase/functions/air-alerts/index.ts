@@ -55,6 +55,7 @@ interface OblastAlert {
   nameEn: string;      // English (derived)
   active: boolean;
   changedAt: string;   // ISO timestamp
+  types: string[];     // alert types (AIR, ARTILLERY, URBAN_FIGHTS, CHEMICAL, NUCLEAR, INFO)
 }
 
 interface RaionAlert {
@@ -63,7 +64,9 @@ interface RaionAlert {
   name: string;
   active: boolean;
   changedAt: string;
+  types: string[];
 }
+
 
 // English names derived from ISO for tooltip display.
 const ISO_TO_EN: Record<string, string> = {
@@ -160,28 +163,26 @@ async function loadAlerts() {
   if (!res.ok) throw new Error(`ukrainealarm /alerts HTTP ${res.status}`);
   const alerts = (await res.json()) as AlertEntry[];
 
-  // Build set of region IDs that currently have an AIR alert.
-  const activeMap = new Map<string, { since: string }>();
+  // Map region id -> { since, types[] } for all currently active alerts.
+  const activeMap = new Map<string, { since: string; types: string[] }>();
   for (const a of alerts) {
     const id = String(a.regionId ?? "");
     if (!id) continue;
-    const isAir =
-      !a.activeAlerts ||
-      a.activeAlerts.length === 0 ||
-      a.activeAlerts.some((x) => !x.type || x.type === "AIR" || x.type === "UNKNOWN");
-    if (!isAir) continue;
+    const list = a.activeAlerts ?? [];
+    if (list.length === 0) continue;
+    const types = Array.from(
+      new Set(list.map((x) => (x.type || "UNKNOWN").toUpperCase())),
+    );
     const since =
-      a.activeAlerts?.find((x) => x.lastUpdate)?.lastUpdate ??
+      list.find((x) => x.lastUpdate)?.lastUpdate ??
       a.lastUpdate ??
       new Date().toISOString();
-    activeMap.set(id, { since });
+    activeMap.set(id, { since, types });
   }
 
-  // Oblasts: every State region in the tree.
   const oblasts: OblastAlert[] = [];
   const raions: RaionAlert[] = [];
 
-  // Helper: find parent oblast by walking up tree until a State is found.
   const oblastIsoForRegion = (regionId: string): string | null => {
     let cur: RegionMeta | undefined = regions.get(regionId);
     while (cur) {
@@ -204,9 +205,9 @@ async function loadAlerts() {
         nameEn: ISO_TO_EN[iso] ?? meta.name,
         active: !!active,
         changedAt: active?.since ?? new Date(0).toISOString(),
+        types: active?.types ?? [],
       });
     } else if (meta.type === "District") {
-      // Only include districts that currently have an active alert — keeps payload small.
       const active = activeMap.get(meta.id);
       if (!active) continue;
       const oblastIso = oblastIsoForRegion(meta.id);
@@ -217,9 +218,11 @@ async function loadAlerts() {
         name: meta.name,
         active: true,
         changedAt: active.since,
+        types: active.types,
       });
     }
   }
+
 
   return {
     updatedAt: new Date().toISOString(),
