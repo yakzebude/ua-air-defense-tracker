@@ -442,9 +442,19 @@
     "activeRaions_one": "{{count}} raïon actif",
     "activeRaions_other": "{{count}} raïons actifs",
     "openSource": "Ouvrir sur ukrainealarm.com",
+    "threatType": "Type de menace",
+    "threatTypeNote": "L'API source ne distingue pas les drones des missiles de croisière.",
+    "types": {
+      "air": "Raid aérien",
+      "artillery": "Artillerie",
+      "urban": "Combats urbains",
+      "chemical": "Chimique",
+      "nuclear": "Nucléaire",
+      "info": "Info"
+    },
     "backHome": "Retour",
     "pageTitle": "Alertes aériennes en direct — Ukraine",
     "refreshNote": "Actualisé toutes les 5 min",
-    "pageIntro": "Statut en direct des alertes aériennes pour chaque oblast ukrainien. Cliquez sur un oblast pour plus de détails. Données via alerts.com.ua, actualisées toutes les 5 minutes."
+    "pageIntro": "Statut en direct des alertes aériennes pour chaque oblast et raïon ukrainien. Cliquez sur un oblast pour voir ses raïons et les types de menaces. Données via ukrainealarm.com, actualisées toutes les 5 minutes."
   }
 }

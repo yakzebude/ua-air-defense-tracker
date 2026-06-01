@@ -442,9 +442,19 @@
     "activeRaions_one": "{{count}} aktiver Rajon",
     "activeRaions_other": "{{count}} aktive Rajone",
     "openSource": "Bei ukrainealarm.com öffnen",
+    "threatType": "Bedrohungstyp",
+    "threatTypeNote": "Die Quell-API unterscheidet nicht zwischen Drohnen und Marschflugkörpern.",
+    "types": {
+      "air": "Luftangriff",
+      "artillery": "Artillerie",
+      "urban": "Straßenkämpfe",
+      "chemical": "Chemisch",
+      "nuclear": "Nuklear",
+      "info": "Info"
+    },
     "backHome": "Zurück",
     "pageTitle": "Live-Luftalarme — Ukraine",
     "refreshNote": "Aktualisiert alle 5 Min",
-    "pageIntro": "Live-Luftalarm-Status für jede ukrainische Oblast. Klicke auf eine Oblast für Details. Daten via alerts.com.ua, alle 5 Minuten aktualisiert."
+    "pageIntro": "Live-Luftalarm-Status für jede ukrainische Oblast und Rajon. Klicke auf eine Oblast, um Rajone und aktuelle Bedrohungstypen zu sehen. Daten via ukrainealarm.com, alle 5 Minuten aktualisiert."
   }
 }
