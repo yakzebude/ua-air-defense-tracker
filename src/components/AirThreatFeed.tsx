@@ -147,7 +147,7 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
   }, [msgs, targetLang, needsTranslation, translations]);
 
   return (
-    <div className="rounded border border-border bg-card">
+    <div className="flex h-full flex-col rounded border border-border bg-card">
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div>
           <h3 className="text-sm font-semibold">{t("threatFeed.title")}</h3>
@@ -162,7 +162,7 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
       </div>
 
 
-      <ul className="divide-y divide-border max-h-[520px] overflow-y-auto">
+      <ul className="flex-1 min-h-0 divide-y divide-border overflow-y-auto">
         {msgs.map((m) => {
           const key = `${targetLang}|${m.id}`;
           const translated = translations[key];
