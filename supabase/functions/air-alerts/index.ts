@@ -55,6 +55,7 @@ interface OblastAlert {
   nameEn: string;      // English (derived)
   active: boolean;
   changedAt: string;   // ISO timestamp
+  types: string[];     // alert types (AIR, ARTILLERY, URBAN_FIGHTS, CHEMICAL, NUCLEAR, INFO)
 }
 
 interface RaionAlert {
@@ -63,7 +64,9 @@ interface RaionAlert {
   name: string;
   active: boolean;
   changedAt: string;
+  types: string[];
 }
+
 
 // English names derived from ISO for tooltip display.
 const ISO_TO_EN: Record<string, string> = {
