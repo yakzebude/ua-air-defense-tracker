@@ -186,6 +186,8 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               {({ geographies }) =>
                 geographies.map((geo) => {
                   const iso = geo.properties.iso as string;
+                  const name = (geo.properties.name as string) ?? iso;
+                  const nameEn = (geo.properties.name_en as string) ?? name;
                   const alert = byIso.get(iso);
                   const isActive = !!alert?.active;
                   return (
@@ -197,7 +199,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                           ?.getBoundingClientRect();
                         setHovered({
                           kind: "oblast",
-                          iso,
+                          iso, name, nameEn,
                           x: e.clientX - (cont?.left ?? 0),
                           y: e.clientY - (cont?.top ?? 0),
                         });
@@ -207,13 +209,13 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                           ?.getBoundingClientRect();
                         setHovered({
                           kind: "oblast",
-                          iso,
+                          iso, name, nameEn,
                           x: e.clientX - (cont?.left ?? 0),
                           y: e.clientY - (cont?.top ?? 0),
                         });
                       }}
                       onClick={() => {
-                        if (variant === "full" && alert) setSelected(alert);
+                        if (variant === "full") setSelected({ iso, name, nameEn, alert });
                       }}
                       style={{
                         default: {
