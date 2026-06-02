@@ -662,7 +662,7 @@ const Index = () => {
             <div className="lg:col-span-2">
               <AirAlertsMap variant="full" />
             </div>
-            <div className="lg:col-span-1 lg:h-[720px]">
+            <div className="lg:col-span-1">
               <AirThreatFeed />
             </div>
           </div>
