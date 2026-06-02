@@ -255,16 +255,16 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       style={{
                         default: {
                           fill: isActive ? "hsl(var(--signal) / 0.55)" : "hsl(var(--muted))",
-                          stroke: "hsl(var(--background))",
-                          strokeWidth: 0.6,
+                          stroke: "hsl(var(--foreground) / 0.6)",
+                          strokeWidth: 0.7,
                           outline: "none",
                           transition: "fill 200ms ease",
                           cursor: variant === "full" ? "pointer" : "default",
                         },
                         hover: {
                           fill: isActive ? "hsl(var(--signal) / 0.75)" : "hsl(var(--muted-foreground) / 0.4)",
-                          stroke: "hsl(var(--background))",
-                          strokeWidth: 0.8,
+                          stroke: "hsl(var(--foreground) / 0.8)",
+                          strokeWidth: 0.9,
                           outline: "none",
                           cursor: variant === "full" ? "pointer" : "default",
                         },
