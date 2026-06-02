@@ -201,13 +201,13 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       geography={geo}
                       style={{
                         default: {
-                          fill: "hsl(var(--background))",
-                          stroke: "hsl(var(--border))",
-                          strokeWidth: 0.4,
+                          fill: "hsl(var(--muted) / 0.4)",
+                          stroke: "hsl(var(--muted-foreground) / 0.5)",
+                          strokeWidth: 0.5,
                           outline: "none",
                           pointerEvents: "none",
                         },
-                        hover: { fill: "hsl(var(--background))", outline: "none", pointerEvents: "none" },
+                        hover: { fill: "hsl(var(--muted) / 0.4)", outline: "none", pointerEvents: "none" },
                         pressed: { outline: "none" },
                       }}
                     />
