@@ -20,11 +20,11 @@ export default function Alerts() {
         <p className="mb-6 max-w-2xl text-sm text-muted-foreground">
           {t("airAlerts.pageIntro")}
         </p>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
           <div className="lg:col-span-2">
             <AirAlertsMap variant="full" />
           </div>
-          <div className="lg:col-span-1 lg:h-[720px]">
+          <div className="lg:col-span-1">
             <AirThreatFeed />
           </div>
         </div>
