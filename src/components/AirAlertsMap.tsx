@@ -165,26 +165,57 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
 
   const activeCount = (data?.oblasts ?? []).filter((o) => o.active).length;
   const activeRaionCount = (data?.raions ?? []).length;
-  const height = variant === "full" ? 640 : 420;
 
   // Raion layer disabled by user request — full map shows oblast-level only.
   const showRaions = false;
 
+  // Sized to fill the parent column. Aspect ratio keeps the map proportional
+  // on every breakpoint; on lg+ in the alerts page the column caps at 720 px.
+  const mapHeightClass = variant === "full"
+    ? "h-[420px] sm:h-[520px] lg:h-[680px]"
+    : "h-[300px] sm:h-[380px] lg:h-[420px]";
+
   return (
-    <div className="relative">
+    <div className="relative flex flex-col">
       <div
-        className="relative overflow-hidden rounded border border-border bg-card"
-        style={{ height }}
+        className={`relative flex-1 overflow-hidden rounded border border-border bg-card ${mapHeightClass}`}
         onMouseLeave={() => setHovered(null)}
       >
         <ComposableMap
           projection="geoMercator"
-          projectionConfig={{ scale: variant === "full" ? 2400 : 1800, center: [31.5, 49] }}
+          projectionConfig={{ scale: variant === "full" ? 2800 : 2200, center: [31.5, 49] }}
           width={1000}
-          height={height}
+          height={variant === "full" ? 680 : 420}
           style={{ width: "100%", height: "100%" }}
         >
           <ZoomableGroup zoom={1} minZoom={1} maxZoom={variant === "full" ? 6 : 1}>
+            {/* Belarus + Russia underlay for geographic context. Drawn first so
+                Ukraine oblasts sit on top and the UA border reads clearly. */}
+            <Geographies geography={WORLD_GEO}>
+              {({ geographies }) =>
+                geographies
+                  .filter((g) => NEIGHBOUR_NAMES.has(g.properties.name as string))
+                  .map((geo) => (
+                    <Geography
+                      key={geo.rsmKey}
+                      geography={geo}
+                      style={{
+                        default: {
+                          fill: "hsl(var(--muted) / 0.35)",
+                          stroke: "hsl(var(--border))",
+                          strokeWidth: 0.5,
+                          outline: "none",
+                          pointerEvents: "none",
+                        },
+                        hover: { fill: "hsl(var(--muted) / 0.35)", outline: "none", pointerEvents: "none" },
+                        pressed: { outline: "none" },
+                      }}
+                    />
+                  ))
+              }
+            </Geographies>
+
+
             {/* Oblast polygons */}
             <Geographies geography={OBLASTS_GEO}>
               {({ geographies }) =>
