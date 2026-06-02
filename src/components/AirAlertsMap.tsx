@@ -8,6 +8,10 @@ import oblastStatsData from "@/data/oblastStats.json";
 const REFRESH_MS = 1 * 60 * 1000;
 const OBLASTS_GEO = "/geo/ua-oblasts.geo.json";
 const RAIONS_GEO = "/geo/ua-raions.geo.json";
+// World countries (TopoJSON, ~100 KB). We render Belarus + Russia underneath
+// the Ukraine oblasts so the country borders are visible in context.
+const WORLD_GEO = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json";
+const NEIGHBOUR_NAMES = new Set(["Belarus", "Russia"]);
 
 interface OblastStat {
   slug: string;
