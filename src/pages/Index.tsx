@@ -658,11 +658,11 @@ const Index = () => {
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 items-start">
             <div className="lg:col-span-2">
               <AirAlertsMap variant="full" />
             </div>
-            <div className="lg:col-span-1 lg:h-[720px]">
+            <div className="lg:col-span-1">
               <AirThreatFeed />
             </div>
           </div>

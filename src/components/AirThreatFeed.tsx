@@ -2,8 +2,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const REFRESH_MS = 60 * 1000;
+const COLLAPSED_VISIBLE = 3;
+const WINDOW_MS = 24 * 60 * 60 * 1000;
 
 type ThreatTag = "drone" | "cruise" | "ballistic" | "kab" | "fast" | "all_clear" | "info";
+
+const ALL_TAGS: ThreatTag[] = ["drone", "cruise", "ballistic", "kab", "fast", "all_clear", "info"];
 
 interface FeedMessage {
   id: string;
@@ -50,17 +54,18 @@ function stripEmoji(s: string): string {
     .trim();
 }
 
-
 const PROJECT_ID = import.meta.env.VITE_SUPABASE_PROJECT_ID as string;
 const APIKEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
 
-export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
+export function AirThreatFeed() {
   const { t, i18n } = useTranslation();
   const [data, setData] = useState<FeedPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [translations, setTranslations] = useState<Record<string, string>>({});
   const [showOriginal, setShowOriginal] = useState<Record<string, boolean>>({});
+  const [expanded, setExpanded] = useState(false);
+  const [activeTags, setActiveTags] = useState<Set<ThreatTag>>(new Set());
   const timerRef = useRef<number | null>(null);
   const [, setTick] = useState(0);
 
@@ -98,13 +103,33 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
     };
   }, []);
 
-  const msgs = useMemo(() => (data?.messages ?? []).slice(0, limit), [data, limit]);
+  // Messages within the last 24h, sorted newest first (server already sorts desc).
+  const recentMsgs = useMemo(() => {
+    const cutoff = Date.now() - WINDOW_MS;
+    return (data?.messages ?? []).filter((m) => new Date(m.ts).getTime() >= cutoff);
+  }, [data]);
 
-  // Live translation: whenever the visible message set or language changes,
-  // request translations for any messages we haven't translated yet.
+  // Apply category filter on top of the 24h window.
+  const msgs = useMemo(() => {
+    if (activeTags.size === 0) return recentMsgs;
+    return recentMsgs.filter((m) => m.tags.some((tg) => activeTags.has(tg)));
+  }, [recentMsgs, activeTags]);
+
+  const visibleMsgs = expanded ? msgs : msgs.slice(0, COLLAPSED_VISIBLE);
+  const hiddenCount = Math.max(0, msgs.length - visibleMsgs.length);
+
+  const toggleTag = (tag: ThreatTag) =>
+    setActiveTags((prev) => {
+      const next = new Set(prev);
+      if (next.has(tag)) next.delete(tag);
+      else next.add(tag);
+      return next;
+    });
+
+  // Translation: only request for currently visible messages.
   useEffect(() => {
-    if (!needsTranslation || msgs.length === 0) return;
-    const missing = msgs.filter((m) => !translations[`${targetLang}|${m.id}`]);
+    if (!needsTranslation || visibleMsgs.length === 0) return;
+    const missing = visibleMsgs.filter((m) => !translations[`${targetLang}|${m.id}`]);
     if (missing.length === 0) return;
 
     let cancelled = false;
@@ -126,9 +151,7 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
           },
         );
         if (!res.ok) return;
-        const payload = (await res.json()) as {
-          translations: Record<string, string>;
-        };
+        const payload = (await res.json()) as { translations: Record<string, string> };
         if (cancelled) return;
         setTranslations((prev) => {
           const next = { ...prev };
@@ -144,15 +167,15 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
     return () => {
       cancelled = true;
     };
-  }, [msgs, targetLang, needsTranslation, translations]);
+  }, [visibleMsgs, targetLang, needsTranslation, translations]);
 
   return (
-    <div className="flex h-full flex-col rounded border border-border bg-card">
+    <div className="flex flex-col rounded border border-border bg-card">
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div>
           <h3 className="text-sm font-semibold">{t("threatFeed.title")}</h3>
           <p className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
-            {t("threatFeed.subtitle")}
+            {t("threatFeed.last24h")} · {t("threatFeed.subtitle")}
           </p>
         </div>
         <div className="text-[10px] font-mono text-muted-foreground">
@@ -161,9 +184,44 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
         </div>
       </div>
 
+      {/* Filter chips */}
+      <div className="flex flex-wrap items-center gap-1.5 border-b border-border px-4 py-2">
+        <button
+          type="button"
+          onClick={() => setActiveTags(new Set())}
+          className={`rounded px-1.5 py-0.5 text-[10px] font-mono uppercase tracking-wider transition-colors ${
+            activeTags.size === 0
+              ? "bg-foreground text-background"
+              : "bg-muted text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          {t("threatFeed.filterAll")}
+        </button>
+        {ALL_TAGS.map((tg) => {
+          const active = activeTags.has(tg);
+          return (
+            <button
+              key={tg}
+              type="button"
+              onClick={() => toggleTag(tg)}
+              className={`rounded px-1.5 py-0.5 text-[10px] font-mono uppercase tracking-wider transition-colors ${
+                active
+                  ? TAG_COLORS[tg] + " ring-1 ring-foreground/40"
+                  : "bg-muted text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t(`threatFeed.tags.${tg}`)}
+            </button>
+          );
+        })}
+      </div>
 
-      <ul className="flex-1 min-h-0 divide-y divide-border overflow-y-auto">
-        {msgs.map((m) => {
+      <ul
+        className={`divide-y divide-border ${
+          expanded ? "max-h-[640px] overflow-y-auto" : ""
+        }`}
+      >
+        {visibleMsgs.map((m) => {
           const key = `${targetLang}|${m.id}`;
           const translated = translations[key];
           const showOrig = showOriginal[m.id] || !needsTranslation;
@@ -211,12 +269,26 @@ export function AirThreatFeed({ limit = 12 }: { limit?: number }) {
             </li>
           );
         })}
-        {!msgs.length && !loading && (
+        {!visibleMsgs.length && !loading && (
           <li className="px-4 py-6 text-center text-xs text-muted-foreground">
-            {t("threatFeed.empty")}
+            {activeTags.size > 0 ? t("threatFeed.noMatch") : t("threatFeed.empty")}
           </li>
         )}
       </ul>
+
+      {/* Expand / collapse */}
+      {(hiddenCount > 0 || expanded) && msgs.length > COLLAPSED_VISIBLE && (
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="border-t border-border px-4 py-2 text-[11px] font-mono uppercase tracking-wider text-foreground hover:bg-muted/40 transition-colors"
+        >
+          {expanded
+            ? t("threatFeed.showLess")
+            : t("threatFeed.showMore", { count: hiddenCount })}
+        </button>
+      )}
+
       <div className="border-t border-border px-4 py-2 text-[10px] font-mono text-muted-foreground">
         {t("airAlerts.source")}:{" "}
         <a href="https://t.me/kpszsu" target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline">
