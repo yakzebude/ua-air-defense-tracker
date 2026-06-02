@@ -487,6 +487,12 @@
       "fast": "Schnellziel",
       "all_clear": "Entwarnung",
       "info": "Info"
-    }
+    },
+    "showMore": "Mehr anzeigen ({{count}})",
+    "showLess": "Weniger anzeigen",
+    "filterAll": "Alle",
+    "last24h": "Letzte 24 Stunden",
+    "noMatch": "Keine Bedrohungen entsprechen dem Filter.",
+    "filteredOut": "{{count}} durch Filter ausgeblendet"
   }
 }
