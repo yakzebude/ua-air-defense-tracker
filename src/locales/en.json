@@ -487,6 +487,12 @@
       "fast": "Fast target",
       "all_clear": "All clear",
       "info": "Info"
-    }
+    },
+    "showMore": "Show more ({{count}})",
+    "showLess": "Show less",
+    "filterAll": "All",
+    "last24h": "Last 24 hours",
+    "noMatch": "No threats match the selected filter.",
+    "filteredOut": "{{count}} hidden by filter"
   }
 }
