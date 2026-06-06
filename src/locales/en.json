@@ -42,12 +42,27 @@
     "ofSep": "of",
     "leakerPctSuffix": "% of launches",
     "momLabel": "Month-over-month",
-    "momDetail": "launches in {{last}} vs {{prev}}"
+    "momDetail": "launches in {{last}} vs {{prev}}",
+    "tip": {
+      "totalLaunchedLabel": "Total launched — how it's counted",
+      "totalLaunched": "Every aerial threat (UAV, cruise missile or ballistic missile) officially reported as launched by the Ukrainian Air Force Command since October 2022. Each entry corresponds to one detected weapon; reconnaissance UAVs are included where the Air Force lists them.",
+      "interceptionRateLabel": "Interception rate — how it's calculated",
+      "interceptionRate": "Share of launched threats that the Ukrainian Air Force confirmed as shot down or otherwise neutralised in flight. Calculated as confirmed destroyed ÷ total launched. Cruise and UAV interception rates are typically higher than ballistic ones.",
+      "reachedTargetLabel": "Reached target area — methodology note",
+      "reachedTarget": "Launched threats that were not confirmed destroyed. Used as a proxy for 'leakers' that reached or impacted near a target. Note: includes weapons that crashed, fell as debris, or were lost from tracking — it is an upper bound, not a damage count."
+    }
   },
   "masthead": {
     "kicker": "OSINT",
+    "briefLabel": "Live executive brief",
     "title": "Russian Air Attacks Against Ukraine: An Empirical Tracking",
+    "tagline": "An open, source-cited tracker measuring every reported Russian air attack on Ukraine — and how many Ukrainian air defenses stopped.",
     "intro": "Monthly counts of reported aerial threats and confirmed interceptions over Ukraine, October 2022 – present. Dataset curated by Petro Ivaniuk from daily reports of the Ukrainian Air Force Command, aggregated to calendar months. Figures are subject to revision.",
+    "insight": "In the last 30 days",
+    "insightLaunched": "Launched",
+    "insightIntercepted": "Intercepted",
+    "insightReached": "Reached target",
+    "vsPrev30": "vs. previous 30 days",
     "primarySource": "Primary source ↗",
     "methodology": "​",
     "disclaimer": "​",
