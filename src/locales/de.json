@@ -42,12 +42,27 @@
     "ofSep": "von",
     "leakerPctSuffix": "% der Starts",
     "momLabel": "Veränderung zum Vormonat",
-    "momDetail": "Starts im {{last}} gegenüber {{prev}}"
+    "momDetail": "Starts im {{last}} gegenüber {{prev}}",
+    "tip": {
+      "totalLaunchedLabel": "Gesamt gestartet — wie gezählt wird",
+      "totalLaunched": "Jede vom ukrainischen Luftwaffenkommando seit Oktober 2022 offiziell als gestartet gemeldete Luftbedrohung (UAV, Marschflugkörper oder ballistische Rakete). Jeder Eintrag entspricht einer erkannten Waffe; Aufklärungs-UAVs sind enthalten, sofern die Luftwaffe sie auflistet.",
+      "interceptionRateLabel": "Abfangrate — Berechnung",
+      "interceptionRate": "Anteil der gestarteten Bedrohungen, die von der ukrainischen Luftwaffe als abgeschossen oder im Flug neutralisiert bestätigt wurden. Berechnet als bestätigt zerstört ÷ gesamt gestartet. Marschflugkörper und UAVs werden in der Regel mit höheren Raten abgefangen als ballistische Systeme.",
+      "reachedTargetLabel": "Zielgebiet erreicht — methodische Anmerkung",
+      "reachedTarget": "Gestartete Bedrohungen, die nicht als zerstört bestätigt wurden. Wird als Näherung für „Durchbrüche" verwendet. Hinweis: enthält auch Waffen, die abstürzten, als Trümmer fielen oder aus der Verfolgung verloren gingen — es handelt sich um eine Obergrenze, nicht um eine Schadensbilanz."
+    }
   },
   "masthead": {
     "kicker": "OSINT",
+    "briefLabel": "Live-Lagebericht",
     "title": "Ukraine Luftverteidigung — Aggregierte Daten",
+    "tagline": "Ein offener, quellengestützter Tracker, der jeden gemeldeten russischen Luftangriff auf die Ukraine erfasst — und wie viele die ukrainische Luftverteidigung gestoppt hat.",
     "intro": "Monatliche Anzahl gemeldeter Bedrohungen aus der Luft und bestätigter Abfangungen über der Ukraine, Okt 2022 – heute. Datensatz von Petro Ivaniuk aus täglichen Berichten des Ukrainian Air Force Command zusammengestellt und auf Kalendermonate aggregiert. Zahlen unterliegen Revisionen.",
+    "insight": "In den letzten 30 Tagen",
+    "insightLaunched": "Gestartet",
+    "insightIntercepted": "Abgefangen",
+    "insightReached": "Ziel erreicht",
+    "vsPrev30": "vs. vorherige 30 Tage",
     "primarySource": "Primärquelle ↗",
     "methodology": "​",
     "disclaimer": "​",
