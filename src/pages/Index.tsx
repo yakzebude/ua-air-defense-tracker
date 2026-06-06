@@ -196,10 +196,15 @@ function SectionNav() {
 
 
 function KPI({
-  label, value, numeric, decimals = 0, suffix = "", sub, signal = false, info,
+  label, value, numeric, decimals = 0, suffix = "", sub, signal = false, info, size = "md",
 }: {
   label: string; value?: string; numeric?: number; decimals?: number; suffix?: string; sub?: string; signal?: boolean; info?: { label: string; body: string };
+  size?: "md" | "lg" | "xl";
 }) {
+  const sizeClass =
+    size === "xl" ? "text-[3rem] md:text-[4.5rem] tracking-tight"
+    : size === "lg" ? "text-[2.5rem] md:text-[3.25rem]"
+    : "text-[2rem] md:text-[2.5rem]";
   return (
     <div className="min-w-0">
       <div className="flex items-center gap-1.5 text-[10.5px] font-mono font-medium uppercase tracking-[0.18em] text-muted-foreground">
@@ -222,11 +227,50 @@ function KPI({
           </Tooltip>
         )}
       </div>
-      <div className={`mt-1.5 num font-semibold leading-none text-[2rem] md:text-[2.5rem] ${signal ? "text-signal" : "text-foreground"}`}>
+      <div className={`mt-1.5 num font-semibold leading-none ${sizeClass} ${signal ? "text-signal" : "text-foreground"}`}>
         {numeric !== undefined ? <AnimatedNumber value={numeric} decimals={decimals} suffix={suffix} /> : value}
       </div>
       {sub && <div className="mt-2 text-[12px] text-muted-foreground num">{sub}</div>}
     </div>
+  );
+}
+
+/** Pct change; null when prev is zero / missing. */
+function pctChange(curr: number, prev: number): number | null {
+  if (!prev || !Number.isFinite(prev)) return null;
+  return ((curr - prev) / prev) * 100;
+}
+
+/**
+ * Coloured trend pill. "up-is-good" → green when delta rises (e.g. interception
+ * rate); "down-is-good" → green when delta falls (e.g. launched, leakers).
+ */
+function TrendBadge({
+  delta, direction, label,
+}: {
+  delta: number | null;
+  direction: "up-is-good" | "down-is-good";
+  label?: string;
+}) {
+  if (delta === null || !Number.isFinite(delta)) {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-sm bg-muted/60 px-1.5 py-0.5 text-[10.5px] font-mono uppercase tracking-[0.14em] text-muted-foreground">
+        — {label}
+      </span>
+    );
+  }
+  const rising = delta > 0;
+  const isGood = direction === "up-is-good" ? rising : !rising;
+  const tone = isGood
+    ? "bg-[hsl(var(--signal-ok)/0.15)] text-[hsl(var(--signal-ok))]"
+    : "bg-[hsl(var(--signal)/0.18)] text-[hsl(var(--signal))]";
+  const arrow = rising ? "▲" : "▼";
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[10.5px] font-mono font-semibold uppercase tracking-[0.14em] ${tone}`}>
+      <span aria-hidden>{arrow}</span>
+      <span className="num">{Math.abs(delta).toFixed(1)}%</span>
+      {label && <span className="font-medium text-muted-foreground">{label}</span>}
+    </span>
   );
 }
 
