@@ -511,6 +511,10 @@ const Index = () => {
   const [ballisticRange, setBallisticRange] = useState<[number, number] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [latestDataPoint, setLatestDataPoint] = useState<Date | null>(null);
+  const [windowStats, setWindowStats] = useState<{
+    last30: { launched: number; destroyed: number };
+    prev30: { launched: number; destroyed: number };
+  } | null>(null);
 
   useEffect(() => {
     loadShahedData()
@@ -523,12 +527,18 @@ const Index = () => {
       })
       .catch((e) => setError(String(e)));
 
-    // Determine the most recent raw daily data point timestamp from both CSVs.
+    // Parse raw daily CSVs once: derive latest data point + rolling 30d / prev 30d windows.
     Promise.all([
       fetch("/data/shahed_attacks_daily.csv").then((r) => r.ok ? r.text() : ""),
       fetch("/data/missile_attacks_daily.csv").then((r) => r.ok ? r.text() : ""),
     ]).then(([a, b]) => {
       let maxMs = 0;
+      const now = Date.now();
+      const DAY = 86_400_000;
+      const last30Start = now - 30 * DAY;
+      const prev30Start = now - 60 * DAY;
+      let l30L = 0, l30D = 0, p30L = 0, p30D = 0;
+
       for (const text of [a, b]) {
         if (!text) continue;
         const parsed = Papa.parse<Record<string, string>>(text, { header: true, skipEmptyLines: true });
@@ -536,13 +546,26 @@ const Index = () => {
           const s = (row.time_end || row.time_start || "").trim();
           if (!s) continue;
           const iso = s.length <= 10 ? `${s}T00:00:00Z` : `${s.replace(" ", "T")}:00Z`;
-          const t = Date.parse(iso);
-          if (!isNaN(t) && t > maxMs) maxMs = t;
+          const ts = Date.parse(iso);
+          if (isNaN(ts)) continue;
+          if (ts > maxMs) maxMs = ts;
+          const launched = Number.parseFloat(row.launched ?? "") || 0;
+          const destroyed = Number.parseFloat(row.destroyed ?? "") || 0;
+          if (ts >= last30Start && ts <= now) {
+            l30L += launched; l30D += destroyed;
+          } else if (ts >= prev30Start && ts < last30Start) {
+            p30L += launched; p30D += destroyed;
+          }
         }
       }
       if (maxMs > 0) setLatestDataPoint(new Date(maxMs));
+      setWindowStats({
+        last30: { launched: Math.round(l30L), destroyed: Math.round(l30D) },
+        prev30: { launched: Math.round(p30L), destroyed: Math.round(p30D) },
+      });
     }).catch(() => {});
   }, []);
+
 
   useUrlRange("dr", shahedRange, setShahedRange, shahed ? shahed.months.length - 1 : null);
   useUrlRange("cr", cruiseRange, setCruiseRange, cruise ? cruise.months.length - 1 : null);
