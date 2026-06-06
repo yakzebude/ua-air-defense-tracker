@@ -612,16 +612,25 @@ const Index = () => {
       <SectionNav />
 
 
-      <section id="summary" className="border-b border-border">
-        <div className="container pt-10 pb-7 md:pt-14">
+      <section id="summary" className="border-b border-border bg-gradient-to-b from-card/40 to-background">
+        <div className="container pt-10 pb-10 md:pt-14 md:pb-14">
+          {/* Row 1 — masthead: kicker · title · tagline · refresh badge | mini map */}
           <div className="grid gap-6 md:grid-cols-12 md:gap-8">
             <div className="md:col-span-9">
-              <div className="src-label mb-3">{t("masthead.kicker")}</div>
-              <h1 className="max-w-4xl text-3xl font-semibold leading-[1.15] tracking-tight md:text-[2.75rem]">
+              <div className="src-label mb-3 flex items-center gap-2">
+                <span className="relative inline-flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--signal))] opacity-60" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
+                </span>
+                <span>{t("masthead.kicker")} · {t("masthead.briefLabel")}</span>
+              </div>
+              <h1 className="max-w-4xl text-3xl font-semibold leading-[1.1] tracking-tight md:text-[2.75rem]">
                 {t("masthead.title")}
               </h1>
+              <p className="mt-4 max-w-3xl text-[15px] font-medium leading-[1.55] text-foreground md:text-[16px]">
+                {t("masthead.tagline")}
+              </p>
 
-              {/* Prominent refresh badge directly under the title */}
               <div className="mt-5 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-sm border border-border bg-card px-3.5 py-2 font-mono text-[11.5px]">
                 <span className="uppercase tracking-[0.16em] text-muted-foreground">
                   {t("masthead.refreshBadge")}
@@ -630,32 +639,98 @@ const Index = () => {
                 <span className="num text-foreground">{fmtUtc(latestDataPoint)}</span>
               </div>
 
-              <p className="mt-5 max-w-3xl text-[14px] leading-[1.7] text-muted-foreground md:text-[15px]">
+              <p className="mt-5 max-w-3xl text-[13.5px] leading-[1.7] text-muted-foreground">
                 {t("masthead.intro")}
               </p>
             </div>
 
-            {/* Top-right live mini map: real-time air-raid alerts with arrow to full view */}
             <aside className="md:col-span-3 md:pt-1">
               <MiniAlertsMap href="#alerts" />
             </aside>
           </div>
 
           {ready && (
-            <>
-              <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-border py-7 md:grid-cols-4">
-                <KPI label={t("kpi.totalLaunched")} numeric={grand.launched} sub={t("kpi.totalLaunchedSub")} signal info={{ label: t("masthead.sourcesLabel"), body: t("masthead.sourcesBody") }} />
-                <KPI label={t("kpi.confirmedDestroyed")} numeric={grand.destroyed} sub={t("kpi.confirmedDestroyedSub")} info={{ label: t("masthead.sourcesLabel"), body: t("masthead.sourcesBody") }} />
-                <KPI label={t("kpi.interceptionRate")} numeric={grand.rate * 100} decimals={1} suffix="%" sub={`${fmt(grand.destroyed)} ${t("kpi.ofSep")} ${fmt(grand.launched)}`} info={{ label: t("masthead.sourcesLabel"), body: t("masthead.sourcesBody") }} />
-                <KPI label={t("kpi.reachedTarget")} numeric={reached} sub={t("kpi.reachedTargetSub")} info={{ label: t("masthead.sourcesLabel"), body: t("masthead.sourcesBody") }} />
+            <div className="mt-9 grid gap-5 md:grid-cols-12">
+              {/* TIER 1 — hero KPI: Total launched (col-span-7) */}
+              <div className="md:col-span-7 rounded-md border border-border bg-card p-6 md:p-8">
+                <KPI
+                  label={t("kpi.totalLaunched")}
+                  numeric={grand.launched}
+                  size="xl"
+                  signal
+                  sub={`${t("kpi.totalLaunchedSub")}${dataTimeframe ? ` · ${dataTimeframe.first} – ${dataTimeframe.last}` : ""}`}
+                  info={{ label: t("kpi.tip.totalLaunchedLabel"), body: t("kpi.tip.totalLaunched") }}
+                />
+
+                {/* TIER 3 — rolling 30-day insight strip */}
+                {windowStats && (
+                  <div className="mt-7 rounded-sm border border-border bg-background/60 p-4">
+                    <div className="mb-3 flex items-baseline gap-2 text-[10.5px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
+                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
+                      <span>{t("masthead.insight")}</span>
+                      <span className="text-muted-foreground/70 normal-case tracking-normal">— {t("masthead.vsPrev30")}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      {(() => {
+                        const l = windowStats.last30.launched;
+                        const d = windowStats.last30.destroyed;
+                        const reachedW = Math.max(l - d, 0);
+                        const lPrev = windowStats.prev30.launched;
+                        const dPrev = windowStats.prev30.destroyed;
+                        const rPrev = Math.max(lPrev - dPrev, 0);
+                        return (
+                          <>
+                            <div>
+                              <div className="text-[10.5px] font-mono uppercase tracking-[0.16em] text-muted-foreground">{t("masthead.insightLaunched")}</div>
+                              <div className="mt-1 num text-[1.5rem] font-semibold leading-none">{fmt(l)}</div>
+                              <div className="mt-1.5"><TrendBadge delta={pctChange(l, lPrev)} direction="down-is-good" /></div>
+                            </div>
+                            <div>
+                              <div className="text-[10.5px] font-mono uppercase tracking-[0.16em] text-muted-foreground">{t("masthead.insightIntercepted")}</div>
+                              <div className="mt-1 num text-[1.5rem] font-semibold leading-none">{fmt(d)}</div>
+                              <div className="mt-1.5"><TrendBadge delta={pctChange(d, dPrev)} direction="up-is-good" /></div>
+                            </div>
+                            <div>
+                              <div className="text-[10.5px] font-mono uppercase tracking-[0.16em] text-muted-foreground">{t("masthead.insightReached")}</div>
+                              <div className="mt-1 num text-[1.5rem] font-semibold leading-none">{fmt(reachedW)}</div>
+                              <div className="mt-1.5"><TrendBadge delta={pctChange(reachedW, rPrev)} direction="down-is-good" /></div>
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                )}
               </div>
-            </>
+
+              {/* TIER 2 — Interception rate + Reached target area (col-span-5, stacked) */}
+              <div className="md:col-span-5 grid gap-5">
+                <div className="rounded-md border border-border bg-card p-6">
+                  <KPI
+                    label={t("kpi.interceptionRate")}
+                    numeric={grand.rate * 100}
+                    decimals={1}
+                    suffix="%"
+                    size="lg"
+                    sub={`${fmt(grand.destroyed)} ${t("kpi.ofSep")} ${fmt(grand.launched)} ${t("kpi.confirmedInterceptions")}`}
+                    info={{ label: t("kpi.tip.interceptionRateLabel"), body: t("kpi.tip.interceptionRate") }}
+                  />
+                </div>
+                <div className="rounded-md border border-border bg-card p-6">
+                  <KPI
+                    label={t("kpi.reachedTarget")}
+                    numeric={reached}
+                    size="lg"
+                    sub={grand.launched > 0 ? `${((reached / grand.launched) * 100).toFixed(1)}${t("kpi.leakerPctSuffix")}` : "—"}
+                    info={{ label: t("kpi.tip.reachedTargetLabel"), body: t("kpi.tip.reachedTarget") }}
+                  />
+                </div>
+              </div>
+            </div>
           )}
-
-
-
         </div>
       </section>
+
 
 
       {error && (
