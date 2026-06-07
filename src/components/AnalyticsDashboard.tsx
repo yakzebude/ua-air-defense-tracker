@@ -451,22 +451,40 @@ function AnalyticsPager(props: Props) {
       )}
 
       {active === "cruiseBal" && (
-        <Panel
-          title={t("analytics.cruiseBalMonthly")}
-          subtitle={t("analytics.cruiseBalMonthlySub")}
-          source={t("primarySourceShort")}
-          note={t("analytics.cruiseBalMonthlyNote")}
-          action={
-            <PanelActions
-              filename="ua-airdefense-tracker_cruise-ballistic-monthly.csv"
-              panelTitle={t("analytics.cruiseBalMonthly")}
-              rows={compRows.map(({ month, cruise, ballistic }) => ({ month, cruise, ballistic }))}
-              headers={["month", "cruise", "ballistic"]}
-            />
-          }
-        >
-          <CompositionAreaChart data={data} series={["ballistic", "cruise"]} labels={labels} totalLabel={totalLabel} />
-        </Panel>
+        <>
+          <Panel
+            title={t("analytics.cruiseBalMonthly")}
+            subtitle={t("analytics.cruiseBalMonthlySub")}
+            source={t("primarySourceShort")}
+            note={t("analytics.cruiseBalMonthlyNote")}
+            action={
+              <PanelActions
+                filename="ua-airdefense-tracker_cruise-ballistic-monthly.csv"
+                panelTitle={t("analytics.cruiseBalMonthly")}
+                rows={compRows.map(({ month, cruise, ballistic }) => ({ month, cruise, ballistic }))}
+                headers={["month", "cruise", "ballistic"]}
+              />
+            }
+          >
+            <CompositionAreaChart data={data} series={["ballistic", "cruise"]} labels={labels} totalLabel={totalLabel} />
+          </Panel>
+          <ChartInsights
+            data={props.cruise.months}
+            metric="launched"
+            unit="cruise missiles"
+            direction="down-is-good"
+            title="Key findings · cruise missiles"
+            subtitle="Plain-language summary of monthly cruise-missile launches."
+          />
+          <ChartInsights
+            data={props.ballistic.months}
+            metric="launched"
+            unit="ballistic missiles"
+            direction="down-is-good"
+            title="Key findings · ballistic missiles"
+            subtitle="Plain-language summary of monthly ballistic-missile launches."
+          />
+        </>
       )}
 
       {active === "share" && (
