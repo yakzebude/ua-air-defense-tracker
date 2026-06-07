@@ -49,7 +49,7 @@
       "interceptionRateLabel": "Abfangrate — Berechnung",
       "interceptionRate": "Anteil der gestarteten Bedrohungen, die von der ukrainischen Luftwaffe als abgeschossen oder im Flug neutralisiert bestätigt wurden. Berechnet als bestätigt zerstört ÷ gesamt gestartet. Marschflugkörper und UAVs werden in der Regel mit höheren Raten abgefangen als ballistische Systeme.",
       "reachedTargetLabel": "Zielgebiet erreicht — methodische Anmerkung",
-      "reachedTarget": "Gestartete Bedrohungen, die nicht als zerstört bestätigt wurden. Wird als Näherung für „Durchbrüche" verwendet. Hinweis: enthält auch Waffen, die abstürzten, als Trümmer fielen oder aus der Verfolgung verloren gingen — es handelt sich um eine Obergrenze, nicht um eine Schadensbilanz."
+      "reachedTarget": "Gestartete Bedrohungen, die nicht als zerstört bestätigt wurden. Wird als Näherung für „Durchbrüche“ verwendet. Hinweis: enthält auch Waffen, die abstürzten, als Trümmer fielen oder aus der Verfolgung verloren gingen — es handelt sich um eine Obergrenze, nicht um eine Schadensbilanz."
     }
   },
   "masthead": {
