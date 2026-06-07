@@ -12,6 +12,7 @@ import {
 import type { Dataset, MonthPoint } from "@/lib/shahed-data";
 import { Panel } from "@/components/ui/panel";
 import { PanelActions } from "@/components/PanelActions";
+import { ChartInsights } from "@/components/ChartInsights";
 import { rampColor } from "@/lib/threat-ramp";
 
 
@@ -422,41 +423,68 @@ function AnalyticsPager(props: Props) {
       </div>
 
       {active === "uavs" && (
-        <Panel
-          title={t("analytics.uavMonthly")}
-          subtitle={t("analytics.uavMonthlySub")}
-          source={t("primarySourceShort")}
-          note={t("analytics.uavMonthlyNote")}
-          action={
-            <PanelActions
-              filename="ua-airdefense-tracker_uav-monthly.csv"
-              panelTitle={t("analytics.uavMonthly")}
-              rows={compRows.map(({ month, uavs }) => ({ month, uavs }))}
-              headers={["month", "uavs"]}
-            />
-          }
-        >
-          <CompositionAreaChart data={data} series={["uavs"]} labels={labels} totalLabel={totalLabel} />
-        </Panel>
+        <>
+          <Panel
+            title={t("analytics.uavMonthly")}
+            subtitle={t("analytics.uavMonthlySub")}
+            source={t("primarySourceShort")}
+            note={t("analytics.uavMonthlyNote")}
+            action={
+              <PanelActions
+                filename="ua-airdefense-tracker_uav-monthly.csv"
+                panelTitle={t("analytics.uavMonthly")}
+                rows={compRows.map(({ month, uavs }) => ({ month, uavs }))}
+                headers={["month", "uavs"]}
+              />
+            }
+          >
+            <CompositionAreaChart data={data} series={["uavs"]} labels={labels} totalLabel={totalLabel} />
+          </Panel>
+          <ChartInsights
+            data={props.shahed.months}
+            metric="launched"
+            unit="UAVs"
+            direction="down-is-good"
+            subtitle="Plain-language summary of monthly UAV launches detected at Ukrainian airspace."
+          />
+        </>
       )}
 
       {active === "cruiseBal" && (
-        <Panel
-          title={t("analytics.cruiseBalMonthly")}
-          subtitle={t("analytics.cruiseBalMonthlySub")}
-          source={t("primarySourceShort")}
-          note={t("analytics.cruiseBalMonthlyNote")}
-          action={
-            <PanelActions
-              filename="ua-airdefense-tracker_cruise-ballistic-monthly.csv"
-              panelTitle={t("analytics.cruiseBalMonthly")}
-              rows={compRows.map(({ month, cruise, ballistic }) => ({ month, cruise, ballistic }))}
-              headers={["month", "cruise", "ballistic"]}
-            />
-          }
-        >
-          <CompositionAreaChart data={data} series={["ballistic", "cruise"]} labels={labels} totalLabel={totalLabel} />
-        </Panel>
+        <>
+          <Panel
+            title={t("analytics.cruiseBalMonthly")}
+            subtitle={t("analytics.cruiseBalMonthlySub")}
+            source={t("primarySourceShort")}
+            note={t("analytics.cruiseBalMonthlyNote")}
+            action={
+              <PanelActions
+                filename="ua-airdefense-tracker_cruise-ballistic-monthly.csv"
+                panelTitle={t("analytics.cruiseBalMonthly")}
+                rows={compRows.map(({ month, cruise, ballistic }) => ({ month, cruise, ballistic }))}
+                headers={["month", "cruise", "ballistic"]}
+              />
+            }
+          >
+            <CompositionAreaChart data={data} series={["ballistic", "cruise"]} labels={labels} totalLabel={totalLabel} />
+          </Panel>
+          <ChartInsights
+            data={props.cruise.months}
+            metric="launched"
+            unit="cruise missiles"
+            direction="down-is-good"
+            title="Key findings · cruise missiles"
+            subtitle="Plain-language summary of monthly cruise-missile launches."
+          />
+          <ChartInsights
+            data={props.ballistic.months}
+            metric="launched"
+            unit="ballistic missiles"
+            direction="down-is-good"
+            title="Key findings · ballistic missiles"
+            subtitle="Plain-language summary of monthly ballistic-missile launches."
+          />
+        </>
       )}
 
       {active === "share" && (

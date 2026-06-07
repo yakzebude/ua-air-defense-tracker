@@ -18,6 +18,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { AirAlertsMap } from "@/components/AirAlertsMap";
 import { AirThreatFeed } from "@/components/AirThreatFeed";
 import { MiniAlertsMap } from "@/components/MiniAlertsMap";
+import { ChartInsights } from "@/components/ChartInsights";
+import { DataConfidenceSection } from "@/components/DataConfidenceSection";
+import { StatusBanner } from "@/components/StatusBadge";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 
@@ -458,6 +461,14 @@ function CategorySection({
           <MonthlyTrendChart data={filtered} />
         </Panel>
 
+        <ChartInsights
+          data={filtered}
+          metric="launched"
+          unit={unitNoun}
+          direction="down-is-good"
+          subtitle={`Auto-generated from ${rangeLabel || "the selected range"}. Plain-language summary of launches, peaks and recent trends.`}
+        />
+
       </div>
     </section>
   );
@@ -733,9 +744,20 @@ const Index = () => {
 
 
 
+      <DataConfidenceSection
+        lastUpdatedLabel={lastUpdatedLabel}
+        lastUpdatedDate={lastUpdatedDate}
+      />
+
       {error && (
-        <div className="container py-6 text-sm text-destructive">
-          {t("masthead.loadFailed")} {error}
+        <div className="container py-6">
+          <StatusBanner
+            level="unavailable"
+            title="Live dataset temporarily unavailable"
+            description="We can't reach the upstream data source right now. The dashboard is showing the most recent cached snapshot, which may be a few hours out of date."
+            lastSuccess={lastUpdatedLabel ?? "—"}
+            meta={<span>Status: source unreachable · auto-retrying</span>}
+          />
         </div>
       )}
 

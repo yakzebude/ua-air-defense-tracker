@@ -64,8 +64,69 @@ export default function About() {
         </div>
       </DocSection>
 
+      <DocSection num="02" title="Project purpose">
+        <p>
+          UA Air Defense Tracker is a public-interest OSINT dashboard that aggregates and republishes
+          Ukrainian air-defense data in a verifiable, machine-readable form. It exists so that
+          journalists, researchers, policymakers and the general public can read the same numbers
+          the same way — without paywalls, without spin, and without losing the methodology.
+        </p>
+      </DocSection>
 
-      <DocSection num="02" title={t("aboutPage.s2Title")}>
+      <DocSection num="03" title="Methodology summary">
+        <p>
+          Every figure on the dashboard travels through a documented five-step pipeline:
+          <strong> source reports → collection → validation → aggregation → publication</strong>.
+          Inputs are official Ukrainian Air Force Command briefings, oblast administrations, and
+          named OSINT channels. Conflicting numbers are flagged; we use the most conservative
+          figure and tag every value with its confidence class (<em>Reported</em>,
+          <em> Confirmed</em>, <em>Estimated</em>).
+        </p>
+        <p>
+          The full methodology — including how interception rate, leakers and rolling 30-day
+          windows are computed — lives at <a href="/methodology">/methodology</a>.
+        </p>
+      </DocSection>
+
+      <DocSection num="04" title="Data sources">
+        <p>
+          We do not generate primary intelligence. We aggregate it. The complete, versioned source
+          list — with URLs, update cadences and known reliability notes — is published at{" "}
+          <a href="/sources">/sources</a>. Live air-alert data is sourced from{" "}
+          <a href="https://www.ukrainealarm.com" target="_blank" rel="noopener noreferrer external">ukrainealarm.com</a>{" "}
+          and refreshed every 60 seconds; aggregated launch / interception figures originate from
+          the daily reports of the Ukrainian Air Force Command.
+        </p>
+      </DocSection>
+
+      <DocSection num="05" title="Transparency statement">
+        <p>
+          We publish the underlying CSVs alongside the dashboard. Any chart you see here can be
+          reproduced from those files. Revisions are kept in the upstream dataset changelog and
+          mirrored in our <a href="/changelog">site changelog</a>. If you can replicate our figures,
+          you can also challenge them — and we welcome that. Corrections are filed publicly,
+          not silently.
+        </p>
+        <DocCallout label="No advocacy, no fundraising for this project">
+          UA Air Defense Tracker does not solicit donations for itself, does not sell ads, and is
+          not affiliated with any government or political party. Where the dashboard recommends
+          humanitarian or defense organisations, they are clearly labelled as third-party links.
+        </DocCallout>
+      </DocSection>
+
+      <DocSection num="06" title="Open-data commitment">
+        <p>
+          The aggregated dataset is released under{" "}
+          <a href="https://opendatacommons.org/licenses/by/1-0/" target="_blank" rel="noopener noreferrer external">
+            ODC-BY 1.0
+          </a>{" "}
+          — free to use, modify and redistribute for any purpose, including commercial use, with
+          attribution. Bulk downloads (CSV, JSON, Frictionless Data Package) are linked from the
+          footer of every page.
+        </p>
+      </DocSection>
+
+      <DocSection num="07" title={t("aboutPage.s2Title")}>
         <p>{t("aboutPage.missionP1")}</p>
         <p>{t("aboutPage.missionP2")}</p>
         <DocCallout label={t("aboutPage.notLabel")}>
@@ -73,7 +134,8 @@ export default function About() {
         </DocCallout>
       </DocSection>
 
-      <DocSection num="03" title={t("aboutPage.s3Title")}>
+
+      <DocSection num="08" title={t("aboutPage.s3Title")}>
         <ul className="list-disc space-y-2 pl-5">
           <li>
             <strong>{t("aboutPage.principle1Label")}</strong> {t("aboutPage.principle1")}
@@ -99,7 +161,7 @@ export default function About() {
         </ul>
       </DocSection>
 
-      <DocSection num="04" title={t("aboutPage.s4Title")}>
+      <DocSection num="09" title={t("aboutPage.s4Title")}>
         <p>{t("aboutPage.citationIntro")}</p>
         <div className="space-y-3">
           <div className="src-label">APA</div>

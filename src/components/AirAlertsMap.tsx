@@ -440,14 +440,22 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           </span>
         </div>
         <div className="flex items-center gap-3">
-          {loading && <span>{t("airAlerts.loading")}</span>}
+          {loading && (
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[hsl(var(--signal-warn))]" />
+              {t("airAlerts.loading")}
+            </span>
+          )}
           {error && !data && (
-            <span className="text-[hsl(var(--signal))]">{t("airAlerts.error")}</span>
+            <span className="inline-flex items-center gap-1.5 text-[hsl(var(--signal))]" title="Upstream alerts feed temporarily unreachable. Showing latest cached data.">
+              <span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
+              Live feed unavailable — showing cached data
+            </span>
           )}
           {data && (
-            <span>
-              {t("airAlerts.lastUpdate")}: {new Date(data.updatedAt).toUTCString().slice(17, 22)} UTC
-              {data.stale && ` (${t("airAlerts.stale")})`}
+            <span className="inline-flex items-center gap-1.5">
+              <span className={`h-1.5 w-1.5 rounded-full ${data.stale ? "bg-[hsl(var(--signal-warn))]" : "bg-[hsl(var(--signal-ok))]"}`} />
+              {data.stale ? "Delayed" : "Operational"} · {t("airAlerts.lastUpdate")}: {new Date(data.updatedAt).toUTCString().slice(17, 22)} UTC
             </span>
           )}
           {variant === "compact" && (
