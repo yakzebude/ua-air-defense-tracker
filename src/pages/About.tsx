@@ -161,7 +161,7 @@ export default function About() {
         </ul>
       </DocSection>
 
-      <DocSection num="04" title={t("aboutPage.s4Title")}>
+      <DocSection num="09" title={t("aboutPage.s4Title")}>
         <p>{t("aboutPage.citationIntro")}</p>
         <div className="space-y-3">
           <div className="src-label">APA</div>
