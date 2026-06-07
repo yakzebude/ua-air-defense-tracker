@@ -744,9 +744,20 @@ const Index = () => {
 
 
 
+      <DataConfidenceSection
+        lastUpdatedLabel={lastUpdatedLabel}
+        lastUpdatedDate={lastUpdatedDate}
+      />
+
       {error && (
-        <div className="container py-6 text-sm text-destructive">
-          {t("masthead.loadFailed")} {error}
+        <div className="container py-6">
+          <StatusBanner
+            level="unavailable"
+            title="Live dataset temporarily unavailable"
+            description="We can't reach the upstream data source right now. The dashboard is showing the most recent cached snapshot, which may be a few hours out of date."
+            lastSuccess={lastUpdatedLabel ?? "—"}
+            meta={<span>Status: source unreachable · auto-retrying</span>}
+          />
         </div>
       )}
 
