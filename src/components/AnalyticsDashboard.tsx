@@ -12,6 +12,7 @@ import {
 import type { Dataset, MonthPoint } from "@/lib/shahed-data";
 import { Panel } from "@/components/ui/panel";
 import { PanelActions } from "@/components/PanelActions";
+import { ChartInsights } from "@/components/ChartInsights";
 import { rampColor } from "@/lib/threat-ramp";
 
 
