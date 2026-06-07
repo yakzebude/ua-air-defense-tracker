@@ -423,22 +423,31 @@ function AnalyticsPager(props: Props) {
       </div>
 
       {active === "uavs" && (
-        <Panel
-          title={t("analytics.uavMonthly")}
-          subtitle={t("analytics.uavMonthlySub")}
-          source={t("primarySourceShort")}
-          note={t("analytics.uavMonthlyNote")}
-          action={
-            <PanelActions
-              filename="ua-airdefense-tracker_uav-monthly.csv"
-              panelTitle={t("analytics.uavMonthly")}
-              rows={compRows.map(({ month, uavs }) => ({ month, uavs }))}
-              headers={["month", "uavs"]}
-            />
-          }
-        >
-          <CompositionAreaChart data={data} series={["uavs"]} labels={labels} totalLabel={totalLabel} />
-        </Panel>
+        <>
+          <Panel
+            title={t("analytics.uavMonthly")}
+            subtitle={t("analytics.uavMonthlySub")}
+            source={t("primarySourceShort")}
+            note={t("analytics.uavMonthlyNote")}
+            action={
+              <PanelActions
+                filename="ua-airdefense-tracker_uav-monthly.csv"
+                panelTitle={t("analytics.uavMonthly")}
+                rows={compRows.map(({ month, uavs }) => ({ month, uavs }))}
+                headers={["month", "uavs"]}
+              />
+            }
+          >
+            <CompositionAreaChart data={data} series={["uavs"]} labels={labels} totalLabel={totalLabel} />
+          </Panel>
+          <ChartInsights
+            data={props.shahed.months}
+            metric="launched"
+            unit="UAVs"
+            direction="down-is-good"
+            subtitle="Plain-language summary of monthly UAV launches detected at Ukrainian airspace."
+          />
+        </>
       )}
 
       {active === "cruiseBal" && (
