@@ -135,7 +135,7 @@ export default function About() {
       </DocSection>
 
 
-      <DocSection num="03" title={t("aboutPage.s3Title")}>
+      <DocSection num="08" title={t("aboutPage.s3Title")}>
         <ul className="list-disc space-y-2 pl-5">
           <li>
             <strong>{t("aboutPage.principle1Label")}</strong> {t("aboutPage.principle1")}
