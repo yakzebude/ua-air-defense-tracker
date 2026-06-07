@@ -18,6 +18,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { AirAlertsMap } from "@/components/AirAlertsMap";
 import { AirThreatFeed } from "@/components/AirThreatFeed";
 import { MiniAlertsMap } from "@/components/MiniAlertsMap";
+import { ChartInsights } from "@/components/ChartInsights";
+import { DataConfidenceSection } from "@/components/DataConfidenceSection";
+import { StatusBanner } from "@/components/StatusBadge";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 
