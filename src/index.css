@@ -3,116 +3,131 @@
 @tailwind utilities;
 
 /* ===========================================================================
-   UA Air Defense Tracker — restrained OSINT / defense analytics design system
-   Palette: ink (primary) + amber (signal) + neutral gray scale
-   No gradients, no glow, single border radius, single shadow token.
+   UA Air Defense Tracker — OSINT / data-journalism design system
+   Inspired by FT, Reuters Graphics, Our World In Data, Bellingcat.
+   Editorial serif headlines + Inter UI + restrained, accessible palette.
+   No gradients, no neon, no military aesthetics.
    =========================================================================== */
 
 @layer base {
   :root {
-    /* Light — paper / report look */
-    --background: 0 0% 100%;
-    --foreground: 215 28% 12%;
+    /* Light — paper / report look (FT/OWID inspired) */
+    --background: 40 20% 99%;             /* warm paper */
+    --foreground: 215 25% 14%;            /* near-black ink */
     --card: 0 0% 100%;
-    --card-foreground: 215 28% 12%;
+    --card-foreground: 215 25% 14%;
     --popover: 0 0% 100%;
-    --popover-foreground: 215 28% 12%;
+    --popover-foreground: 215 25% 14%;
 
-    --primary: 215 28% 17%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 215 16% 95%;
-    --secondary-foreground: 215 28% 12%;
-    --muted: 215 16% 95%;
-    --muted-foreground: 215 10% 40%;
-    --accent: 215 16% 95%;
-    --accent-foreground: 215 28% 12%;
-    --destructive: 0 72% 35%;            /* karmesin */
+    --primary: 215 25% 14%;
+    --primary-foreground: 40 20% 99%;
+    --secondary: 215 16% 96%;
+    --secondary-foreground: 215 25% 14%;
+    --muted: 215 16% 96%;
+    --muted-foreground: 215 10% 42%;
+    --accent: 215 16% 96%;
+    --accent-foreground: 215 25% 14%;
+    --destructive: 0 65% 42%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 215 16% 88%;
-    --input: 215 16% 88%;
-    --ring: 215 28% 17%;
-    --radius: 0.125rem;                   /* eckig, fast keine Rundung */
+    --border: 215 16% 89%;
+    --input: 215 16% 89%;
+    --ring: 215 25% 14%;
+    --radius: 0.25rem;
 
-    --ink: 215 28% 17%;
-    --signal: 0 72% 35%;
-    --signal-soft: 0 70% 94%;
-    --signal-ok: 75 55% 28%;              /* oliv */
-    --signal-warn: 35 50% 45%;            /* gedecktes bernstein */
+    --ink: 215 25% 14%;
+    --signal: 0 65% 42%;
+    --signal-soft: 0 70% 95%;
+    --signal-ok: 152 45% 32%;             /* calm forest green */
+    --signal-warn: 35 75% 42%;            /* honest amber */
 
-    --ua-yellow: 75 55% 28%;
-    --ua-blue: 215 28% 17%;
+    --ua-yellow: 48 85% 50%;
+    --ua-blue: 211 88% 36%;
     --cyber: 215 10% 40%;
     --cyber-glow: 215 10% 40%;
 
-    /* Funktionsfarben — sparsam */
-    --series-launched: 0 65% 38%;         /* karmesin — Bedrohungen / Einschläge */
-    --series-destroyed: 210 22% 42%;      /* stahlblau — erfolgreiche Abschüsse */
-    --series-rate: 215 10% 45%;           /* neutrales mittelgrau — gesamt */
-    --grid: 215 16% 88%;
+    /* Chart series (legacy compatibility) */
+    --series-launched: 0 65% 42%;
+    --series-destroyed: 152 45% 32%;
+    --series-rate: 215 14% 45%;
+    --grid: 215 16% 89%;
+
+    /* Weapon-category palette — used consistently across charts/badges.
+       Colour-blind safe pairing; never used as the only encoding. */
+    --weapon-uav: 211 72% 42%;            /* blue */
+    --weapon-cruise: 28 78% 48%;          /* orange */
+    --weapon-ballistic: 358 68% 45%;      /* red */
+    --weapon-bomb: 268 42% 45%;           /* purple */
+    --weapon-interception: 152 45% 32%;   /* green */
 
     --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 1px 0 rgb(15 23 42 / 0.03);
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 215 28% 17%;
-    --sidebar-primary: 215 28% 17%;
+    --sidebar-foreground: 215 25% 14%;
+    --sidebar-primary: 215 25% 14%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 16% 95%;
-    --sidebar-accent-foreground: 215 28% 17%;
-    --sidebar-border: 215 16% 88%;
-    --sidebar-ring: 215 28% 17%;
+    --sidebar-accent: 215 16% 96%;
+    --sidebar-accent-foreground: 215 25% 14%;
+    --sidebar-border: 215 16% 89%;
+    --sidebar-ring: 215 25% 14%;
   }
 
   .dark {
-    /* Dark — militärisch, dezent. Basis #1e293b (slate-800) */
-    --background: 215 28% 17%;            /* #1e293b */
-    --foreground: 210 20% 92%;
-    --card: 215 25% 21%;
-    --card-foreground: 210 20% 92%;
-    --popover: 215 25% 21%;
-    --popover-foreground: 210 20% 92%;
+    /* Dark — restrained ink, no military feel */
+    --background: 215 28% 11%;
+    --foreground: 40 15% 92%;
+    --card: 215 25% 14%;
+    --card-foreground: 40 15% 92%;
+    --popover: 215 25% 14%;
+    --popover-foreground: 40 15% 92%;
 
-    --primary: 210 20% 92%;
-    --primary-foreground: 215 28% 17%;
-    --secondary: 215 22% 25%;
-    --secondary-foreground: 210 20% 92%;
-    --muted: 215 22% 25%;
-    --muted-foreground: 215 12% 70%;
-    --accent: 215 22% 25%;
-    --accent-foreground: 210 20% 92%;
-    --destructive: 0 65% 38%;
-    --destructive-foreground: 210 20% 92%;
+    --primary: 40 15% 92%;
+    --primary-foreground: 215 28% 11%;
+    --secondary: 215 22% 18%;
+    --secondary-foreground: 40 15% 92%;
+    --muted: 215 22% 18%;
+    --muted-foreground: 215 12% 68%;
+    --accent: 215 22% 18%;
+    --accent-foreground: 40 15% 92%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 40 15% 92%;
 
-    --border: 215 18% 32%;                /* dünn, leicht heller als BG */
-    --input: 215 18% 32%;
-    --ring: 210 20% 92%;
+    --border: 215 18% 24%;
+    --input: 215 18% 24%;
+    --ring: 40 15% 92%;
 
-    --ink: 210 20% 92%;
-    --signal: 0 65% 38%;
+    --ink: 40 15% 92%;
+    --signal: 0 62% 55%;
     --signal-soft: 0 35% 22%;
-    --signal-ok: 75 50% 28%;              /* oliv */
-    --signal-warn: 35 45% 45%;            /* gedecktes bernstein */
+    --signal-ok: 152 40% 50%;
+    --signal-warn: 35 75% 55%;
 
-    --ua-yellow: 75 50% 28%;
-    --ua-blue: 210 20% 92%;
+    --ua-yellow: 48 85% 55%;
+    --ua-blue: 211 88% 60%;
     --cyber: 215 12% 70%;
     --cyber-glow: 215 12% 70%;
 
-    --series-launched: 0 65% 38%;         /* #991b1b karmesin */
-    --series-destroyed: 210 25% 55%;      /* stahlblau — erfolgreiche Abschüsse */
-    --series-rate: 215 10% 60%;           /* mittelgrau — gesamt */
-    --grid: 215 18% 32%;
+    --series-launched: 0 62% 55%;
+    --series-destroyed: 152 40% 50%;
+    --series-rate: 215 12% 65%;
+    --grid: 215 18% 24%;
+
+    --weapon-uav: 211 75% 62%;
+    --weapon-cruise: 28 82% 58%;
+    --weapon-ballistic: 358 68% 60%;
+    --weapon-bomb: 268 50% 65%;
+    --weapon-interception: 152 40% 50%;
 
     --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.4), 0 1px 1px 0 rgb(0 0 0 / 0.3);
 
-    --sidebar-background: 215 28% 17%;
-    --sidebar-foreground: 210 20% 92%;
-    --sidebar-primary: 210 20% 92%;
-    --sidebar-primary-foreground: 215 28% 17%;
-    --sidebar-accent: 215 22% 25%;
-    --sidebar-accent-foreground: 210 20% 92%;
-    --sidebar-border: 215 18% 32%;
-    --sidebar-ring: 210 20% 92%;
+    --sidebar-background: 215 28% 11%;
+    --sidebar-foreground: 40 15% 92%;
+    --sidebar-primary: 40 15% 92%;
+    --sidebar-primary-foreground: 215 28% 11%;
+    --sidebar-accent: 215 22% 18%;
+    --sidebar-accent-foreground: 40 15% 92%;
+    --sidebar-border: 215 18% 24%;
+    --sidebar-ring: 40 15% 92%;
   }
 }
 
@@ -129,12 +144,16 @@
     font-family: '"Inter"', 'Inter', system-ui, -apple-system, sans-serif;
   }
 
+  /* Editorial serif headlines — FT / Reuters / OWID register.
+     No uppercase, no monospace. Tight tracking, real hierarchy. */
   h1, h2, h3, h4 {
-    font-family: '"OCR A"', 'OCR A', 'IBM Plex Mono', ui-monospace, monospace;
-    font-weight: 400;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
+    font-family: '"Source Serif 4"', Georgia, ui-serif, serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    color: hsl(var(--foreground));
   }
+  h1 { font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; }
 
   .font-mono, code, kbd, pre {
     font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
