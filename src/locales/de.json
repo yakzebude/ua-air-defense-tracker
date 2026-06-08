@@ -483,7 +483,9 @@
     "backHome": "Zurück",
     "pageTitle": "Live-Luftalarme — Ukraine",
     "refreshNote": "Aktualisiert jede Minute",
-    "pageIntro": "Live-Luftalarm-Status für jede ukrainische Oblast und Rajon. Klicke auf eine Oblast, um Rajone und aktuelle Bedrohungstypen zu sehen. Daten via ukrainealarm.com, jede Minute aktualisiert."
+    "pageIntro": "Live-Luftalarm-Status für jede ukrainische Oblast und Rajon. Klicke auf eine Oblast, um Rajone und aktuelle Bedrohungstypen zu sehen. Daten via ukrainealarm.com, jede Minute aktualisiert.",
+    "expand": "Live-Alarme anzeigen",
+    "collapse": "Live-Alarme ausblenden"
   },
   "threatFeed": {
     "title": "Live-Bedrohungs-Feed",
@@ -509,5 +511,12 @@
     "last24h": "Letzte 24 Stunden",
     "noMatch": "Keine Bedrohungen entsprechen dem Filter.",
     "filteredOut": "{{count}} durch Filter ausgeblendet"
+  },
+  "trustbar": {
+    "source": "Primärquelle",
+    "sourceName": "Luftwaffenkommando der Ukraine (über Kaggle)",
+    "methodology": "Methodik",
+    "downloadDataset": "Datensatz herunterladen (CSV)",
+    "allSources": "Alle Quellen"
   }
 }

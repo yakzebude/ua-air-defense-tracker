@@ -623,42 +623,61 @@ const Index = () => {
       <SectionNav />
 
 
-      <section id="summary" className="border-b border-border bg-gradient-to-b from-card/40 to-background">
-        <div className="container pt-10 pb-10 md:pt-14 md:pb-14">
-          {/* Row 1 — masthead: kicker · title · tagline · refresh badge | mini map */}
-          <div className="grid gap-6 md:grid-cols-12 md:gap-8">
-            <div className="md:col-span-9">
-              <div className="src-label mb-3 flex items-center gap-2">
-                <span className="relative inline-flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--signal))] opacity-60" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
-                </span>
-                <span>{t("masthead.kicker")} · {t("masthead.briefLabel")}</span>
-              </div>
-              <h1 className="max-w-4xl text-3xl font-semibold leading-[1.1] tracking-tight md:text-[2.75rem]">
-                {t("masthead.title")}
-              </h1>
-              <p className="mt-4 max-w-3xl text-[15px] font-medium leading-[1.55] text-foreground md:text-[16px]">
-                {t("masthead.tagline")}
-              </p>
+      <section id="summary" className="border-b border-border">
+        <div className="container pt-12 pb-12 md:pt-20 md:pb-16">
+          {/* Editorial masthead — serif headline, dek, trust/metadata bar */}
+          <div className="max-w-4xl">
+            <div className="src-label mb-4 flex items-center gap-2">
+              <span>{t("masthead.kicker")}</span>
+              <span aria-hidden className="h-px w-6 bg-border" />
+              <span>{t("masthead.briefLabel")}</span>
+            </div>
+            <h1 className="font-serif text-[2.25rem] leading-[1.05] tracking-[-0.02em] md:text-[3.5rem] lg:text-[4rem]">
+              {t("masthead.title")}
+            </h1>
+            <p className="mt-5 max-w-3xl font-serif text-[1.125rem] leading-[1.45] text-muted-foreground md:text-[1.375rem]">
+              {t("masthead.tagline")}
+            </p>
 
-              <div className="mt-5 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-sm border border-border bg-card px-3.5 py-2 font-mono text-[11.5px]">
-                <span className="uppercase tracking-[0.16em] text-muted-foreground">
-                  {t("masthead.refreshBadge")}
-                </span>
-                <span aria-hidden className="hidden h-3 w-px bg-border sm:inline-block" />
+            {/* Trust / metadata bar — every claim has a visible source */}
+            <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-border py-3 text-[12px]">
+              <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                <span className="src-label">{t("masthead.refreshBadge")}</span>
                 <span className="num text-foreground">{fmtUtc(latestDataPoint)}</span>
-              </div>
-
-              <p className="mt-5 max-w-3xl text-[13.5px] leading-[1.7] text-muted-foreground">
-                {t("masthead.intro")}
-              </p>
+              </span>
+              {dataTimeframe && (
+                <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                  <span className="src-label">{t("masthead.timeframe")}</span>
+                  <span className="num text-foreground">{dataTimeframe.first} – {dataTimeframe.last}</span>
+                </span>
+              )}
+              <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                <span className="src-label">{t("trustbar.source")}</span>
+                <a
+                  href="https://www.kaggle.com/datasets/piterfm/massive-missile-attacks-on-ukraine"
+                  target="_blank" rel="noopener noreferrer external"
+                  className="text-foreground underline underline-offset-4 decoration-border hover:decoration-foreground"
+                >
+                  {t("trustbar.sourceName")}
+                </a>
+              </span>
+              <Link to="/methodology" className="text-foreground underline underline-offset-4 decoration-border hover:decoration-foreground">
+                {t("trustbar.methodology")}
+              </Link>
+              <a href="/data/missile_attacks_daily.csv" download className="text-foreground underline underline-offset-4 decoration-border hover:decoration-foreground">
+                {t("trustbar.downloadDataset")}
+              </a>
+              <Link to="/sources" className="text-foreground underline underline-offset-4 decoration-border hover:decoration-foreground">
+                {t("trustbar.allSources")}
+              </Link>
+              <span className="ml-auto"><LanguageSwitcher /></span>
             </div>
 
-            <aside className="md:col-span-3 md:pt-1">
-              <MiniAlertsMap href="#alerts" />
-            </aside>
+            <p className="mt-6 max-w-3xl text-[14px] leading-[1.7] text-muted-foreground">
+              {t("masthead.intro")}
+            </p>
           </div>
+
 
           {ready && (
             <div className="mt-9 grid gap-5 md:grid-cols-12">
@@ -808,30 +827,44 @@ const Index = () => {
         />
       )}
 
-      {/* Full live air-alerts map + threat feed, positioned after Ballistic */}
-      <section id="alerts" className="scroll-mt-32 border-t border-border">
+      {/* Live situation — collapsible. Historical data remains the primary focus. */}
+      <section id="alerts" className="scroll-mt-32 border-t border-border bg-secondary/30">
         <div className="container py-10 md:py-14">
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <div className="src-label mb-1">{t("airAlerts.kicker")}</div>
-              <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
-                {t("airAlerts.title")}
-              </h2>
-              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-                {t("airAlerts.subtitle")}
-              </p>
+          <details className="group">
+            <summary className="flex cursor-pointer list-none flex-wrap items-end justify-between gap-3 [&::-webkit-details-marker]:hidden">
+              <div>
+                <div className="src-label mb-1 flex items-center gap-2">
+                  <span className="relative inline-flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--signal))] opacity-60" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
+                  </span>
+                  <span>{t("airAlerts.kicker")}</span>
+                </div>
+                <h2 className="font-serif text-[1.75rem] leading-tight tracking-tight md:text-[2.25rem]">
+                  {t("airAlerts.title")}
+                </h2>
+                <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                  {t("airAlerts.subtitle")}
+                </p>
+              </div>
+              <span className="inline-flex items-center gap-2 rounded-sm border border-border bg-card px-3 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground transition-colors group-hover:text-foreground">
+                <span className="group-open:hidden">{t("airAlerts.expand")}</span>
+                <span className="hidden group-open:inline">{t("airAlerts.collapse")}</span>
+                <span aria-hidden className="transition-transform group-open:rotate-180">▾</span>
+              </span>
+            </summary>
+            <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3 items-start">
+              <div className="lg:col-span-2">
+                <AirAlertsMap variant="full" />
+              </div>
+              <div className="lg:col-span-1">
+                <AirThreatFeed />
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 items-start">
-            <div className="lg:col-span-2">
-              <AirAlertsMap variant="full" />
-            </div>
-            <div className="lg:col-span-1">
-              <AirThreatFeed />
-            </div>
-          </div>
+          </details>
         </div>
       </section>
+
 
       <WeaponsCatalogSection />
 

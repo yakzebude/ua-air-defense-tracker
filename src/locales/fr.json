@@ -483,7 +483,9 @@
     "backHome": "Retour",
     "pageTitle": "Alertes aériennes en direct — Ukraine",
     "refreshNote": "Actualisé chaque minute",
-    "pageIntro": "Statut en direct des alertes aériennes pour chaque oblast et raïon ukrainien. Cliquez sur un oblast pour voir ses raïons et les types de menaces. Données via ukrainealarm.com, actualisées chaque minute."
+    "pageIntro": "Statut en direct des alertes aériennes pour chaque oblast et raïon ukrainien. Cliquez sur un oblast pour voir ses raïons et les types de menaces. Données via ukrainealarm.com, actualisées chaque minute.",
+    "expand": "Afficher les alertes en direct",
+    "collapse": "Masquer les alertes en direct"
   },
   "threatFeed": {
     "title": "Flux des menaces en direct",
@@ -503,5 +505,12 @@
       "all_clear": "Fin d’alerte",
       "info": "Info"
     }
+  },
+  "trustbar": {
+    "source": "Source primaire",
+    "sourceName": "Commandement de la Force aérienne d'Ukraine (via Kaggle)",
+    "methodology": "Méthodologie",
+    "downloadDataset": "Télécharger le jeu de données (CSV)",
+    "allSources": "Toutes les sources"
   }
 }

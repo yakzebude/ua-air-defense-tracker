@@ -1,104 +1,77 @@
 
-# Live-Karte: Luftalarme Ukraine
+# UA Air Defense Tracker — OSINT Redesign Plan
 
-## Datenquelle
+This is a large, multi-section redesign. To keep changes reviewable and avoid regressions across the live site, I propose shipping it in **4 phases**. You can approve all, or pick the phases you want now.
 
-**alerts.in.ua** – offizielle API hinter neptun.in.ua, alerts.in.ua, vielen Telegram-Bots. Liefert Status für alle 27 Oblaste und ~1.500 Hromadas (Rajone/Gemeinden) inkl. Startzeit jedes Alarms.
+---
 
-- Endpoint: `https://api.alerts.in.ua/v1/alerts/active.json`
-- Auth: Bearer Token (kostenlos per E-Mail an `api@alerts.in.ua` mit kurzer Projektbeschreibung; meist innerhalb 1–2 Tagen).
-- Rate Limit: alle 30 Sek. erlaubt → unser 5-Min-Intervall ist unkritisch.
-- Lizenz: Attribution erforderlich („Data: alerts.in.ua").
+## Design system foundation (applies to all phases)
 
-Token wird als Secret `ALERTS_IN_UA_TOKEN` hinterlegt.
+Establish a journalism-grade visual language in `src/index.css` and `tailwind.config.ts`:
 
-## Architektur
+- **Typography**: Inter (UI/body), Source Serif 4 (editorial headlines). Drop any decorative display fonts.
+- **Color tokens** (semantic, HSL):
+  - `--uav` blue, `--cruise` orange, `--ballistic` red, `--interception` green, `--bomb` purple
+  - Neutral palette: paper white, ink black, 5-step gray scale
+  - Remove neon/gradient-heavy tokens; keep one subtle accent
+- **Grid**: 12-col container, max-width 1400px, generous vertical rhythm
+- **Chart primitives**: unified `<ChartFrame>` wrapper providing title, source line, last-updated, "Explain this metric" tooltip, CSV download button, coverage note
+- **Reusable**: `<SourceBadge reliability="official|osint|academic">`, `<MetricTooltip>`, `<InsightCard>`, `<SectionHeader kicker title dek>`
 
-```text
-alerts.in.ua API
-        │  (Bearer Token, alle 60s gecached)
-        ▼
-Edge Function  air-alerts   ─►  JSON  ─►  React-Komponente AirAlertsMap
-- fetch + normalisieren                   - Auto-Refresh 5 Min
-- in-memory Cache 60s                     - Choropleth (SVG)
-- CORS, public                            - Hover-Tooltip, Click-Panel
-```
+---
 
-## Backend — Edge Function `air-alerts`
+## Phase 1 — Hero, IA & Trust Bar (homepage shell)
 
-Datei: `supabase/functions/air-alerts/index.ts`
+Rewrite `src/pages/Index.tsx` into a narrative scroll, not a dashboard wall.
 
-- Holt `active.json` mit Bearer-Token.
-- Normalisiert auf:
-  ```json
-  {
-    "updatedAt": "2026-05-31T12:00:00Z",
-    "oblasts": [
-      { "id": "UA-32", "name": "Kyiv Oblast", "active": true, "since": "2026-05-31T11:42:00Z", "type": "air_raid" }
-    ],
-    "hromadas": [
-      { "id": "UA-32-1234", "name": "...", "oblastId": "UA-32", "active": true, "since": "...", "type": "air_raid" }
-    ]
-  }
-  ```
-- In-Memory Cache 60s.
-- CORS public, `verify_jwt = false` (Standard für Lovable-Edge-Functions).
-- Fehler-Fallback: leere Listen + Fehlerflag.
+1. **Hero**
+   - Serif H1: "Russian Air Attacks Against Ukraine"
+   - Dek: "Empirical OSINT tracking of aerial attacks and Ukrainian air defence performance."
+   - 3 KPI cards: Total reported attacks · Confirmed interceptions · Estimated penetration rate
+   - Metadata bar: Last update · Coverage period · Primary source · Methodology link · Download dataset · Language switch
+2. **Section 1 — Executive Summary**
+   - This-month UAV/missile/interception stats, MoM deltas, 3–5 auto-generated insights (extend `src/lib/chart-insights.ts`)
+3. **Sticky in-page nav** (Overview · Analytics · Timeline · Live · Arsenal · Methodology · Sources · Data · Insights)
+4. Move existing `AirAlertsMap` + `AirThreatFeed` into a collapsible **Section 4 — Live Situation** below historical data
 
-## Geo-Daten
+## Phase 2 — Main Analytics & Timeline
 
-Zwei statische GeoJSON-Dateien in `public/geo/`:
-- `ua-oblasts.geo.json` (~120 KB, 27 Polygone)
-- `ua-hromadas.geo.json` (~1.5 MB, ~1500 Polygone, vereinfacht via mapshaper auf ~10 % der Originalpunkte)
+5. **Section 2 — Main Analytics**: refactor `AnalyticsDashboard.tsx` into tabs (Overview · UAVs · Cruise · Ballistic · Guided bombs · Combined). Each tab uses the identical structure: metrics → long-term trend → monthly chart → interception trend → seasonality → milestones → source notes.
+6. **Section 3 — Campaign Timeline**: new `CampaignTimeline.tsx` — horizontal scroll timeline overlaying attack-wave markers, weapon introductions, aid deliveries, AD milestones on the launches trend line. Data file `src/data/campaign-events.ts`.
 
-Quelle: OpenStreetMap / `simplemaps` / `deepstatemap` (CC-BY). IDs werden mit den alerts.in.ua-IDs gematcht (KOATUU-Codes).
+## Phase 3 — Arsenal, Methodology, Sources, Data
 
-Werden lazy-geladen — `hromadas` nur, wenn der Nutzer in die Detailansicht zoomt oder die Karte auf `/alerts` öffnet, damit die Startseite nicht durch 1.5 MB belastet wird.
+7. **Section 5 — Weapon Systems Database**: rebuild `WeaponsCatalogSection.tsx` as OSINT catalogue cards (image, origin, type, range, guidance, est. cost, launch history, interception rate, limitations, primary sources, related charts).
+8. **Section 6 — Methodology**: promote `/methodology` content into a homepage section with an interactive pipeline flowchart (Source Reports → Collection → Cleaning → Aggregation → Validation → Publication), confidence-level legend, what's counted / excluded, revision policy.
+9. **Section 7 — Sources**: redesign `/sources` with categories (Official UA · OSINT · Academic · Reference · International orgs), each entry with description, reliability badge, update frequency, coverage.
+10. **Section 8 — Download Data**: new `/data` page — CSV/JSON downloads, GitHub link, license (CC-BY), changelog, version history, citation block (APA + BibTeX).
 
-## Frontend
+## Phase 4 — Insights, Related Projects, Footer, Mobile polish
 
-### Komponente `src/components/AirAlertsMap.tsx`
-- Rendering mit **react-simple-maps** (leichtgewichtig, SVG, keine API-Keys, gut zoom-/pan-bar). Wird via `bun add react-simple-maps d3-geo` installiert.
-- Props: `variant: "compact" | "full"`.
-  - `compact` (Startseite): nur Oblaste, fixe Höhe ~420 px, kein Zoom, Klick öffnet `/alerts`.
-  - `full` (/alerts): Oblaste + Hromadas, Zoom/Pan, Seitenpanel.
-- Aktive Oblaste/Hromadas: rot mit sanfter Puls-Animation (CSS-Keyframe analog zu existierender `pulse-soft`-Klasse).
-- Inaktive: dunkles Neutralgrau passend zum bestehenden OSINT-Theme.
-- Tooltip beim Hover: Name, Dauer („active for 23 min"), Typ.
-- Legende unten: Anzahl aktiver Oblaste, „Last update HH:MM:SS", Quelle „alerts.in.ua".
-- Auto-Refresh `setInterval(5 * 60 * 1000)`, pausiert wenn Tab inaktiv (`document.visibilityState`).
+11. **Section 9 — Insights**: new `/insights` index + MDX-style article shells (Why ballistic interception differs; Shahed evolution; Seasonality; Largest waves; Effect of new AD deliveries).
+12. **Section 10 — Related Projects**: link grid (Oryx, ISW, CSIS Missile Threat, UA Air Force, Kiel Tracker) with one-line descriptions.
+13. **Footer**: 3-pillar (Data · Methodology · Legal) with About, Team, Changelog, License, Contact, Responsible disclosure, Privacy.
+14. **Mobile pass**: executive summary first, expandable charts, sticky in-page nav becomes a bottom sheet, larger tap targets, lazy-load heavy charts.
 
-### Detailpanel `src/components/AirAlertsPanel.tsx`
-Slide-in rechts (Sheet-Komponente aus shadcn). Bei Klick auf Oblast:
-- Aktueller Status + Dauer
-- Liste der aktiven Hromadas innerhalb dieser Oblast
-- Link zur offiziellen Quelle alerts.in.ua/?oblast=…
+---
 
-### Integration
+## Technical notes
 
-1. **Startseite** (`src/pages/Index.tsx`): neuer Block „Live air-raid alerts" zwischen Statistiken und Waffenkatalog, `<AirAlertsMap variant="compact" />`, mit „View full map →"-Link auf `/alerts`.
-2. **Neue Route** `/alerts` (`src/pages/Alerts.tsx`): Vollbild-Karte mit Detailpanel, eingebunden in `src/App.tsx` und der Hauptnavigation.
-3. **i18n**: neue Keys in `en.json`, `de.json`, `fr.json`, `uk.json` (Titel, Legende, Panel-Labels, Tooltips).
+- All new colors go through `index.css` HSL tokens + `tailwind.config.ts`; no hex in components.
+- Charts: keep Recharts but standardise via `<ChartFrame>`; add CSV export via a `toCSV(data)` helper in `src/lib/csv.ts`.
+- Insights engine: extend `chart-insights.ts` with `generateExecutiveInsights(windowStats)` returning typed `Insight[]` with severity + source.
+- i18n: every new string added to `en.json`, `de.json`, `fr.json`, `uk.json`.
+- No backend schema changes required — this is pure frontend + content.
+- No new dependencies expected beyond what's installed (Recharts, Framer Motion, shadcn already present).
 
-## Refresh-Verhalten
-- Client: 5-Min-Intervall, pausiert bei inaktivem Tab, sofortiger Re-Fetch beim Tab-Wechsel zurück.
-- Server: 60-Sek-Cache pro Edge-Function-Instanz (verhindert API-Hammering bei vielen Clients).
+---
 
-## Out of Scope (für später)
-- Historie / Alarm-Dauer-Charts (alerts.in.ua bietet `regions_history.json` — kann später ergänzt werden).
-- Push-Notifications.
-- Mobile-optimiertes Bottom-Sheet statt Side-Panel (kommt bei Bedarf).
+## How would you like to proceed?
 
-## Schritte
-1. Token bei alerts.in.ua anfragen (User-Aktion, parallel möglich) und als Secret `ALERTS_IN_UA_TOKEN` hinterlegen.
-2. Edge Function `air-alerts` erstellen.
-3. GeoJSON-Dateien generieren/herunterladen und nach `public/geo/` legen.
-4. `react-simple-maps` + `d3-geo` installieren.
-5. Komponenten `AirAlertsMap` + `AirAlertsPanel` bauen.
-6. Block auf Startseite + neue Route `/alerts` einbinden, Navigation ergänzen.
-7. i18n-Strings ergänzen (4 Sprachen).
-8. Visuell prüfen (Desktop + Mobile).
+**Option A** — Ship **Phase 1** now (hero + exec summary + IA + trust bar + collapsible live section). Highest visible impact, ~1 implementation pass. Then iterate.
 
-## Was ich von dir brauche, bevor es losgeht
-- **Token bei alerts.in.ua anfordern**: Mail an `api@alerts.in.ua` mit kurzem Text wie „Requesting API access for ua-airdefense-tracker.org — non-commercial OSINT tracker, will display attribution". Sobald du den Token hast, sage Bescheid, dann setze ich den Secret-Dialog für `ALERTS_IN_UA_TOKEN` auf.
-- Falls die Token-Vergabe zu lange dauert: ich kann initial gegen den ungetokenten, weniger zuverlässigen Endpoint `war.ukrzen.in.ua` bauen und später umstellen — sag Bescheid, falls du das willst.
+**Option B** — Ship **Phases 1 + 2** together (adds tabbed analytics + campaign timeline). Larger change, more review surface.
+
+**Option C** — Approve the full plan and I execute all 4 phases sequentially.
+
+Tell me A / B / C (or edit any section above) and I'll start.
