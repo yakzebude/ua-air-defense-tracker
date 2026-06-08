@@ -827,30 +827,44 @@ const Index = () => {
         />
       )}
 
-      {/* Full live air-alerts map + threat feed, positioned after Ballistic */}
-      <section id="alerts" className="scroll-mt-32 border-t border-border">
+      {/* Live situation — collapsible. Historical data remains the primary focus. */}
+      <section id="alerts" className="scroll-mt-32 border-t border-border bg-secondary/30">
         <div className="container py-10 md:py-14">
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <div className="src-label mb-1">{t("airAlerts.kicker")}</div>
-              <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
-                {t("airAlerts.title")}
-              </h2>
-              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-                {t("airAlerts.subtitle")}
-              </p>
+          <details className="group">
+            <summary className="flex cursor-pointer list-none flex-wrap items-end justify-between gap-3 [&::-webkit-details-marker]:hidden">
+              <div>
+                <div className="src-label mb-1 flex items-center gap-2">
+                  <span className="relative inline-flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--signal))] opacity-60" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
+                  </span>
+                  <span>{t("airAlerts.kicker")}</span>
+                </div>
+                <h2 className="font-serif text-[1.75rem] leading-tight tracking-tight md:text-[2.25rem]">
+                  {t("airAlerts.title")}
+                </h2>
+                <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                  {t("airAlerts.subtitle")}
+                </p>
+              </div>
+              <span className="inline-flex items-center gap-2 rounded-sm border border-border bg-card px-3 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground transition-colors group-hover:text-foreground">
+                <span className="group-open:hidden">{t("airAlerts.expand")}</span>
+                <span className="hidden group-open:inline">{t("airAlerts.collapse")}</span>
+                <span aria-hidden className="transition-transform group-open:rotate-180">▾</span>
+              </span>
+            </summary>
+            <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3 items-start">
+              <div className="lg:col-span-2">
+                <AirAlertsMap variant="full" />
+              </div>
+              <div className="lg:col-span-1">
+                <AirThreatFeed />
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 items-start">
-            <div className="lg:col-span-2">
-              <AirAlertsMap variant="full" />
-            </div>
-            <div className="lg:col-span-1">
-              <AirThreatFeed />
-            </div>
-          </div>
+          </details>
         </div>
       </section>
+
 
       <WeaponsCatalogSection />
 
