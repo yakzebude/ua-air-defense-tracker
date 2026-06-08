@@ -483,7 +483,9 @@
     "backHome": "Back",
     "pageTitle": "Live air-raid alerts — Ukraine",
     "refreshNote": "Refreshes every minute",
-    "pageIntro": "Live air-raid alert status for every Ukrainian oblast and raion. Click an oblast for its raions and current threat types. Data via ukrainealarm.com, refreshed every minute."
+    "pageIntro": "Live air-raid alert status for every Ukrainian oblast and raion. Click an oblast for its raions and current threat types. Data via ukrainealarm.com, refreshed every minute.",
+    "expand": "Show live alerts",
+    "collapse": "Hide live alerts"
   },
   "threatFeed": {
     "title": "Live threat feed",
@@ -509,5 +511,12 @@
     "last24h": "Last 24 hours",
     "noMatch": "No threats match the selected filter.",
     "filteredOut": "{{count}} hidden by filter"
+  },
+  "trustbar": {
+    "source": "Primary source",
+    "sourceName": "Air Force Command of Ukraine (via Kaggle)",
+    "methodology": "Methodology",
+    "downloadDataset": "Download dataset (CSV)",
+    "allSources": "All sources"
   }
 }
