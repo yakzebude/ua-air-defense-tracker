@@ -13,9 +13,9 @@ export default {
     extend: {
       fontFamily: {
         sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
-        // "serif"/"display" repurposed as our hard, military display family (OCR A)
-        serif: ['"OCR A"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'],
-        display: ['"OCR A"', '"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+        // Editorial serif for headlines & data-journalism display type.
+        serif: ['"Source Serif 4"', 'Georgia', 'ui-serif', 'serif'],
+        display: ['"Source Serif 4"', 'Georgia', 'ui-serif', 'serif'],
         mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       colors: {
@@ -67,6 +67,13 @@ export default {
           launched: "hsl(var(--series-launched))",
           destroyed: "hsl(var(--series-destroyed))",
           rate: "hsl(var(--series-rate))",
+        },
+        weapon: {
+          uav: "hsl(var(--weapon-uav))",
+          cruise: "hsl(var(--weapon-cruise))",
+          ballistic: "hsl(var(--weapon-ballistic))",
+          bomb: "hsl(var(--weapon-bomb))",
+          interception: "hsl(var(--weapon-interception))",
         },
         grid: "hsl(var(--grid))",
         sidebar: {
