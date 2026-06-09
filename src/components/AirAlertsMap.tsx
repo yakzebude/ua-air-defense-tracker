@@ -249,9 +249,12 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   const name = (geo.properties.name as string) ?? iso;
                   const nameEn = (geo.properties.name_en as string) ?? name;
                   const alert = byIso.get(iso);
-                  const state: AlertState = alert?.state ?? (alert?.active ? "full" : "none");
-                  const isActive = state !== "none";
-                  const fillVar = state === "partial" ? "--signal-warn" : "--signal";
+                  const rawState: AlertState = alert?.state ?? (alert?.active ? "full" : "none");
+                  // Only "full" alerts colour the map; partial is treated as none.
+                  const state: AlertState = rawState === "full" ? "full" : "none";
+                  const isActive = state === "full";
+                  const fillVar = "--signal";
+
                   return (
                     <Geography
                       key={geo.rsmKey}
