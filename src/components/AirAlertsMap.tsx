@@ -628,6 +628,81 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           })()}
         </SheetContent>
       </Sheet>
+      </div>{/* /map column */}
+
+      {/* Side panel: active alerts list */}
+      <aside className="lg:col-span-1 mt-4 lg:mt-0">
+        <div className="rounded border border-border bg-card p-4 h-full">
+          <div className="flex items-baseline justify-between gap-2 mb-3">
+            <h3 className="text-sm font-semibold tracking-wide text-foreground">
+              {t("airAlerts.sidePanelTitle", { defaultValue: "Active alerts" })}
+            </h3>
+            <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground tabular-nums">
+              {activeList.length} / 27
+            </span>
+          </div>
+
+          {unauthorized && (
+            <div className="rounded border border-[hsl(var(--signal-warn)/0.4)] bg-[hsl(var(--signal-warn)/0.08)] p-3 text-xs text-foreground">
+              {t("airAlerts.feedUnauthorized", {
+                defaultValue: "Live feed authentication failed. Showing no active alerts.",
+              })}
+            </div>
+          )}
+
+          {!unauthorized && activeList.length === 0 && (
+            <div className="rounded border border-[hsl(var(--signal-ok)/0.4)] bg-[hsl(var(--signal-ok)/0.08)] p-3 text-xs text-foreground">
+              <span className="text-[hsl(var(--signal-ok))]">●</span>{" "}
+              {t("airAlerts.noActiveAlerts", { defaultValue: "No active air-raid alerts." })}
+            </div>
+          )}
+
+          {!unauthorized && activeList.length > 0 && (
+            <ul className="space-y-1.5 max-h-[640px] overflow-y-auto pr-1">
+              {activeList.map((o) => {
+                const isFull = o.state === "full";
+                const dotVar = isFull ? "--signal" : "--signal-warn";
+                return (
+                  <li
+                    key={o.iso}
+                    className="flex items-center justify-between gap-2 rounded border border-border/60 bg-background/40 px-2.5 py-1.5"
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span
+                        className={`h-2 w-2 rounded-full flex-shrink-0 ${isFull ? "animate-pulse" : ""}`}
+                        style={{ background: `hsl(var(${dotVar}))` }}
+                      />
+                      <span className="text-xs text-foreground truncate">{o.nameEn}</span>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <span
+                        className="text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded"
+                        style={{
+                          background: `hsl(var(${dotVar}) / 0.15)`,
+                          color: `hsl(var(${dotVar}))`,
+                        }}
+                      >
+                        {isFull
+                          ? t("airAlerts.fullAlert", { defaultValue: "Full" })
+                          : t("airAlerts.partialAlert", { defaultValue: "Partial" })}
+                      </span>
+                      <span className="text-[10px] font-mono text-muted-foreground tabular-nums w-12 text-right">
+                        {durationLabel(o.changedAt, true)}
+                      </span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+
+          <p className="mt-3 text-[9px] font-mono text-muted-foreground/70 leading-relaxed">
+            {t("airAlerts.sidePanelNote", {
+              defaultValue: "Source: alerts.in.ua · auto-refreshes every 30 s",
+            })}
+          </p>
+        </div>
+      </aside>
     </div>
   );
 }
