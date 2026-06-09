@@ -1,63 +1,98 @@
-# Falsche Regionen in der Live-Karte beheben
+# Tägliche Kaggle-Synchronisation
 
-## Ursache
+Quelle: `piterfm/massive-missile-attacks-on-ukraine` (Kaggle, täglich aktualisiert).
+Ziel: 1×/Tag um **06:00 UTC** automatisch alle CSVs ziehen, Rohdateien archivieren, Tabellen befüllen, Aggregate berechnen.
 
-Die Edge Function `air-alerts` interpretiert die 27-Zeichen-Antwort der `/v1/iot/active_air_raid_alerts_by_oblast.json` API mit einer **falschen Oblast-Reihenfolge**.
+## Architektur
 
-Aktuell (falsch) wird angenommen, die Reihenfolge sei „alphabetisch nach ukrainischem Namen, mit Krim/Kyiv/Sewastopol am Ende". Laut [offizieller Doku](https://devs.alerts.in.ua/) ist die korrekte Reihenfolge jedoch:
-
-```
-1.  Автономна Республіка Крим   (UA-43)
-2.  Волинська область           (UA-07)
-3.  Вінницька область           (UA-05)
-4.  Дніпропетровська область    (UA-12)
-5.  Донецька область            (UA-14)
-6.  Житомирська область         (UA-18)
-7.  Закарпатська область        (UA-21)
-8.  Запорізька область          (UA-23)
-9.  Івано-Франківська область   (UA-26)
-10. м. Київ                     (UA-30)
-11. Київська область            (UA-32)
-12. Кіровоградська область      (UA-35)
-13. Луганська область           (UA-09)
-14. Львівська область           (UA-46)
-15. Миколаївська область        (UA-48)
-16. Одеська область             (UA-51)
-17. Полтавська область          (UA-53)
-18. Рівненська область          (UA-56)
-19. м. Севастополь              (UA-40)
-20. Сумська область             (UA-59)
-21. Тернопільська область       (UA-61)
-22. Харківська область          (UA-63)
-23. Херсонська область          (UA-65)
-24. Хмельницька область         (UA-68)
-25. Черкаська область           (UA-71)
-26. Чернівецька область         (UA-77)
-27. Чернігівська область        (UA-74)
+```text
+pg_cron (06:00 UTC)
+   └─► Edge Function `kaggle-sync`
+         ├─ GET https://www.kaggle.com/api/v1/datasets/download/piterfm/massive-missile-attacks-on-ukraine
+         │     Basic Auth: KAGGLE_USERNAME : KAGGLE_KEY  → liefert ZIP
+         ├─ ZIP entpacken (in-memory)
+         ├─ Storage-Bucket `kaggle-raw/<YYYY-MM-DD>/*.csv`  (Archiv)
+         ├─ Pro CSV → public.kaggle_rows  (idempotenter Upsert per Hash)
+         ├─ Aggregate neu berechnen → public.kaggle_aggregates
+         └─ Run-Protokoll → public.sync_runs
 ```
 
-Konkretes Beispiel: Bei der API-Antwort `"NANNNNN..."` ist Volyn aktiv. Unsere bisherige Logik zeigt aber **Volyn → falsche Position 2**, mappt aber „Position 2 = Volyn" zufällig richtig. Probleme treten dort auf, wo offizielle und alphabetische Reihenfolge auseinanderlaufen – z. B. Position 1 (Krim vs. Vinnytsia), Position 3 (Vinnytsia vs. Dnipropetrovsk), Position 10 (Kyiv-Stadt vs. Kyiv-Oblast), Position 19 (Sevastopol vs. Kharkiv). Das erklärt genau das beobachtete Phänomen, dass „ganz andere Regionen" leuchten als auf alerts.in.ua.
+## Was du einmalig tust
 
-## Änderungen
+1. Kaggle-API-Token erzeugen: kaggle.com → Account → „Create New API Token" lädt `kaggle.json` mit `username` + `key`.
+2. Wenn ich gleich danach frage, gibst du beides als Secrets ein:
+   - `KAGGLE_USERNAME`
+   - `KAGGLE_KEY`
 
-### 1. `supabase/functions/air-alerts/index.ts`
-- `ORDER`-Array exakt auf die offizielle Reihenfolge der API-Doku umstellen (siehe oben).
-- Bei der Cache-Invalidation: vorhandene `lastState`-Einträge bleiben gültig (Schlüssel = ISO-Code, unverändert).
-- Antwortformat bleibt gleich – kein Frontend-Vertragsbruch.
+## Datenmodell (Migration)
 
-### 2. „Nur rote Alarme" Filterung in `src/components/AirAlertsMap.tsx`
-- Karten-Einfärbung: nur `state === "full"` → rot (`--signal`) mit Pulsanimation. `state === "partial"` wird **nicht** mehr eingefärbt (neutral wie `none`).
-- Side-Panel: nur Einträge mit `state === "full"` listen.
-- Status-Pille oben („X aktive Alarme") zählt nur volle Alarme.
-- Legende/Strings entsprechend reduzieren: kein „Partial"-Badge mehr.
+- **`public.kaggle_rows`** – generischer Speicher für alle CSV-Zeilen
+  - `source_file text` (z. B. `missile_attacks_daily.csv`)
+  - `row_hash text` (sha256 des Zeileninhalts, idempotenter Upsert-Key)
+  - `data jsonb` (komplette Zeile als Objekt)
+  - `event_date date` (extrahiert wenn vorhanden, für Index)
+  - `synced_at timestamptz`
+  - UNIQUE `(source_file, row_hash)`, Index auf `(source_file, event_date)`
 
-### 3. i18n
-- Aus `en.json`, `de.json`, `fr.json`, `uk.json` die Strings `partialAlert` und die zugehörigen Legenden-Einträge entfernen bzw. unbenutzt lassen.
+- **`public.kaggle_aggregates`** – vorberechnet für schnelle Charts
+  - `metric text` (z. B. `daily_launched`, `daily_destroyed`, `weapon_type_totals`)
+  - `bucket text` (z. B. ISO-Datum oder Waffentyp)
+  - `value numeric`
+  - `dimensions jsonb` (zusätzliche Schnitte)
+  - PK `(metric, bucket, dimensions)`
 
-## Nicht Teil dieser Änderung
-- Token, Polling-Intervall, Caching, Edge-Function-Vertrag bleiben unverändert.
-- Daten der `partial`-Alarme werden vom Backend weiterhin geliefert (für eine spätere optionale Ebene), aber UI-seitig ignoriert.
+- **`public.sync_runs`** – Beobachtbarkeit
+  - `source text` (`kaggle`), `started_at`, `finished_at`, `status` (`ok|error`),
+    `files_processed int`, `rows_upserted int`, `error text`
+
+Grants: `SELECT` für `anon` + `authenticated` auf `kaggle_rows` und `kaggle_aggregates` (öffentliche Visualisierungen); Schreibrechte nur `service_role`. `sync_runs`: nur `service_role`.
+RLS aktiv, Lese-Policies `using (true)` für die beiden öffentlichen Tabellen.
+
+## Storage
+
+Bucket **`kaggle-raw`**, privat. Edge Function lädt mit Service-Role hoch und legt pro Tag einen Ordner an. Aufbewahrung manuell, ältere Stände bleiben als Rohbackup.
+
+## Edge Function `kaggle-sync`
+
+- POST/GET; kein JWT (per cron aufrufbar).
+- Liest `KAGGLE_USERNAME`, `KAGGLE_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`.
+- Lädt ZIP, entpackt mit `npm:fflate`, parst CSVs mit `npm:papaparse`.
+- Schreibt Rohdatei nach Storage (`<date>/<filename>`).
+- Upsert in `kaggle_rows` in Batches à 500 Zeilen.
+- Aktualisiert `kaggle_aggregates` per einfachem SQL aus `kaggle_rows` (Tagesreihen, Summen je Waffentyp).
+- Protokoll in `sync_runs`.
+- 429/5xx von Kaggle → einmal Retry mit Backoff, dann Fehlerstatus.
+
+## Zeitplan
+
+`pg_cron` (via `supabase--insert`, nicht Migration, da projekt-spezifische URL/Key enthalten):
+
+```sql
+select cron.schedule(
+  'kaggle-sync-daily',
+  '0 6 * * *',
+  $$ select net.http_post(
+       url:='https://<project>.functions.supabase.co/kaggle-sync',
+       headers:='{"Content-Type":"application/json","apikey":"<anon>"}'::jsonb,
+       body:='{}'::jsonb) $$
+);
+```
+Extensions `pg_cron` + `pg_net` werden in derselben Migration aktiviert.
+
+## Bedienung im Frontend
+
+Kleiner Admin-Button („Jetzt synchronisieren") + Statuszeile (letzter Lauf, Anzahl Zeilen, Fehler) auf einer geschützten Methoden-Seite. Charts lesen ausschließlich aus `kaggle_aggregates` bzw. gefiltert aus `kaggle_rows`.
+
+## Kosten / Quoten
+
+- Kaggle: ein Download/Tag, keine harte Quote für persönliche API-Tokens; Datei aktuell <50 MB.
+- Edge Function: 1 Lauf/Tag, irrelevant für Limits.
+- Storage: ~1 Datei-Set/Tag, vernachlässigbar.
+
+## Offene Punkte, die ich beim Bauen entscheide
+- Genaue Liste der CSV-Spalten lese ich aus dem ersten Sync (Header-Mapping landet in `kaggle_rows.data` 1:1).
+- Welche Aggregate genau? Standardstart: tägliche Starts/Abschüsse, Summen je Waffentyp, kumulativ. Erweiterung danach trivial.
 
 ## Verifikation
-- Nach Deploy `supabase--curl_edge_functions` auf `air-alerts` → prüfen, dass Oblasts mit `state: "full"` exakt der Live-Karte auf alerts.in.ua entsprechen (Stichprobe 2–3 Regionen, z. B. Sumy, Kharkiv, Kyiv-Stadt vs. Kyiv-Oblast).
-- Im Browser-Preview: Karte zeigt nur rote Polygone, Side-Panel listet die gleichen Oblasts wie die Quellseite.
+- Nach Deploy einmal manuell triggern → `sync_runs` zeigt `status=ok`, Storage enthält Tagesordner, `kaggle_rows`/`kaggle_aggregates` haben Zeilen.
+- Zweiter Lauf am selben Tag → keine Duplikate (Hash-Unique greift).
