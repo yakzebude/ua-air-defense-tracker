@@ -201,19 +201,15 @@ Deno.serve(async (req) => {
       throw new Error("KAGGLE_USERNAME / KAGGLE_KEY not configured");
     }
 
-    // 1. Download + unzip
-    const zipBytes = await fetchKaggleZip(KAGGLE_USERNAME, KAGGLE_KEY);
-    const entries = unzipSync(zipBytes);
-    const csvFiles = Object.entries(entries).filter(([name]) => name.toLowerCase().endsWith(".csv"));
-    if (csvFiles.length === 0) throw new Error("No CSV files in Kaggle archive");
-
     const today = new Date().toISOString().slice(0, 10);
     let filesProcessed = 0;
     let rowsUpserted = 0;
+    const seenFiles: string[] = [];
 
-    // 2. Per CSV: archive + parse + upsert
-    for (const [name, bytes] of csvFiles) {
+    // Stream each CSV out of the ZIP one at a time, processing inline.
+    await streamKaggleCsvs(KAGGLE_USERNAME, KAGGLE_KEY, async (name, bytes) => {
       const baseName = name.split("/").pop() ?? name;
+      seenFiles.push(baseName);
 
       // Archive raw bytes
       const { error: upErr } = await sb.storage
@@ -235,7 +231,6 @@ Deno.serve(async (req) => {
         console.warn(`[kaggle-sync] ${baseName} parse warnings: ${parsed.errors.length}`);
       }
 
-      // Build row records with hash
       const records: { source_file: string; row_hash: string; data: Record<string, string>; event_date: string | null }[] = [];
       for (const row of parsed.data) {
         if (!row || Object.keys(row).length === 0) continue;
@@ -249,7 +244,6 @@ Deno.serve(async (req) => {
         });
       }
 
-      // Upsert in batches
       for (let i = 0; i < records.length; i += BATCH) {
         const slice = records.slice(i, i + BATCH);
         const { error: insErr } = await sb
@@ -260,7 +254,9 @@ Deno.serve(async (req) => {
 
       rowsUpserted += records.length;
       filesProcessed += 1;
-    }
+    });
+
+    if (filesProcessed === 0) throw new Error("No CSV files in Kaggle archive");
 
     // 3. Recompute aggregates
     await recomputeAggregates(sb);
@@ -268,15 +264,10 @@ Deno.serve(async (req) => {
     await finish("ok", { files_processed: filesProcessed, rows_upserted: rowsUpserted });
 
     return new Response(
-      JSON.stringify({
-        ok: true,
-        runId,
-        filesProcessed,
-        rowsUpserted,
-        files: csvFiles.map(([n]) => n.split("/").pop()),
-      }),
+      JSON.stringify({ ok: true, runId, filesProcessed, rowsUpserted, files: seenFiles }),
       { headers: { ...corsHeaders, "content-type": "application/json" } },
     );
+
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error(`[kaggle-sync] ${message}`);
