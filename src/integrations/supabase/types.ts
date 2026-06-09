@@ -101,6 +101,57 @@ export type Database = {
         }
         Relationships: []
       }
+      kaggle_aggregates: {
+        Row: {
+          bucket: string
+          dimensions: Json
+          metric: string
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          bucket: string
+          dimensions?: Json
+          metric: string
+          updated_at?: string
+          value: number
+        }
+        Update: {
+          bucket?: string
+          dimensions?: Json
+          metric?: string
+          updated_at?: string
+          value?: number
+        }
+        Relationships: []
+      }
+      kaggle_rows: {
+        Row: {
+          data: Json
+          event_date: string | null
+          id: number
+          row_hash: string
+          source_file: string
+          synced_at: string
+        }
+        Insert: {
+          data: Json
+          event_date?: string | null
+          id?: number
+          row_hash: string
+          source_file: string
+          synced_at?: string
+        }
+        Update: {
+          data?: Json
+          event_date?: string | null
+          id?: number
+          row_hash?: string
+          source_file?: string
+          synced_at?: string
+        }
+        Relationships: []
+      }
       suppressed_emails: {
         Row: {
           created_at: string
@@ -122,6 +173,39 @@ export type Database = {
           id?: string
           metadata?: Json | null
           reason?: string
+        }
+        Relationships: []
+      }
+      sync_runs: {
+        Row: {
+          error: string | null
+          files_processed: number
+          finished_at: string | null
+          id: number
+          rows_upserted: number
+          source: string
+          started_at: string
+          status: string
+        }
+        Insert: {
+          error?: string | null
+          files_processed?: number
+          finished_at?: string | null
+          id?: number
+          rows_upserted?: number
+          source: string
+          started_at?: string
+          status?: string
+        }
+        Update: {
+          error?: string | null
+          files_processed?: number
+          finished_at?: string | null
+          id?: number
+          rows_upserted?: number
+          source?: string
+          started_at?: string
+          status?: string
         }
         Relationships: []
       }
