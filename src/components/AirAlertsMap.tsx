@@ -5,7 +5,7 @@ import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simp
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import oblastStatsData from "@/data/oblastStats.json";
 
-const REFRESH_MS = 1 * 60 * 1000;
+const REFRESH_MS = 30 * 1000;
 const OBLASTS_GEO = "/geo/ua-oblasts.geo.json";
 const RAIONS_GEO = "/geo/ua-raions.geo.json";
 // World countries (TopoJSON, ~100 KB). We render Belarus + Russia underneath
@@ -35,12 +35,16 @@ function fmtNum(n?: number): string {
   return n.toLocaleString("en-US").replace(/,/g, " ");
 }
 
+export type AlertState = "none" | "partial" | "full";
+
 export interface OblastAlert {
   id: number | string;
   iso: string;
   name: string;
   nameEn: string;
   active: boolean;
+  /** Optional richer state from alerts.in.ua IoT endpoint. */
+  state?: AlertState;
   changedAt: string;
   types?: string[];
 }
@@ -57,6 +61,7 @@ export interface RaionAlert {
 interface ApiPayload {
   updatedAt: string;
   source: string;
+  status?: "ok" | "stale" | "unauthorized" | "unavailable";
   oblasts: OblastAlert[];
   raions?: RaionAlert[];
   stale?: boolean;
