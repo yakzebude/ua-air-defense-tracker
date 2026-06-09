@@ -17,8 +17,7 @@ const corsHeaders = {
 // limits exposure to known dataset files.
 const ALLOWED = new Set([
   "missile_attacks_daily.csv",
-  "missiles_and_uav.csv",
-  "missiles.csv",
+  "missiles_and_uavs.csv",
 ]);
 
 Deno.serve(async (req) => {
