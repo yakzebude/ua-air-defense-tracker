@@ -44,9 +44,23 @@ function monthLabel(d: Date): string {
   return `${months[d.getUTCMonth()]} '${String(d.getUTCFullYear()).slice(2)}`;
 }
 
-export async function loadShahedData(url = "/data/missile_attacks_daily.csv"): Promise<Dataset> {
-  const res = await fetch(url);
-  const text = await res.text();
+import { kaggleCsvUrl, STATIC_CSV_FALLBACK } from "@/lib/kaggle-csv";
+
+async function fetchCsvText(url: string): Promise<string> {
+  // Try the live (daily-synced) Kaggle CSV first; fall back to the static
+  // build-time copy if the edge function is unreachable or returns an error.
+  try {
+    const res = await fetch(url);
+    if (res.ok) return await res.text();
+  } catch {
+    /* ignore — fall through to fallback */
+  }
+  const res = await fetch(STATIC_CSV_FALLBACK("missile_attacks_daily.csv"));
+  return res.text();
+}
+
+export async function loadShahedData(url = kaggleCsvUrl("missile_attacks_daily.csv")): Promise<Dataset> {
+  const text = await fetchCsvText(url);
 
   const parsed = Papa.parse<RawRow>(text, {
     header: true,
