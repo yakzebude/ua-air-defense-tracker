@@ -5,8 +5,9 @@
 // Triggered daily by pg_cron at 06:00 UTC; can also be invoked manually.
 
 import { createClient } from "npm:@supabase/supabase-js@2.45.0";
-import { unzipSync, strFromU8 } from "npm:fflate@0.8.2";
+import { Unzip, UnzipInflate, strFromU8 } from "npm:fflate@0.8.2";
 import Papa from "npm:papaparse@5.4.1";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
