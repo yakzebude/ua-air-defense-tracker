@@ -229,7 +229,9 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   const name = (geo.properties.name as string) ?? iso;
                   const nameEn = (geo.properties.name_en as string) ?? name;
                   const alert = byIso.get(iso);
-                  const isActive = !!alert?.active;
+                  const state: AlertState = alert?.state ?? (alert?.active ? "full" : "none");
+                  const isActive = state !== "none";
+                  const fillVar = state === "partial" ? "--signal-warn" : "--signal";
                   return (
                     <Geography
                       key={geo.rsmKey}
@@ -259,7 +261,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       }}
                       style={{
                         default: {
-                          fill: isActive ? "hsl(var(--signal) / 0.55)" : "hsl(var(--muted))",
+                          fill: isActive ? `hsl(var(${fillVar}) / ${state === "full" ? 0.65 : 0.45})` : "hsl(var(--muted))",
                           stroke: "hsl(var(--foreground) / 0.6)",
                           strokeWidth: 0.7,
                           outline: "none",
@@ -267,15 +269,15 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                           cursor: variant === "full" ? "pointer" : "default",
                         },
                         hover: {
-                          fill: isActive ? "hsl(var(--signal) / 0.75)" : "hsl(var(--muted-foreground) / 0.4)",
+                          fill: isActive ? `hsl(var(${fillVar}) / ${state === "full" ? 0.85 : 0.65})` : "hsl(var(--muted-foreground) / 0.4)",
                           stroke: "hsl(var(--foreground) / 0.8)",
                           strokeWidth: 0.9,
                           outline: "none",
                           cursor: variant === "full" ? "pointer" : "default",
                         },
-                        pressed: { fill: "hsl(var(--signal))", outline: "none" },
+                        pressed: { fill: `hsl(var(${fillVar}))`, outline: "none" },
                       }}
-                      className={isActive ? "air-alert-pulse" : undefined}
+                      className={state === "full" ? "air-alert-pulse" : undefined}
                     />
                   );
                 })
