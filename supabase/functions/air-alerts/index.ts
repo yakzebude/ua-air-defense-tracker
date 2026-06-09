@@ -13,7 +13,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const SOURCE_URL = "https://api.alerts.in.ua/v1/iot/active_air_raid_alerts_by_oblast";
+const SOURCE_URL = "https://api.alerts.in.ua/v1/iot/active_air_raid_alerts_by_oblast.json";
 const ALERTS_TTL = 30 * 1000;
 
 // Official alphabetical order (Ukrainian) of the 27 positions returned by
