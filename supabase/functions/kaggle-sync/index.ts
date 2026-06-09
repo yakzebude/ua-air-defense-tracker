@@ -46,27 +46,74 @@ function pickDate(row: Record<string, unknown>): string | null {
   return null;
 }
 
-async function fetchKaggleZip(user: string, key: string): Promise<Uint8Array> {
+async function streamKaggleCsvs(
+  user: string,
+  key: string,
+  onCsv: (name: string, bytes: Uint8Array) => Promise<void>,
+): Promise<void> {
   const auth = "Basic " + btoa(`${user}:${key}`);
+  let lastErr: unknown = null;
   for (let attempt = 0; attempt < 2; attempt++) {
     const res = await fetch(KAGGLE_URL, {
       headers: { Authorization: auth, "User-Agent": "ua-airdefense-tracker.org" },
       redirect: "follow",
     });
-    if (res.ok) {
-      const buf = new Uint8Array(await res.arrayBuffer());
-      if (buf.byteLength < 100) throw new Error(`Kaggle payload suspiciously small: ${buf.byteLength} bytes`);
-      return buf;
+    if (!res.ok) {
+      if (res.status === 429 || res.status >= 500) {
+        await new Promise((r) => setTimeout(r, 1500));
+        continue;
+      }
+      const body = await res.text().catch(() => "");
+      throw new Error(`Kaggle HTTP ${res.status}: ${body.slice(0, 200)}`);
     }
-    if (res.status === 429 || res.status >= 500) {
-      await new Promise((r) => setTimeout(r, 1500));
+    if (!res.body) throw new Error("Kaggle response has no body");
+
+    // Stream the ZIP through fflate's Unzip so we never hold the full archive
+    // in memory. Each file's bytes are accumulated only while it is emitted.
+    const pending: Promise<void>[] = [];
+    const unzipper = new Unzip();
+    unzipper.register(UnzipInflate);
+    unzipper.onfile = (file) => {
+      if (!file.name.toLowerCase().endsWith(".csv")) {
+        // We still need to drain unsupported files to advance the stream.
+        const sink: Uint8Array[] = [];
+        file.ondata = (_err, _d, _final) => { /* discard */ };
+        file.start();
+        return;
+      }
+      const chunks: Uint8Array[] = [];
+      file.ondata = (err, data, final) => {
+        if (err) throw err;
+        if (data && data.length) chunks.push(data);
+        if (final) {
+          let total = 0;
+          for (const c of chunks) total += c.length;
+          const merged = new Uint8Array(total);
+          let off = 0;
+          for (const c of chunks) { merged.set(c, off); off += c.length; }
+          pending.push(onCsv(file.name, merged));
+        }
+      };
+      file.start();
+    };
+
+    const reader = res.body.getReader();
+    try {
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) { unzipper.push(new Uint8Array(0), true); break; }
+        if (value && value.length) unzipper.push(value, false);
+      }
+      await Promise.all(pending);
+      return;
+    } catch (e) {
+      lastErr = e;
       continue;
     }
-    const body = await res.text().catch(() => "");
-    throw new Error(`Kaggle HTTP ${res.status}: ${body.slice(0, 200)}`);
   }
-  throw new Error("Kaggle download failed after retries");
+  throw new Error(`Kaggle download failed: ${lastErr instanceof Error ? lastErr.message : String(lastErr)}`);
 }
+
 
 // ---------- aggregates ----------
 async function recomputeAggregates(sb: ReturnType<typeof createClient>) {
