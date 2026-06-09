@@ -491,12 +491,12 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
         <span>
           {t("airAlerts.source")}:{" "}
           <a
-            href="https://www.ukrainealarm.com"
+            href="https://alerts.in.ua"
             target="_blank"
             rel="noopener noreferrer"
             className="underline-offset-4 hover:underline"
           >
-            ukrainealarm.com
+            alerts.in.ua
           </a>
         </span>
         {showRaions && (
