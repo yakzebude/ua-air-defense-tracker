@@ -669,40 +669,35 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
 
           {!unauthorized && activeList.length > 0 && (
             <ul className="space-y-1.5 max-h-[640px] overflow-y-auto pr-1">
-              {activeList.map((o) => {
-                const isFull = o.state === "full";
-                const dotVar = isFull ? "--signal" : "--signal-warn";
-                return (
-                  <li
-                    key={o.iso}
-                    className="flex items-center justify-between gap-2 rounded border border-border/60 bg-background/40 px-2.5 py-1.5"
-                  >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span
-                        className={`h-2 w-2 rounded-full flex-shrink-0 ${isFull ? "animate-pulse" : ""}`}
-                        style={{ background: `hsl(var(${dotVar}))` }}
-                      />
-                      <span className="text-xs text-foreground truncate">{o.nameEn}</span>
-                    </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <span
-                        className="text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded"
-                        style={{
-                          background: `hsl(var(${dotVar}) / 0.15)`,
-                          color: `hsl(var(${dotVar}))`,
-                        }}
-                      >
-                        {isFull
-                          ? t("airAlerts.fullAlert", { defaultValue: "Full" })
-                          : t("airAlerts.partialAlert", { defaultValue: "Partial" })}
-                      </span>
-                      <span className="text-[10px] font-mono text-muted-foreground tabular-nums w-12 text-right">
-                        {durationLabel(o.changedAt, true)}
-                      </span>
-                    </div>
-                  </li>
-                );
-              })}
+              {activeList.map((o) => (
+                <li
+                  key={o.iso}
+                  className="flex items-center justify-between gap-2 rounded border border-border/60 bg-background/40 px-2.5 py-1.5"
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span
+                      className="h-2 w-2 rounded-full flex-shrink-0 animate-pulse"
+                      style={{ background: "hsl(var(--signal))" }}
+                    />
+                    <span className="text-xs text-foreground truncate">{o.nameEn}</span>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span
+                      className="text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded"
+                      style={{
+                        background: "hsl(var(--signal) / 0.15)",
+                        color: "hsl(var(--signal))",
+                      }}
+                    >
+                      {t("airAlerts.fullAlert", { defaultValue: "Alert" })}
+                    </span>
+                    <span className="text-[10px] font-mono text-muted-foreground tabular-nums w-12 text-right">
+                      {durationLabel(o.changedAt, true)}
+                    </span>
+                  </div>
+                </li>
+              ))}
+
             </ul>
           )}
 
