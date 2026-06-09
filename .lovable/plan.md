@@ -1,77 +1,62 @@
+# Live Air-Raid Alerts (alerts.in.ua) – Map Integration
 
-# UA Air Defense Tracker — OSINT Redesign Plan
+## Status quo
+- Edge Function `supabase/functions/air-alerts/index.ts` already exists and uses `/v1/alerts/active.json` (full alert objects).
+- Secret `ALERTS_IN_UA_TOKEN` is set, but **upstream returns HTTP 401 "Invalid API token"** on every recent invocation.
+- `src/components/AirAlertsMap.tsx` already renders the Ukraine map and consumes this function.
 
-This is a large, multi-section redesign. To keep changes reviewable and avoid regressions across the live site, I propose shipping it in **4 phases**. You can approve all, or pick the phases you want now.
+So the change is mostly: switch endpoint, fix token, simplify shape, render colored oblasts + a side list, poll every 30 s.
 
----
+## Credits clarification (for your reference)
+- API polling does **not** consume Lovable build credits.
+- Only Lovable Cloud Edge-Function invocations + outbound bandwidth count (covered by the monthly $25 free Cloud balance).
+- alerts.in.ua's own quota applies (their docs recommend min 30 s between calls — we'll respect that).
 
-## Design system foundation (applies to all phases)
+## Plan
 
-Establish a journalism-grade visual language in `src/index.css` and `tailwind.config.ts`:
+### 1. Edge Function `air-alerts` (rewrite)
+Switch from `/v1/alerts/active.json` to **`/v1/iot/active_air_raid_alerts_by_oblast`** (per your choice).
 
-- **Typography**: Inter (UI/body), Source Serif 4 (editorial headlines). Drop any decorative display fonts.
-- **Color tokens** (semantic, HSL):
-  - `--uav` blue, `--cruise` orange, `--ballistic` red, `--interception` green, `--bomb` purple
-  - Neutral palette: paper white, ink black, 5-step gray scale
-  - Remove neon/gradient-heavy tokens; keep one subtle accent
-- **Grid**: 12-col container, max-width 1400px, generous vertical rhythm
-- **Chart primitives**: unified `<ChartFrame>` wrapper providing title, source line, last-updated, "Explain this metric" tooltip, CSV download button, coverage note
-- **Reusable**: `<SourceBadge reliability="official|osint|academic">`, `<MetricTooltip>`, `<InsightCard>`, `<SectionHeader kicker title dek>`
+- That endpoint returns a 27-char string where each character represents one oblast's state:
+  `N` = no alert · `A` = active air-raid alert · `P` = partial (some raions only)
+- Map each position → ISO-3166-2 code (reuse existing `UID_TO_ISO`/`ISO_TO_EN` constants, re-keyed by position index per official docs).
+- Normalize to:
+  ```ts
+  { fetchedAt: ISO, oblasts: [{ iso, name, nameEn, state: 'none'|'partial'|'full' }] }
+  ```
+- Keep 30 s in-memory cache, CORS headers, graceful error JSON with `status: 'unavailable' | 'delayed' | 'ok'`.
+- On 401: return `{ status: 'unauthorized' }` so the frontend shows a clear banner instead of generic error.
 
----
+### 2. Token check
+The current token is rejected by the API (HTTP 401). I'll request a refresh via the secret update flow so you can paste the new token from your alerts.in.ua dashboard. The IoT endpoint requires a token with **IoT access** enabled — please confirm that scope when issuing it.
 
-## Phase 1 — Hero, IA & Trust Bar (homepage shell)
+### 3. Frontend – `AirAlertsMap.tsx`
+- Poll every **30 s** with `setInterval` + `AbortController`; pause when tab hidden (`document.visibilityState`) to save quota.
+- Color logic for the SVG/GeoJSON regions:
+  - `none` → neutral fill (existing base color)
+  - `partial` → amber (`hsl(var(--weapon-cruise))`, ~40% opacity)
+  - `full` → red (`hsl(var(--weapon-ballistic))`, ~70% opacity) + subtle pulse animation
+- Add an **"Active alerts" side panel** beside the map:
+  - Sorted list of oblasts with `full`/`partial` state
+  - Shows oblast name + state badge + (where available) duration since `fetchedAt` switched
+  - Empty state: "No active alerts" with green check
+- Status pill above the map: `Live · updated 12 s ago` / `Delayed` / `Live feed unavailable`.
 
-Rewrite `src/pages/Index.tsx` into a narrative scroll, not a dashboard wall.
+### 4. Layout
+Two-column layout on `lg+` (map 2/3, list 1/3); stacked on mobile. Reuse existing `<StatusBadge>` and card styles — no new design tokens.
 
-1. **Hero**
-   - Serif H1: "Russian Air Attacks Against Ukraine"
-   - Dek: "Empirical OSINT tracking of aerial attacks and Ukrainian air defence performance."
-   - 3 KPI cards: Total reported attacks · Confirmed interceptions · Estimated penetration rate
-   - Metadata bar: Last update · Coverage period · Primary source · Methodology link · Download dataset · Language switch
-2. **Section 1 — Executive Summary**
-   - This-month UAV/missile/interception stats, MoM deltas, 3–5 auto-generated insights (extend `src/lib/chart-insights.ts`)
-3. **Sticky in-page nav** (Overview · Analytics · Timeline · Live · Arsenal · Methodology · Sources · Data · Insights)
-4. Move existing `AirAlertsMap` + `AirThreatFeed` into a collapsible **Section 4 — Live Situation** below historical data
+### 5. i18n
+Add strings to `en.json` / `de.json` / `fr.json` / `uk.json`:
+`activeAlerts`, `noActiveAlerts`, `partialAlert`, `fullAlert`, `liveUpdated`, `feedUnauthorized`.
 
-## Phase 2 — Main Analytics & Timeline
+### 6. Technical notes
+- No DB changes, no new dependencies.
+- Polling is client-side only; each browser tab triggers its own edge-function call (cached server-side for 30 s, so concurrent tabs share the same upstream hit).
+- Token stays server-side; frontend never sees it.
 
-5. **Section 2 — Main Analytics**: refactor `AnalyticsDashboard.tsx` into tabs (Overview · UAVs · Cruise · Ballistic · Guided bombs · Combined). Each tab uses the identical structure: metrics → long-term trend → monthly chart → interception trend → seasonality → milestones → source notes.
-6. **Section 3 — Campaign Timeline**: new `CampaignTimeline.tsx` — horizontal scroll timeline overlaying attack-wave markers, weapon introductions, aid deliveries, AD milestones on the launches trend line. Data file `src/data/campaign-events.ts`.
+## Open question before I build
+The current token gets `401`. Two options:
+1. **You paste a new IoT-enabled token** → I update the secret and ship.
+2. **You confirm the existing token should work** → I'll add diagnostics and we debug from logs.
 
-## Phase 3 — Arsenal, Methodology, Sources, Data
-
-7. **Section 5 — Weapon Systems Database**: rebuild `WeaponsCatalogSection.tsx` as OSINT catalogue cards (image, origin, type, range, guidance, est. cost, launch history, interception rate, limitations, primary sources, related charts).
-8. **Section 6 — Methodology**: promote `/methodology` content into a homepage section with an interactive pipeline flowchart (Source Reports → Collection → Cleaning → Aggregation → Validation → Publication), confidence-level legend, what's counted / excluded, revision policy.
-9. **Section 7 — Sources**: redesign `/sources` with categories (Official UA · OSINT · Academic · Reference · International orgs), each entry with description, reliability badge, update frequency, coverage.
-10. **Section 8 — Download Data**: new `/data` page — CSV/JSON downloads, GitHub link, license (CC-BY), changelog, version history, citation block (APA + BibTeX).
-
-## Phase 4 — Insights, Related Projects, Footer, Mobile polish
-
-11. **Section 9 — Insights**: new `/insights` index + MDX-style article shells (Why ballistic interception differs; Shahed evolution; Seasonality; Largest waves; Effect of new AD deliveries).
-12. **Section 10 — Related Projects**: link grid (Oryx, ISW, CSIS Missile Threat, UA Air Force, Kiel Tracker) with one-line descriptions.
-13. **Footer**: 3-pillar (Data · Methodology · Legal) with About, Team, Changelog, License, Contact, Responsible disclosure, Privacy.
-14. **Mobile pass**: executive summary first, expandable charts, sticky in-page nav becomes a bottom sheet, larger tap targets, lazy-load heavy charts.
-
----
-
-## Technical notes
-
-- All new colors go through `index.css` HSL tokens + `tailwind.config.ts`; no hex in components.
-- Charts: keep Recharts but standardise via `<ChartFrame>`; add CSV export via a `toCSV(data)` helper in `src/lib/csv.ts`.
-- Insights engine: extend `chart-insights.ts` with `generateExecutiveInsights(windowStats)` returning typed `Insight[]` with severity + source.
-- i18n: every new string added to `en.json`, `de.json`, `fr.json`, `uk.json`.
-- No backend schema changes required — this is pure frontend + content.
-- No new dependencies expected beyond what's installed (Recharts, Framer Motion, shadcn already present).
-
----
-
-## How would you like to proceed?
-
-**Option A** — Ship **Phase 1** now (hero + exec summary + IA + trust bar + collapsible live section). Highest visible impact, ~1 implementation pass. Then iterate.
-
-**Option B** — Ship **Phases 1 + 2** together (adds tabbed analytics + campaign timeline). Larger change, more review surface.
-
-**Option C** — Approve the full plan and I execute all 4 phases sequentially.
-
-Tell me A / B / C (or edit any section above) and I'll start.
+Tell me which, and I'll proceed.
