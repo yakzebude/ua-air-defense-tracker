@@ -211,7 +211,8 @@ Deno.serve(async (req) => {
       const baseName = name.split("/").pop() ?? name;
       seenFiles.push(baseName);
 
-      // Archive raw bytes
+      // Archive raw bytes — daily snapshot plus a stable "latest" copy
+      // served publicly through the `kaggle-csv` edge function.
       const { error: upErr } = await sb.storage
         .from(STORAGE_BUCKET)
         .upload(`${today}/${baseName}`, bytes, {
@@ -219,6 +220,14 @@ Deno.serve(async (req) => {
           upsert: true,
         });
       if (upErr) throw new Error(`storage upload ${baseName}: ${upErr.message}`);
+
+      const { error: latestErr } = await sb.storage
+        .from(STORAGE_BUCKET)
+        .upload(`latest/${baseName}`, bytes, {
+          contentType: "text/csv",
+          upsert: true,
+        });
+      if (latestErr) throw new Error(`storage upload latest/${baseName}: ${latestErr.message}`);
 
       // Parse CSV
       const text = strFromU8(bytes);

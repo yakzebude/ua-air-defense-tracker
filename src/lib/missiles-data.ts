@@ -144,9 +144,23 @@ function bucketsToDataset(
   };
 }
 
+import { kaggleCsvUrl, STATIC_CSV_FALLBACK } from "@/lib/kaggle-csv";
+
 async function fetchRows(url: string): Promise<RawRow[]> {
-  const res = await fetch(url);
-  const text = await res.text();
+  // Prefer the daily-synced CSV; fall back to the static bundled copy.
+  let text: string;
+  try {
+    const res = await fetch(url);
+    if (res.ok) {
+      text = await res.text();
+    } else {
+      const fb = await fetch(STATIC_CSV_FALLBACK("missile_attacks_daily.csv"));
+      text = await fb.text();
+    }
+  } catch {
+    const fb = await fetch(STATIC_CSV_FALLBACK("missile_attacks_daily.csv"));
+    text = await fb.text();
+  }
   const parsed = Papa.parse<RawRow>(text, { header: true, skipEmptyLines: true });
   return parsed.data;
 }
@@ -177,7 +191,7 @@ function aggregate(rows: RawRow[], predicate: (model: string) => boolean): Datas
 // Public loaders
 // ---------------------------------------------------------------------------
 
-const DEFAULT_URL = "/data/missile_attacks_daily.csv";
+const DEFAULT_URL = kaggleCsvUrl("missile_attacks_daily.csv");
 
 export async function loadCruiseMissilesData(url = DEFAULT_URL): Promise<Dataset> {
   const rows = await fetchRows(url);
