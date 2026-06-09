@@ -16,37 +16,39 @@ const corsHeaders = {
 const SOURCE_URL = "https://api.alerts.in.ua/v1/iot/active_air_raid_alerts_by_oblast.json";
 const ALERTS_TTL = 30 * 1000;
 
-// Official alphabetical order (Ukrainian) of the 27 positions returned by
-// the IoT endpoint. ISO-3166-2 codes match our GeoJSON.
+// Official order documented at https://devs.alerts.in.ua/ for
+// /v1/iot/active_air_raid_alerts_by_oblast.json — 27 positions.
+// ISO-3166-2 codes match our GeoJSON.
 const ORDER: { iso: string; name: string; nameEn: string }[] = [
-  { iso: "UA-05", name: "Вінницька область",          nameEn: "Vinnytsia Oblast" },
-  { iso: "UA-07", name: "Волинська область",          nameEn: "Volyn Oblast" },
-  { iso: "UA-12", name: "Дніпропетровська область",   nameEn: "Dnipropetrovsk Oblast" },
-  { iso: "UA-14", name: "Донецька область",           nameEn: "Donetsk Oblast" },
-  { iso: "UA-18", name: "Житомирська область",        nameEn: "Zhytomyr Oblast" },
-  { iso: "UA-21", name: "Закарпатська область",       nameEn: "Zakarpattia Oblast" },
-  { iso: "UA-23", name: "Запорізька область",         nameEn: "Zaporizhzhia Oblast" },
-  { iso: "UA-26", name: "Івано-Франківська область",  nameEn: "Ivano-Frankivsk Oblast" },
-  { iso: "UA-32", name: "Київська область",           nameEn: "Kyiv Oblast" },
-  { iso: "UA-35", name: "Кіровоградська область",     nameEn: "Kirovohrad Oblast" },
-  { iso: "UA-09", name: "Луганська область",          nameEn: "Luhansk Oblast" },
-  { iso: "UA-46", name: "Львівська область",          nameEn: "Lviv Oblast" },
-  { iso: "UA-48", name: "Миколаївська область",       nameEn: "Mykolaiv Oblast" },
-  { iso: "UA-51", name: "Одеська область",            nameEn: "Odesa Oblast" },
-  { iso: "UA-53", name: "Полтавська область",         nameEn: "Poltava Oblast" },
-  { iso: "UA-56", name: "Рівненська область",         nameEn: "Rivne Oblast" },
-  { iso: "UA-59", name: "Сумська область",            nameEn: "Sumy Oblast" },
-  { iso: "UA-61", name: "Тернопільська область",      nameEn: "Ternopil Oblast" },
-  { iso: "UA-63", name: "Харківська область",         nameEn: "Kharkiv Oblast" },
-  { iso: "UA-65", name: "Херсонська область",         nameEn: "Kherson Oblast" },
-  { iso: "UA-68", name: "Хмельницька область",        nameEn: "Khmelnytskyi Oblast" },
-  { iso: "UA-71", name: "Черкаська область",          nameEn: "Cherkasy Oblast" },
-  { iso: "UA-77", name: "Чернівецька область",        nameEn: "Chernivtsi Oblast" },
-  { iso: "UA-74", name: "Чернігівська область",       nameEn: "Chernihiv Oblast" },
-  { iso: "UA-43", name: "АР Крим",                    nameEn: "Crimea" },
-  { iso: "UA-30", name: "Київ",                       nameEn: "Kyiv City" },
-  { iso: "UA-40", name: "Севастополь",                nameEn: "Sevastopol" },
+  { iso: "UA-43", name: "Автономна Республіка Крим", nameEn: "Crimea" },                   // 1
+  { iso: "UA-07", name: "Волинська область",          nameEn: "Volyn Oblast" },             // 2
+  { iso: "UA-05", name: "Вінницька область",          nameEn: "Vinnytsia Oblast" },         // 3
+  { iso: "UA-12", name: "Дніпропетровська область",   nameEn: "Dnipropetrovsk Oblast" },    // 4
+  { iso: "UA-14", name: "Донецька область",           nameEn: "Donetsk Oblast" },           // 5
+  { iso: "UA-18", name: "Житомирська область",        nameEn: "Zhytomyr Oblast" },          // 6
+  { iso: "UA-21", name: "Закарпатська область",       nameEn: "Zakarpattia Oblast" },       // 7
+  { iso: "UA-23", name: "Запорізька область",         nameEn: "Zaporizhzhia Oblast" },      // 8
+  { iso: "UA-26", name: "Івано-Франківська область",  nameEn: "Ivano-Frankivsk Oblast" },   // 9
+  { iso: "UA-30", name: "м. Київ",                    nameEn: "Kyiv City" },                // 10
+  { iso: "UA-32", name: "Київська область",           nameEn: "Kyiv Oblast" },              // 11
+  { iso: "UA-35", name: "Кіровоградська область",     nameEn: "Kirovohrad Oblast" },        // 12
+  { iso: "UA-09", name: "Луганська область",          nameEn: "Luhansk Oblast" },           // 13
+  { iso: "UA-46", name: "Львівська область",          nameEn: "Lviv Oblast" },              // 14
+  { iso: "UA-48", name: "Миколаївська область",       nameEn: "Mykolaiv Oblast" },          // 15
+  { iso: "UA-51", name: "Одеська область",            nameEn: "Odesa Oblast" },             // 16
+  { iso: "UA-53", name: "Полтавська область",         nameEn: "Poltava Oblast" },           // 17
+  { iso: "UA-56", name: "Рівненська область",         nameEn: "Rivne Oblast" },             // 18
+  { iso: "UA-40", name: "м. Севастополь",             nameEn: "Sevastopol" },               // 19
+  { iso: "UA-59", name: "Сумська область",            nameEn: "Sumy Oblast" },              // 20
+  { iso: "UA-61", name: "Тернопільська область",      nameEn: "Ternopil Oblast" },          // 21
+  { iso: "UA-63", name: "Харківська область",         nameEn: "Kharkiv Oblast" },           // 22
+  { iso: "UA-65", name: "Херсонська область",         nameEn: "Kherson Oblast" },           // 23
+  { iso: "UA-68", name: "Хмельницька область",        nameEn: "Khmelnytskyi Oblast" },      // 24
+  { iso: "UA-71", name: "Черкаська область",          nameEn: "Cherkasy Oblast" },          // 25
+  { iso: "UA-77", name: "Чернівецька область",        nameEn: "Chernivtsi Oblast" },        // 26
+  { iso: "UA-74", name: "Чернігівська область",       nameEn: "Chernihiv Oblast" },         // 27
 ];
+
 
 type State = "none" | "partial" | "full";
 

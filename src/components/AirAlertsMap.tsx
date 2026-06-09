@@ -168,7 +168,15 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
     return m;
   }, [data]);
 
-  const activeCount = (data?.oblasts ?? []).filter((o) => o.active).length;
+  // Only "full" (red) alerts are surfaced. Partial/raion-level states are
+  // suppressed per editorial decision — alerts.in.ua live map is the
+  // authoritative reference for what counts as an active oblast alert.
+  const isFullAlert = (o: OblastAlert): boolean => {
+    const s = (o.state ?? (o.active ? "full" : "none")) as AlertState;
+    return s === "full";
+  };
+
+  const activeCount = (data?.oblasts ?? []).filter(isFullAlert).length;
   const activeRaionCount = (data?.raions ?? []).length;
 
   // Raion layer disabled by user request — full map shows oblast-level only.
@@ -180,17 +188,14 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
     ? "h-[420px] sm:h-[520px] lg:h-[680px]"
     : "h-[300px] sm:h-[380px] lg:h-[420px]";
 
-  // Active alerts list, sorted: full first, then partial; within group by name.
+  // Active alerts list — full-state oblasts only, sorted alphabetically by EN name.
   const activeList = useMemo(() => {
-    const list = (data?.oblasts ?? [])
-      .map((o) => ({ ...o, state: (o.state ?? (o.active ? "full" : "none")) as AlertState }))
-      .filter((o) => o.state !== "none");
-    list.sort((a, b) => {
-      if (a.state !== b.state) return a.state === "full" ? -1 : 1;
-      return a.nameEn.localeCompare(b.nameEn);
-    });
-    return list;
+    return (data?.oblasts ?? [])
+      .filter(isFullAlert)
+      .map((o) => ({ ...o, state: "full" as AlertState }))
+      .sort((a, b) => a.nameEn.localeCompare(b.nameEn));
   }, [data]);
+
 
   const unauthorized = data?.status === "unauthorized";
 
@@ -244,9 +249,12 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   const name = (geo.properties.name as string) ?? iso;
                   const nameEn = (geo.properties.name_en as string) ?? name;
                   const alert = byIso.get(iso);
-                  const state: AlertState = alert?.state ?? (alert?.active ? "full" : "none");
-                  const isActive = state !== "none";
-                  const fillVar = state === "partial" ? "--signal-warn" : "--signal";
+                  const rawState: AlertState = alert?.state ?? (alert?.active ? "full" : "none");
+                  // Only "full" alerts colour the map; partial is treated as none.
+                  const state: AlertState = rawState === "full" ? "full" : "none";
+                  const isActive = state === "full";
+                  const fillVar = "--signal";
+
                   return (
                     <Geography
                       key={geo.rsmKey}
@@ -449,13 +457,11 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
             {t("airAlerts.fullAlert", { defaultValue: "Full alert" })}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-sm bg-[hsl(var(--signal-warn))]" />
-            {t("airAlerts.partialAlert", { defaultValue: "Partial" })}
-          </span>
-          <span className="flex items-center gap-1.5">
             <span className="h-2.5 w-2.5 rounded-sm bg-muted" />
             {t("airAlerts.legendClear")}
           </span>
+
+
           <span className="text-foreground">
             {t("airAlerts.activeNow", { count: activeCount })}
             {showRaions && activeRaionCount > 0 && (
@@ -663,40 +669,35 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
 
           {!unauthorized && activeList.length > 0 && (
             <ul className="space-y-1.5 max-h-[640px] overflow-y-auto pr-1">
-              {activeList.map((o) => {
-                const isFull = o.state === "full";
-                const dotVar = isFull ? "--signal" : "--signal-warn";
-                return (
-                  <li
-                    key={o.iso}
-                    className="flex items-center justify-between gap-2 rounded border border-border/60 bg-background/40 px-2.5 py-1.5"
-                  >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span
-                        className={`h-2 w-2 rounded-full flex-shrink-0 ${isFull ? "animate-pulse" : ""}`}
-                        style={{ background: `hsl(var(${dotVar}))` }}
-                      />
-                      <span className="text-xs text-foreground truncate">{o.nameEn}</span>
-                    </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <span
-                        className="text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded"
-                        style={{
-                          background: `hsl(var(${dotVar}) / 0.15)`,
-                          color: `hsl(var(${dotVar}))`,
-                        }}
-                      >
-                        {isFull
-                          ? t("airAlerts.fullAlert", { defaultValue: "Full" })
-                          : t("airAlerts.partialAlert", { defaultValue: "Partial" })}
-                      </span>
-                      <span className="text-[10px] font-mono text-muted-foreground tabular-nums w-12 text-right">
-                        {durationLabel(o.changedAt, true)}
-                      </span>
-                    </div>
-                  </li>
-                );
-              })}
+              {activeList.map((o) => (
+                <li
+                  key={o.iso}
+                  className="flex items-center justify-between gap-2 rounded border border-border/60 bg-background/40 px-2.5 py-1.5"
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span
+                      className="h-2 w-2 rounded-full flex-shrink-0 animate-pulse"
+                      style={{ background: "hsl(var(--signal))" }}
+                    />
+                    <span className="text-xs text-foreground truncate">{o.nameEn}</span>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span
+                      className="text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded"
+                      style={{
+                        background: "hsl(var(--signal) / 0.15)",
+                        color: "hsl(var(--signal))",
+                      }}
+                    >
+                      {t("airAlerts.fullAlert", { defaultValue: "Alert" })}
+                    </span>
+                    <span className="text-[10px] font-mono text-muted-foreground tabular-nums w-12 text-right">
+                      {durationLabel(o.changedAt, true)}
+                    </span>
+                  </div>
+                </li>
+              ))}
+
             </ul>
           )}
 
