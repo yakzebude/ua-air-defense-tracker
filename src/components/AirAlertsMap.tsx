@@ -457,9 +457,10 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
             {t("airAlerts.fullAlert", { defaultValue: "Full alert" })}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-sm bg-[hsl(var(--signal-warn))]" />
-            {t("airAlerts.partialAlert", { defaultValue: "Partial" })}
+            <span className="h-2.5 w-2.5 rounded-sm bg-muted" />
+            {t("airAlerts.legendClear")}
           </span>
+
           <span className="flex items-center gap-1.5">
             <span className="h-2.5 w-2.5 rounded-sm bg-muted" />
             {t("airAlerts.legendClear")}
