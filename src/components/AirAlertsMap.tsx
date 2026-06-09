@@ -461,10 +461,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
             {t("airAlerts.legendClear")}
           </span>
 
-          <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-sm bg-muted" />
-            {t("airAlerts.legendClear")}
-          </span>
+
           <span className="text-foreground">
             {t("airAlerts.activeNow", { count: activeCount })}
             {showRaions && activeRaionCount > 0 && (
