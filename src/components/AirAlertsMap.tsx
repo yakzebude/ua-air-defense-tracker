@@ -180,8 +180,23 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
     ? "h-[420px] sm:h-[520px] lg:h-[680px]"
     : "h-[300px] sm:h-[380px] lg:h-[420px]";
 
+  // Active alerts list, sorted: full first, then partial; within group by name.
+  const activeList = useMemo(() => {
+    const list = (data?.oblasts ?? [])
+      .map((o) => ({ ...o, state: (o.state ?? (o.active ? "full" : "none")) as AlertState }))
+      .filter((o) => o.state !== "none");
+    list.sort((a, b) => {
+      if (a.state !== b.state) return a.state === "full" ? -1 : 1;
+      return a.nameEn.localeCompare(b.nameEn);
+    });
+    return list;
+  }, [data]);
+
+  const unauthorized = data?.status === "unauthorized";
+
   return (
-    <div className="relative flex flex-col">
+    <div className="relative flex flex-col lg:grid lg:grid-cols-3 lg:gap-4">
+      <div className="lg:col-span-2 flex flex-col">
       <div
         className={`relative flex-1 overflow-hidden rounded border border-border bg-card ${mapHeightClass}`}
         onMouseLeave={() => setHovered(null)}
