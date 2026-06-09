@@ -168,7 +168,15 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
     return m;
   }, [data]);
 
-  const activeCount = (data?.oblasts ?? []).filter((o) => o.active).length;
+  // Only "full" (red) alerts are surfaced. Partial/raion-level states are
+  // suppressed per editorial decision — alerts.in.ua live map is the
+  // authoritative reference for what counts as an active oblast alert.
+  const isFullAlert = (o: OblastAlert): boolean => {
+    const s = (o.state ?? (o.active ? "full" : "none")) as AlertState;
+    return s === "full";
+  };
+
+  const activeCount = (data?.oblasts ?? []).filter(isFullAlert).length;
   const activeRaionCount = (data?.raions ?? []).length;
 
   // Raion layer disabled by user request — full map shows oblast-level only.
@@ -180,17 +188,14 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
     ? "h-[420px] sm:h-[520px] lg:h-[680px]"
     : "h-[300px] sm:h-[380px] lg:h-[420px]";
 
-  // Active alerts list, sorted: full first, then partial; within group by name.
+  // Active alerts list — full-state oblasts only, sorted alphabetically by EN name.
   const activeList = useMemo(() => {
-    const list = (data?.oblasts ?? [])
-      .map((o) => ({ ...o, state: (o.state ?? (o.active ? "full" : "none")) as AlertState }))
-      .filter((o) => o.state !== "none");
-    list.sort((a, b) => {
-      if (a.state !== b.state) return a.state === "full" ? -1 : 1;
-      return a.nameEn.localeCompare(b.nameEn);
-    });
-    return list;
+    return (data?.oblasts ?? [])
+      .filter(isFullAlert)
+      .map((o) => ({ ...o, state: "full" as AlertState }))
+      .sort((a, b) => a.nameEn.localeCompare(b.nameEn));
   }, [data]);
+
 
   const unauthorized = data?.status === "unauthorized";
 
