@@ -5,7 +5,7 @@ import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simp
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import oblastStatsData from "@/data/oblastStats.json";
 
-const REFRESH_MS = 1 * 60 * 1000;
+const REFRESH_MS = 30 * 1000;
 const OBLASTS_GEO = "/geo/ua-oblasts.geo.json";
 const RAIONS_GEO = "/geo/ua-raions.geo.json";
 // World countries (TopoJSON, ~100 KB). We render Belarus + Russia underneath
@@ -35,12 +35,16 @@ function fmtNum(n?: number): string {
   return n.toLocaleString("en-US").replace(/,/g, " ");
 }
 
+export type AlertState = "none" | "partial" | "full";
+
 export interface OblastAlert {
   id: number | string;
   iso: string;
   name: string;
   nameEn: string;
   active: boolean;
+  /** Optional richer state from alerts.in.ua IoT endpoint. */
+  state?: AlertState;
   changedAt: string;
   types?: string[];
 }
@@ -57,6 +61,7 @@ export interface RaionAlert {
 interface ApiPayload {
   updatedAt: string;
   source: string;
+  status?: "ok" | "stale" | "unauthorized" | "unavailable";
   oblasts: OblastAlert[];
   raions?: RaionAlert[];
   stale?: boolean;
@@ -175,8 +180,23 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
     ? "h-[420px] sm:h-[520px] lg:h-[680px]"
     : "h-[300px] sm:h-[380px] lg:h-[420px]";
 
+  // Active alerts list, sorted: full first, then partial; within group by name.
+  const activeList = useMemo(() => {
+    const list = (data?.oblasts ?? [])
+      .map((o) => ({ ...o, state: (o.state ?? (o.active ? "full" : "none")) as AlertState }))
+      .filter((o) => o.state !== "none");
+    list.sort((a, b) => {
+      if (a.state !== b.state) return a.state === "full" ? -1 : 1;
+      return a.nameEn.localeCompare(b.nameEn);
+    });
+    return list;
+  }, [data]);
+
+  const unauthorized = data?.status === "unauthorized";
+
   return (
-    <div className="relative flex flex-col">
+    <div className="relative flex flex-col lg:grid lg:grid-cols-3 lg:gap-4">
+      <div className="lg:col-span-2 flex flex-col">
       <div
         className={`relative flex-1 overflow-hidden rounded border border-border bg-card ${mapHeightClass}`}
         onMouseLeave={() => setHovered(null)}
@@ -224,7 +244,9 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   const name = (geo.properties.name as string) ?? iso;
                   const nameEn = (geo.properties.name_en as string) ?? name;
                   const alert = byIso.get(iso);
-                  const isActive = !!alert?.active;
+                  const state: AlertState = alert?.state ?? (alert?.active ? "full" : "none");
+                  const isActive = state !== "none";
+                  const fillVar = state === "partial" ? "--signal-warn" : "--signal";
                   return (
                     <Geography
                       key={geo.rsmKey}
@@ -254,7 +276,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       }}
                       style={{
                         default: {
-                          fill: isActive ? "hsl(var(--signal) / 0.55)" : "hsl(var(--muted))",
+                          fill: isActive ? `hsl(var(${fillVar}) / ${state === "full" ? 0.65 : 0.45})` : "hsl(var(--muted))",
                           stroke: "hsl(var(--foreground) / 0.6)",
                           strokeWidth: 0.7,
                           outline: "none",
@@ -262,15 +284,15 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                           cursor: variant === "full" ? "pointer" : "default",
                         },
                         hover: {
-                          fill: isActive ? "hsl(var(--signal) / 0.75)" : "hsl(var(--muted-foreground) / 0.4)",
+                          fill: isActive ? `hsl(var(${fillVar}) / ${state === "full" ? 0.85 : 0.65})` : "hsl(var(--muted-foreground) / 0.4)",
                           stroke: "hsl(var(--foreground) / 0.8)",
                           strokeWidth: 0.9,
                           outline: "none",
                           cursor: variant === "full" ? "pointer" : "default",
                         },
-                        pressed: { fill: "hsl(var(--signal))", outline: "none" },
+                        pressed: { fill: `hsl(var(${fillVar}))`, outline: "none" },
                       }}
-                      className={isActive ? "air-alert-pulse" : undefined}
+                      className={state === "full" ? "air-alert-pulse" : undefined}
                     />
                   );
                 })
@@ -424,7 +446,11 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1.5">
             <span className="h-2.5 w-2.5 rounded-sm bg-[hsl(var(--signal))]" />
-            {t("airAlerts.legendAlert")}
+            {t("airAlerts.fullAlert", { defaultValue: "Full alert" })}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="h-2.5 w-2.5 rounded-sm bg-[hsl(var(--signal-warn))]" />
+            {t("airAlerts.partialAlert", { defaultValue: "Partial" })}
           </span>
           <span className="flex items-center gap-1.5">
             <span className="h-2.5 w-2.5 rounded-sm bg-muted" />
@@ -469,12 +495,12 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
         <span>
           {t("airAlerts.source")}:{" "}
           <a
-            href="https://www.ukrainealarm.com"
+            href="https://alerts.in.ua"
             target="_blank"
             rel="noopener noreferrer"
             className="underline-offset-4 hover:underline"
           >
-            ukrainealarm.com
+            alerts.in.ua
           </a>
         </span>
         {showRaions && (
@@ -606,6 +632,81 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           })()}
         </SheetContent>
       </Sheet>
+      </div>{/* /map column */}
+
+      {/* Side panel: active alerts list */}
+      <aside className="lg:col-span-1 mt-4 lg:mt-0">
+        <div className="rounded border border-border bg-card p-4 h-full">
+          <div className="flex items-baseline justify-between gap-2 mb-3">
+            <h3 className="text-sm font-semibold tracking-wide text-foreground">
+              {t("airAlerts.sidePanelTitle", { defaultValue: "Active alerts" })}
+            </h3>
+            <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground tabular-nums">
+              {activeList.length} / 27
+            </span>
+          </div>
+
+          {unauthorized && (
+            <div className="rounded border border-[hsl(var(--signal-warn)/0.4)] bg-[hsl(var(--signal-warn)/0.08)] p-3 text-xs text-foreground">
+              {t("airAlerts.feedUnauthorized", {
+                defaultValue: "Live feed authentication failed. Showing no active alerts.",
+              })}
+            </div>
+          )}
+
+          {!unauthorized && activeList.length === 0 && (
+            <div className="rounded border border-[hsl(var(--signal-ok)/0.4)] bg-[hsl(var(--signal-ok)/0.08)] p-3 text-xs text-foreground">
+              <span className="text-[hsl(var(--signal-ok))]">●</span>{" "}
+              {t("airAlerts.noActiveAlerts", { defaultValue: "No active air-raid alerts." })}
+            </div>
+          )}
+
+          {!unauthorized && activeList.length > 0 && (
+            <ul className="space-y-1.5 max-h-[640px] overflow-y-auto pr-1">
+              {activeList.map((o) => {
+                const isFull = o.state === "full";
+                const dotVar = isFull ? "--signal" : "--signal-warn";
+                return (
+                  <li
+                    key={o.iso}
+                    className="flex items-center justify-between gap-2 rounded border border-border/60 bg-background/40 px-2.5 py-1.5"
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span
+                        className={`h-2 w-2 rounded-full flex-shrink-0 ${isFull ? "animate-pulse" : ""}`}
+                        style={{ background: `hsl(var(${dotVar}))` }}
+                      />
+                      <span className="text-xs text-foreground truncate">{o.nameEn}</span>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <span
+                        className="text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded"
+                        style={{
+                          background: `hsl(var(${dotVar}) / 0.15)`,
+                          color: `hsl(var(${dotVar}))`,
+                        }}
+                      >
+                        {isFull
+                          ? t("airAlerts.fullAlert", { defaultValue: "Full" })
+                          : t("airAlerts.partialAlert", { defaultValue: "Partial" })}
+                      </span>
+                      <span className="text-[10px] font-mono text-muted-foreground tabular-nums w-12 text-right">
+                        {durationLabel(o.changedAt, true)}
+                      </span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+
+          <p className="mt-3 text-[9px] font-mono text-muted-foreground/70 leading-relaxed">
+            {t("airAlerts.sidePanelNote", {
+              defaultValue: "Source: alerts.in.ua · auto-refreshes every 30 s",
+            })}
+          </p>
+        </div>
+      </aside>
     </div>
   );
 }

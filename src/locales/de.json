@@ -485,7 +485,13 @@
     "refreshNote": "Aktualisiert jede Minute",
     "pageIntro": "Live-Luftalarm-Status für jede ukrainische Oblast und Rajon. Klicke auf eine Oblast, um Rajone und aktuelle Bedrohungstypen zu sehen. Daten via ukrainealarm.com, jede Minute aktualisiert.",
     "expand": "Live-Alarme anzeigen",
-    "collapse": "Live-Alarme ausblenden"
+    "collapse": "Live-Alarme ausblenden",
+    "sidePanelTitle": "Aktive Alarme",
+    "noActiveAlerts": "Keine aktiven Luftalarme.",
+    "fullAlert": "Voll",
+    "partialAlert": "Teilweise",
+    "feedUnauthorized": "Live-Feed-Authentifizierung fehlgeschlagen. Keine aktiven Alarme verfügbar.",
+    "sidePanelNote": "Quelle: alerts.in.ua · automatische Aktualisierung alle 30 s"
   },
   "threatFeed": {
     "title": "Live-Bedrohungs-Feed",
