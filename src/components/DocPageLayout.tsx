@@ -99,9 +99,9 @@ export function DocCallout({
       ? "border-destructive/40 bg-destructive/5"
       : "border-border bg-secondary/50";
   return (
-    <div className={`rounded-sm border ${cls} p-4`}>
-      <div className="src-label mb-1.5">{label}</div>
-      <div className="text-[13.5px] leading-relaxed text-foreground">{children}</div>
+    <div className={`rounded-sm border ${cls} p-5`}>
+      <div className="src-label mb-2">{label}</div>
+      <div className="t-body-sm text-foreground">{children}</div>
     </div>
   );
 }
