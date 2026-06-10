@@ -935,7 +935,7 @@ const Index = () => {
           <div>
             <div className="src-label mb-3">{t("footer.colMeta")}</div>
             <ul className="space-y-2 text-[13px] text-muted-foreground">
-              <li>{t("footer.lastDataPoint")} <span className="text-foreground num">{lastUpdatedLabel ?? "—"}</span></li>
+              
               <li>{t("footer.availableIn")} <span className="text-foreground">EN · DE · FR · UK</span></li>
             </ul>
           </div>
