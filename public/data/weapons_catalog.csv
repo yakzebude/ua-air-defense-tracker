@@ -4,7 +4,7 @@ Forpost,UAV,russia,reconnaissance (IAI Searcher II derivative),ground catapult,F
 Granat-4,UAV,russia,reconnaissance,man-portable catapult,Granat-4,,2014,Izhmash Unmanned Systems,Izhmash Unmanned Systems,"Inertial, GPS/GLONASS",
 Kub,UAV,russia,loitering munition,catapult,KUB-BLA,,2019,ZALA Aero Group,ZALA Aero Group,"Inertial, optical",~40000 USD
 Lancet,UAV,russia,loitering munition,catapult,Izdeliye 51 / Izdeliye 52 Lancet,,2020,ZALA Aero Group,ZALA Aero Group,"Inertial, optical-recognition terminal",~35000 USD
-Merlin-VR,UAV,russia,reconnaissance,catapult,Merlin-VR,,,Kazan National Research Technical University,KAI-Trial,"Inertial, GPS/GLONASS",
+Merlin-VR,UAV,russia,reconnaissance,catapult,Merlin-VR,,2015,Kazan National Research Technical University,KAI-Trial,"Inertial, GPS/GLONASS",
 Mohajer-6,UAV,iran,multirole ISTAR / armed,runway,Mohajer-6,,2018,Qods Aviation Industry Company,Qods Aviation Industry Company,"Inertial, GPS, datalink",~260000 USD
 Orion,UAV,russia,reconnaissance and armed (MALE),runway,Orion / Inokhodets,,2020,Kronstadt Group,Kronstadt Group,"Inertial, satellite datalink",~5 million USD
 Orlan-10,UAV,russia,reconnaissance,catapult,Orlan-10,,2010,Special Technology Center,Special Technology Center,"Inertial, GPS/GLONASS",~100000 USD
