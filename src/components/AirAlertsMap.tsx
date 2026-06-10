@@ -189,14 +189,6 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
   const activeCount = (data?.oblasts ?? []).filter(isFullAlert).length;
   const activeRaionCount = (data?.raions ?? []).length;
 
-  // Raion layer disabled by user request — full map shows oblast-level only.
-  const showRaions = false;
-
-  // Sized to fill the parent column. Aspect ratio keeps the map proportional
-  // on every breakpoint; on lg+ in the alerts page the column caps at 720 px.
-  const mapHeightClass = variant === "full"
-    ? "h-[420px] sm:h-[520px] lg:h-[680px]"
-    : "h-[300px] sm:h-[380px] lg:h-[420px]";
 
   // Active alerts list — full-state oblasts only, excluding occupied territories
   // (per editorial decision: occupied regions are always "under threat" by
