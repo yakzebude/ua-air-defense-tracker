@@ -73,12 +73,12 @@ export function DocSection({
   children: ReactNode;
 }) {
   return (
-    <section className="border-t border-border pt-7 first:border-0 first:pt-0">
-      <div className="mb-3 flex items-baseline gap-3">
+    <section className="border-t border-border pt-10 first:border-0 first:pt-0">
+      <div className="mb-4 flex items-baseline gap-3">
         <span className="src-label">{num}</span>
-        <h2 className="text-xl font-semibold tracking-tight text-foreground md:text-2xl">{title}</h2>
+        <h2 className="t-h3 md:t-h2 text-foreground">{title}</h2>
       </div>
-      <div className="space-y-3 text-[14px] leading-relaxed text-muted-foreground [&_strong]:text-foreground [&_a]:text-foreground [&_a]:underline [&_a]:underline-offset-4">
+      <div className="space-y-4 t-body text-muted-foreground [&_strong]:text-foreground [&_a]:text-foreground [&_a]:underline [&_a]:underline-offset-4">
         {children}
       </div>
     </section>
