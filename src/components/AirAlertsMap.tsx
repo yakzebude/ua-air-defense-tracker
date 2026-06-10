@@ -350,13 +350,15 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
             {showRaions && (
               <Geographies geography={RAIONS_GEO}>
                 {({ geographies }) =>
-                  geographies
-                    .filter((geo) => !OCCUPIED_ISOS.has(geo.properties.iso as string))
-                    .map((geo) => {
+                  geographies.map((geo) => {
                     const name = geo.properties.name as string;
                     const oblastIso = geo.properties.iso as string;
+                    const occupied = OCCUPIED_ISOS.has(oblastIso);
                     const raion = activeRaionsByName.get(normRaion(name));
-                    const isActive = !!raion;
+                    // Occupied raions never count as active alerts — even when
+                    // alerts.in.ua marks them so. They render as thin light-grey
+                    // subdivision borders on top of the dark-red oblast fill.
+                    const isActive = !!raion && !occupied;
                     return (
                       <Geography
                         key={geo.rsmKey}
@@ -388,16 +390,20 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         style={{
                           default: {
                             fill: isActive ? "hsl(var(--signal) / 0.9)" : "transparent",
-                            stroke: "hsl(var(--foreground) / 0.22)",
-                            strokeWidth: 0.25,
+                            stroke: occupied
+                              ? "hsl(0 0% 88% / 0.45)"
+                              : "hsl(var(--foreground) / 0.22)",
+                            strokeWidth: occupied ? 0.3 : 0.25,
                             outline: "none",
                             transition: "fill 200ms ease",
                             pointerEvents: isActive ? "auto" : "none",
                           },
                           hover: {
                             fill: isActive ? "hsl(var(--signal))" : "transparent",
-                            stroke: "hsl(var(--foreground) / 0.35)",
-                            strokeWidth: 0.4,
+                            stroke: occupied
+                              ? "hsl(0 0% 88% / 0.45)"
+                              : "hsl(var(--foreground) / 0.35)",
+                            strokeWidth: occupied ? 0.3 : 0.4,
                             outline: "none",
                           },
                           pressed: { outline: "none" },
