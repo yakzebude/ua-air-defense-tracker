@@ -22,7 +22,7 @@ ZALA,UAV,russia,reconnaissance,catapult,ZALA 421-16E,,2010,ZALA Aero Group,ZALA 
 Молнія,UAV,russia,one-way attack loitering munition,catapult,Molniya / Molniya-1,,2024,Kronstadt Group,Kronstadt Group,"Inertial, GPS/GLONASS",~700 USD
 Молнія and Lancet,UAV,russia,,,,,,,,,
 Unknown Ballistic Missile,ballistic missile,russia,,,Unidentified Ballistic Missile,,,,,,
-Intercontinental Ballistic Missile,ballistic missile,russia,,,,,,,,,
+Intercontinental Ballistic Missile,ballistic missile,russia,"intermediate-range ballistic missile (Russia's only IRBM-class strike on Ukraine to date — Dnipro, 21 Nov 2024)",road-mobile TEL (Yars-derived chassis),Oreshnik (RS-26 Rubezh derivative),,2024,Moscow Institute of Thermal Technology,Votkinsk Plant State Production Association,"Inertial, GLONASS",
 Iskander-M,ballistic missile,russia,"short-range, quasi-ballistic, road-mobile",9P78-1 TEL,9K720 Iskander-M / 9M723,SS-26 Stone,2006,KBM Kolomna,Votkinsk Plant State Production Association,"Inertial, optical DSMAC, GLONASS",~3 million USD
 Iskander-M/KN-23,ballistic missile,russia/north korea,,,,,,,,,
 KN-23,ballistic missile,north korea,"short-range, solid-fueled, quasi-ballistic","8×8 wheeled TEL, 10×10 wheeled TEL, tracked launcher, railway car",Hwasong-11Ga,KN-23,2019,Academy of National Defence Science,February 11 Plant,Inertial,
