@@ -40,6 +40,7 @@
     --signal-soft: 0 70% 95%;
     --signal-ok: 152 45% 32%;             /* calm forest green */
     --signal-warn: 35 75% 42%;            /* honest amber */
+    --occupied: 0 60% 22%;                /* dark red — territories under occupation */
 
     --ua-yellow: 48 85% 50%;
     --ua-blue: 211 88% 36%;
