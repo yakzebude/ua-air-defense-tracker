@@ -84,6 +84,36 @@ const FRESHNESS_VAR: Record<NonNullable<ReturnType<typeof freshnessTier>>, strin
   stale: "--signal-warn",
   veryStale: "--signal",
 };
+/** Russia's full-scale invasion of Ukraine began at 03:40 Kyiv time on 24 Feb 2022
+ *  (sources: BBC, Reuters, UN, ISW). Increments by one each day. */
+const WAR_START_UTC = Date.UTC(2022, 1, 24, 1, 40); // 03:40 EET = 01:40 UTC
+
+function WarDayTracker() {
+  const [days, setDays] = useState<number>(() =>
+    Math.max(1, Math.floor((Date.now() - WAR_START_UTC) / 86_400_000) + 1),
+  );
+  useEffect(() => {
+    const tick = () =>
+      setDays(Math.max(1, Math.floor((Date.now() - WAR_START_UTC) / 86_400_000) + 1));
+    tick();
+    const id = window.setInterval(tick, 60_000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 text-muted-foreground"
+      title="Days since the start of Russia's full-scale invasion of Ukraine (24 Feb 2022)"
+    >
+      <span className="relative inline-flex h-1.5 w-1.5">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--signal))] opacity-60" />
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
+      </span>
+      <span className="src-label">Day of war</span>
+      <span className="num font-semibold text-foreground">{days.toLocaleString("en-US")}</span>
+    </span>
+  );
+}
+
 
 
 function StatusBar({
