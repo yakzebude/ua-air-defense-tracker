@@ -65,13 +65,13 @@ export const NewsTicker = () => {
       aria-label="Live news ticker — Russian air attacks against Ukraine"
     >
       <div className="mx-auto flex h-full max-w-[1440px] items-stretch">
-        {/* LIVE badge */}
+        {/* LIVE NEWS badge */}
         <div className="flex items-center gap-2 px-3 border-r border-white/10 shrink-0 font-mono text-[10px] uppercase tracking-[0.18em]">
           <span className="relative inline-flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-60 animate-ping" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
           </span>
-          Live
+          Live News
         </div>
 
         {/* Marquee / status */}
@@ -82,7 +82,7 @@ export const NewsTicker = () => {
             </div>
           ) : (
             <div
-              className="flex h-full items-center whitespace-nowrap will-change-transform [animation:ticker-scroll_30s_linear_infinite] group-hover:[animation-play-state:paused]"
+              className="flex h-full items-center whitespace-nowrap will-change-transform [animation:ticker-scroll_15s_linear_infinite] group-hover:[animation-play-state:paused]"
             >
               {/* Render the list twice for a seamless loop */}
               {[0, 1].map((dup) => (
