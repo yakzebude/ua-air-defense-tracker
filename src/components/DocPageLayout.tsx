@@ -53,7 +53,7 @@ export function DocPageLayout({ eyebrow, title, intro, children }: Props) {
             <Link to="/about" className="hover:text-foreground">{t("nav.about")}</Link>
             <Link to="/methodology" className="hover:text-foreground">{t("nav.methodology")}</Link>
             <Link to="/sources" className="hover:text-foreground">{t("nav.sources")}</Link>
-            <Link to="/changelog" className="hover:text-foreground">{t("nav.changelog")}</Link>
+            
             <Link to="/disclaimer" className="hover:text-foreground">{t("footer.disclaimer")}</Link>
             <Link to="/imprint" className="hover:text-foreground">{t("nav.imprint")}</Link>
           </div>
