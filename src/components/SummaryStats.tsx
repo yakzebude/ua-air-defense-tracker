@@ -19,11 +19,11 @@ function Stat({ label, value, sub, accent }: StatProps) {
     <div
       className={`relative pl-4 before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-[3px] ${accentClass}`}
     >
-      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+      <div className="stat-label uppercase">
         {label}
       </div>
-      <div className="mt-1 font-serif text-3xl md:text-4xl text-foreground num">{value}</div>
-      {sub && <div className="mt-1 text-xs text-muted-foreground num">{sub}</div>}
+      <div className="mt-2 stat-value text-[32px] md:text-[40px] md:leading-[44px]">{value}</div>
+      {sub && <div className="mt-2 t-caption text-muted-foreground num">{sub}</div>}
     </div>
   );
 }

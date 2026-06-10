@@ -29,21 +29,21 @@ export function DocPageLayout({ eyebrow, title, intro, children }: Props) {
       </header>
 
       <section className="border-b border-border">
-        <div className="container py-10 md:py-14">
-          <div className="src-label mb-2">{eyebrow}</div>
-          <h1 className="text-3xl font-semibold leading-tight tracking-tight md:text-[2.25rem]">
+        <div className="container-prose py-12 md:py-16">
+          <div className="src-label mb-3">{eyebrow}</div>
+          <h1 className="t-h2 md:t-h1">
             {title}
           </h1>
           {intro && (
-            <p className="mt-3 max-w-3xl text-[14px] leading-relaxed text-muted-foreground md:text-[15px]">
+            <p className="mt-4 t-body-lg text-muted-foreground">
               {intro}
             </p>
           )}
         </div>
       </section>
 
-      <section className="container py-10 md:py-14">
-        <div className="prose-doc mx-auto max-w-3xl space-y-8">{children}</div>
+      <section className="container-prose py-12 md:py-16">
+        <div className="prose-doc space-y-10">{children}</div>
       </section>
 
       <footer className="border-t border-border">
@@ -73,12 +73,12 @@ export function DocSection({
   children: ReactNode;
 }) {
   return (
-    <section className="border-t border-border pt-7 first:border-0 first:pt-0">
-      <div className="mb-3 flex items-baseline gap-3">
+    <section className="border-t border-border pt-10 first:border-0 first:pt-0">
+      <div className="mb-4 flex items-baseline gap-3">
         <span className="src-label">{num}</span>
-        <h2 className="text-xl font-semibold tracking-tight text-foreground md:text-2xl">{title}</h2>
+        <h2 className="t-h3 md:t-h2 text-foreground">{title}</h2>
       </div>
-      <div className="space-y-3 text-[14px] leading-relaxed text-muted-foreground [&_strong]:text-foreground [&_a]:text-foreground [&_a]:underline [&_a]:underline-offset-4">
+      <div className="space-y-4 t-body text-muted-foreground [&_strong]:text-foreground [&_a]:text-foreground [&_a]:underline [&_a]:underline-offset-4">
         {children}
       </div>
     </section>
@@ -99,9 +99,9 @@ export function DocCallout({
       ? "border-destructive/40 bg-destructive/5"
       : "border-border bg-secondary/50";
   return (
-    <div className={`rounded-sm border ${cls} p-4`}>
-      <div className="src-label mb-1.5">{label}</div>
-      <div className="text-[13.5px] leading-relaxed text-foreground">{children}</div>
+    <div className={`rounded-sm border ${cls} p-5`}>
+      <div className="src-label mb-2">{label}</div>
+      <div className="t-body-sm text-foreground">{children}</div>
     </div>
   );
 }

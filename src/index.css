@@ -137,23 +137,32 @@
 
   html {
     font-feature-settings: "tnum";
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: '"Inter"', 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: '"Source Sans 3"', 'Source Sans 3', system-ui, -apple-system, sans-serif;
+    font-size: 18px;
+    line-height: 30px;
+    font-weight: 400;
   }
 
-  /* Editorial serif headlines — FT / Reuters / OWID register.
-     No uppercase, no monospace. Tight tracking, real hierarchy. */
-  h1, h2, h3, h4 {
-    font-family: '"Source Serif 4"', Georgia, ui-serif, serif;
+  /* Headings — IBM Plex Sans for institutional, analytical register. */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: '"IBM Plex Sans"', system-ui, -apple-system, sans-serif;
     font-weight: 600;
     letter-spacing: -0.01em;
     text-transform: none;
     color: hsl(var(--foreground));
   }
-  h1 { font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; }
+  h1 { font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+
+  @media (max-width: 640px) {
+    body { font-size: 17px; line-height: 28px; }
+  }
+
+  table { font-variant-numeric: tabular-nums; }
 
   .font-mono, code, kbd, pre {
     font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -167,6 +176,39 @@
 }
 
 @layer components {
+  /* Type scale utilities (8pt grid) */
+  .t-h1 { font-family: '"IBM Plex Sans"', system-ui, sans-serif; font-size: 48px; line-height: 56px; font-weight: 700; letter-spacing: -0.02em; }
+  .t-h2 { font-family: '"IBM Plex Sans"', system-ui, sans-serif; font-size: 36px; line-height: 44px; font-weight: 700; letter-spacing: -0.015em; }
+  .t-h3 { font-family: '"IBM Plex Sans"', system-ui, sans-serif; font-size: 28px; line-height: 36px; font-weight: 600; }
+  .t-h4 { font-family: '"IBM Plex Sans"', system-ui, sans-serif; font-size: 22px; line-height: 30px; font-weight: 600; }
+  .t-body-lg { font-size: 20px; line-height: 32px; }
+  .t-body    { font-size: 18px; line-height: 30px; }
+  .t-body-sm { font-size: 16px; line-height: 26px; }
+  .t-caption { font-size: 14px; line-height: 22px; }
+  @media (max-width: 640px) {
+    .t-h1 { font-size: 36px; line-height: 44px; }
+    .t-h2 { font-size: 30px; line-height: 38px; }
+    .t-h3 { font-size: 24px; line-height: 32px; }
+    .t-h4 { font-size: 20px; line-height: 28px; }
+    .t-body, .t-body-lg { font-size: 17px; line-height: 28px; }
+  }
+
+  /* Container widths */
+  .container-content   { max-width: 1280px; margin-inline: auto; padding-inline: 16px; }
+  .container-dashboard { max-width: 1440px; margin-inline: auto; padding-inline: 16px; }
+  .container-prose     { max-width: 880px;  margin-inline: auto; padding-inline: 16px; }
+  @media (min-width: 640px) {
+    .container-content, .container-dashboard, .container-prose { padding-inline: 24px; }
+  }
+  @media (min-width: 1024px) {
+    .container-content, .container-dashboard, .container-prose { padding-inline: 32px; }
+  }
+
+  /* Section vertical rhythm */
+  .section { padding-block: 32px; }
+  @media (min-width: 768px) { .section { padding-block: 48px; } }
+  @media (min-width: 1024px) { .section { padding-block: 64px; } }
+
   /* The canonical card surface — used everywhere */
   .panel {
     background-color: hsl(var(--card));
@@ -174,9 +216,33 @@
     border-radius: var(--radius);
     box-shadow: var(--shadow-card);
   }
-  .panel-padded { padding: 1.25rem; }
+  .panel-padded { padding: 24px; }
   @media (min-width: 768px) {
-    .panel-padded { padding: 1.5rem; }
+    .panel-padded { padding: 32px; }
+  }
+
+  /* Stat / KPI primitives */
+  .stat-value {
+    font-family: '"Source Sans 3"', system-ui, sans-serif;
+    font-size: 32px;
+    line-height: 36px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: hsl(var(--foreground));
+  }
+  .stat-label {
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Responsive horizontal-scroll wrapper for tables */
+  .table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 

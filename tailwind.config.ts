@@ -7,15 +7,14 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "1.5rem",
+      padding: { DEFAULT: "1rem", sm: "1.5rem", lg: "2rem" },
       screens: { "2xl": "1440px" },
     },
     extend: {
       fontFamily: {
-        sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
-        // Editorial serif for headlines & data-journalism display type.
-        serif: ['"Source Serif 4"', 'Georgia', 'ui-serif', 'serif'],
-        display: ['"Source Serif 4"', 'Georgia', 'ui-serif', 'serif'],
+        sans: ['"Source Sans 3"', 'system-ui', '-apple-system', 'sans-serif'],
+        serif: ['"IBM Plex Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"IBM Plex Sans"', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       colors: {
