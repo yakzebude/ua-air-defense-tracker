@@ -186,12 +186,6 @@ function SectionNav() {
         >
           {t("nav.contact")}
         </Link>
-        <Link
-          to="/changelog"
-          className="whitespace-nowrap rounded-sm px-2.5 py-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-        >
-          {t("nav.changelog")}
-        </Link>
       </div>
     </nav>
   );
