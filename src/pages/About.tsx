@@ -102,10 +102,9 @@ export default function About() {
       <DocSection num="05" title="Transparency statement">
         <p>
           We publish the underlying CSVs alongside the dashboard. Any chart you see here can be
-          reproduced from those files. Revisions are kept in the upstream dataset changelog and
-          mirrored in our <a href="/changelog">site changelog</a>. If you can replicate our figures,
-          you can also challenge them — and we welcome that. Corrections are filed publicly,
-          not silently.
+          reproduced from those files. Revisions are kept in the upstream dataset history. If
+          you can replicate our figures, you can also challenge them — and we welcome that.
+          Corrections are filed publicly, not silently.
         </p>
         <DocCallout label="No advocacy, no fundraising for this project">
           UA Air Defense Tracker does not solicit donations for itself, does not sell ads, and is

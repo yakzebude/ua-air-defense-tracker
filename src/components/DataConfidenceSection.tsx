@@ -140,89 +140,103 @@ export function DataConfidenceSection({ lastUpdatedLabel, lastUpdatedDate }: Pro
           </ol>
         </div>
 
-        {/* Confidence classification + included/excluded */}
-        <div className="mb-10 grid gap-6 md:grid-cols-2">
-          <div>
-            <div className="src-label mb-3">Confidence classification</div>
-            <ul className="space-y-2.5">
-              {CONFIDENCE.map((c) => (
-                <li
-                  key={c.tag}
-                  className="rounded-sm border border-border bg-card p-4"
-                >
-                  <div className="mb-1 flex items-center gap-2">
-                    <span
-                      className={`inline-flex rounded-sm border border-border bg-secondary px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] ${
-                        c.tone === "ok"
-                          ? "text-[hsl(var(--signal-ok))]"
-                          : c.tone === "warn"
-                          ? "text-[hsl(var(--signal-warn))]"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {c.tag}
-                    </span>
-                    <span className="text-[13.5px] font-semibold text-foreground">{c.title}</span>
-                  </div>
-                  <p className="text-[12.5px] leading-relaxed text-muted-foreground">{c.body}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
+        {/* Collapsible: confidence classification, included/excluded, limitations */}
+        <details className="group">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-sm border border-border bg-card px-4 py-3 [&::-webkit-details-marker]:hidden">
+            <span className="src-label">More on classification, scope &amp; known limitations</span>
+            <span className="inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground transition-colors group-hover:text-foreground">
+              <span className="group-open:hidden">Expand</span>
+              <span className="hidden group-open:inline">Collapse</span>
+              <span aria-hidden className="transition-transform group-open:rotate-180">▾</span>
+            </span>
+          </summary>
 
-          <div>
-            <div className="src-label mb-3">What interception statistics include — and exclude</div>
-            <div className="grid gap-3">
-              <div className="rounded-sm border border-border bg-card p-4">
-                <div className="mb-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-[hsl(var(--signal-ok))]">
-                  Included
-                </div>
-                <ul className="list-disc space-y-1.5 pl-5 text-[12.5px] leading-relaxed text-foreground">
-                  <li>Cruise missiles, ballistic missiles and one-way attack UAVs (e.g. Shahed/Geran) launched at Ukrainian territory.</li>
-                  <li>Confirmed kinetic interceptions reported by the Ukrainian Air Force Command.</li>
-                  <li>Confirmed losses to electronic-warfare suppression that are publicly disclosed.</li>
+          <div className="mt-6">
+            {/* Confidence classification + included/excluded */}
+            <div className="mb-10 grid gap-6 md:grid-cols-2 md:items-stretch">
+              <div className="flex flex-col">
+                <div className="src-label mb-3">Confidence classification</div>
+                <ul className="flex flex-1 flex-col gap-2.5">
+                  {CONFIDENCE.map((c) => (
+                    <li
+                      key={c.tag}
+                      className="flex-1 rounded-sm border border-border bg-card p-4"
+                    >
+                      <div className="mb-1 flex items-center gap-2">
+                        <span
+                          className={`inline-flex rounded-sm border border-border bg-secondary px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] ${
+                            c.tone === "ok"
+                              ? "text-[hsl(var(--signal-ok))]"
+                              : c.tone === "warn"
+                              ? "text-[hsl(var(--signal-warn))]"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {c.tag}
+                        </span>
+                        <span className="text-[13.5px] font-semibold text-foreground">{c.title}</span>
+                      </div>
+                      <p className="text-[12.5px] leading-relaxed text-muted-foreground">{c.body}</p>
+                    </li>
+                  ))}
                 </ul>
               </div>
-              <div className="rounded-sm border border-border bg-card p-4">
-                <div className="mb-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-[hsl(var(--signal))]">
-                  Excluded
+
+              <div className="flex flex-col">
+                <div className="src-label mb-3">What interception statistics include — and exclude</div>
+                <div className="flex flex-1 flex-col gap-2.5">
+                  <div className="flex-1 rounded-sm border border-border bg-card p-4">
+                    <div className="mb-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-[hsl(var(--signal-ok))]">
+                      Included
+                    </div>
+                    <ul className="list-disc space-y-1.5 pl-5 text-[12.5px] leading-relaxed text-foreground">
+                      <li>Cruise missiles, ballistic missiles and one-way attack UAVs (e.g. Shahed/Geran) launched at Ukrainian territory.</li>
+                      <li>Confirmed kinetic interceptions reported by the Ukrainian Air Force Command.</li>
+                      <li>Confirmed losses to electronic-warfare suppression that are publicly disclosed.</li>
+                    </ul>
+                  </div>
+                  <div className="flex-1 rounded-sm border border-border bg-card p-4">
+                    <div className="mb-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-[hsl(var(--signal))]">
+                      Excluded
+                    </div>
+                    <ul className="list-disc space-y-1.5 pl-5 text-[12.5px] leading-relaxed text-foreground">
+                      <li>Reconnaissance drones, tactical FPVs and front-line loitering munitions (separate dataset).</li>
+                      <li>Air-launched glide bombs (KAB / UMPK) — counted separately in the live alert feed only.</li>
+                      <li>Weapons jammed but not destroyed, and weapons whose fate is not publicly disclosed.</li>
+                    </ul>
+                  </div>
                 </div>
-                <ul className="list-disc space-y-1.5 pl-5 text-[12.5px] leading-relaxed text-foreground">
-                  <li>Reconnaissance drones, tactical FPVs and front-line loitering munitions (separate dataset).</li>
-                  <li>Air-launched glide bombs (KAB / UMPK) — counted separately in the live alert feed only.</li>
-                  <li>Weapons jammed but not destroyed, and weapons whose fate is not publicly disclosed.</li>
-                </ul>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Known limitations */}
-        <div>
-          <div className="src-label mb-3">Known limitations</div>
-          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-            {LIMITATIONS.map((l) => (
-              <div key={l.title} className="rounded-sm border border-border bg-card p-4">
-                <div className="mb-1 flex items-center gap-2">
-                  <span aria-hidden className="text-[hsl(var(--signal-warn))]">⚠</span>
-                  <span className="text-[13.5px] font-semibold text-foreground">{l.title}</span>
-                </div>
-                <p className="text-[12.5px] leading-relaxed text-muted-foreground">{l.body}</p>
+            {/* Known limitations */}
+            <div>
+              <div className="src-label mb-3">Known limitations</div>
+              <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+                {LIMITATIONS.map((l) => (
+                  <div key={l.title} className="rounded-sm border border-border bg-card p-4">
+                    <div className="mb-1 flex items-center gap-2">
+                      <span aria-hidden className="text-[hsl(var(--signal-warn))]">⚠</span>
+                      <span className="text-[13.5px] font-semibold text-foreground">{l.title}</span>
+                    </div>
+                    <p className="text-[12.5px] leading-relaxed text-muted-foreground">{l.body}</p>
+                  </div>
+                ))}
               </div>
-            ))}
+              <p className="mt-4 text-[12.5px] leading-relaxed text-muted-foreground">
+                For the full methodology see{" "}
+                <Link to="/methodology" className="underline underline-offset-4 hover:text-foreground">
+                  /methodology
+                </Link>
+                ; for the source list see{" "}
+                <Link to="/sources" className="underline underline-offset-4 hover:text-foreground">
+                  /sources
+                </Link>
+                .
+              </p>
+            </div>
           </div>
-          <p className="mt-4 text-[12.5px] leading-relaxed text-muted-foreground">
-            For the full methodology see{" "}
-            <Link to="/methodology" className="underline underline-offset-4 hover:text-foreground">
-              /methodology
-            </Link>
-            ; for the source list see{" "}
-            <Link to="/sources" className="underline underline-offset-4 hover:text-foreground">
-              /sources
-            </Link>
-            .
-          </p>
-        </div>
+        </details>
       </div>
     </section>
   );

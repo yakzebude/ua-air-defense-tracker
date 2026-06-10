@@ -8,7 +8,7 @@ import NotFound from "./pages/NotFound.tsx";
 import Methodology from "./pages/Methodology.tsx";
 import Sources from "./pages/Sources.tsx";
 import Disclaimer from "./pages/Disclaimer.tsx";
-import Changelog from "./pages/Changelog.tsx";
+
 import About from "./pages/About.tsx";
 import Imprint from "./pages/Imprint.tsx";
 import Contact from "./pages/Contact.tsx";
@@ -30,7 +30,7 @@ const App = () => (
           <Route path="/methodology" element={<Methodology />} />
           <Route path="/sources" element={<Sources />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
-          <Route path="/changelog" element={<Changelog />} />
+          
           <Route path="/about" element={<About />} />
           <Route path="/imprint" element={<Imprint />} />
           <Route path="/contact" element={<Contact />} />

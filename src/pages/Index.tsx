@@ -84,6 +84,36 @@ const FRESHNESS_VAR: Record<NonNullable<ReturnType<typeof freshnessTier>>, strin
   stale: "--signal-warn",
   veryStale: "--signal",
 };
+/** Russia's full-scale invasion of Ukraine began at 03:40 Kyiv time on 24 Feb 2022
+ *  (sources: BBC, Reuters, UN, ISW). Increments by one each day. */
+const WAR_START_UTC = Date.UTC(2022, 1, 24, 1, 40); // 03:40 EET = 01:40 UTC
+
+function WarDayTracker() {
+  const [days, setDays] = useState<number>(() =>
+    Math.max(1, Math.floor((Date.now() - WAR_START_UTC) / 86_400_000) + 1),
+  );
+  useEffect(() => {
+    const tick = () =>
+      setDays(Math.max(1, Math.floor((Date.now() - WAR_START_UTC) / 86_400_000) + 1));
+    tick();
+    const id = window.setInterval(tick, 60_000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 text-muted-foreground"
+      title="Days since the start of Russia's full-scale invasion of Ukraine (24 Feb 2022)"
+    >
+      <span className="relative inline-flex h-1.5 w-1.5">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--signal))] opacity-60" />
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
+      </span>
+      <span className="src-label">Day of war</span>
+      <span className="num font-semibold text-foreground">{days.toLocaleString("en-US")}</span>
+    </span>
+  );
+}
+
 
 
 function StatusBar({
@@ -185,12 +215,6 @@ function SectionNav() {
           className="ml-auto whitespace-nowrap rounded-sm px-2.5 py-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
         >
           {t("nav.contact")}
-        </Link>
-        <Link
-          to="/changelog"
-          className="whitespace-nowrap rounded-sm px-2.5 py-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-        >
-          {t("nav.changelog")}
         </Link>
       </div>
     </nav>
@@ -624,14 +648,9 @@ const Index = () => {
 
 
       <section id="summary" className="border-b border-border">
-        <div className="container pt-12 pb-12 md:pt-20 md:pb-16">
+        <div className="container pt-8 pb-12 md:pt-12 md:pb-16">
           {/* Editorial masthead — serif headline, dek, trust/metadata bar */}
           <div className="max-w-4xl">
-            <div className="src-label mb-4 flex items-center gap-2">
-              <span>{t("masthead.kicker")}</span>
-              <span aria-hidden className="h-px w-6 bg-border" />
-              <span>{t("masthead.briefLabel")}</span>
-            </div>
             <h1 className="font-serif text-[2.25rem] leading-[1.05] tracking-[-0.02em] md:text-[3.5rem] lg:text-[4rem]">
               {t("masthead.title")}
             </h1>
@@ -639,9 +658,9 @@ const Index = () => {
               {t("masthead.tagline")}
             </p>
 
-            {/* Trust / metadata bar — primary source attribution. Last-updated lives in the sticky
-                status bar; methodology / sources / downloads live in the footer and inline sections. */}
+            {/* Trust / metadata bar — primary source attribution + day tracker. */}
             <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-border py-3 text-[12px]">
+              <WarDayTracker />
               {dataTimeframe && (
                 <span className="inline-flex items-center gap-1.5 text-muted-foreground">
                   <span className="src-label">{t("masthead.timeframe")}</span>
@@ -896,7 +915,7 @@ const Index = () => {
             <div className="src-label mb-3">{t("footer.colAbout")}</div>
             <ul className="space-y-2 text-[13px]">
               <li><Link to="/about" className="text-foreground hover:underline underline-offset-4">{t("nav.about")}</Link></li>
-              <li><Link to="/changelog" className="text-foreground hover:underline underline-offset-4">{t("nav.changelog")}</Link></li>
+              
               <li className="text-muted-foreground">{t("footer.curatedBy")} <span className="text-foreground">Petro Ivaniuk</span></li>
               <li className="text-muted-foreground">{t("footer.responsibleBy")} <span className="text-foreground">Alexander Anton-Boicuk</span></li>
             </ul>
