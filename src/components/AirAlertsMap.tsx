@@ -274,24 +274,28 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   const name = (geo.properties.name as string) ?? iso;
                   const nameEn = (geo.properties.name_en as string) ?? name;
                   const alert = byIso.get(iso);
-                  const rawState: AlertState = alert?.state ?? (alert?.active ? "full" : "none");
-                  const state: AlertState = rawState === "full" ? "full" : "none";
+                  const state: AlertState = alert?.state ?? (alert?.active ? "full" : "none");
                   const occupied = OCCUPIED_ISOS.has(iso);
                   // Occupied territories are rendered permanently dark red and
                   // never pulse — active-alert signalling only applies to free
                   // Ukrainian territory.
-                  const isActive = state === "full" && !occupied;
+                  const isFull = state === "full" && !occupied;
+                  const isPartial = state === "partial" && !occupied;
 
                   const baseFill = occupied
                     ? "hsl(var(--occupied))"
-                    : isActive
+                    : isFull
                       ? "hsl(var(--signal) / 0.65)"
-                      : "hsl(var(--muted))";
+                      : isPartial
+                        ? "hsl(var(--signal) / 0.18)"
+                        : "hsl(var(--muted))";
                   const hoverFill = occupied
                     ? "hsl(var(--occupied))"
-                    : isActive
+                    : isFull
                       ? "hsl(var(--signal) / 0.85)"
-                      : "hsl(var(--muted-foreground) / 0.4)";
+                      : isPartial
+                        ? "hsl(var(--signal) / 0.28)"
+                        : "hsl(var(--muted-foreground) / 0.4)";
 
                   return (
                     <Geography
