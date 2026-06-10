@@ -20,16 +20,10 @@ const LEVEL_RING: Record<StatusLevel, string> = {
   unavailable: "border-[hsl(var(--signal)/0.4)] bg-[hsl(var(--signal)/0.08)]",
 };
 
-/** Inline pill: small status dot + label. */
+/** Inline pill: status label. */
 export function StatusBadge({ level, label }: { level: StatusLevel; label?: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-card/70 px-2 py-0.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-foreground">
-      <span className="relative inline-flex h-1.5 w-1.5">
-        {level === "operational" && (
-          <span className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-60 ${LEVEL_DOT[level]}`} />
-        )}
-        <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${LEVEL_DOT[level]}`} />
-      </span>
+    <span className={`inline-flex items-center rounded-sm border px-2 py-0.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-foreground ${LEVEL_RING[level]}`}>
       <span>{label ?? LEVEL_LABEL[level]}</span>
     </span>
   );
