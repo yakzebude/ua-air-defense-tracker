@@ -51,7 +51,7 @@ X-31PD,cruise missile,russia,"air-launched anti-radiation (extended-range)","Su-
 X-32,cruise missile,russia,"air-launched, supersonic high-altitude",Tu-22M3M,Kh-32,AS-4 Kitchen,2016,MKB Raduga,MKB Raduga,Inertial / active radar,
 X-35,cruise missile,russia,"anti-ship, subsonic","Tu-142, Su-24, MiG-29M/K, Bal coastal",Kh-35 Uran,AS-20 Kayak / SS-N-25 Switchblade,2003,Zvezda-Strela,Tactical Missiles Corporation,"Inertial, active radar terminal",~500000 USD
 X-47 Kinzhal and Iskander-M/KN-23,cruise missile,russia,,,,,,,,,
-X-59,cruise missile,russia,"air-launched, air-to-surface, TV-guided","Su-30, Su-34, Su-24M",Kh-59 Ovod,AS-13 Kingbolt / AS-18 Kazoo,1980,MKB Raduga,Tactical Missiles Corporation,Inertial / TV command,
+X-59,cruise missile,russia,"air-launched, air-to-surface, TV-guided","Su-30, Su-34, Su-24M",Kh-59 Ovod,AS-13 Kingbolt / AS-18 Kazoo,1980,MKB Raduga,Tactical Missiles Corporation,Inertial / TV command,~600000 USD
 X-59 and X-35,cruise missile,russia,,,,,,,,,
 X-59/X-69,cruise missile,russia,,,,,,,,,
 X-59MK2,cruise missile,russia,"low-RCS land-attack",Su-57,Kh-59MK2,AS-22,2015,MKB Raduga,Tactical Missiles Corporation,"Inertial, GLONASS, EO terminal",
