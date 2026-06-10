@@ -652,76 +652,52 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           })()}
         </SheetContent>
       </Sheet>
-      </div>{/* /map column */}
 
-      {/* Side panel: active alerts list */}
-      <aside className="lg:col-span-1 mt-4 lg:mt-0">
-        <div className="rounded border border-border bg-card p-4 h-full">
-          <div className="flex items-baseline justify-between gap-2 mb-3">
-            <h3 className="text-sm font-semibold tracking-wide text-foreground">
+      {/* Active alerts — inline chip strip below the map.
+          Folds the former right-hand sidebar into the same block so the map
+          panel itself communicates which regions are currently under alert. */}
+      {variant === "full" && (
+        <div className="mt-3 rounded border border-border bg-card p-3">
+          <div className="mb-2 flex items-baseline justify-between gap-2">
+            <h3 className="text-[11px] font-mono uppercase tracking-[0.16em] text-foreground">
               {t("airAlerts.sidePanelTitle", { defaultValue: "Active alerts" })}
             </h3>
-            <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground tabular-nums">
-              {activeList.length} / 27
+            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground tabular-nums">
+              {activeList.length} / 22
             </span>
           </div>
 
           {unauthorized && (
-            <div className="rounded border border-[hsl(var(--signal-warn)/0.4)] bg-[hsl(var(--signal-warn)/0.08)] p-3 text-xs text-foreground">
+            <div className="rounded border border-[hsl(var(--signal-warn)/0.4)] bg-[hsl(var(--signal-warn)/0.08)] px-2.5 py-1.5 text-[11px] text-foreground">
               {t("airAlerts.feedUnauthorized", {
-                defaultValue: "Live feed authentication failed. Showing no active alerts.",
+                defaultValue: "Live feed authentication failed.",
               })}
             </div>
           )}
 
           {!unauthorized && activeList.length === 0 && (
-            <div className="rounded border border-[hsl(var(--signal-ok)/0.4)] bg-[hsl(var(--signal-ok)/0.08)] p-3 text-xs text-foreground">
-              <span className="text-[hsl(var(--signal-ok))]">●</span>{" "}
-              {t("airAlerts.noActiveAlerts", { defaultValue: "No active air-raid alerts." })}
+            <div className="rounded border border-[hsl(var(--signal-ok)/0.4)] bg-[hsl(var(--signal-ok)/0.08)] px-2.5 py-1.5 text-[11px] text-foreground">
+              {t("airAlerts.noActiveAlerts", { defaultValue: "No active air-raid alerts in unoccupied territory." })}
             </div>
           )}
 
           {!unauthorized && activeList.length > 0 && (
-            <ul className="space-y-1.5 max-h-[640px] overflow-y-auto pr-1">
+            <ul className="flex flex-wrap gap-1.5">
               {activeList.map((o) => (
                 <li
                   key={o.iso}
-                  className="flex items-center justify-between gap-2 rounded border border-border/60 bg-background/40 px-2.5 py-1.5"
+                  className="inline-flex items-center gap-1.5 rounded border border-[hsl(var(--signal)/0.45)] bg-[hsl(var(--signal)/0.10)] px-2 py-0.5 text-[11px]"
                 >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span
-                      className="h-2 w-2 rounded-full flex-shrink-0 animate-pulse"
-                      style={{ background: "hsl(var(--signal))" }}
-                    />
-                    <span className="text-xs text-foreground truncate">{o.nameEn}</span>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <span
-                      className="text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded"
-                      style={{
-                        background: "hsl(var(--signal) / 0.15)",
-                        color: "hsl(var(--signal))",
-                      }}
-                    >
-                      {t("airAlerts.fullAlert", { defaultValue: "Alert" })}
-                    </span>
-                    <span className="text-[10px] font-mono text-muted-foreground tabular-nums w-12 text-right">
-                      {durationLabel(o.changedAt, true)}
-                    </span>
-                  </div>
+                  <span className="text-foreground">{o.nameEn}</span>
+                  <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
+                    {durationLabel(o.changedAt, true)}
+                  </span>
                 </li>
               ))}
-
             </ul>
           )}
-
-          <p className="mt-3 text-[9px] font-mono text-muted-foreground/70 leading-relaxed">
-            {t("airAlerts.sidePanelNote", {
-              defaultValue: "Source: alerts.in.ua · auto-refreshes every 30 s",
-            })}
-          </p>
         </div>
-      </aside>
+      )}
     </div>
   );
 }
