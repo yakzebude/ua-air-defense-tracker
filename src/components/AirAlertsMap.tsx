@@ -13,6 +13,16 @@ const RAIONS_GEO = "/geo/ua-raions.geo.json";
 const WORLD_GEO = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json";
 const NEIGHBOUR_NAMES = new Set(["Belarus", "Russia"]);
 
+/** Oblasts under full or substantial Russian occupation — rendered permanently
+ *  in dark red. Active-alert pulsing is suppressed inside these regions. */
+const OCCUPIED_ISOS = new Set<string>([
+  "UA-43", // Crimea (Autonomous Republic) — occupied since 2014
+  "UA-09", // Luhansk
+  "UA-14", // Donetsk
+  "UA-23", // Zaporizhzhia (partial)
+  "UA-65", // Kherson (partial)
+]);
+
 interface OblastStat {
   slug: string;
   alarms?: number;
