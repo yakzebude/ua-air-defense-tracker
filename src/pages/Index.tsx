@@ -639,12 +639,9 @@ const Index = () => {
               {t("masthead.tagline")}
             </p>
 
-            {/* Trust / metadata bar — every claim has a visible source */}
+            {/* Trust / metadata bar — primary source attribution. Last-updated lives in the sticky
+                status bar; methodology / sources / downloads live in the footer and inline sections. */}
             <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-border py-3 text-[12px]">
-              <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-                <span className="src-label">{t("masthead.refreshBadge")}</span>
-                <span className="num text-foreground">{fmtUtc(latestDataPoint)}</span>
-              </span>
               {dataTimeframe && (
                 <span className="inline-flex items-center gap-1.5 text-muted-foreground">
                   <span className="src-label">{t("masthead.timeframe")}</span>
@@ -661,22 +658,9 @@ const Index = () => {
                   {t("trustbar.sourceName")}
                 </a>
               </span>
-              <Link to="/methodology" className="text-foreground underline underline-offset-4 decoration-border hover:decoration-foreground">
-                {t("trustbar.methodology")}
-              </Link>
-              <a href="/data/missile_attacks_daily.csv" download className="text-foreground underline underline-offset-4 decoration-border hover:decoration-foreground">
-                {t("trustbar.downloadDataset")}
-              </a>
-              <Link to="/sources" className="text-foreground underline underline-offset-4 decoration-border hover:decoration-foreground">
-                {t("trustbar.allSources")}
-              </Link>
-              <span className="ml-auto"><LanguageSwitcher /></span>
             </div>
-
-            <p className="mt-6 max-w-3xl text-[14px] leading-[1.7] text-muted-foreground">
-              {t("masthead.intro")}
-            </p>
           </div>
+
 
 
           {ready && (
@@ -903,14 +887,8 @@ const Index = () => {
       <RelatedSourcesSection />
       <HowToHelpSection />
 
-      <div className="border-t border-border bg-secondary">
-        <div className="container py-4">
-          <p className="text-[12px] leading-relaxed text-muted-foreground">
-            <strong className="text-foreground">{t("footer.dataNote")}</strong>{" "}
-            {t("footer.dataNoteBody")}
-          </p>
-        </div>
-      </div>
+
+
 
       <footer className="border-t border-border">
         <div className="container grid gap-8 py-10 md:grid-cols-4">
@@ -957,7 +935,7 @@ const Index = () => {
           <div>
             <div className="src-label mb-3">{t("footer.colMeta")}</div>
             <ul className="space-y-2 text-[13px] text-muted-foreground">
-              <li>{t("footer.lastDataPoint")} <span className="text-foreground num">{lastUpdatedLabel ?? "—"}</span></li>
+              
               <li>{t("footer.availableIn")} <span className="text-foreground">EN · DE · FR · UK</span></li>
             </ul>
           </div>
@@ -967,11 +945,6 @@ const Index = () => {
             <p className="text-[12.5px] leading-[1.7] text-muted-foreground">
               {t("footer.provenance")}
             </p>
-          </div>
-        </div>
-        <div className="border-t border-border">
-          <div className="container py-4 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground">
-            {t("footer.tagline")}
           </div>
         </div>
 
