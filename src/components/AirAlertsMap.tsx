@@ -175,40 +175,40 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
     return m;
   }, [data]);
 
-  // Index of active raions: normalized name -> alert. Used to colorize polygons.
-  const activeRaionsByName = useMemo(() => {
+  // Index of active raions keyed by `${oblastIso}::${normName}` so raion-name
+  // collisions across oblasts (e.g. "Сумський район") never bleed onto the
+  // wrong polygon.
+  const activeRaionsByKey = useMemo(() => {
     const m = new Map<string, RaionAlert>();
-    for (const r of data?.raions ?? []) m.set(normRaion(r.name), r);
+    for (const r of data?.raions ?? []) m.set(`${r.oblastIso}::${normRaion(r.name)}`, r);
     return m;
   }, [data]);
 
-  // Only "full" (red) alerts are surfaced. Partial/raion-level states are
-  // suppressed per editorial decision — alerts.in.ua live map is the
-  // authoritative reference for what counts as an active oblast alert.
-  const isFullAlert = (o: OblastAlert): boolean => {
+  // Both full and partial oblast states count as "active" for the live signal
+  // — alerts.in.ua mirrors this on its map. Partial state means the alert
+  // covers one or more raions inside the oblast (rendered red individually).
+  const isActiveAlert = (o: OblastAlert): boolean => {
     const s = (o.state ?? (o.active ? "full" : "none")) as AlertState;
-    return s === "full";
+    return s === "full" || s === "partial";
   };
 
   // Active count excludes occupied territories — alerts.in.ua marks occupied
   // oblasts as permanently "active" because Russian forces operate from them,
-  // but for a free-Ukraine air-raid signal that creates a constant false 4-5
+  // but for a free-Ukraine air-raid signal that creates a constant false
   // baseline. We report only alerts on free Ukrainian territory.
   const activeCount = (data?.oblasts ?? [])
-    .filter(isFullAlert)
+    .filter(isActiveAlert)
     .filter((o) => !OCCUPIED_ISOS.has(o.iso))
     .length;
   const activeRaionCount = (data?.raions ?? []).filter((r) => !OCCUPIED_ISOS.has(r.oblastIso)).length;
 
 
-  // Active alerts list — full-state oblasts only, excluding occupied territories
-  // (per editorial decision: occupied regions are always "under threat" by
-  // definition and would dominate the live signal). Sorted alphabetically.
+  // Active alerts list — full + partial state, excluding occupied territories.
+  // Sorted alphabetically.
   const activeList = useMemo(() => {
     return (data?.oblasts ?? [])
-      .filter(isFullAlert)
+      .filter(isActiveAlert)
       .filter((o) => !OCCUPIED_ISOS.has(o.iso))
-      .map((o) => ({ ...o, state: "full" as AlertState }))
       .sort((a, b) => a.nameEn.localeCompare(b.nameEn));
   }, [data]);
 
@@ -274,24 +274,28 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   const name = (geo.properties.name as string) ?? iso;
                   const nameEn = (geo.properties.name_en as string) ?? name;
                   const alert = byIso.get(iso);
-                  const rawState: AlertState = alert?.state ?? (alert?.active ? "full" : "none");
-                  const state: AlertState = rawState === "full" ? "full" : "none";
+                  const state: AlertState = alert?.state ?? (alert?.active ? "full" : "none");
                   const occupied = OCCUPIED_ISOS.has(iso);
                   // Occupied territories are rendered permanently dark red and
                   // never pulse — active-alert signalling only applies to free
                   // Ukrainian territory.
-                  const isActive = state === "full" && !occupied;
+                  const isFull = state === "full" && !occupied;
+                  const isPartial = state === "partial" && !occupied;
 
                   const baseFill = occupied
                     ? "hsl(var(--occupied))"
-                    : isActive
+                    : isFull
                       ? "hsl(var(--signal) / 0.65)"
-                      : "hsl(var(--muted))";
+                      : isPartial
+                        ? "hsl(var(--signal) / 0.18)"
+                        : "hsl(var(--muted))";
                   const hoverFill = occupied
                     ? "hsl(var(--occupied))"
-                    : isActive
+                    : isFull
                       ? "hsl(var(--signal) / 0.85)"
-                      : "hsl(var(--muted-foreground) / 0.4)";
+                      : isPartial
+                        ? "hsl(var(--signal) / 0.28)"
+                        : "hsl(var(--muted-foreground) / 0.4)";
 
                   return (
                     <Geography
@@ -338,7 +342,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         },
                         pressed: { fill: baseFill, outline: "none" },
                       }}
-                      className={isActive ? "air-alert-pulse" : undefined}
+                      className={isFull ? "air-alert-pulse" : undefined}
                     />
                   );
                 })
@@ -358,7 +362,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                     const name = geo.properties.name as string;
                     const oblastIso = geo.properties.iso as string;
                     const occupied = OCCUPIED_ISOS.has(oblastIso);
-                    const raion = activeRaionsByName.get(normRaion(name));
+                    const raion = activeRaionsByKey.get(`${oblastIso}::${normRaion(name)}`);
                     // Occupied raions never count as active alerts — they
                     // render as thin light-grey subdivision borders only.
                     const isActive = !!raion && !occupied;
@@ -506,7 +510,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
             );
           }
           // raion — show tooltip for every raion in free territory.
-          const r = activeRaionsByName.get(normRaion(hovered.name));
+          const r = activeRaionsByKey.get(`${hovered.oblastIso}::${normRaion(hovered.name)}`);
           const parent = byIso.get(hovered.oblastIso);
           return (
             <div
