@@ -359,16 +359,18 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                     const oblastIso = geo.properties.iso as string;
                     const occupied = OCCUPIED_ISOS.has(oblastIso);
                     const raion = activeRaionsByName.get(normRaion(name));
-                    // Occupied raions never count as active alerts — even when
-                    // alerts.in.ua marks them so. They render as thin light-grey
-                    // subdivision borders on top of the dark-red oblast fill.
+                    // Occupied raions never count as active alerts — they
+                    // render as thin light-grey subdivision borders only.
                     const isActive = !!raion && !occupied;
+                    // Free-territory raions are interactive: hover shows the
+                    // raion name + status, click opens the detail panel.
+                    const interactive = !occupied;
                     return (
                       <Geography
                         key={geo.rsmKey}
                         geography={geo}
                         onMouseEnter={(e) => {
-                          if (!isActive) return;
+                          if (!interactive) return;
                           const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
                             ?.getBoundingClientRect();
                           setHovered({
@@ -380,7 +382,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                           });
                         }}
                         onMouseMove={(e) => {
-                          if (!isActive) return;
+                          if (!interactive) return;
                           const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
                             ?.getBoundingClientRect();
                           setHovered({
@@ -391,6 +393,10 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                             y: e.clientY - (cont?.top ?? 0),
                           });
                         }}
+                        onClick={() => {
+                          if (!interactive || variant !== "full") return;
+                          setSelected({ kind: "raion", name, oblastIso, raion });
+                        }}
                         style={{
                           default: {
                             fill: isActive ? "hsl(var(--signal) / 0.9)" : "transparent",
@@ -400,15 +406,21 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                             strokeWidth: occupied ? 0.3 : 0.25,
                             outline: "none",
                             transition: "fill 200ms ease",
-                            pointerEvents: isActive ? "auto" : "none",
+                            pointerEvents: interactive ? "auto" : "none",
+                            cursor: interactive ? "pointer" : "default",
                           },
                           hover: {
-                            fill: isActive ? "hsl(var(--signal))" : "transparent",
+                            fill: isActive
+                              ? "hsl(var(--signal))"
+                              : occupied
+                                ? "transparent"
+                                : "hsl(var(--foreground) / 0.08)",
                             stroke: occupied
                               ? "hsl(0 0% 88% / 0.45)"
-                              : "hsl(var(--foreground) / 0.35)",
-                            strokeWidth: occupied ? 0.3 : 0.4,
+                              : "hsl(var(--foreground) / 0.55)",
+                            strokeWidth: occupied ? 0.3 : 0.6,
                             outline: "none",
+                            cursor: interactive ? "pointer" : "default",
                           },
                           pressed: { outline: "none" },
                         }}
