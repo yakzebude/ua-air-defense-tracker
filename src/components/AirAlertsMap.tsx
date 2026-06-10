@@ -342,7 +342,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         },
                         pressed: { fill: baseFill, outline: "none" },
                       }}
-                      className={isActive ? "air-alert-pulse" : undefined}
+                      className={isFull ? "air-alert-pulse" : undefined}
                     />
                   );
                 })
