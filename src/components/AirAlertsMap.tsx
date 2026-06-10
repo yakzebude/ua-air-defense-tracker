@@ -126,7 +126,11 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
     | { kind: "raion"; name: string; oblastIso: string; x: number; y: number }
     | null
   >(null);
-  const [selected, setSelected] = useState<{ iso: string; name: string; nameEn: string; alert?: OblastAlert } | null>(null);
+  const [selected, setSelected] = useState<
+    | { kind: "oblast"; iso: string; name: string; nameEn: string; alert?: OblastAlert }
+    | { kind: "raion"; name: string; oblastIso: string; raion?: RaionAlert }
+    | null
+  >(null);
   const timerRef = useRef<number | null>(null);
   const [, setTick] = useState(0);
 
