@@ -186,8 +186,15 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
     return s === "full";
   };
 
-  const activeCount = (data?.oblasts ?? []).filter(isFullAlert).length;
-  const activeRaionCount = (data?.raions ?? []).length;
+  // Active count excludes occupied territories — alerts.in.ua marks occupied
+  // oblasts as permanently "active" because Russian forces operate from them,
+  // but for a free-Ukraine air-raid signal that creates a constant false 4-5
+  // baseline. We report only alerts on free Ukrainian territory.
+  const activeCount = (data?.oblasts ?? [])
+    .filter(isFullAlert)
+    .filter((o) => !OCCUPIED_ISOS.has(o.iso))
+    .length;
+  const activeRaionCount = (data?.raions ?? []).filter((r) => !OCCUPIED_ISOS.has(r.oblastIso)).length;
 
 
   // Active alerts list — full-state oblasts only, excluding occupied territories
