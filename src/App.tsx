@@ -8,7 +8,7 @@ import NotFound from "./pages/NotFound.tsx";
 import Methodology from "./pages/Methodology.tsx";
 import Sources from "./pages/Sources.tsx";
 import Disclaimer from "./pages/Disclaimer.tsx";
-import Changelog from "./pages/Changelog.tsx";
+
 import About from "./pages/About.tsx";
 import Imprint from "./pages/Imprint.tsx";
 import Contact from "./pages/Contact.tsx";
