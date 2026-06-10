@@ -4,7 +4,7 @@ Forpost,UAV,russia,reconnaissance (IAI Searcher II derivative),ground catapult,F
 Granat-4,UAV,russia,reconnaissance,man-portable catapult,Granat-4,,2014,Izhmash Unmanned Systems,Izhmash Unmanned Systems,"Inertial, GPS/GLONASS",
 Kub,UAV,russia,loitering munition,catapult,KUB-BLA,,2019,ZALA Aero Group,ZALA Aero Group,"Inertial, optical",~40000 USD
 Lancet,UAV,russia,loitering munition,catapult,Izdeliye 51 / Izdeliye 52 Lancet,,2020,ZALA Aero Group,ZALA Aero Group,"Inertial, optical-recognition terminal",~35000 USD
-Merlin-VR,UAV,russia,reconnaissance,catapult,Merlin-VR,,,Kazan National Research Technical University,KAI-Trial,"Inertial, GPS/GLONASS",
+Merlin-VR,UAV,russia,reconnaissance,catapult,Merlin-VR,,2015,Kazan National Research Technical University,KAI-Trial,"Inertial, GPS/GLONASS",
 Mohajer-6,UAV,iran,multirole ISTAR / armed,runway,Mohajer-6,,2018,Qods Aviation Industry Company,Qods Aviation Industry Company,"Inertial, GPS, datalink",~260000 USD
 Orion,UAV,russia,reconnaissance and armed (MALE),runway,Orion / Inokhodets,,2020,Kronstadt Group,Kronstadt Group,"Inertial, satellite datalink",~5 million USD
 Orlan-10,UAV,russia,reconnaissance,catapult,Orlan-10,,2010,Special Technology Center,Special Technology Center,"Inertial, GPS/GLONASS",~100000 USD
@@ -22,7 +22,7 @@ ZALA,UAV,russia,reconnaissance,catapult,ZALA 421-16E,,2010,ZALA Aero Group,ZALA 
 Молнія,UAV,russia,one-way attack loitering munition,catapult,Molniya / Molniya-1,,2024,Kronstadt Group,Kronstadt Group,"Inertial, GPS/GLONASS",~700 USD
 Молнія and Lancet,UAV,russia,,,,,,,,,
 Unknown Ballistic Missile,ballistic missile,russia,,,Unidentified Ballistic Missile,,,,,,
-Intercontinental Ballistic Missile,ballistic missile,russia,,,,,,,,,
+Intercontinental Ballistic Missile,ballistic missile,russia,"intermediate-range ballistic missile (Russia's only IRBM-class strike on Ukraine to date — Dnipro, 21 Nov 2024)",road-mobile TEL (Yars-derived chassis),Oreshnik (RS-26 Rubezh derivative),,2024,Moscow Institute of Thermal Technology,Votkinsk Plant State Production Association,"Inertial, GLONASS",
 Iskander-M,ballistic missile,russia,"short-range, quasi-ballistic, road-mobile",9P78-1 TEL,9K720 Iskander-M / 9M723,SS-26 Stone,2006,KBM Kolomna,Votkinsk Plant State Production Association,"Inertial, optical DSMAC, GLONASS",~3 million USD
 Iskander-M/KN-23,ballistic missile,russia/north korea,,,,,,,,,
 KN-23,ballistic missile,north korea,"short-range, solid-fueled, quasi-ballistic","8×8 wheeled TEL, 10×10 wheeled TEL, tracked launcher, railway car",Hwasong-11Ga,KN-23,2019,Academy of National Defence Science,February 11 Plant,Inertial,
@@ -33,7 +33,7 @@ Banderol,cruise missile,russia,subsonic cruise missile,Orion UAV / ground launch
 Iskander-K,cruise missile,russia,"ground-launched, subsonic, terrain-following",9P78-1 TEL,9M728 / 9M729 (Iskander-K),SSC-7 / SSC-8,2013,Novator Design Bureau,Novator Design Bureau,"Inertial, TERCOM, GLONASS",~3 million USD
 Iskander-K and Kalibr,cruise missile,russia,,,,,,,,,
 Kalibr,cruise missile,russia,"sea-launched, subsonic, land-attack","naval ships, submarines, Klub-K containers",3M-14 Kalibr,SS-N-27 Sizzler,2015,Novator Design Bureau,Novator Design Bureau,"Inertial, TERCOM/DSMAC, GLONASS",~1 million USD
-P-800 Oniks,cruise missile,russia,anti-ship / land-attack (supersonic),"Bastion-P coastal, naval ships, Su-30/34",P-800 Onyks,SS-N-26 Strobile,2002,NPO Mashinostroyeniya,NPO Mashinostroyeniya,"Inertial, active radar terminal",
+P-800 Oniks,cruise missile,russia,anti-ship / land-attack (supersonic),"Bastion-P coastal, naval ships, Su-30/34",P-800 Onyks,SS-N-26 Strobile,2002,NPO Mashinostroyeniya,NPO Mashinostroyeniya,"Inertial, active radar terminal",~1.25 million USD
 Unknown Missile,cruise missile,,,,Unidentified Missile,,,,,,
 X-101/X-555,cruise missile,russia,"air-launched, subsonic, low-RCS","Tu-95MS, Tu-160",Kh-101 / Kh-555,AS-23 Kodiak / AS-15 Kent,2012,MKB Raduga,MKB Raduga,"Inertial, TERCOM, GLONASS, EO terminal",~13 million USD
 X-101/X-555 and Iskander-K,cruise missile,russia,,,,,,,,,
@@ -42,7 +42,7 @@ X-101/X-555 and Kalibr and Iskander-K,cruise missile,russia,,,,,,,,,
 X-101/X-555 and Kalibr and Iskander-K and X-59,cruise missile,russia,,,,,,,,,
 X-101/X-555 and Kalibr and X-22,cruise missile,russia,,,,,,,,,
 X-101/X-555 and Kalibr and X-59/X-69,cruise missile,russia,,,,,,,,,
-X-22,cruise missile,russia,"air-launched, supersonic anti-ship / land-attack",Tu-22M3,Kh-22 Burya,AS-4 Kitchen,1968,MKB Raduga,MKB Raduga,"Inertial, active radar / anti-radar",
+X-22,cruise missile,russia,"air-launched, supersonic anti-ship / land-attack",Tu-22M3,Kh-22 Burya,AS-4 Kitchen,1968,MKB Raduga,MKB Raduga,"Inertial, active radar / anti-radar",~1 million USD
 X-22 and X-31P,cruise missile,russia,,,,,,,,,
 X-22 and X-32,cruise missile,russia,,,,,,,,,
 X-31,cruise missile,russia,"air-launched, supersonic","Su-30/34/35, MiG-29/35",Kh-31,AS-17 Krypton,1988,Zvezda-Strela,Tactical Missiles Corporation,Inertial / active radar / passive radar (P/PD variants),
@@ -51,7 +51,7 @@ X-31PD,cruise missile,russia,"air-launched anti-radiation (extended-range)","Su-
 X-32,cruise missile,russia,"air-launched, supersonic high-altitude",Tu-22M3M,Kh-32,AS-4 Kitchen,2016,MKB Raduga,MKB Raduga,Inertial / active radar,
 X-35,cruise missile,russia,"anti-ship, subsonic","Tu-142, Su-24, MiG-29M/K, Bal coastal",Kh-35 Uran,AS-20 Kayak / SS-N-25 Switchblade,2003,Zvezda-Strela,Tactical Missiles Corporation,"Inertial, active radar terminal",~500000 USD
 X-47 Kinzhal and Iskander-M/KN-23,cruise missile,russia,,,,,,,,,
-X-59,cruise missile,russia,"air-launched, air-to-surface, TV-guided","Su-30, Su-34, Su-24M",Kh-59 Ovod,AS-13 Kingbolt / AS-18 Kazoo,1980,MKB Raduga,Tactical Missiles Corporation,Inertial / TV command,
+X-59,cruise missile,russia,"air-launched, air-to-surface, TV-guided","Su-30, Su-34, Su-24M",Kh-59 Ovod,AS-13 Kingbolt / AS-18 Kazoo,1980,MKB Raduga,Tactical Missiles Corporation,Inertial / TV command,~600000 USD
 X-59 and X-35,cruise missile,russia,,,,,,,,,
 X-59/X-69,cruise missile,russia,,,,,,,,,
 X-59MK2,cruise missile,russia,"low-RCS land-attack",Su-57,Kh-59MK2,AS-22,2015,MKB Raduga,Tactical Missiles Corporation,"Inertial, GLONASS, EO terminal",
@@ -60,6 +60,6 @@ GBU,guided bomb,russia,"INS/satellite-guided glide bomb (UMPK kit on FAB-250/500
 C-300 and Iskander-M,surface-to-air and ballistic,russia,,,,,,,,,
 C-300/C-400 and Iskander-M,surface-to-air and ballistic,russia,,,,,,,,,
 C-400 and Iskander-M,surface-to-air and ballistic,russia,,,,,,,,,
-C-300,surface-to-air missile,russia,"long-range SAM (used in surface-to-surface mode against Ukraine)",5P85 TEL,S-300P/PMU,SA-10 Grumble / SA-20 Gargoyle,1978,Almaz-Antey Corporation,MKB Fakel,"Command + semi-active / active radar homing (variant-dependent)",
+C-300,surface-to-air missile,russia,"long-range SAM (used in surface-to-surface mode against Ukraine)",5P85 TEL,S-300P/PMU,SA-10 Grumble / SA-20 Gargoyle,1978,Almaz-Antey Corporation,MKB Fakel,"Command + semi-active / active radar homing (variant-dependent)",~1 million USD
 C-300/C-400,surface-to-air missile,russia,long-range SAM,,,,,Almaz-Antey Corporation,Almaz-Antey,,
-C-400,surface-to-air missile,russia,long-range SAM / anti-ballistic,5P85SM2 TEL,S-400 Triumf,SA-21 Growler,2007,Almaz-Antey Corporation,Kalinin Machine-Building Plant,"Command + active radar homing",
+C-400,surface-to-air missile,russia,long-range SAM / anti-ballistic,5P85SM2 TEL,S-400 Triumf,SA-21 Growler,2007,Almaz-Antey Corporation,Kalinin Machine-Building Plant,"Command + active radar homing",~1.5 million USD
