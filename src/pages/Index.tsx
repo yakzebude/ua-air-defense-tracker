@@ -887,14 +887,8 @@ const Index = () => {
       <RelatedSourcesSection />
       <HowToHelpSection />
 
-      <div className="border-t border-border bg-secondary">
-        <div className="container py-4">
-          <p className="text-[12px] leading-relaxed text-muted-foreground">
-            <strong className="text-foreground">{t("footer.dataNote")}</strong>{" "}
-            {t("footer.dataNoteBody")}
-          </p>
-        </div>
-      </div>
+
+
 
       <footer className="border-t border-border">
         <div className="container grid gap-8 py-10 md:grid-cols-4">
