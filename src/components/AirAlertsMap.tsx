@@ -588,123 +588,172 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
       {/* Detail panel */}
       <Sheet open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
         <SheetContent side="right" className="font-mono">
-          <SheetHeader>
-            <SheetTitle>{selected?.nameEn || selected?.name}</SheetTitle>
-            <SheetDescription>{selected?.name}</SheetDescription>
-          </SheetHeader>
-          {selected && (() => {
+          {selected?.kind === "oblast" && (() => {
             const alertSel = selected.alert;
             const stat = OBLAST_STATS.regions[selected.iso];
+            const raionList = (data?.raions ?? []).filter((r) => r.oblastIso === selected.iso);
             return (
-            <div className="mt-6 space-y-4 text-sm">
-              <div>
-                <div className="src-label mb-1">{t("airAlerts.status")}</div>
-                {alertSel?.active ? (
-                  <div className="text-[hsl(var(--signal))] font-semibold">
-                    ● {t("airAlerts.active")} — {durationLabel(alertSel.changedAt, true)}
-                  </div>
-                ) : (
-                  <div className="text-muted-foreground">{t("airAlerts.clear")}</div>
-                )}
-              </div>
-              {alertSel?.active && alertSel.types && alertSel.types.length > 0 && (
-                <div>
-                  <div className="src-label mb-1">{t("airAlerts.threatType")}</div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {alertSel.types.map((tp) => (
-                      <span key={tp} className="rounded bg-[hsl(var(--signal)/0.2)] px-2 py-0.5 text-[11px] uppercase tracking-wider text-foreground">
-                        {typeLabel(tp, t)}
-                      </span>
-                    ))}
-                  </div>
-                  <p className="mt-2 text-[10px] text-muted-foreground/80">
-                    {t("airAlerts.threatTypeNote")}
-                  </p>
-                </div>
-              )}
-              {alertSel && (
-                <div>
-                  <div className="src-label mb-1">{t("airAlerts.changedAt")}</div>
-                  <div>{new Date(alertSel.changedAt).toUTCString()}</div>
-                </div>
-              )}
-
-              {stat && (
-                <div className="pt-4 border-t border-border space-y-2">
-                  <div className="src-label">
-                    {t("airAlerts.statsHeading", { date: OBLAST_STATS.periodStart })}
-                  </div>
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
-                    <div>
-                      <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsAlerts")}</div>
-                      <div className="text-base font-semibold tabular-nums">{fmtNum(stat.alarms)}</div>
-                    </div>
-                    <div>
-                      <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsExplosions")}</div>
-                      <div className="text-base font-semibold tabular-nums">{fmtNum(stat.explosionReports)}</div>
-                    </div>
-                    {stat.avgDuration && (
-                      <div>
-                        <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsAvgDuration")}</div>
-                        <div className="tabular-nums">{stat.avgDuration}</div>
-                      </div>
-                    )}
-                    {stat.longest && (
-                      <div>
-                        <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsLongest")}</div>
-                        <div className="tabular-nums">{stat.longest}</div>
-                      </div>
-                    )}
-                    {stat.artilleryThreats !== undefined && (
-                      <div className="col-span-2">
-                        <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsArtillery")}</div>
-                        <div className="text-base font-semibold tabular-nums">{fmtNum(stat.artilleryThreats)}</div>
-                      </div>
-                    )}
-                  </div>
-                  <p className="text-[10px] text-muted-foreground/80">
-                    {t("airAlerts.statsSource")}:{" "}
-                    <a href={OBLAST_STATS.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-foreground">
-                      {OBLAST_STATS.source}
-                    </a>
-                    {" · "}
-                    {t("airAlerts.statsAsOf", { date: OBLAST_STATS.asOf })}
-                  </p>
-                </div>
-              )}
-
-              {(() => {
-                const list = (data?.raions ?? []).filter((r) => r.oblastIso === selected.iso);
-                if (!list.length) return null;
-                return (
+              <>
+                <SheetHeader>
+                  <SheetTitle>{selected.nameEn || selected.name}</SheetTitle>
+                  <SheetDescription>{selected.name}</SheetDescription>
+                </SheetHeader>
+                <div className="mt-6 space-y-4 text-sm">
                   <div>
-                    <div className="src-label mb-2">
-                      {t("airAlerts.activeRaions", { count: list.length })}
-                    </div>
-                    <ul className="space-y-1 text-xs">
-                      {list.map((r) => (
-                        <li key={r.id} className="flex items-center justify-between gap-3">
-                          <span className="truncate">{r.name}</span>
-                          <span className="text-[hsl(var(--signal))] tabular-nums">
-                            {durationLabel(r.changedAt, true)}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+                    <div className="src-label mb-1">{t("airAlerts.status")}</div>
+                    {alertSel?.active ? (
+                      <div className="text-[hsl(var(--signal))] font-semibold">
+                        ● {t("airAlerts.active")} — {durationLabel(alertSel.changedAt, true)}
+                      </div>
+                    ) : (
+                      <div className="text-muted-foreground">{t("airAlerts.clear")}</div>
+                    )}
                   </div>
-                );
-              })()}
-              <div className="pt-4 border-t border-border">
-                <a
-                  href="https://www.ukrainealarm.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs underline underline-offset-4 hover:text-foreground"
-                >
-                  {t("airAlerts.openSource")} →
-                </a>
-              </div>
-            </div>
+                  {alertSel?.active && alertSel.types && alertSel.types.length > 0 && (
+                    <div>
+                      <div className="src-label mb-1">{t("airAlerts.threatType")}</div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {alertSel.types.map((tp) => (
+                          <span key={tp} className="rounded bg-[hsl(var(--signal)/0.2)] px-2 py-0.5 text-[11px] uppercase tracking-wider text-foreground">
+                            {typeLabel(tp, t)}
+                          </span>
+                        ))}
+                      </div>
+                      <p className="mt-2 text-[10px] text-muted-foreground/80">{t("airAlerts.threatTypeNote")}</p>
+                    </div>
+                  )}
+                  {alertSel && (
+                    <div>
+                      <div className="src-label mb-1">{t("airAlerts.changedAt")}</div>
+                      <div>{new Date(alertSel.changedAt).toUTCString()}</div>
+                    </div>
+                  )}
+                  {stat && (
+                    <div className="pt-4 border-t border-border space-y-2">
+                      <div className="src-label">{t("airAlerts.statsHeading", { date: OBLAST_STATS.periodStart })}</div>
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                        <div>
+                          <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsAlerts")}</div>
+                          <div className="text-base font-semibold tabular-nums">{fmtNum(stat.alarms)}</div>
+                        </div>
+                        <div>
+                          <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsExplosions")}</div>
+                          <div className="text-base font-semibold tabular-nums">{fmtNum(stat.explosionReports)}</div>
+                        </div>
+                        {stat.avgDuration && (
+                          <div>
+                            <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsAvgDuration")}</div>
+                            <div className="tabular-nums">{stat.avgDuration}</div>
+                          </div>
+                        )}
+                        {stat.longest && (
+                          <div>
+                            <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsLongest")}</div>
+                            <div className="tabular-nums">{stat.longest}</div>
+                          </div>
+                        )}
+                        {stat.artilleryThreats !== undefined && (
+                          <div className="col-span-2">
+                            <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsArtillery")}</div>
+                            <div className="text-base font-semibold tabular-nums">{fmtNum(stat.artilleryThreats)}</div>
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-[10px] text-muted-foreground/80">
+                        {t("airAlerts.statsSource")}:{" "}
+                        <a href={OBLAST_STATS.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-foreground">
+                          {OBLAST_STATS.source}
+                        </a>
+                        {" · "}
+                        {t("airAlerts.statsAsOf", { date: OBLAST_STATS.asOf })}
+                      </p>
+                    </div>
+                  )}
+                  {raionList.length > 0 && (
+                    <div>
+                      <div className="src-label mb-2">
+                        {t("airAlerts.activeRaions", { count: raionList.length })}
+                      </div>
+                      <ul className="space-y-1 text-xs">
+                        {raionList.map((r) => (
+                          <li key={r.id} className="flex items-center justify-between gap-3">
+                            <button
+                              type="button"
+                              onClick={() => setSelected({ kind: "raion", name: r.name, oblastIso: r.oblastIso, raion: r })}
+                              className="truncate text-left hover:underline underline-offset-4"
+                            >
+                              {r.name}
+                            </button>
+                            <span className="text-[hsl(var(--signal))] tabular-nums">
+                              {durationLabel(r.changedAt, true)}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  <div className="pt-4 border-t border-border">
+                    <a href="https://alerts.in.ua" target="_blank" rel="noopener noreferrer" className="text-xs underline underline-offset-4 hover:text-foreground">
+                      {t("airAlerts.openSource")} →
+                    </a>
+                  </div>
+                </div>
+              </>
+            );
+          })()}
+
+          {selected?.kind === "raion" && (() => {
+            const r = selected.raion;
+            const parent = byIso.get(selected.oblastIso);
+            return (
+              <>
+                <SheetHeader>
+                  <SheetTitle>{selected.name}</SheetTitle>
+                  <SheetDescription>
+                    {parent ? `${parent.nameEn} · ${parent.name}` : selected.oblastIso}
+                  </SheetDescription>
+                </SheetHeader>
+                <div className="mt-6 space-y-4 text-sm">
+                  <div>
+                    <div className="src-label mb-1">{t("airAlerts.status")}</div>
+                    {r?.active ? (
+                      <div className="text-[hsl(var(--signal))] font-semibold">
+                        ● {t("airAlerts.active")} — {durationLabel(r.changedAt, true)}
+                      </div>
+                    ) : (
+                      <div className="text-muted-foreground">{t("airAlerts.clear")}</div>
+                    )}
+                  </div>
+                  {r?.active && r.types && r.types.length > 0 && (
+                    <div>
+                      <div className="src-label mb-1">{t("airAlerts.threatType")}</div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {r.types.map((tp) => (
+                          <span key={tp} className="rounded bg-[hsl(var(--signal)/0.2)] px-2 py-0.5 text-[11px] uppercase tracking-wider text-foreground">
+                            {typeLabel(tp, t)}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {r && (
+                    <div>
+                      <div className="src-label mb-1">{t("airAlerts.changedAt")}</div>
+                      <div>{new Date(r.changedAt).toUTCString()}</div>
+                    </div>
+                  )}
+                  <div className="pt-4 border-t border-border">
+                    <a
+                      href={`https://alerts.in.ua/`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs underline underline-offset-4 hover:text-foreground"
+                    >
+                      {t("airAlerts.openSource")} →
+                    </a>
+                  </div>
+                </div>
+              </>
             );
           })()}
         </SheetContent>
