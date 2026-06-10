@@ -510,7 +510,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
             );
           }
           // raion — show tooltip for every raion in free territory.
-          const r = activeRaionsByName.get(normRaion(hovered.name));
+          const r = activeRaionsByKey.get(`${hovered.oblastIso}::${normRaion(hovered.name)}`);
           const parent = byIso.get(hovered.oblastIso);
           return (
             <div
