@@ -1,54 +1,51 @@
 // Edge Function: air-alerts
-// Live air-raid alert state from alerts.in.ua IoT endpoint.
-// Endpoint: GET /v1/iot/active_air_raid_alerts_by_oblast
-// Returns a 27-character string. Each position maps to one oblast in the
-// official alphabetical-by-Ukrainian-name order. Characters:
-//   N = no alert, A = full air-raid alert, P = partial (some raions only)
-// Auth: Bearer token (env ALERTS_IN_UA_TOKEN).
-// Cached server-side for 30 s. Best-effort change tracking gives a
-// "changedAt" per oblast since the function instance warmed.
+// Live air-raid alert state from alerts.in.ua.
+// Endpoint: GET /v1/alerts/active.json  (full alert records — oblast + raion + community level)
+// We aggregate that into:
+//   - oblasts[]  : 27 rows in fixed ISO order, state "full" | "partial" | "none"
+//   - raions[]   : every active raion (or community/city rolled up to its raion)
+// Auth: Bearer token (env ALERTS_IN_UA_TOKEN). Cached server-side for 30 s.
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const SOURCE_URL = "https://api.alerts.in.ua/v1/iot/active_air_raid_alerts_by_oblast.json";
+const SOURCE_URL = "https://api.alerts.in.ua/v1/alerts/active.json";
 const ALERTS_TTL = 30 * 1000;
 
-// Official order documented at https://devs.alerts.in.ua/ for
-// /v1/iot/active_air_raid_alerts_by_oblast.json — 27 positions.
 // ISO-3166-2 codes match our GeoJSON.
 const ORDER: { iso: string; name: string; nameEn: string }[] = [
-  { iso: "UA-43", name: "Автономна Республіка Крим", nameEn: "Crimea" },                   // 1
-  { iso: "UA-07", name: "Волинська область",          nameEn: "Volyn Oblast" },             // 2
-  { iso: "UA-05", name: "Вінницька область",          nameEn: "Vinnytsia Oblast" },         // 3
-  { iso: "UA-12", name: "Дніпропетровська область",   nameEn: "Dnipropetrovsk Oblast" },    // 4
-  { iso: "UA-14", name: "Донецька область",           nameEn: "Donetsk Oblast" },           // 5
-  { iso: "UA-18", name: "Житомирська область",        nameEn: "Zhytomyr Oblast" },          // 6
-  { iso: "UA-21", name: "Закарпатська область",       nameEn: "Zakarpattia Oblast" },       // 7
-  { iso: "UA-23", name: "Запорізька область",         nameEn: "Zaporizhzhia Oblast" },      // 8
-  { iso: "UA-26", name: "Івано-Франківська область",  nameEn: "Ivano-Frankivsk Oblast" },   // 9
-  { iso: "UA-30", name: "м. Київ",                    nameEn: "Kyiv City" },                // 10
-  { iso: "UA-32", name: "Київська область",           nameEn: "Kyiv Oblast" },              // 11
-  { iso: "UA-35", name: "Кіровоградська область",     nameEn: "Kirovohrad Oblast" },        // 12
-  { iso: "UA-09", name: "Луганська область",          nameEn: "Luhansk Oblast" },           // 13
-  { iso: "UA-46", name: "Львівська область",          nameEn: "Lviv Oblast" },              // 14
-  { iso: "UA-48", name: "Миколаївська область",       nameEn: "Mykolaiv Oblast" },          // 15
-  { iso: "UA-51", name: "Одеська область",            nameEn: "Odesa Oblast" },             // 16
-  { iso: "UA-53", name: "Полтавська область",         nameEn: "Poltava Oblast" },           // 17
-  { iso: "UA-56", name: "Рівненська область",         nameEn: "Rivne Oblast" },             // 18
-  { iso: "UA-40", name: "м. Севастополь",             nameEn: "Sevastopol" },               // 19
-  { iso: "UA-59", name: "Сумська область",            nameEn: "Sumy Oblast" },              // 20
-  { iso: "UA-61", name: "Тернопільська область",      nameEn: "Ternopil Oblast" },          // 21
-  { iso: "UA-63", name: "Харківська область",         nameEn: "Kharkiv Oblast" },           // 22
-  { iso: "UA-65", name: "Херсонська область",         nameEn: "Kherson Oblast" },           // 23
-  { iso: "UA-68", name: "Хмельницька область",        nameEn: "Khmelnytskyi Oblast" },      // 24
-  { iso: "UA-71", name: "Черкаська область",          nameEn: "Cherkasy Oblast" },          // 25
-  { iso: "UA-77", name: "Чернівецька область",        nameEn: "Chernivtsi Oblast" },        // 26
-  { iso: "UA-74", name: "Чернігівська область",       nameEn: "Chernihiv Oblast" },         // 27
+  { iso: "UA-43", name: "Автономна Республіка Крим", nameEn: "Crimea" },
+  { iso: "UA-07", name: "Волинська область",          nameEn: "Volyn Oblast" },
+  { iso: "UA-05", name: "Вінницька область",          nameEn: "Vinnytsia Oblast" },
+  { iso: "UA-12", name: "Дніпропетровська область",   nameEn: "Dnipropetrovsk Oblast" },
+  { iso: "UA-14", name: "Донецька область",           nameEn: "Donetsk Oblast" },
+  { iso: "UA-18", name: "Житомирська область",        nameEn: "Zhytomyr Oblast" },
+  { iso: "UA-21", name: "Закарпатська область",       nameEn: "Zakarpattia Oblast" },
+  { iso: "UA-23", name: "Запорізька область",         nameEn: "Zaporizhzhia Oblast" },
+  { iso: "UA-26", name: "Івано-Франківська область",  nameEn: "Ivano-Frankivsk Oblast" },
+  { iso: "UA-30", name: "м. Київ",                    nameEn: "Kyiv City" },
+  { iso: "UA-32", name: "Київська область",           nameEn: "Kyiv Oblast" },
+  { iso: "UA-35", name: "Кіровоградська область",     nameEn: "Kirovohrad Oblast" },
+  { iso: "UA-09", name: "Луганська область",          nameEn: "Luhansk Oblast" },
+  { iso: "UA-46", name: "Львівська область",          nameEn: "Lviv Oblast" },
+  { iso: "UA-48", name: "Миколаївська область",       nameEn: "Mykolaiv Oblast" },
+  { iso: "UA-51", name: "Одеська область",            nameEn: "Odesa Oblast" },
+  { iso: "UA-53", name: "Полтавська область",         nameEn: "Poltava Oblast" },
+  { iso: "UA-56", name: "Рівненська область",         nameEn: "Rivne Oblast" },
+  { iso: "UA-40", name: "м. Севастополь",             nameEn: "Sevastopol" },
+  { iso: "UA-59", name: "Сумська область",            nameEn: "Sumy Oblast" },
+  { iso: "UA-61", name: "Тернопільська область",      nameEn: "Ternopil Oblast" },
+  { iso: "UA-63", name: "Харківська область",         nameEn: "Kharkiv Oblast" },
+  { iso: "UA-65", name: "Херсонська область",         nameEn: "Kherson Oblast" },
+  { iso: "UA-68", name: "Хмельницька область",        nameEn: "Khmelnytskyi Oblast" },
+  { iso: "UA-71", name: "Черкаська область",          nameEn: "Cherkasy Oblast" },
+  { iso: "UA-77", name: "Чернівецька область",        nameEn: "Chernivtsi Oblast" },
+  { iso: "UA-74", name: "Чернігівська область",       nameEn: "Chernihiv Oblast" },
 ];
 
+const OBLAST_BY_NAME = new Map(ORDER.map((o) => [o.name, o]));
 
 type State = "none" | "partial" | "full";
 
@@ -63,51 +60,128 @@ interface OblastAlert {
   types: string[];
 }
 
+interface RaionAlert {
+  id: string;
+  oblastIso: string;
+  name: string;
+  active: boolean;
+  changedAt: string;
+  types: string[];
+}
+
 interface Payload {
   updatedAt: string;
   source: string;
   status: "ok" | "stale" | "unauthorized" | "unavailable";
   oblasts: OblastAlert[];
-  raions: never[];
+  raions: RaionAlert[];
   error?: string;
 }
 
-// In-memory state, kept across warm invocations.
-let cache: { at: number; payload: Payload } | null = null;
-const lastState = new Map<string, { state: State; since: string }>();
-
-function charToState(c: string): State {
-  if (c === "A") return "full";
-  if (c === "P") return "partial";
-  return "none";
+interface UpstreamAlert {
+  id: number | string;
+  location_title?: string;
+  location_type?: string;          // "oblast" | "raion" | "hromada" | "city" | "state" ...
+  started_at?: string;
+  finished_at?: string | null;
+  alert_type?: string;             // "air_raid" | "artillery_shelling" | ...
+  location_oblast?: string;
+  location_raion?: string | null;
 }
 
-function buildPayload(raw: string): Payload {
+let cache: { at: number; payload: Payload } | null = null;
+
+function alertTypeToTag(t?: string): string {
+  switch (t) {
+    case "air_raid":           return "AIR";
+    case "artillery_shelling": return "ARTILLERY";
+    case "urban_fights":       return "URBAN_FIGHTS";
+    case "chemical":           return "CHEMICAL";
+    case "nuclear":            return "NUCLEAR";
+    default:                   return "INFO";
+  }
+}
+
+function buildPayload(items: UpstreamAlert[]): Payload {
   const now = new Date().toISOString();
-  const oblasts: OblastAlert[] = ORDER.map((o, idx) => {
-    const state = charToState(raw[idx] ?? "N");
-    const prev = lastState.get(o.iso);
-    if (!prev || prev.state !== state) {
-      lastState.set(o.iso, { state, since: now });
+
+  // Index by oblast iso.
+  const oblastState = new Map<string, { state: State; types: Set<string>; since: string }>();
+  // Index raions by `${iso}::${normName}`.
+  const raionMap = new Map<string, RaionAlert>();
+
+  const norm = (s: string) =>
+    s.toLowerCase().replace(/\s*район\s*$/u, "").replace(/['ʼ’`]/g, "").trim();
+
+  for (const a of items) {
+    if (a.finished_at) continue;
+    const oblastName = a.location_oblast ?? "";
+    const ob = OBLAST_BY_NAME.get(oblastName);
+    if (!ob) continue;
+
+    const typeTag = alertTypeToTag(a.alert_type);
+    const startedAt = a.started_at ?? now;
+
+    if (a.location_type === "oblast" || a.location_type === "state") {
+      const prev = oblastState.get(ob.iso);
+      const sinceFull = prev?.state === "full" ? prev.since : startedAt;
+      const types = new Set(prev?.types ?? []);
+      types.add(typeTag);
+      oblastState.set(ob.iso, { state: "full", types, since: sinceFull });
+    } else {
+      // Raion / hromada / city → roll up to raion if available.
+      const raionName = a.location_raion?.trim();
+      if (raionName) {
+        const key = `${ob.iso}::${norm(raionName)}`;
+        const existing = raionMap.get(key);
+        if (existing) {
+          if (!existing.types.includes(typeTag)) existing.types.push(typeTag);
+          if (startedAt < existing.changedAt) existing.changedAt = startedAt;
+        } else {
+          raionMap.set(key, {
+            id: key,
+            oblastIso: ob.iso,
+            name: raionName,
+            active: true,
+            changedAt: startedAt,
+            types: [typeTag],
+          });
+        }
+      }
+      // Mark oblast as at-least-partial if it isn't already full.
+      const prev = oblastState.get(ob.iso);
+      if (!prev || prev.state !== "full") {
+        const types = new Set(prev?.types ?? []);
+        types.add(typeTag === "AIR" ? "AIR_PARTIAL" : typeTag);
+        oblastState.set(ob.iso, {
+          state: "partial",
+          types,
+          since: prev?.since ?? startedAt,
+        });
+      }
     }
-    const changedAt = lastState.get(o.iso)!.since;
+  }
+
+  const oblasts: OblastAlert[] = ORDER.map((o) => {
+    const s = oblastState.get(o.iso);
     return {
       id: o.iso,
       iso: o.iso,
       name: o.name,
       nameEn: o.nameEn,
-      active: state !== "none",
-      state,
-      changedAt,
-      types: state === "full" ? ["AIR"] : state === "partial" ? ["AIR_PARTIAL"] : [],
+      active: !!s,
+      state: s?.state ?? "none",
+      changedAt: s?.since ?? now,
+      types: s ? Array.from(s.types) : [],
     };
   });
+
   return {
     updatedAt: now,
     source: "alerts.in.ua",
     status: "ok",
     oblasts,
-    raions: [] as never[],
+    raions: Array.from(raionMap.values()),
   };
 }
 
@@ -131,7 +205,7 @@ async function loadAlerts(): Promise<Payload> {
     headers: {
       Authorization: `Bearer ${token}`,
       "user-agent": "ua-airdefense-tracker.org",
-      accept: "text/plain",
+      accept: "application/json",
     },
     signal: AbortSignal.timeout(10_000),
   });
@@ -156,13 +230,8 @@ async function loadAlerts(): Promise<Payload> {
     throw new Error(`alerts.in.ua HTTP ${res.status}: ${body.slice(0, 200)}`);
   }
 
-  const raw = (await res.text()).trim();
-  // The endpoint can return either a bare string or JSON-quoted ("NNAN...").
-  const clean = raw.startsWith('"') ? raw.slice(1, -1) : raw;
-  if (clean.length < ORDER.length) {
-    throw new Error(`alerts.in.ua payload too short: ${clean.length} chars`);
-  }
-  return buildPayload(clean);
+  const json = (await res.json()) as { alerts?: UpstreamAlert[] };
+  return buildPayload(json.alerts ?? []);
 }
 
 Deno.serve(async (req) => {
