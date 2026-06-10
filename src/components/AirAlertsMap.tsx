@@ -505,20 +505,29 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               </div>
             );
           }
-          // raion
+          // raion — show tooltip for every raion in free territory.
           const r = activeRaionsByName.get(normRaion(hovered.name));
-          if (!r) return null;
+          const parent = byIso.get(hovered.oblastIso);
           return (
             <div
-              className="pointer-events-none absolute z-10 rounded border border-border bg-background/95 px-3 py-2 text-xs font-mono shadow-lg backdrop-blur"
+              className="pointer-events-none absolute z-10 rounded border border-border bg-background/95 px-3 py-2 text-xs font-mono shadow-lg backdrop-blur min-w-[180px]"
               style={{ left: hovered.x + 12, top: Math.max(hovered.y - 8, 4), transform: "translateY(-100%)" }}
             >
-              <div className="font-semibold text-foreground">{r.name}</div>
-              <div className="mt-0.5">
-                <span className="text-[hsl(var(--signal))]">● {t("airAlerts.active")}</span>
-                <span className="ml-2 text-muted-foreground">{durationLabel(r.changedAt, true)}</span>
+              <div className="font-semibold text-foreground">{hovered.name}</div>
+              {parent && (
+                <div className="text-[10px] text-muted-foreground">{parent.nameEn}</div>
+              )}
+              <div className="mt-1">
+                {r ? (
+                  <>
+                    <span className="text-[hsl(var(--signal))]">● {t("airAlerts.active")}</span>
+                    <span className="ml-2 text-muted-foreground">{durationLabel(r.changedAt, true)}</span>
+                  </>
+                ) : (
+                  <span className="text-muted-foreground">{t("airAlerts.clear")}</span>
+                )}
               </div>
-              {r.types && r.types.length > 0 && (
+              {r?.types && r.types.length > 0 && (
                 <div className="mt-1 flex flex-wrap gap-1">
                   {r.types.map((tp) => (
                     <span key={tp} className="rounded bg-[hsl(var(--signal)/0.2)] px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-foreground">
@@ -527,6 +536,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   ))}
                 </div>
               )}
+              <div className="mt-1.5 text-[9px] text-muted-foreground/70">Click for details</div>
             </div>
           );
         })()}
