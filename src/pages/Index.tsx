@@ -104,10 +104,6 @@ function WarDayTracker() {
       className="inline-flex items-center gap-1.5 text-muted-foreground"
       title="Days since the start of Russia's full-scale invasion of Ukraine (24 Feb 2022)"
     >
-      <span className="relative inline-flex h-1.5 w-1.5">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--signal))] opacity-60" />
-        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
-      </span>
       <span className="src-label">Day of war</span>
       <span className="num font-semibold text-foreground">{days.toLocaleString("en-US")}</span>
     </span>
