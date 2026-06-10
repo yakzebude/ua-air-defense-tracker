@@ -13,6 +13,16 @@ const RAIONS_GEO = "/geo/ua-raions.geo.json";
 const WORLD_GEO = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json";
 const NEIGHBOUR_NAMES = new Set(["Belarus", "Russia"]);
 
+/** Oblasts under full or substantial Russian occupation — rendered permanently
+ *  in dark red. Active-alert pulsing is suppressed inside these regions. */
+const OCCUPIED_ISOS = new Set<string>([
+  "UA-43", // Crimea (Autonomous Republic) — occupied since 2014
+  "UA-09", // Luhansk
+  "UA-14", // Donetsk
+  "UA-23", // Zaporizhzhia (partial)
+  "UA-65", // Kherson (partial)
+]);
+
 interface OblastStat {
   slug: string;
   alarms?: number;
@@ -179,19 +189,14 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
   const activeCount = (data?.oblasts ?? []).filter(isFullAlert).length;
   const activeRaionCount = (data?.raions ?? []).length;
 
-  // Raion layer disabled by user request — full map shows oblast-level only.
-  const showRaions = false;
 
-  // Sized to fill the parent column. Aspect ratio keeps the map proportional
-  // on every breakpoint; on lg+ in the alerts page the column caps at 720 px.
-  const mapHeightClass = variant === "full"
-    ? "h-[420px] sm:h-[520px] lg:h-[680px]"
-    : "h-[300px] sm:h-[380px] lg:h-[420px]";
-
-  // Active alerts list — full-state oblasts only, sorted alphabetically by EN name.
+  // Active alerts list — full-state oblasts only, excluding occupied territories
+  // (per editorial decision: occupied regions are always "under threat" by
+  // definition and would dominate the live signal). Sorted alphabetically.
   const activeList = useMemo(() => {
     return (data?.oblasts ?? [])
       .filter(isFullAlert)
+      .filter((o) => !OCCUPIED_ISOS.has(o.iso))
       .map((o) => ({ ...o, state: "full" as AlertState }))
       .sort((a, b) => a.nameEn.localeCompare(b.nameEn));
   }, [data]);
@@ -199,9 +204,18 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
 
   const unauthorized = data?.status === "unauthorized";
 
+  // Raion subdivisions are always drawn on the full map (thin grey borders).
+  // Active raions inside non-occupied oblasts pulse red on top.
+  const showRaions = variant === "full";
+
+  // Map sizes to fill its panel. The full variant fills a fixed-height
+  // container so the map and the threat feed read as equal blocks side-by-side.
+  const mapHeightClass = variant === "full"
+    ? "h-[460px] sm:h-[560px] lg:h-[640px]"
+    : "h-[300px] sm:h-[380px] lg:h-[420px]";
+
   return (
-    <div className="relative flex flex-col lg:grid lg:grid-cols-3 lg:gap-4">
-      <div className="lg:col-span-2 flex flex-col">
+    <div className="relative flex flex-col">
       <div
         className={`relative flex-1 overflow-hidden rounded border border-border bg-card ${mapHeightClass}`}
         onMouseLeave={() => setHovered(null)}
@@ -250,10 +264,23 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   const nameEn = (geo.properties.name_en as string) ?? name;
                   const alert = byIso.get(iso);
                   const rawState: AlertState = alert?.state ?? (alert?.active ? "full" : "none");
-                  // Only "full" alerts colour the map; partial is treated as none.
                   const state: AlertState = rawState === "full" ? "full" : "none";
-                  const isActive = state === "full";
-                  const fillVar = "--signal";
+                  const occupied = OCCUPIED_ISOS.has(iso);
+                  // Occupied territories are rendered permanently dark red and
+                  // never pulse — active-alert signalling only applies to free
+                  // Ukrainian territory.
+                  const isActive = state === "full" && !occupied;
+
+                  const baseFill = occupied
+                    ? "hsl(var(--occupied))"
+                    : isActive
+                      ? "hsl(var(--signal) / 0.65)"
+                      : "hsl(var(--muted))";
+                  const hoverFill = occupied
+                    ? "hsl(var(--occupied))"
+                    : isActive
+                      ? "hsl(var(--signal) / 0.85)"
+                      : "hsl(var(--muted-foreground) / 0.4)";
 
                   return (
                     <Geography
@@ -284,7 +311,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       }}
                       style={{
                         default: {
-                          fill: isActive ? `hsl(var(${fillVar}) / ${state === "full" ? 0.65 : 0.45})` : "hsl(var(--muted))",
+                          fill: baseFill,
                           stroke: "hsl(var(--foreground) / 0.6)",
                           strokeWidth: 0.7,
                           outline: "none",
@@ -292,26 +319,33 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                           cursor: variant === "full" ? "pointer" : "default",
                         },
                         hover: {
-                          fill: isActive ? `hsl(var(${fillVar}) / ${state === "full" ? 0.85 : 0.65})` : "hsl(var(--muted-foreground) / 0.4)",
-                          stroke: "hsl(var(--foreground) / 0.8)",
+                          fill: hoverFill,
+                          stroke: "hsl(var(--foreground) / 0.85)",
                           strokeWidth: 0.9,
                           outline: "none",
                           cursor: variant === "full" ? "pointer" : "default",
                         },
-                        pressed: { fill: `hsl(var(${fillVar}))`, outline: "none" },
+                        pressed: { fill: baseFill, outline: "none" },
                       }}
-                      className={state === "full" ? "air-alert-pulse" : undefined}
+                      className={isActive ? "air-alert-pulse" : undefined}
                     />
                   );
                 })
               }
             </Geographies>
 
-            {/* Raion polygons — only on full map. Drawn above oblasts so active raions stand out. */}
+            {/* Raion subdivisions. Always drawn on the full map as thin
+                borders so visitors can read alert geography at finer than
+                oblast resolution. Active raions in non-occupied oblasts
+                pulse red on top of their parent oblast. Raions inside
+                occupied territory are skipped — those areas stay solid
+                dark red. */}
             {showRaions && (
               <Geographies geography={RAIONS_GEO}>
                 {({ geographies }) =>
-                  geographies.map((geo) => {
+                  geographies
+                    .filter((geo) => !OCCUPIED_ISOS.has(geo.properties.iso as string))
+                    .map((geo) => {
                     const name = geo.properties.name as string;
                     const oblastIso = geo.properties.iso as string;
                     const raion = activeRaionsByName.get(normRaion(name));
@@ -321,6 +355,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         key={geo.rsmKey}
                         geography={geo}
                         onMouseEnter={(e) => {
+                          if (!isActive) return;
                           const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
                             ?.getBoundingClientRect();
                           setHovered({
@@ -332,6 +367,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                           });
                         }}
                         onMouseMove={(e) => {
+                          if (!isActive) return;
                           const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
                             ?.getBoundingClientRect();
                           setHovered({
@@ -344,17 +380,17 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         }}
                         style={{
                           default: {
-                            fill: isActive ? "hsl(var(--signal) / 0.95)" : "transparent",
-                            stroke: "hsl(var(--foreground) / 0.15)",
-                            strokeWidth: 0.3,
+                            fill: isActive ? "hsl(var(--signal) / 0.9)" : "transparent",
+                            stroke: "hsl(var(--foreground) / 0.22)",
+                            strokeWidth: 0.25,
                             outline: "none",
                             transition: "fill 200ms ease",
                             pointerEvents: isActive ? "auto" : "none",
                           },
                           hover: {
                             fill: isActive ? "hsl(var(--signal))" : "transparent",
-                            stroke: "hsl(var(--foreground) / 0.3)",
-                            strokeWidth: 0.5,
+                            stroke: "hsl(var(--foreground) / 0.35)",
+                            strokeWidth: 0.4,
                             outline: "none",
                           },
                           pressed: { outline: "none" },
@@ -368,6 +404,24 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
             )}
           </ZoomableGroup>
         </ComposableMap>
+
+        {/* Overlay: live active-count badge + legend, top-right of the map. */}
+        {variant === "full" && (
+          <div className="pointer-events-none absolute right-3 top-3 flex flex-col items-end gap-1.5">
+            <div className="rounded border border-border bg-background/85 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] backdrop-blur">
+              <span className="text-muted-foreground">Active alerts</span>{" "}
+              <span className="tabular-nums font-semibold text-foreground">{activeCount}</span>
+            </div>
+            <div className="flex items-center gap-2 rounded border border-border bg-background/85 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground backdrop-blur">
+              <span className="inline-flex items-center gap-1">
+                <span className="h-2 w-2 rounded-sm bg-[hsl(var(--occupied))]" /> Occupied
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="h-2 w-2 rounded-sm bg-[hsl(var(--signal))]" /> Alert
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Hover tooltip */}
         {hovered && (() => {
@@ -638,76 +692,52 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           })()}
         </SheetContent>
       </Sheet>
-      </div>{/* /map column */}
 
-      {/* Side panel: active alerts list */}
-      <aside className="lg:col-span-1 mt-4 lg:mt-0">
-        <div className="rounded border border-border bg-card p-4 h-full">
-          <div className="flex items-baseline justify-between gap-2 mb-3">
-            <h3 className="text-sm font-semibold tracking-wide text-foreground">
+      {/* Active alerts — inline chip strip below the map.
+          Folds the former right-hand sidebar into the same block so the map
+          panel itself communicates which regions are currently under alert. */}
+      {variant === "full" && (
+        <div className="mt-3 rounded border border-border bg-card p-3">
+          <div className="mb-2 flex items-baseline justify-between gap-2">
+            <h3 className="text-[11px] font-mono uppercase tracking-[0.16em] text-foreground">
               {t("airAlerts.sidePanelTitle", { defaultValue: "Active alerts" })}
             </h3>
-            <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground tabular-nums">
-              {activeList.length} / 27
+            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground tabular-nums">
+              {activeList.length} / 22
             </span>
           </div>
 
           {unauthorized && (
-            <div className="rounded border border-[hsl(var(--signal-warn)/0.4)] bg-[hsl(var(--signal-warn)/0.08)] p-3 text-xs text-foreground">
+            <div className="rounded border border-[hsl(var(--signal-warn)/0.4)] bg-[hsl(var(--signal-warn)/0.08)] px-2.5 py-1.5 text-[11px] text-foreground">
               {t("airAlerts.feedUnauthorized", {
-                defaultValue: "Live feed authentication failed. Showing no active alerts.",
+                defaultValue: "Live feed authentication failed.",
               })}
             </div>
           )}
 
           {!unauthorized && activeList.length === 0 && (
-            <div className="rounded border border-[hsl(var(--signal-ok)/0.4)] bg-[hsl(var(--signal-ok)/0.08)] p-3 text-xs text-foreground">
-              <span className="text-[hsl(var(--signal-ok))]">●</span>{" "}
-              {t("airAlerts.noActiveAlerts", { defaultValue: "No active air-raid alerts." })}
+            <div className="rounded border border-[hsl(var(--signal-ok)/0.4)] bg-[hsl(var(--signal-ok)/0.08)] px-2.5 py-1.5 text-[11px] text-foreground">
+              {t("airAlerts.noActiveAlerts", { defaultValue: "No active air-raid alerts in unoccupied territory." })}
             </div>
           )}
 
           {!unauthorized && activeList.length > 0 && (
-            <ul className="space-y-1.5 max-h-[640px] overflow-y-auto pr-1">
+            <ul className="flex flex-wrap gap-1.5">
               {activeList.map((o) => (
                 <li
                   key={o.iso}
-                  className="flex items-center justify-between gap-2 rounded border border-border/60 bg-background/40 px-2.5 py-1.5"
+                  className="inline-flex items-center gap-1.5 rounded border border-[hsl(var(--signal)/0.45)] bg-[hsl(var(--signal)/0.10)] px-2 py-0.5 text-[11px]"
                 >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span
-                      className="h-2 w-2 rounded-full flex-shrink-0 animate-pulse"
-                      style={{ background: "hsl(var(--signal))" }}
-                    />
-                    <span className="text-xs text-foreground truncate">{o.nameEn}</span>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <span
-                      className="text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded"
-                      style={{
-                        background: "hsl(var(--signal) / 0.15)",
-                        color: "hsl(var(--signal))",
-                      }}
-                    >
-                      {t("airAlerts.fullAlert", { defaultValue: "Alert" })}
-                    </span>
-                    <span className="text-[10px] font-mono text-muted-foreground tabular-nums w-12 text-right">
-                      {durationLabel(o.changedAt, true)}
-                    </span>
-                  </div>
+                  <span className="text-foreground">{o.nameEn}</span>
+                  <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
+                    {durationLabel(o.changedAt, true)}
+                  </span>
                 </li>
               ))}
-
             </ul>
           )}
-
-          <p className="mt-3 text-[9px] font-mono text-muted-foreground/70 leading-relaxed">
-            {t("airAlerts.sidePanelNote", {
-              defaultValue: "Source: alerts.in.ua · auto-refreshes every 30 s",
-            })}
-          </p>
         </div>
-      </aside>
+      )}
     </div>
   );
 }

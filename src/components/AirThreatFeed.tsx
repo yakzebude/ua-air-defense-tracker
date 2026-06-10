@@ -170,7 +170,7 @@ export function AirThreatFeed() {
   }, [visibleMsgs, targetLang, needsTranslation, translations]);
 
   return (
-    <div className="flex flex-col rounded border border-border bg-card">
+    <div className="flex h-full w-full flex-col rounded border border-border bg-card">
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div>
           <h3 className="text-sm font-semibold">{t("threatFeed.title")}</h3>
@@ -217,8 +217,8 @@ export function AirThreatFeed() {
       </div>
 
       <ul
-        className={`divide-y divide-border ${
-          expanded ? "max-h-[640px] overflow-y-auto" : ""
+        className={`flex-1 divide-y divide-border overflow-y-auto ${
+          expanded ? "max-h-[640px]" : ""
         }`}
       >
         {visibleMsgs.map((m) => {
