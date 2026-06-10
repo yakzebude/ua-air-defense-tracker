@@ -362,7 +362,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                     const name = geo.properties.name as string;
                     const oblastIso = geo.properties.iso as string;
                     const occupied = OCCUPIED_ISOS.has(oblastIso);
-                    const raion = activeRaionsByName.get(normRaion(name));
+                    const raion = activeRaionsByKey.get(`${oblastIso}::${normRaion(name)}`);
                     // Occupied raions never count as active alerts — they
                     // render as thin light-grey subdivision borders only.
                     const isActive = !!raion && !occupied;
