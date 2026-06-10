@@ -318,7 +318,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         });
                       }}
                       onClick={() => {
-                        if (variant === "full") setSelected({ iso, name, nameEn, alert });
+                        if (variant === "full") setSelected({ kind: "oblast", iso, name, nameEn, alert });
                       }}
                       style={{
                         default: {
