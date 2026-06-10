@@ -175,40 +175,40 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
     return m;
   }, [data]);
 
-  // Index of active raions: normalized name -> alert. Used to colorize polygons.
-  const activeRaionsByName = useMemo(() => {
+  // Index of active raions keyed by `${oblastIso}::${normName}` so raion-name
+  // collisions across oblasts (e.g. "Сумський район") never bleed onto the
+  // wrong polygon.
+  const activeRaionsByKey = useMemo(() => {
     const m = new Map<string, RaionAlert>();
-    for (const r of data?.raions ?? []) m.set(normRaion(r.name), r);
+    for (const r of data?.raions ?? []) m.set(`${r.oblastIso}::${normRaion(r.name)}`, r);
     return m;
   }, [data]);
 
-  // Only "full" (red) alerts are surfaced. Partial/raion-level states are
-  // suppressed per editorial decision — alerts.in.ua live map is the
-  // authoritative reference for what counts as an active oblast alert.
-  const isFullAlert = (o: OblastAlert): boolean => {
+  // Both full and partial oblast states count as "active" for the live signal
+  // — alerts.in.ua mirrors this on its map. Partial state means the alert
+  // covers one or more raions inside the oblast (rendered red individually).
+  const isActiveAlert = (o: OblastAlert): boolean => {
     const s = (o.state ?? (o.active ? "full" : "none")) as AlertState;
-    return s === "full";
+    return s === "full" || s === "partial";
   };
 
   // Active count excludes occupied territories — alerts.in.ua marks occupied
   // oblasts as permanently "active" because Russian forces operate from them,
-  // but for a free-Ukraine air-raid signal that creates a constant false 4-5
+  // but for a free-Ukraine air-raid signal that creates a constant false
   // baseline. We report only alerts on free Ukrainian territory.
   const activeCount = (data?.oblasts ?? [])
-    .filter(isFullAlert)
+    .filter(isActiveAlert)
     .filter((o) => !OCCUPIED_ISOS.has(o.iso))
     .length;
   const activeRaionCount = (data?.raions ?? []).filter((r) => !OCCUPIED_ISOS.has(r.oblastIso)).length;
 
 
-  // Active alerts list — full-state oblasts only, excluding occupied territories
-  // (per editorial decision: occupied regions are always "under threat" by
-  // definition and would dominate the live signal). Sorted alphabetically.
+  // Active alerts list — full + partial state, excluding occupied territories.
+  // Sorted alphabetically.
   const activeList = useMemo(() => {
     return (data?.oblasts ?? [])
-      .filter(isFullAlert)
+      .filter(isActiveAlert)
       .filter((o) => !OCCUPIED_ISOS.has(o.iso))
-      .map((o) => ({ ...o, state: "full" as AlertState }))
       .sort((a, b) => a.nameEn.localeCompare(b.nameEn));
   }, [data]);
 
