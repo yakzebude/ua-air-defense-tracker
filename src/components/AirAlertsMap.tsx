@@ -198,16 +198,29 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
     ? "h-[420px] sm:h-[520px] lg:h-[680px]"
     : "h-[300px] sm:h-[380px] lg:h-[420px]";
 
-  // Active alerts list — full-state oblasts only, sorted alphabetically by EN name.
+  // Active alerts list — full-state oblasts only, excluding occupied territories
+  // (per editorial decision: occupied regions are always "under threat" by
+  // definition and would dominate the live signal). Sorted alphabetically.
   const activeList = useMemo(() => {
     return (data?.oblasts ?? [])
       .filter(isFullAlert)
+      .filter((o) => !OCCUPIED_ISOS.has(o.iso))
       .map((o) => ({ ...o, state: "full" as AlertState }))
       .sort((a, b) => a.nameEn.localeCompare(b.nameEn));
   }, [data]);
 
 
   const unauthorized = data?.status === "unauthorized";
+
+  // Raion subdivisions are always drawn on the full map (thin grey borders).
+  // Active raions inside non-occupied oblasts pulse red on top.
+  const showRaions = variant === "full";
+
+  // Map sizes to fill its panel. The full variant fills a fixed-height
+  // container so the map and the threat feed read as equal blocks side-by-side.
+  const mapHeightClass = variant === "full"
+    ? "h-[460px] sm:h-[560px] lg:h-[640px]"
+    : "h-[300px] sm:h-[380px] lg:h-[420px]";
 
   return (
     <div className="relative flex flex-col lg:grid lg:grid-cols-3 lg:gap-4">
