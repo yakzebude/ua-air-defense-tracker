@@ -231,9 +231,7 @@ async function loadAlerts(): Promise<Payload> {
   }
 
   const json = (await res.json()) as { alerts?: UpstreamAlert[] };
-  const items = json.alerts ?? [];
-  console.log(`[air-alerts] upstream items=${items.length} sample=`, JSON.stringify(items.slice(0, 3)));
-  return buildPayload(items);
+  return buildPayload(json.alerts ?? []);
 }
 
 Deno.serve(async (req) => {
