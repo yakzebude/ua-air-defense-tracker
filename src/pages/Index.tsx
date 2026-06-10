@@ -852,12 +852,12 @@ const Index = () => {
                 <span aria-hidden className="transition-transform group-open:rotate-180">▾</span>
               </span>
             </summary>
-            <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3 items-start">
-              <div className="lg:col-span-2">
-                <AirAlertsMap variant="full" />
+            <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-stretch">
+              <div className="lg:col-span-2 flex">
+                <div className="w-full"><AirAlertsMap variant="full" /></div>
               </div>
-              <div className="lg:col-span-1">
-                <AirThreatFeed />
+              <div className="lg:col-span-1 flex">
+                <div className="w-full"><AirThreatFeed /></div>
               </div>
             </div>
           </details>
