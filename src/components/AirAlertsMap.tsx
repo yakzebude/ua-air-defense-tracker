@@ -264,10 +264,23 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   const nameEn = (geo.properties.name_en as string) ?? name;
                   const alert = byIso.get(iso);
                   const rawState: AlertState = alert?.state ?? (alert?.active ? "full" : "none");
-                  // Only "full" alerts colour the map; partial is treated as none.
                   const state: AlertState = rawState === "full" ? "full" : "none";
-                  const isActive = state === "full";
-                  const fillVar = "--signal";
+                  const occupied = OCCUPIED_ISOS.has(iso);
+                  // Occupied territories are rendered permanently dark red and
+                  // never pulse — active-alert signalling only applies to free
+                  // Ukrainian territory.
+                  const isActive = state === "full" && !occupied;
+
+                  const baseFill = occupied
+                    ? "hsl(var(--occupied))"
+                    : isActive
+                      ? "hsl(var(--signal) / 0.65)"
+                      : "hsl(var(--muted))";
+                  const hoverFill = occupied
+                    ? "hsl(var(--occupied))"
+                    : isActive
+                      ? "hsl(var(--signal) / 0.85)"
+                      : "hsl(var(--muted-foreground) / 0.4)";
 
                   return (
                     <Geography
@@ -298,7 +311,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       }}
                       style={{
                         default: {
-                          fill: isActive ? `hsl(var(${fillVar}) / ${state === "full" ? 0.65 : 0.45})` : "hsl(var(--muted))",
+                          fill: baseFill,
                           stroke: "hsl(var(--foreground) / 0.6)",
                           strokeWidth: 0.7,
                           outline: "none",
@@ -306,15 +319,15 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                           cursor: variant === "full" ? "pointer" : "default",
                         },
                         hover: {
-                          fill: isActive ? `hsl(var(${fillVar}) / ${state === "full" ? 0.85 : 0.65})` : "hsl(var(--muted-foreground) / 0.4)",
-                          stroke: "hsl(var(--foreground) / 0.8)",
+                          fill: hoverFill,
+                          stroke: "hsl(var(--foreground) / 0.85)",
                           strokeWidth: 0.9,
                           outline: "none",
                           cursor: variant === "full" ? "pointer" : "default",
                         },
-                        pressed: { fill: `hsl(var(${fillVar}))`, outline: "none" },
+                        pressed: { fill: baseFill, outline: "none" },
                       }}
-                      className={state === "full" ? "air-alert-pulse" : undefined}
+                      className={isActive ? "air-alert-pulse" : undefined}
                     />
                   );
                 })
