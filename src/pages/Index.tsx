@@ -947,11 +947,6 @@ const Index = () => {
             </p>
           </div>
         </div>
-        <div className="border-t border-border">
-          <div className="container py-4 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground">
-            {t("footer.tagline")}
-          </div>
-        </div>
 
       </footer>
 
