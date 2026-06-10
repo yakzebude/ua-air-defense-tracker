@@ -334,11 +334,18 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               }
             </Geographies>
 
-            {/* Raion polygons — only on full map. Drawn above oblasts so active raions stand out. */}
+            {/* Raion subdivisions. Always drawn on the full map as thin
+                borders so visitors can read alert geography at finer than
+                oblast resolution. Active raions in non-occupied oblasts
+                pulse red on top of their parent oblast. Raions inside
+                occupied territory are skipped — those areas stay solid
+                dark red. */}
             {showRaions && (
               <Geographies geography={RAIONS_GEO}>
                 {({ geographies }) =>
-                  geographies.map((geo) => {
+                  geographies
+                    .filter((geo) => !OCCUPIED_ISOS.has(geo.properties.iso as string))
+                    .map((geo) => {
                     const name = geo.properties.name as string;
                     const oblastIso = geo.properties.iso as string;
                     const raion = activeRaionsByName.get(normRaion(name));
@@ -348,6 +355,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         key={geo.rsmKey}
                         geography={geo}
                         onMouseEnter={(e) => {
+                          if (!isActive) return;
                           const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
                             ?.getBoundingClientRect();
                           setHovered({
@@ -359,6 +367,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                           });
                         }}
                         onMouseMove={(e) => {
+                          if (!isActive) return;
                           const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
                             ?.getBoundingClientRect();
                           setHovered({
@@ -371,17 +380,17 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         }}
                         style={{
                           default: {
-                            fill: isActive ? "hsl(var(--signal) / 0.95)" : "transparent",
-                            stroke: "hsl(var(--foreground) / 0.15)",
-                            strokeWidth: 0.3,
+                            fill: isActive ? "hsl(var(--signal) / 0.9)" : "transparent",
+                            stroke: "hsl(var(--foreground) / 0.22)",
+                            strokeWidth: 0.25,
                             outline: "none",
                             transition: "fill 200ms ease",
                             pointerEvents: isActive ? "auto" : "none",
                           },
                           hover: {
                             fill: isActive ? "hsl(var(--signal))" : "transparent",
-                            stroke: "hsl(var(--foreground) / 0.3)",
-                            strokeWidth: 0.5,
+                            stroke: "hsl(var(--foreground) / 0.35)",
+                            strokeWidth: 0.4,
                             outline: "none",
                           },
                           pressed: { outline: "none" },
@@ -395,6 +404,24 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
             )}
           </ZoomableGroup>
         </ComposableMap>
+
+        {/* Overlay: live active-count badge + legend, top-right of the map. */}
+        {variant === "full" && (
+          <div className="pointer-events-none absolute right-3 top-3 flex flex-col items-end gap-1.5">
+            <div className="rounded border border-border bg-background/85 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] backdrop-blur">
+              <span className="text-muted-foreground">Active alerts</span>{" "}
+              <span className="tabular-nums font-semibold text-foreground">{activeCount}</span>
+            </div>
+            <div className="flex items-center gap-2 rounded border border-border bg-background/85 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground backdrop-blur">
+              <span className="inline-flex items-center gap-1">
+                <span className="h-2 w-2 rounded-sm bg-[hsl(var(--occupied))]" /> Occupied
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="h-2 w-2 rounded-sm bg-[hsl(var(--signal))]" /> Alert
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Hover tooltip */}
         {hovered && (() => {
