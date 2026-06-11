@@ -469,16 +469,18 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                 <div className="font-semibold text-foreground">{hovered.nameEn}</div>
                 <div className="text-[10px] text-muted-foreground">{hovered.name}</div>
                 <div className="mt-1 text-muted-foreground">
-                  {o?.active ? (
+                  {o && isActiveAlert(o) && !OCCUPIED_ISOS.has(o.iso) ? (
                     <>
                       <span className="text-[hsl(var(--signal))]">● {t("airAlerts.active")}</span>
                       <span className="ml-2">{durationLabel(o.changedAt, true)}</span>
                     </>
+                  ) : OCCUPIED_ISOS.has(hovered.iso) ? (
+                    <span className="text-[hsl(var(--occupied))]">Occupied territory</span>
                   ) : (
                     <span>{t("airAlerts.clear")}</span>
                   )}
                 </div>
-                {o?.active && o.types && o.types.length > 0 && (
+                {o && isActiveAlert(o) && o.types && o.types.length > 0 && (
                   <div className="mt-1 flex flex-wrap gap-1">
                     {o.types.map((tp) => (
                       <span key={tp} className="rounded bg-[hsl(var(--signal)/0.2)] px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-foreground">
@@ -821,9 +823,6 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   className="inline-flex items-center gap-1.5 rounded border border-[hsl(var(--signal)/0.45)] bg-[hsl(var(--signal)/0.10)] px-2 py-0.5 text-[11px]"
                 >
                   <span className="text-foreground">{o.nameEn}</span>
-                  <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
-                    {durationLabel(o.changedAt, true)}
-                  </span>
                 </li>
               ))}
             </ul>
