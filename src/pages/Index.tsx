@@ -695,7 +695,6 @@ const Index = () => {
                 {windowStats && (
                   <div className="mt-7 rounded-sm border border-border bg-background/60 p-4">
                     <div className="mb-3 flex items-baseline gap-2 text-[10.5px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
-                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
                       <span>{t("masthead.insight")}</span>
                       <span className="text-muted-foreground/70 normal-case tracking-normal">— {t("masthead.vsPrev30")}</span>
                     </div>
@@ -912,8 +911,8 @@ const Index = () => {
             <ul className="space-y-2 text-[13px]">
               <li><Link to="/about" className="text-foreground hover:underline underline-offset-4">{t("nav.about")}</Link></li>
               
-              <li className="text-muted-foreground">{t("footer.curatedBy")} <span className="text-foreground">Petro Ivaniuk</span></li>
-              <li className="text-muted-foreground">{t("footer.responsibleBy")} <span className="text-foreground">Alexander Anton-Boicuk</span></li>
+              <li className="text-muted-foreground">{t("footer.curatedBy")} <span className="text-foreground">Alexander Anton-Boicuk</span></li>
+              <li className="text-muted-foreground">Dataset: <span className="text-foreground">Petro Ivaniuk</span></li>
             </ul>
           </div>
 

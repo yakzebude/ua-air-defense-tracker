@@ -1,19 +1,18 @@
 import { Link } from "react-router-dom";
-import { StatusBadge, type StatusLevel } from "@/components/StatusBadge";
 
 interface Props {
   lastUpdatedLabel?: string | null;
   lastUpdatedDate?: Date | null;
 }
 
-/** Map "days since last data point" → freshness status. */
-function freshness(date: Date | null | undefined): { level: StatusLevel; label: string; days: number | null } {
-  if (!date) return { level: "unavailable", label: "No data", days: null };
-  const days = Math.floor((Date.now() - date.getTime()) / 86_400_000);
-  if (days <= 2) return { level: "operational", label: `Fresh · ${days}d`, days };
-  if (days <= 10) return { level: "delayed", label: `Delayed · ${days}d`, days };
-  return { level: "unavailable", label: `Stale · ${days}d`, days };
+function fmtLastUpdated(d: Date | null | undefined, fallback?: string | null): string {
+  if (d) {
+    const iso = d.toISOString();
+    return `${iso.slice(0, 10)} ${iso.slice(11, 16)} UTC`;
+  }
+  return fallback ?? "—";
 }
+
 
 const PIPELINE = [
   {
@@ -84,8 +83,6 @@ const LIMITATIONS = [
 ];
 
 export function DataConfidenceSection({ lastUpdatedLabel, lastUpdatedDate }: Props) {
-  const f = freshness(lastUpdatedDate ?? null);
-
   return (
     <section
       id="confidence"
@@ -105,14 +102,12 @@ export function DataConfidenceSection({ lastUpdatedLabel, lastUpdatedDate }: Pro
               Every number on this dashboard travels through the pipeline below, and every figure is tagged with its confidence class.
             </p>
           </div>
-          <div className="flex flex-col items-end gap-1.5">
-            <StatusBadge level={f.level} label={f.label} />
-            <div className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground">
-              Last updated:{" "}
-              <span className="text-foreground">{lastUpdatedLabel ?? "—"}</span>
-            </div>
+          <div className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground">
+            Last updated:{" "}
+            <span className="text-foreground">{fmtLastUpdated(lastUpdatedDate, lastUpdatedLabel)}</span>
           </div>
         </div>
+
 
         {/* Pipeline */}
         <div className="mb-10">

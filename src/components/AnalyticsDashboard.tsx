@@ -4,6 +4,9 @@ import {
   ResponsiveContainer,
   AreaChart,
   Area,
+  BarChart,
+  Bar,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -223,75 +226,145 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
   ];
   const grandLaunched = rows.reduce((s, r) => s + r.ds.totals.launched, 0);
 
+  const chartData = rows.map((r) => ({
+    name: r.label,
+    color: r.color,
+    launched: r.ds.totals.launched,
+    destroyed: r.ds.totals.destroyed,
+    leakers: Math.max(r.ds.totals.launched - r.ds.totals.destroyed, 0),
+    rate: +(r.ds.totals.rate * 100).toFixed(1),
+    share: grandLaunched > 0 ? +((r.ds.totals.launched / grandLaunched) * 100).toFixed(1) : 0,
+  }));
+
   return (
-    <ul className="space-y-4">
-      {rows.map((r) => {
-        const pct = r.ds.totals.rate * 100;
-        const share = grandLaunched > 0 ? (r.ds.totals.launched / grandLaunched) * 100 : 0;
-        return (
-          <li key={r.key}>
-            <div className="mb-1.5 flex items-baseline justify-between font-mono text-[11px]">
-              <span className="flex items-center gap-2 text-foreground">
-                <span className="h-2 w-2 rounded-sm" style={{ background: r.color }} />
-                {r.label}
-                <span className="text-muted-foreground">· {share.toFixed(1)}{t("chart.shareSuffix")}</span>
-              </span>
-              <span className="num text-muted-foreground">
-                <span className="text-foreground">{pct.toFixed(1)}%</span>
-                <span className="ml-2">{fmt(r.ds.totals.destroyed)} / {fmt(r.ds.totals.launched)}</span>
-              </span>
+    <div className="space-y-6">
+      {/* Bar chart — interception rate per category, matching the area-chart
+          look-and-feel of the launches panel. */}
+      <div style={{ height: 240 }} className="w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={chartData} layout="vertical" margin={{ top: 8, right: 24, left: 8, bottom: 4 }}>
+            <CartesianGrid stroke="hsl(var(--border) / 0.2)" horizontal={false} />
+            <XAxis
+              type="number"
+              domain={[0, 100]}
+              unit="%"
+              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+              tickLine={false}
+              axisLine={{ stroke: "hsl(var(--border))" }}
+            />
+            <YAxis
+              type="category"
+              dataKey="name"
+              width={104}
+              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+              tickLine={false}
+              axisLine={false}
+            />
+            <Tooltip
+              cursor={{ fill: "hsl(var(--foreground) / 0.05)" }}
+              content={({ active, payload }: any) => {
+                if (!active || !payload?.length) return null;
+                const d = payload[0].payload;
+                return (
+                  <div className="panel min-w-[200px] px-3 py-2 font-mono text-[11px]">
+                    <div className="mb-1.5 src-label">{d.name}</div>
+                    <div className="space-y-0.5 text-foreground">
+                      <div className="flex justify-between gap-6"><span className="text-muted-foreground">{t("kpi.interceptionRate")}</span><span className="num font-semibold">{d.rate}%</span></div>
+                      <div className="flex justify-between gap-6"><span className="text-muted-foreground">{t("chart.share")}</span><span className="num">{d.share}%</span></div>
+                      <div className="mt-1 flex justify-between gap-6 border-t border-border pt-1"><span className="text-muted-foreground">{t("chart.destroyed")} / {t("chart.launched")}</span><span className="num">{fmt(d.destroyed)} / {fmt(d.launched)}</span></div>
+                    </div>
+                  </div>
+                );
+              }}
+            />
+            <Bar dataKey="rate" radius={[0, 2, 2, 0]} barSize={22}>
+              {chartData.map((d, i) => (
+                <Cell key={i} fill={d.color} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Compact summary row keeps the per-category totals visible without
+          duplicating the dual progress bars that lived here before. */}
+      <ul className="grid gap-2 sm:grid-cols-3">
+        {chartData.map((d) => (
+          <li key={d.name} className="rounded-sm border border-border bg-background/60 p-3">
+            <div className="mb-1 flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground">
+              <span className="h-2 w-2 rounded-sm" style={{ background: d.color }} />
+              {d.name}
             </div>
-            <div className="relative h-1.5 overflow-hidden rounded-sm bg-secondary">
-              <div className="h-full" style={{ width: `${share}%`, background: r.color, opacity: 0.4 }} />
-            </div>
-            <div className="relative mt-1 h-2 overflow-hidden rounded-sm bg-secondary">
-              <div className="h-full" style={{ width: `${pct}%`, background: r.color }} />
-            </div>
-            <div className="mt-1 flex justify-between font-mono text-[9.5px] uppercase tracking-[0.14em] text-muted-foreground">
-              <span>{t("chart.share")}</span>
-              <span>{t("chart.interceptionRate")}</span>
+            <div className="num text-[1.25rem] font-semibold leading-none text-foreground">{d.rate}%</div>
+            <div className="mt-1 font-mono text-[10.5px] text-muted-foreground">
+              {fmt(d.destroyed)} / {fmt(d.launched)} · {d.share}{t("chart.shareSuffix")}
             </div>
           </li>
-        );
-      })}
-    </ul>
+        ))}
+      </ul>
+    </div>
   );
 }
+
 
 function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
   const { t } = useTranslation();
   const [cat, setCat] = useState<"all" | CategoryKey>("all");
+  const [hover, setHover] = useState<
+    | { x: number; y: number; year: number; month: number; total: number; uavs: number; cruise: number; ballistic: number }
+    | null
+  >(null);
 
-  const { grid, years, max } = useMemo(() => {
+  // Build per-cell totals AND a full per-category breakdown so the hover
+  // tooltip can show the composition, not just the active filter.
+  const { grid, breakdown, years, max } = useMemo(() => {
     const now = new Date();
     const curY = now.getUTCFullYear();
     const curM = now.getUTCMonth();
     const yearsSet = new Set<number>();
     const cellMap = new Map<string, number>();
-    const add = (m: MonthPoint, val: number) => {
+    const bdMap = new Map<string, { uavs: number; cruise: number; ballistic: number }>();
+    const ensureBd = (k: string) => {
+      let b = bdMap.get(k);
+      if (!b) { b = { uavs: 0, cruise: 0, ballistic: 0 }; bdMap.set(k, b); }
+      return b;
+    };
+    const visit = (m: MonthPoint, key: CategoryKey) => {
       const y = m.date.getUTCFullYear();
       const mo = m.date.getUTCMonth();
       if (y === curY && mo === curM) return;
       yearsSet.add(y);
       const k = `${y}-${mo}`;
-      cellMap.set(k, (cellMap.get(k) ?? 0) + val);
+      ensureBd(k)[key] += m.launched;
+      const inFilter = cat === "all" || cat === key;
+      if (inFilter) cellMap.set(k, (cellMap.get(k) ?? 0) + m.launched);
     };
-    if (cat === "all" || cat === "uavs")      shahed.months.forEach((m)    => add(m, m.launched));
-    if (cat === "all" || cat === "cruise")    cruise.months.forEach((m)    => add(m, m.launched));
-    if (cat === "all" || cat === "ballistic") ballistic.months.forEach((m) => add(m, m.launched));
+    shahed.months.forEach((m)    => visit(m, "uavs"));
+    cruise.months.forEach((m)    => visit(m, "cruise"));
+    ballistic.months.forEach((m) => visit(m, "ballistic"));
     const years = Array.from(yearsSet).sort();
     let max = 0;
     for (const v of cellMap.values()) if (v > max) max = v;
-    return { grid: cellMap, years, max };
+    return { grid: cellMap, breakdown: bdMap, years, max };
   }, [cat, shahed, cruise, ballistic]);
 
   const monthLabels = ["J","F","M","A","M","J","J","A","S","O","N","D"];
+  const monthFull = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
   const catLabel = (c: "all" | CategoryKey) =>
     c === "all" ? t("analytics.all") : t(`category.${c}`);
 
+  const tierLabel = (v: number): { label: string; tone: string } => {
+    if (v <= 0) return { label: "—", tone: "text-muted-foreground" };
+    const r = max > 0 ? v / max : 0;
+    if (r >= 0.85) return { label: "Record", tone: "text-[hsl(0_78%_42%)]" };
+    if (r >= 0.6)  return { label: "High",   tone: "text-[hsl(0_72%_48%)]" };
+    if (r >= 0.3)  return { label: "Medium", tone: "text-[hsl(28_90%_48%)]" };
+    return { label: "Low", tone: "text-[hsl(48_90%_40%)]" };
+  };
+
   return (
-    <div>
+    <div className="relative">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1 font-mono text-[10.5px] uppercase tracking-[0.14em]">
           {(["all", "uavs", "cruise", "ballistic"] as const).map((c) => (
@@ -309,20 +382,20 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
           ))}
         </div>
         <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-          <span>{t("analytics.less")}</span>
+          <span>Low</span>
           <div className="flex gap-1">
-            {[0.15, 0.35, 0.55, 0.75, 1].map((i) => (
+            {[0.1, 0.3, 0.55, 0.8, 1].map((i) => (
               <div
                 key={i}
                 className="h-2.5 w-5 rounded-[2px] border border-border/60"
-                style={{ background: rampColor(i, 0.25 + i * 0.75) }}
+                style={{ background: rampColor(i, 1) }}
               />
             ))}
           </div>
-          <span>{t("analytics.more", { n: fmt(max) })}</span>
+          <span>Record · {fmt(max)}</span>
         </div>
       </div>
-      <div className="overflow-x-auto">
+      <div className="relative overflow-x-auto" onMouseLeave={() => setHover(null)}>
         <table className="w-full border-separate" style={{ borderSpacing: 2 }}>
           <thead>
             <tr>
@@ -341,19 +414,35 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
                   {y}
                 </td>
                 {Array.from({ length: 12 }, (_, mo) => {
-                  const v = grid.get(`${y}-${mo}`) ?? 0;
+                  const k = `${y}-${mo}`;
+                  const v = grid.get(k) ?? 0;
                   const intensity = max > 0 ? Math.pow(v / max, 0.7) : 0;
                   const has = v > 0;
+                  const bd = breakdown.get(k) ?? { uavs: 0, cruise: 0, ballistic: 0 };
                   return (
                     <td key={mo} className="p-0">
                       <div
-                        className="aspect-square w-full min-w-[20px] rounded-[2px] border border-border/60"
+                        className="aspect-square w-full min-w-[20px] cursor-pointer rounded-[2px] border border-border/60 transition-transform hover:scale-110 hover:ring-1 hover:ring-foreground/40"
                         style={{
-                          background: has
-                            ? rampColor(intensity, 0.25 + intensity * 0.75)
-                            : "hsl(var(--card))",
+                          background: has ? rampColor(intensity, 1) : "hsl(var(--card))",
                         }}
-                        title={t("analytics.monthCellTitle", { month: monthLabels[mo], year: y, n: fmt(v) })}
+                        onMouseEnter={(e) => {
+                          const cont = (e.currentTarget.closest(".overflow-x-auto") as HTMLDivElement | null)?.getBoundingClientRect();
+                          setHover({
+                            x: e.clientX - (cont?.left ?? 0),
+                            y: e.clientY - (cont?.top ?? 0),
+                            year: y,
+                            month: mo,
+                            total: v,
+                            uavs: bd.uavs,
+                            cruise: bd.cruise,
+                            ballistic: bd.ballistic,
+                          });
+                        }}
+                        onMouseMove={(e) => {
+                          const cont = (e.currentTarget.closest(".overflow-x-auto") as HTMLDivElement | null)?.getBoundingClientRect();
+                          setHover((h) => h && { ...h, x: e.clientX - (cont?.left ?? 0), y: e.clientY - (cont?.top ?? 0) });
+                        }}
                       />
                     </td>
                   );
@@ -362,6 +451,46 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
             ))}
           </tbody>
         </table>
+
+        {hover && (() => {
+          const tier = tierLabel(hover.total);
+          const sum = hover.uavs + hover.cruise + hover.ballistic;
+          const share = (n: number) => (sum > 0 ? Math.round((n / sum) * 100) : 0);
+          return (
+            <div
+              className="pointer-events-none absolute z-20 min-w-[210px] rounded border border-border bg-background/95 px-3 py-2 font-mono text-[11px] shadow-lg backdrop-blur"
+              style={{ left: hover.x + 14, top: Math.max(hover.y - 8, 4), transform: "translateY(-100%)" }}
+            >
+              <div className="mb-1 flex items-baseline justify-between gap-3">
+                <span className="font-semibold text-foreground">{monthFull[hover.month]} {hover.year}</span>
+                <span className={`text-[10px] uppercase tracking-wider ${tier.tone}`}>{tier.label}</span>
+              </div>
+              <div className="mb-1.5 flex items-baseline justify-between gap-3">
+                <span className="text-muted-foreground">Total launches</span>
+                <span className="num font-semibold text-foreground">{fmt(hover.total)}</span>
+              </div>
+              <div className="space-y-0.5 border-t border-border pt-1.5 text-[10.5px]">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="flex items-center gap-1.5 text-muted-foreground"><span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.uavs }} />UAVs</span>
+                  <span className="num text-foreground">{fmt(hover.uavs)} <span className="text-muted-foreground">· {share(hover.uavs)}%</span></span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="flex items-center gap-1.5 text-muted-foreground"><span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.cruise }} />Cruise</span>
+                  <span className="num text-foreground">{fmt(hover.cruise)} <span className="text-muted-foreground">· {share(hover.cruise)}%</span></span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="flex items-center gap-1.5 text-muted-foreground"><span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.ballistic }} />Ballistic</span>
+                  <span className="num text-foreground">{fmt(hover.ballistic)} <span className="text-muted-foreground">· {share(hover.ballistic)}%</span></span>
+                </div>
+              </div>
+              {max > 0 && (
+                <div className="mt-1.5 border-t border-border pt-1 text-[10px] text-muted-foreground">
+                  {((hover.total / max) * 100).toFixed(0)}% of record peak ({fmt(max)})
+                </div>
+              )}
+            </div>
+          );
+        })()}
       </div>
     </div>
   );
