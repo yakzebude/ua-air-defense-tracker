@@ -911,8 +911,8 @@ const Index = () => {
             <ul className="space-y-2 text-[13px]">
               <li><Link to="/about" className="text-foreground hover:underline underline-offset-4">{t("nav.about")}</Link></li>
               
-              <li className="text-muted-foreground">{t("footer.curatedBy")} <span className="text-foreground">Petro Ivaniuk</span></li>
-              <li className="text-muted-foreground">{t("footer.responsibleBy")} <span className="text-foreground">Alexander Anton-Boicuk</span></li>
+              <li className="text-muted-foreground">{t("footer.curatedBy")} <span className="text-foreground">Alexander Anton-Boicuk</span></li>
+              <li className="text-muted-foreground">Dataset: <span className="text-foreground">Petro Ivaniuk</span></li>
             </ul>
           </div>
 
