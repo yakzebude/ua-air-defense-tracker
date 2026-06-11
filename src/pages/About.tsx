@@ -16,13 +16,38 @@ export default function About() {
             aria-hidden
             className="flex h-20 w-20 shrink-0 items-center justify-center rounded-sm border border-border bg-secondary font-mono text-lg font-semibold tracking-[0.18em] text-foreground"
           >
+            AA
+          </div>
+          <div className="space-y-3">
+            <p>
+              <strong>Alexander Anton-Boicuk</strong> — Sole curator &amp; responsible person
+            </p>
+            <p>
+              Alexander Anton-Boicuk is the sole curator of UA Air Defense Tracker and the
+              person responsible for editorial direction, visual design, content decisions,
+              methodology presentation and publication. All questions about the dashboard,
+              its scope and its public-facing communication are directed to him.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-8 flex flex-col gap-5 border-t border-border pt-6 md:flex-row md:items-start">
+          <div
+            aria-hidden
+            className="flex h-20 w-20 shrink-0 items-center justify-center rounded-sm border border-border bg-secondary font-mono text-lg font-semibold tracking-[0.18em] text-foreground"
+          >
             PI
           </div>
           <div className="space-y-3">
             <p>
-              <strong>Petro Ivaniuk</strong> — {t("aboutPage.role")}
+              <strong>Petro Ivaniuk</strong> — Dataset maintainer (upstream)
             </p>
-            <p>{t("aboutPage.bio")}</p>
+            <p>
+              Petro Ivaniuk maintains and publishes the upstream open dataset
+              <em> “Massive Missile Attacks on Ukraine” </em> on Kaggle, which this
+              dashboard ingests. His role is limited to maintaining and providing the
+              dataset; he is not involved in the editorial or curatorial work of this site.
+            </p>
             <ul className="flex flex-wrap gap-3 font-mono text-[11px] uppercase tracking-[0.16em]">
               <li>
                 <a
@@ -47,22 +72,8 @@ export default function About() {
             </ul>
           </div>
         </div>
-
-        <div className="mt-8 flex flex-col gap-5 border-t border-border pt-6 md:flex-row md:items-start">
-          <div
-            aria-hidden
-            className="flex h-20 w-20 shrink-0 items-center justify-center rounded-sm border border-border bg-secondary font-mono text-lg font-semibold tracking-[0.18em] text-foreground"
-          >
-            AA
-          </div>
-          <div className="space-y-3">
-            <p>
-              <strong>Alexander Anton-Boicuk</strong> — {t("aboutPage.maintainerRole")}
-            </p>
-            <p>{t("aboutPage.maintainerBio")}</p>
-          </div>
-        </div>
       </DocSection>
+
 
       <DocSection num="02" title="Project purpose">
         <p>
