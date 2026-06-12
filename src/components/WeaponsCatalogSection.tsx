@@ -74,14 +74,6 @@ export function WeaponsCatalogSection() {
     else { setSortKey(k); setSortAsc(true); }
   };
 
-        <div className="mb-6 rounded-sm border border-border bg-card/60 p-5">
-          <ArsenalTreemap
-            selected={treemapFilter}
-            onSelect={(name) => setTreemapFilter(name)}
-          />
-        </div>
-
-
   return (
     <section id="arsenal" className="scroll-mt-32 border-t border-border">
       <div className="container py-12 md:py-16">
