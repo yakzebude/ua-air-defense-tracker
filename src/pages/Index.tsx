@@ -828,8 +828,6 @@ const Index = () => {
         </div>
       )}
 
-      {ready && <AnalyticsDashboard shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />}
-
       {ready && (
         <CategorySparklines
           categories={[
@@ -839,6 +837,8 @@ const Index = () => {
           ]}
         />
       )}
+
+      {ready && <AnalyticsDashboard shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />}
 
       {/* The full live-alerts section now lives further down (after Ballistic). */}
 

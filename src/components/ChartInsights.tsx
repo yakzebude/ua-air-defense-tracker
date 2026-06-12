@@ -11,25 +11,55 @@ interface Props {
   subtitle?: string;
 }
 
-const TONE_BG: Record<Insight["tone"], string> = {
-  good:    "bg-[hsl(var(--signal-ok)/0.08)] border-[hsl(var(--signal-ok)/0.35)]",
-  bad:     "bg-[hsl(var(--signal)/0.08)] border-[hsl(var(--signal)/0.35)]",
-  warn:    "bg-[hsl(var(--signal-warn)/0.08)] border-[hsl(var(--signal-warn)/0.35)]",
-  neutral: "bg-card border-border",
-};
+/** Extract the headline number out of an insight sentence so we can render it
+ *  large and Bloomberg-like, with the prose acting as the explanatory caption. */
+function splitInsight(ins: Insight): { value: string; caption: string } {
+  // Match the first occurrence of a signed/percent/number token in the text.
+  const m = ins.text.match(/([+\-]?\d[\d,]*(?:\.\d+)?\s*%?)/);
+  if (!m) return { value: "", caption: ins.text };
+  return { value: m[0].trim(), caption: ins.text };
+}
 
-const TONE_TEXT: Record<Insight["tone"], string> = {
-  good:    "text-[hsl(var(--signal-ok))]",
-  bad:     "text-[hsl(var(--signal))]",
-  warn:    "text-[hsl(var(--signal-warn))]",
-  neutral: "text-muted-foreground",
-};
+/** Tiny diverging bar that visually anchors the magnitude of a finding.
+ *  Width is mapped from the |percentage| component of the value when present,
+ *  otherwise the bar collapses to a neutral tick. */
+function MagnitudeBar({ value, tone }: { value: string; tone: Insight["tone"] }) {
+  const num = parseFloat(value.replace(/[,%+\s]/g, ""));
+  const pct = Number.isFinite(num) ? Math.min(Math.abs(num), 100) : 6;
+  const negative = /^-/.test(value);
+  const color =
+    tone === "good"
+      ? "hsl(var(--signal-ok))"
+      : tone === "bad"
+        ? "hsl(var(--signal))"
+        : tone === "warn"
+          ? "hsl(var(--signal-warn))"
+          : "hsl(var(--foreground))";
+  return (
+    <div className="relative mt-2 h-[3px] w-full bg-border/60">
+      <span
+        aria-hidden
+        className="absolute top-0 h-full"
+        style={{
+          left: negative ? `${50 - pct / 2}%` : "50%",
+          width: `${pct / 2}%`,
+          background: color,
+        }}
+      />
+      <span
+        aria-hidden
+        className="absolute top-[-2px] h-[7px] w-px bg-foreground/60"
+        style={{ left: "50%" }}
+      />
+    </div>
+  );
+}
 
 /**
- * "Key Findings" panel — now rendered as a grid of tone-coloured cards so
- * each finding reads as a self-contained insight tile rather than a bullet
- * list. The icon + label sit in a coloured header strip; the body uses the
- * full card width for readability.
+ * "Key Findings" panel — redesigned as a flat editorial grid.
+ * No tinted blocks, no bullet next to the title; each finding is a
+ * Bloomberg-style stat (label · large value · diverging magnitude bar
+ * · caption) that lets the eye scan extremes at a glance.
  */
 export function ChartInsights({
   data,
@@ -51,11 +81,10 @@ export function ChartInsights({
       className="mt-4 rounded-sm border border-border bg-card/60 p-4 md:p-5"
       aria-label={title}
     >
-      <header className="mb-4 flex items-baseline justify-between gap-3">
+      <header className="mb-5 flex items-baseline justify-between gap-3 border-b border-border/70 pb-3">
         <div>
-          <div className="flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.18em] text-foreground">
-            <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-foreground" />
-            <span>{title}</span>
+          <div className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-foreground">
+            {title}
           </div>
           <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted-foreground">{subtitle}</p>
         </div>
@@ -64,23 +93,26 @@ export function ChartInsights({
         </span>
       </header>
 
-      <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {insights.map((ins, i) => (
-          <li
-            key={i}
-            className={`flex flex-col gap-2 rounded-sm border p-3.5 ${TONE_BG[ins.tone]}`}
-          >
-            <div className="flex items-center justify-between gap-2">
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                {String(i + 1).padStart(2, "0")} · {ins.label}
-              </span>
-              <span aria-hidden className={`text-[14px] leading-none ${TONE_TEXT[ins.tone]}`}>
-                {ins.icon}
-              </span>
-            </div>
-            <p className="text-[13.5px] leading-[1.55] text-foreground">{ins.text}</p>
-          </li>
-        ))}
+      <ol className="grid gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
+        {insights.map((ins, i) => {
+          const { value, caption } = splitInsight(ins);
+          return (
+            <li key={i} className="flex flex-col">
+              <div className="flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                <span>
+                  {String(i + 1).padStart(2, "0")} · {ins.label}
+                </span>
+              </div>
+              <div className="mt-1.5 flex items-baseline gap-2">
+                <span className="font-mono text-[22px] leading-none tracking-tight text-foreground">
+                  {value || "—"}
+                </span>
+              </div>
+              <MagnitudeBar value={value} tone={ins.tone} />
+              <p className="mt-2.5 text-[12.5px] leading-[1.55] text-muted-foreground">{caption}</p>
+            </li>
+          );
+        })}
       </ol>
     </section>
   );
