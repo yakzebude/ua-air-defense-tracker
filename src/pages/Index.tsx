@@ -813,10 +813,8 @@ const Index = () => {
 
 
 
-      <DataConfidenceSection
-        lastUpdatedLabel={lastUpdatedLabel}
-        lastUpdatedDate={lastUpdatedDate}
-      />
+
+
 
       {error && (
         <div className="container py-6">
@@ -894,10 +892,6 @@ const Index = () => {
             <summary className="flex cursor-pointer list-none flex-wrap items-end justify-between gap-3 [&::-webkit-details-marker]:hidden">
               <div>
                 <div className="src-label mb-1 flex items-center gap-2">
-                  <span className="relative inline-flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--signal))] opacity-60" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
-                  </span>
                   <span>{t("airAlerts.kicker")}</span>
                 </div>
                 <h2 className="font-serif text-[1.75rem] leading-tight tracking-tight md:text-[2.25rem]">
@@ -927,6 +921,11 @@ const Index = () => {
 
 
       <WeaponsCatalogSection />
+
+      <DataConfidenceSection
+        lastUpdatedLabel={lastUpdatedLabel}
+        lastUpdatedDate={lastUpdatedDate}
+      />
 
       <section id="methodology" className="scroll-mt-32 border-t border-border">
         <div className="container grid gap-8 py-12 md:grid-cols-12 md:py-16">
