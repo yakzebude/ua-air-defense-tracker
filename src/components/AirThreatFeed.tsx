@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const REFRESH_MS = 60 * 1000;
-const COLLAPSED_VISIBLE = 3;
+const COLLAPSED_VISIBLE = 5;
 const WINDOW_MS = 24 * 60 * 60 * 1000;
 
 type ThreatTag = "drone" | "cruise" | "ballistic" | "kab" | "fast" | "all_clear" | "info";
@@ -217,8 +217,8 @@ export function AirThreatFeed() {
       </div>
 
       <ul
-        className={`divide-y divide-border overflow-y-auto ${
-          expanded ? "flex-1 max-h-[640px]" : ""
+        className={`flex-1 divide-y divide-border overflow-y-auto ${
+          expanded ? "max-h-[640px]" : ""
         }`}
       >
         {visibleMsgs.map((m) => {
