@@ -75,63 +75,63 @@
   }
 
   .dark {
-    /* Dark — restrained ink, no military feel */
-    --background: 215 28% 11%;
-    --foreground: 40 15% 92%;
-    --card: 215 25% 14%;
-    --card-foreground: 40 15% 92%;
-    --popover: 215 25% 14%;
-    --popover-foreground: 40 15% 92%;
+    /* Bloomberg Terminal — near-black canvas, amber accents, data-dense terminal feel */
+    --background: 0 0% 5%;                 /* deep terminal black */
+    --foreground: 40 25% 92%;              /* warm off-white */
+    --card: 0 0% 8%;                       /* slight lift */
+    --card-foreground: 40 25% 92%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 40 25% 92%;
 
-    --primary: 40 15% 92%;
-    --primary-foreground: 215 28% 11%;
-    --secondary: 215 22% 18%;
-    --secondary-foreground: 40 15% 92%;
-    --muted: 215 22% 18%;
-    --muted-foreground: 215 12% 68%;
-    --accent: 215 22% 18%;
-    --accent-foreground: 40 15% 92%;
-    --destructive: 0 62% 50%;
-    --destructive-foreground: 40 15% 92%;
+    --primary: 38 100% 58%;                /* signature Bloomberg amber */
+    --primary-foreground: 0 0% 5%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 40 25% 92%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 40 10% 65%;
+    --accent: 38 100% 58%;                 /* amber accent */
+    --accent-foreground: 0 0% 5%;
+    --destructive: 0 78% 56%;
+    --destructive-foreground: 40 25% 96%;
 
-    --border: 215 18% 24%;
-    --input: 215 18% 24%;
-    --ring: 40 15% 92%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 38 100% 58%;
 
-    --ink: 40 15% 92%;
-    --signal: 0 62% 55%;
-    --signal-soft: 0 35% 22%;
-    --signal-ok: 152 40% 50%;
-    --signal-warn: 35 75% 55%;
-    --occupied: 215 22% 14%;
-    --occupied-border: 0 0% 92%;
+    --ink: 40 25% 92%;
+    --signal: 0 78% 58%;                   /* terminal red */
+    --signal-soft: 0 50% 16%;
+    --signal-ok: 145 65% 48%;              /* terminal green */
+    --signal-warn: 38 100% 58%;            /* amber as warn */
+    --occupied: 0 0% 10%;
+    --occupied-border: 38 80% 70%;
 
-    --ua-yellow: 48 85% 55%;
-    --ua-blue: 211 88% 60%;
-    --cyber: 215 12% 70%;
-    --cyber-glow: 215 12% 70%;
+    --ua-yellow: 48 95% 58%;
+    --ua-blue: 211 90% 62%;
+    --cyber: 38 100% 58%;
+    --cyber-glow: 38 100% 65%;
 
-    --series-launched: 0 62% 55%;
-    --series-destroyed: 215 12% 78%;       /* light gray (dark mode) */
-    --series-rate: 215 12% 65%;
-    --grid: 215 18% 24%;
+    --series-launched: 0 78% 58%;
+    --series-destroyed: 38 100% 58%;       /* amber for destroyed series */
+    --series-rate: 40 15% 75%;
+    --grid: 0 0% 16%;
 
-    --weapon-uav: 211 75% 62%;
-    --weapon-cruise: 28 82% 58%;
-    --weapon-ballistic: 358 68% 60%;
-    --weapon-bomb: 268 50% 65%;
-    --weapon-interception: 152 40% 50%;
+    --weapon-uav: 211 85% 65%;
+    --weapon-cruise: 38 100% 58%;          /* amber */
+    --weapon-ballistic: 0 78% 58%;
+    --weapon-bomb: 285 60% 68%;
+    --weapon-interception: 145 65% 48%;
 
-    --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.4), 0 1px 1px 0 rgb(0 0 0 / 0.3);
+    --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.6), 0 1px 1px 0 rgb(0 0 0 / 0.5);
 
-    --sidebar-background: 215 28% 11%;
-    --sidebar-foreground: 40 15% 92%;
-    --sidebar-primary: 40 15% 92%;
-    --sidebar-primary-foreground: 215 28% 11%;
-    --sidebar-accent: 215 22% 18%;
-    --sidebar-accent-foreground: 40 15% 92%;
-    --sidebar-border: 215 18% 24%;
-    --sidebar-ring: 40 15% 92%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 40 25% 92%;
+    --sidebar-primary: 38 100% 58%;
+    --sidebar-primary-foreground: 0 0% 5%;
+    --sidebar-accent: 0 0% 12%;
+    --sidebar-accent-foreground: 40 25% 92%;
+    --sidebar-border: 0 0% 18%;
+    --sidebar-ring: 38 100% 58%;
   }
 }
 
