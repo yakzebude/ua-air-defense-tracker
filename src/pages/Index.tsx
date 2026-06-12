@@ -643,6 +643,38 @@ const Index = () => {
   const lastUpdatedLabel = latest?.label ?? null;
   const lastUpdatedDate = latest?.date ?? null;
 
+  // Current calendar month vs previous calendar month aggregated across all
+  // three categories — used for Layer 2 ("attack velocity").
+  const monthVelocity = useMemo(() => {
+    if (!ready) return null;
+    const sum = (ds: Dataset, key: string) =>
+      ds.months.find((m) => m.key === key)?.launched ?? 0;
+    const sumD = (ds: Dataset, key: string) =>
+      ds.months.find((m) => m.key === key)?.destroyed ?? 0;
+    const now = new Date();
+    const cur = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
+    const prevDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1));
+    const prev = `${prevDate.getUTCFullYear()}-${String(prevDate.getUTCMonth() + 1).padStart(2, "0")}`;
+    const curLaunched   = sum(shahed!, cur)   + sum(cruise!, cur)   + sum(ballistic!, cur);
+    const prevLaunched  = sum(shahed!, prev)  + sum(cruise!, prev)  + sum(ballistic!, prev);
+    const curDestroyed  = sumD(shahed!, cur)  + sumD(cruise!, cur)  + sumD(ballistic!, cur);
+    const prevDestroyed = sumD(shahed!, prev) + sumD(cruise!, prev) + sumD(ballistic!, prev);
+    const monthLabel = (d: Date) => {
+      const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      return `${months[d.getUTCMonth()]} '${String(d.getUTCFullYear()).slice(2)}`;
+    };
+    // Days elapsed in current month (UTC), capped at total days in month.
+    const daysInCur = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0)).getUTCDate();
+    const dayOfMonth = Math.min(now.getUTCDate(), daysInCur);
+    return {
+      curLabel: monthLabel(now),
+      prevLabel: monthLabel(prevDate),
+      curLaunched, prevLaunched,
+      curDestroyed, prevDestroyed,
+      dayOfMonth, daysInCur,
+    };
+  }, [ready, shahed, cruise, ballistic]);
+
   const reached = Math.max(grand.launched - grand.destroyed, 0);
   const dataTimeframe = useMemo(() => {
     const pick = (d: Dataset | null) => {
