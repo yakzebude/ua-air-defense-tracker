@@ -19,8 +19,6 @@ import { AirAlertsMap } from "@/components/AirAlertsMap";
 import { AirThreatFeed } from "@/components/AirThreatFeed";
 import { MiniAlertsMap } from "@/components/MiniAlertsMap";
 import { CategorySparklines } from "@/components/CategorySparklines";
-import { CompositionShiftSection } from "@/components/CompositionShiftChart";
-import { CategoryIntelligenceBlock } from "@/components/CategoryIntelligenceBlock";
 import { DataConfidenceSection } from "@/components/DataConfidenceSection";
 import { StatusBanner } from "@/components/StatusBadge";
 
@@ -161,8 +159,8 @@ function SectionNav() {
     { id: "analytics", label: t("nav.analytics") },
     { id: "alerts", label: t("nav.alerts") },
     { id: "drones", label: t("nav.drones") },
-    { id: "ballistic", label: t("nav.ballistic") },
     { id: "cruise", label: t("nav.cruise") },
+    { id: "ballistic", label: t("nav.ballistic") },
     { id: "arsenal", label: t("nav.arsenal") },
     { id: "methodology", label: t("nav.methodology") },
     { id: "related", label: t("nav.sources") },
@@ -312,7 +310,7 @@ function RelatedSourcesSection() {
   const { t } = useTranslation();
   return (
     <section id="related" className="scroll-mt-32 border-t border-border">
-      <div className="container py-6 md:py-8">
+      <div className="container py-12 md:py-16">
         <div className="mb-8 max-w-3xl">
           <div className="src-label mb-3">{t("related.kicker")}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("related.title")}</h2>
@@ -355,7 +353,7 @@ function HowToHelpSection() {
   const { t } = useTranslation();
   return (
     <section id="help" className="scroll-mt-32 border-t border-border">
-      <div className="container py-6 md:py-8">
+      <div className="container py-12 md:py-16">
         <div className="mb-8 max-w-3xl">
           <div className="src-label mb-3">{t("donate.kicker")}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("donate.title")}</h2>
@@ -427,7 +425,7 @@ function CategorySection({
 
   return (
     <section id={id} className="scroll-mt-32 border-t border-border">
-      <div className="container py-6 md:py-8">
+      <div className="container py-12 md:py-16">
         <div className="mb-8 max-w-3xl">
           <div className="src-label mb-3">{kicker}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{title}</h2>
@@ -539,7 +537,6 @@ const Index = () => {
   const [error, setError] = useState<string | null>(null);
   const [latestDataPoint, setLatestDataPoint] = useState<Date | null>(null);
   const [windowStats, setWindowStats] = useState<{
-    last24h: { launched: number; destroyed: number; dataDay: Date | null };
     last30: { launched: number; destroyed: number };
     prev30: { launched: number; destroyed: number };
   } | null>(null);
@@ -567,12 +564,6 @@ const Index = () => {
       const prev30Start = now - 60 * DAY;
       let l30L = 0, l30D = 0, p30L = 0, p30D = 0;
 
-      // For "last 24h" we sum the most recent calendar day present in the
-      // CSV (data is daily-aggregated, so the freshest meaningful slice is
-      // the latest reported day across both feeds).
-      type DayBucket = { launched: number; destroyed: number };
-      const dayBuckets = new Map<string, DayBucket>();
-
       for (const text of [a, b]) {
         if (!text) continue;
         const parsed = Papa.parse<Record<string, string>>(text, { header: true, skipEmptyLines: true });
@@ -590,25 +581,10 @@ const Index = () => {
           } else if (ts >= prev30Start && ts < last30Start) {
             p30L += launched; p30D += destroyed;
           }
-          const dayKey = iso.slice(0, 10);
-          const db = dayBuckets.get(dayKey) ?? { launched: 0, destroyed: 0 };
-          db.launched += launched; db.destroyed += destroyed;
-          dayBuckets.set(dayKey, db);
         }
       }
       if (maxMs > 0) setLatestDataPoint(new Date(maxMs));
-
-      let latestDay: { key: string; launched: number; destroyed: number } | null = null;
-      for (const [key, v] of dayBuckets) {
-        if (!latestDay || key > latestDay.key) latestDay = { key, ...v };
-      }
-
       setWindowStats({
-        last24h: {
-          launched: Math.round(latestDay?.launched ?? 0),
-          destroyed: Math.round(latestDay?.destroyed ?? 0),
-          dataDay: latestDay ? new Date(`${latestDay.key}T00:00:00Z`) : null,
-        },
         last30: { launched: Math.round(l30L), destroyed: Math.round(l30D) },
         prev30: { launched: Math.round(p30L), destroyed: Math.round(p30D) },
       });
@@ -644,38 +620,6 @@ const Index = () => {
   const lastUpdatedLabel = latest?.label ?? null;
   const lastUpdatedDate = latest?.date ?? null;
 
-  // Current calendar month vs previous calendar month aggregated across all
-  // three categories — used for Layer 2 ("attack velocity").
-  const monthVelocity = useMemo(() => {
-    if (!ready) return null;
-    const sum = (ds: Dataset, key: string) =>
-      ds.months.find((m) => m.key === key)?.launched ?? 0;
-    const sumD = (ds: Dataset, key: string) =>
-      ds.months.find((m) => m.key === key)?.destroyed ?? 0;
-    const now = new Date();
-    const cur = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
-    const prevDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1));
-    const prev = `${prevDate.getUTCFullYear()}-${String(prevDate.getUTCMonth() + 1).padStart(2, "0")}`;
-    const curLaunched   = sum(shahed!, cur)   + sum(cruise!, cur)   + sum(ballistic!, cur);
-    const prevLaunched  = sum(shahed!, prev)  + sum(cruise!, prev)  + sum(ballistic!, prev);
-    const curDestroyed  = sumD(shahed!, cur)  + sumD(cruise!, cur)  + sumD(ballistic!, cur);
-    const prevDestroyed = sumD(shahed!, prev) + sumD(cruise!, prev) + sumD(ballistic!, prev);
-    const monthLabel = (d: Date) => {
-      const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-      return `${months[d.getUTCMonth()]} '${String(d.getUTCFullYear()).slice(2)}`;
-    };
-    // Days elapsed in current month (UTC), capped at total days in month.
-    const daysInCur = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0)).getUTCDate();
-    const dayOfMonth = Math.min(now.getUTCDate(), daysInCur);
-    return {
-      curLabel: monthLabel(now),
-      prevLabel: monthLabel(prevDate),
-      curLaunched, prevLaunched,
-      curDestroyed, prevDestroyed,
-      dayOfMonth, daysInCur,
-    };
-  }, [ready, shahed, cruise, ballistic]);
-
   const reached = Math.max(grand.launched - grand.destroyed, 0);
   const dataTimeframe = useMemo(() => {
     const pick = (d: Dataset | null) => {
@@ -687,31 +631,6 @@ const Index = () => {
     return pick(shahed) ?? pick(cruise) ?? pick(ballistic);
   }, [shahed, cruise, ballistic]);
 
-  /**
-   * For each category, compute the share (0..1) of its monthly launches
-   * relative to the all-category total, for the last 24 *completed* months.
-   * Surface this as a mini-sparkline in each category header.
-   */
-  const categoryShares = useMemo(() => {
-    if (!ready) return null;
-    const now = new Date();
-    const curKey = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
-    const keys = shahed!.months.filter((m) => m.key !== curKey).slice(-24).map((m) => m.key);
-    const labels = shahed!.months.filter((m) => m.key !== curKey).slice(-24).map((m) => m.label);
-    const get = (ds: Dataset, key: string) => ds.months.find((m) => m.key === key)?.launched ?? 0;
-    const shahedShare: number[] = [];
-    const cruiseShare: number[] = [];
-    const ballisticShare: number[] = [];
-    for (const k of keys) {
-      const s = get(shahed!, k), c = get(cruise!, k), b = get(ballistic!, k);
-      const t = s + c + b;
-      shahedShare.push(t > 0 ? s / t : 0);
-      cruiseShare.push(t > 0 ? c / t : 0);
-      ballisticShare.push(t > 0 ? b / t : 0);
-    }
-    return { labels, shahed: shahedShare, cruise: cruiseShare, ballistic: ballisticShare };
-  }, [ready, shahed, cruise, ballistic]);
-
   return (
     <main className="min-h-screen bg-background">
       <StatusBar lastUpdated={lastUpdatedLabel} lastUpdatedDate={lastUpdatedDate} />
@@ -719,7 +638,7 @@ const Index = () => {
 
 
       <section id="summary" className="border-b border-border">
-        <div className="container pt-4 pb-6 md:pt-6 md:pb-8">
+        <div className="container pt-6 pb-8 md:pt-10 md:pb-14">
           {/* Editorial masthead — serif headline, dek, trust/metadata bar */}
           <div className="max-w-4xl">
             <h1 className="font-serif text-[1.875rem] leading-[1.1] tracking-[-0.02em] sm:text-[2.25rem] md:text-[3rem] lg:text-[3.5rem]">
@@ -754,148 +673,72 @@ const Index = () => {
 
 
           {ready && (
-            <div className="mt-4 space-y-2 md:mt-5 md:space-y-3">
-              {/* ───────── LAYER 1 — LIVE THREAT STATUS (24h) ───────── */}
-              <div className="rounded-md border border-[hsl(var(--signal)/0.35)] bg-card p-3 sm:p-4">
-                <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                  <div className="flex items-center gap-2 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
-                    <span className="relative inline-flex h-1.5 w-1.5">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--signal))] opacity-60" />
-                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
-                    </span>
-                    <span className="text-foreground">{t("hero.layer1.kicker")}</span>
-                    <span aria-hidden className="h-3 w-px bg-border" />
-                    <span>{t("hero.layer1.window")}</span>
-                  </div>
-                  {windowStats?.last24h.dataDay && (
-                    <span className="text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] text-muted-foreground">
-                      {t("hero.layer1.dataDay")}{" "}
-                      <span className="num text-foreground">
-                        {windowStats.last24h.dataDay.toISOString().slice(0, 10)}
-                      </span>
-                    </span>
-                  )}
-                </div>
+            <div className="mt-6 grid gap-3 md:mt-8 md:grid-cols-12 md:gap-4">
+              {/* TIER 1 — hero KPI: Total launched (col-span-7) */}
+              <div className="md:col-span-7 rounded-md border border-border bg-card p-4 sm:p-5 md:p-7">
+                <KPI
+                  label={t("kpi.totalLaunched")}
+                  numeric={grand.launched}
+                  size="xl"
+                  signal
+                  sub={`${t("kpi.totalLaunchedSub")}${dataTimeframe ? ` · ${dataTimeframe.first} – ${dataTimeframe.last}` : ""}`}
+                  info={{ label: t("kpi.tip.totalLaunchedLabel"), body: t("kpi.tip.totalLaunched") }}
+                />
+
+                {/* TIER 3 — rolling 30-day insight strip */}
                 {windowStats && (
-                  <div className="grid grid-cols-3 gap-3 sm:gap-5">
-                    <KPI
-                      label={t("hero.layer1.launched")}
-                      numeric={windowStats.last24h.launched}
-                      size="lg"
-                      signal
-                    />
-                    <KPI
-                      label={t("hero.layer1.intercepted")}
-                      numeric={windowStats.last24h.destroyed}
-                      size="lg"
-                    />
-                    <KPI
-                      label={t("hero.layer1.reached")}
-                      numeric={Math.max(windowStats.last24h.launched - windowStats.last24h.destroyed, 0)}
-                      size="lg"
-                    />
+                  <div className="mt-5 rounded-sm border border-border bg-background/60 p-3 sm:p-4">
+                    <div className="mb-2.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.16em] text-muted-foreground">
+                      <span>{t("masthead.insight")}</span>
+                      <span className="text-muted-foreground/70 normal-case tracking-normal">— {t("masthead.vsPrev30")}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                      {(() => {
+                        const l = windowStats.last30.launched;
+                        const d = windowStats.last30.destroyed;
+                        const reachedW = Math.max(l - d, 0);
+                        const lPrev = windowStats.prev30.launched;
+                        const dPrev = windowStats.prev30.destroyed;
+                        const rPrev = Math.max(lPrev - dPrev, 0);
+                        return (
+                          <>
+                            <div className="min-w-0">
+                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightLaunched")}</div>
+                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(l)}</div>
+                              <div className="mt-1"><TrendBadge delta={pctChange(l, lPrev)} direction="down-is-good" /></div>
+                            </div>
+                            <div className="min-w-0">
+                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightIntercepted")}</div>
+                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(d)}</div>
+                              <div className="mt-1"><TrendBadge delta={pctChange(d, dPrev)} direction="up-is-good" /></div>
+                            </div>
+                            <div className="min-w-0">
+                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightReached")}</div>
+                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(reachedW)}</div>
+                              <div className="mt-1"><TrendBadge delta={pctChange(reachedW, rPrev)} direction="down-is-good" /></div>
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </div>
                   </div>
                 )}
               </div>
 
-              {/* ───────── LAYER 2 — CURRENT MONTH ATTACK VELOCITY ───────── */}
-              {monthVelocity && (
-                <div className="rounded-md border border-border bg-card p-3 sm:p-4">
-                  <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
-                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                      <span className="text-foreground">{t("hero.layer2.kicker")}</span>
-                      <span aria-hidden className="h-3 w-px bg-border" />
-                      <span>{t("hero.layer2.window", { month: monthVelocity.curLabel })}</span>
-                    </div>
-                    <span className="normal-case tracking-[0.14em]">
-                      {t("hero.layer2.compare", { prev: monthVelocity.prevLabel })}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-4">
-                    <div className="min-w-0">
-                      <div className="min-h-[2.4em] text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">
-                        {t("hero.layer2.launched")}
-                      </div>
-                      <div className="mt-1 num text-[1.5rem] sm:text-[1.875rem] md:text-[2.25rem] font-semibold leading-none">
-                        <AnimatedNumber value={monthVelocity.curLaunched} />
-                      </div>
-                      <div className="mt-1.5">
-                        <TrendBadge delta={pctChange(monthVelocity.curLaunched, monthVelocity.prevLaunched)} direction="down-is-good" label={t("hero.layer2.mom")} />
-                      </div>
-                    </div>
-                    <div className="min-w-0">
-                      <div className="min-h-[2.4em] text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">
-                        {t("hero.layer2.intercepted")}
-                      </div>
-                      <div className="mt-1 num text-[1.5rem] sm:text-[1.875rem] md:text-[2.25rem] font-semibold leading-none">
-                        <AnimatedNumber value={monthVelocity.curDestroyed} />
-                      </div>
-                      <div className="mt-1.5">
-                        <TrendBadge delta={pctChange(monthVelocity.curDestroyed, monthVelocity.prevDestroyed)} direction="up-is-good" label={t("hero.layer2.mom")} />
-                      </div>
-                    </div>
-                    <div className="min-w-0">
-                      <div className="min-h-[2.4em] text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">
-                        {t("hero.layer2.dailyPace")}
-                      </div>
-                      <div className="mt-1 num text-[1.5rem] sm:text-[1.875rem] md:text-[2.25rem] font-semibold leading-none">
-                        <AnimatedNumber value={monthVelocity.dayOfMonth > 0 ? monthVelocity.curLaunched / monthVelocity.dayOfMonth : 0} decimals={1} />
-                      </div>
-                      <div className="mt-1 text-[10.5px] font-mono uppercase tracking-[0.14em] text-muted-foreground">
-                        {t("hero.layer2.perDay", { d: monthVelocity.dayOfMonth })}
-                      </div>
-                    </div>
-                    <div className="min-w-0">
-                      <div className="min-h-[2.4em] text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">
-                        {t("hero.layer2.projected")}
-                      </div>
-                      <div className="mt-1 num text-[1.5rem] sm:text-[1.875rem] md:text-[2.25rem] font-semibold leading-none">
-                        <AnimatedNumber value={monthVelocity.dayOfMonth > 0 ? Math.round((monthVelocity.curLaunched / monthVelocity.dayOfMonth) * monthVelocity.daysInCur) : 0} />
-                      </div>
-                      <div className="mt-1.5">
-                        <TrendBadge
-                          delta={pctChange(
-                            monthVelocity.dayOfMonth > 0 ? (monthVelocity.curLaunched / monthVelocity.dayOfMonth) * monthVelocity.daysInCur : 0,
-                            monthVelocity.prevLaunched,
-                          )}
-                          direction="down-is-good"
-                          label={t("hero.layer2.vsPrev")}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* ───────── LAYER 3 — WAR-TO-DATE TOTALS (archive) ───────── */}
-              <div className="rounded-md border border-border bg-secondary/30 p-3 sm:p-4">
-                <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
-                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                    <span className="text-foreground">{t("hero.layer3.kicker")}</span>
-                    <span aria-hidden className="h-3 w-px bg-border" />
-                    <span>{dataTimeframe ? `${dataTimeframe.first} – ${dataTimeframe.last}` : ""}</span>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-4">
-                  <KPI
-                    label={t("kpi.totalLaunched")}
-                    numeric={grand.launched}
-                    size="lg"
-                    info={{ label: t("kpi.tip.totalLaunchedLabel"), body: t("kpi.tip.totalLaunched") }}
-                  />
-                  <KPI
-                    label={t("kpi.confirmedDestroyed")}
-                    numeric={grand.destroyed}
-                    size="lg"
-                  />
+              {/* TIER 2 — Interception rate + Reached target area (col-span-5, stacked) */}
+              <div className="md:col-span-5 grid grid-cols-2 gap-3 md:grid-cols-1 md:gap-4">
+                <div className="rounded-md border border-border bg-card p-4 sm:p-5">
                   <KPI
                     label={t("kpi.interceptionRate")}
                     numeric={grand.rate * 100}
                     decimals={1}
                     suffix="%"
                     size="lg"
+                    sub={`${fmt(grand.destroyed)} ${t("kpi.ofSep")} ${fmt(grand.launched)} ${t("kpi.confirmedInterceptions")}`}
                     info={{ label: t("kpi.tip.interceptionRateLabel"), body: t("kpi.tip.interceptionRate") }}
                   />
+                </div>
+                <div className="rounded-md border border-border bg-card p-4 sm:p-5">
                   <KPI
                     label={t("kpi.reachedTarget")}
                     numeric={reached}
@@ -910,11 +753,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Composition shift — sits directly below hero so structural change
-          is the first interpretive frame readers see after the brief. */}
-      {ready && (
-        <CompositionShiftSection shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />
-      )}
+
 
       <DataConfidenceSection
         lastUpdatedLabel={lastUpdatedLabel}
@@ -948,68 +787,51 @@ const Index = () => {
       {/* The full live-alerts section now lives further down (after Ballistic). */}
 
 
-      {/* ── Editorial framing for the category dossiers ── */}
-      {ready && categoryShares && (
-        <section className="border-t border-border">
-          <div className="container pt-6 md:pt-8">
-            <div className="src-label sticky top-[64px] z-10 mb-2 bg-background py-1">
-              {t("intel.dossiersKicker")}
-            </div>
-            <p className="max-w-3xl text-[15px] leading-[1.55] text-foreground">
-              {t("intel.dossiersFraming")}
-            </p>
-          </div>
-        </section>
-      )}
-
-      {shahed && categoryShares && (
-        <CategoryIntelligenceBlock
+      {shahed && shahedRange && (
+        <CategorySection
           id="drones"
-          index={1}
+          glossaryKey="drones"
           kicker={t("category.drones.kicker")}
           title={t("category.drones.title")}
-          framing={t("intel.framing.drones")}
-          unit={t("category.drones.unit")}
-          accent="hsl(var(--series-launched))"
+          description={t("category.drones.description")}
+          unitNoun={t("category.drones.unit")}
           dataset={shahed}
-          shareSeries={categoryShares.shahed}
-          shareLabels={categoryShares.labels}
+          range={shahedRange}
+          onRangeChange={setShahedRange}
         />
       )}
 
-      {ballistic && categoryShares && (
-        <CategoryIntelligenceBlock
-          id="ballistic"
-          index={2}
-          kicker={t("category.ballisticSection.kicker")}
-          title={t("category.ballisticSection.title")}
-          framing={t("intel.framing.ballistic")}
-          unit={t("category.ballisticSection.unit")}
-          accent="hsl(var(--signal))"
-          dataset={ballistic}
-          shareSeries={categoryShares.ballistic}
-          shareLabels={categoryShares.labels}
-        />
-      )}
-
-      {cruise && categoryShares && (
-        <CategoryIntelligenceBlock
+      {cruise && cruiseRange && (
+        <CategorySection
           id="cruise"
-          index={3}
+          glossaryKey="cruise"
           kicker={t("category.cruiseSection.kicker")}
           title={t("category.cruiseSection.title")}
-          framing={t("intel.framing.cruise")}
-          unit={t("category.cruiseSection.unit")}
-          accent="hsl(var(--series-rate))"
+          description={t("category.cruiseSection.description")}
+          unitNoun={t("category.cruiseSection.unit")}
           dataset={cruise}
-          shareSeries={categoryShares.cruise}
-          shareLabels={categoryShares.labels}
+          range={cruiseRange}
+          onRangeChange={setCruiseRange}
+        />
+      )}
+
+      {ballistic && ballisticRange && (
+        <CategorySection
+          id="ballistic"
+          glossaryKey="ballistic"
+          kicker={t("category.ballisticSection.kicker")}
+          title={t("category.ballisticSection.title")}
+          description={t("category.ballisticSection.description")}
+          unitNoun={t("category.ballisticSection.unit")}
+          dataset={ballistic}
+          range={ballisticRange}
+          onRangeChange={setBallisticRange}
         />
       )}
 
       {/* Live situation — collapsible. Historical data remains the primary focus. */}
       <section id="alerts" className="scroll-mt-32 border-t border-border bg-secondary/30">
-        <div className="container py-6 md:py-8">
+        <div className="container py-10 md:py-14">
           <details className="group">
             <summary className="flex cursor-pointer list-none flex-wrap items-end justify-between gap-3 [&::-webkit-details-marker]:hidden">
               <div>

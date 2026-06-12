@@ -75,56 +75,6 @@
     "refreshBadge": "Last refresh",
     "timeframe": "Timeframe"
   },
-  "hero": {
-    "layer1": {
-      "kicker": "Live threat status",
-      "window": "Last 24 hours",
-      "dataDay": "Data day",
-      "launched": "Launched",
-      "intercepted": "Intercepted",
-      "reached": "Reached target"
-    },
-    "layer2": {
-      "kicker": "Attack velocity",
-      "window": "{{month}} so far",
-      "compare": "vs. {{prev}} (full month)",
-      "launched": "Launched this month",
-      "intercepted": "Intercepted this month",
-      "dailyPace": "Daily pace",
-      "perDay": "avg / day · {{d}} d in",
-      "projected": "Projected month total",
-      "mom": "MoM",
-      "vsPrev": "vs. prev."
-    },
-    "layer3": {
-      "kicker": "War-to-date totals"
-    }
-  },
-  "composition": {
-    "kicker": "Structural shift",
-    "title": "How attack composition shifted over the last 24 months",
-    "subtitle": "Share of monthly launches by weapon class — UAVs, cruise and ballistic. Stacked to 100% to surface structural change in Russia's air-attack mix, independent of absolute volume.",
-    "monthTotal": "Monthly total",
-    "axisNote": "Composition share, {{first}} – {{last}}. Current month excluded."
-  },
-  "intel": {
-    "dossiersKicker": "Category dossiers",
-    "dossiersFraming": "Three weapon classes drive almost every reported strike. The dossiers below — ordered by operational relevance, not alphabet — read each one as its own intelligence object: total volume, intercept performance, recent twelve months, and month-over-month change in a single block.",
-    "shareLast24m": "Share of total · 24 mo.",
-    "shareDelta": "Change in share over the window",
-    "totalLaunched": "Total launched ({{unit}})",
-    "interceptionRate": "Intercept rate",
-    "last12m": "Last 12 months",
-    "mom": "MoM Δ launches",
-    "signalLine": "Signal line · launched vs. intercepted ({{unit}})",
-    "legendLaunched": "Launched",
-    "legendIntercepted": "Intercepted",
-    "framing": {
-      "drones": "UAVs are the volume layer of Russia's air campaign — Shahed-class loitering munitions arrive in nightly waves to saturate defences and burn through interceptor inventory before the missiles fly.",
-      "ballistic": "Ballistic systems are the lethality layer — fewest launches, highest leakage. Iskander-M, KN-23 and Kinzhal reach Mach 5+ on terminal descent, leaving minutes of warning and only Patriot-class systems with a realistic intercept chance.",
-      "cruise": "Cruise missiles are the precision layer — fired in coordinated packages alongside drones and ballistics to attack the same targets from multiple altitudes and headings."
-    }
-  },
   "primarySource": "Air Force Command of the Armed Forces of Ukraine (weekly reports, via Kaggle dataset, Petro Ivaniuk)",
   "primarySourceShort": "Air Force Command of the Armed Forces of Ukraine (weekly reports, via Kaggle)",
   "category": {
