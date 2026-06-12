@@ -19,6 +19,7 @@ import { AirAlertsMap } from "@/components/AirAlertsMap";
 import { AirThreatFeed } from "@/components/AirThreatFeed";
 import { MiniAlertsMap } from "@/components/MiniAlertsMap";
 import { CategorySparklines } from "@/components/CategorySparklines";
+import { CompositionShiftSection } from "@/components/CompositionShiftChart";
 import { DataConfidenceSection } from "@/components/DataConfidenceSection";
 import { StatusBanner } from "@/components/StatusBadge";
 
