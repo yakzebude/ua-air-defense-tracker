@@ -580,12 +580,14 @@ function AnalyticsPager(props: Props) {
         })}
       </div>
 
-      {/* Equal-height shell — every tab takes exactly the same vertical space
-          so switching panels never causes the page below to jump. Tall enough
-          to fit the tallest tab (Share & interception with its swipe row). */}
-      <div className="min-h-[1040px] md:min-h-[1080px]">
+      {/* Equal-height shell — every tab occupies EXACTLY the same vertical
+          space. Each tab is a flex column whose last child uses mt-auto, so
+          shorter tabs gain whitespace at the bottom instead of looking
+          smaller than the tallest tab (Share & interception). */}
+      <div className="relative h-[1120px] md:h-[1160px]">
 
       {active === "uavs" && (
+        <div className="flex h-full flex-col">
         <>
           <Panel
             title={t("analytics.uavMonthly")}
