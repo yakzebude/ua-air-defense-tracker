@@ -637,18 +637,18 @@ const Index = () => {
 
 
       <section id="summary" className="border-b border-border">
-        <div className="container pt-6 pb-8 md:pt-10 md:pb-14">
+        <div className="container pt-4 pb-5 md:pt-6 md:pb-8">
           {/* Editorial masthead — serif headline, dek, trust/metadata bar */}
           <div className="max-w-4xl">
-            <h1 className="font-serif text-[1.875rem] leading-[1.1] tracking-[-0.02em] sm:text-[2.25rem] md:text-[3rem] lg:text-[3.5rem]">
+            <h1 className="font-serif text-[1.75rem] leading-[1.05] tracking-[-0.02em] sm:text-[2rem] md:text-[2.625rem] lg:text-[3rem]">
               {t("masthead.title")}
             </h1>
-            <p className="mt-3 max-w-3xl font-serif text-[1rem] leading-[1.45] text-muted-foreground sm:text-[1.0625rem] md:text-[1.25rem]">
+            <p className="mt-2 max-w-3xl font-serif text-[0.95rem] leading-[1.4] text-muted-foreground sm:text-[1rem] md:text-[1.125rem]">
               {t("masthead.tagline")}
             </p>
 
             {/* Trust / metadata bar — primary source attribution + day tracker. */}
-            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-y border-border py-2.5 text-[11.5px] sm:text-[12px]">
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-y border-border py-1.5 text-[11.5px] sm:text-[12px]">
               <WarDayTracker />
               {dataTimeframe && (
                 <span className="inline-flex items-center gap-1.5 text-muted-foreground">
@@ -669,88 +669,121 @@ const Index = () => {
             </div>
           </div>
 
+          {ready && (() => {
+            // ----- Treemap intelligence board -----
+            // Tile size mirrors strategic importance; layout is asymmetric on
+            // purpose to break the "AI-generated dashboard" symmetry.
+            const leak = grand.launched > 0 ? (reached / grand.launched) * 100 : 0;
+            const w = windowStats;
+            const wReached = w ? Math.max(w.last30.launched - w.last30.destroyed, 0) : 0;
+            const wReachedPrev = w ? Math.max(w.prev30.launched - w.prev30.destroyed, 0) : 0;
+            const totalCat =
+              (shahed?.totals.launched ?? 0) +
+              (cruise?.totals.launched ?? 0) +
+              (ballistic?.totals.launched ?? 0);
+            const catUav = totalCat > 0 ? ((shahed?.totals.launched ?? 0) / totalCat) * 100 : 0;
+            const catCruise = totalCat > 0 ? ((cruise?.totals.launched ?? 0) / totalCat) * 100 : 0;
+            const catBal = totalCat > 0 ? ((ballistic?.totals.launched ?? 0) / totalCat) * 100 : 0;
 
+            return (
+              <div className="mt-4 grid grid-cols-12 gap-px overflow-hidden rounded-sm border border-border bg-border md:mt-5">
 
-          {ready && (
-            <div className="mt-6 grid gap-3 md:mt-8 md:grid-cols-12 md:gap-4">
-              {/* TIER 1 — hero KPI: Total launched (col-span-7) */}
-              <div className="md:col-span-7 rounded-md border border-border bg-card p-4 sm:p-5 md:p-7">
-                <KPI
-                  label={t("kpi.totalLaunched")}
-                  numeric={grand.launched}
-                  size="xl"
-                  signal
-                  sub={`${t("kpi.totalLaunchedSub")}${dataTimeframe ? ` · ${dataTimeframe.first} – ${dataTimeframe.last}` : ""}`}
-                  info={{ label: t("kpi.tip.totalLaunchedLabel"), body: t("kpi.tip.totalLaunched") }}
-                />
-
-                {/* TIER 3 — rolling 30-day insight strip */}
-                {windowStats && (
-                  <div className="mt-5 rounded-sm border border-border bg-background/60 p-3 sm:p-4">
-                    <div className="mb-2.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.16em] text-muted-foreground">
-                      <span>{t("masthead.insight")}</span>
-                      <span className="text-muted-foreground/70 normal-case tracking-normal">— {t("masthead.vsPrev30")}</span>
+                {/* HERO — Total launched (col-span-7, row-span-2 on desktop) */}
+                <div className="col-span-12 row-span-1 bg-card p-4 sm:p-5 md:col-span-7 md:row-span-2 md:p-6">
+                  <div className="flex h-full flex-col">
+                    <div className="flex items-center gap-1.5 font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
+                      <span>{t("kpi.totalLaunched")}</span>
                     </div>
-                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                      {(() => {
-                        const l = windowStats.last30.launched;
-                        const d = windowStats.last30.destroyed;
-                        const reachedW = Math.max(l - d, 0);
-                        const lPrev = windowStats.prev30.launched;
-                        const dPrev = windowStats.prev30.destroyed;
-                        const rPrev = Math.max(lPrev - dPrev, 0);
-                        return (
-                          <>
-                            <div className="min-w-0">
-                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightLaunched")}</div>
-                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(l)}</div>
-                              <div className="mt-1"><TrendBadge delta={pctChange(l, lPrev)} direction="down-is-good" /></div>
-                            </div>
-                            <div className="min-w-0">
-                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightIntercepted")}</div>
-                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(d)}</div>
-                              <div className="mt-1"><TrendBadge delta={pctChange(d, dPrev)} direction="up-is-good" /></div>
-                            </div>
-                            <div className="min-w-0">
-                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightReached")}</div>
-                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(reachedW)}</div>
-                              <div className="mt-1"><TrendBadge delta={pctChange(reachedW, rPrev)} direction="down-is-good" /></div>
-                            </div>
-                          </>
-                        );
-                      })()}
+                    <div className="mt-2 num text-[2.5rem] font-bold leading-[0.95] tracking-[-0.02em] text-[hsl(var(--signal))] sm:text-[3.25rem] md:text-[4.5rem] lg:text-[5.25rem]">
+                      <AnimatedNumber value={grand.launched} />
                     </div>
+                    <div className="mt-2 text-[11.5px] leading-snug text-muted-foreground">
+                      {t("kpi.totalLaunchedSub")}
+                      {dataTimeframe && <> · <span className="num text-foreground/80">{dataTimeframe.first}–{dataTimeframe.last}</span></>}
+                    </div>
+                    <div className="mt-auto pt-3" />
+                    {/* Category share bar — UAV / Cruise / Ballistic */}
+                    {totalCat > 0 && (
+                      <div className="mt-3 border-t border-border pt-3">
+                        <div className="mb-1.5 flex items-baseline justify-between font-mono text-[9.5px] uppercase tracking-[0.16em] text-muted-foreground">
+                          <span>{t("kpi.categoryShare", "Category share")}</span>
+                          <span className="num normal-case tracking-normal text-foreground/70">{fmt(totalCat)} total</span>
+                        </div>
+                        <div className="flex h-2 w-full overflow-hidden rounded-[2px] bg-secondary">
+                          <div style={{ width: `${catUav}%`, background: "hsl(var(--weapon-uav))" }} title={`UAV ${catUav.toFixed(1)}%`} />
+                          <div style={{ width: `${catCruise}%`, background: "hsl(var(--weapon-cruise))" }} title={`Cruise ${catCruise.toFixed(1)}%`} />
+                          <div style={{ width: `${catBal}%`, background: "hsl(var(--weapon-ballistic))" }} title={`Ballistic ${catBal.toFixed(1)}%`} />
+                        </div>
+                        <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                          <span className="inline-flex items-center gap-1"><span className="h-1.5 w-1.5" style={{ background: "hsl(var(--weapon-uav))" }} />UAV <span className="num text-foreground">{catUav.toFixed(1)}%</span></span>
+                          <span className="inline-flex items-center gap-1"><span className="h-1.5 w-1.5" style={{ background: "hsl(var(--weapon-cruise))" }} />Cruise <span className="num text-foreground">{catCruise.toFixed(1)}%</span></span>
+                          <span className="inline-flex items-center gap-1"><span className="h-1.5 w-1.5" style={{ background: "hsl(var(--weapon-ballistic))" }} />Ballistic <span className="num text-foreground">{catBal.toFixed(1)}%</span></span>
+                        </div>
+                      </div>
+                    )}
                   </div>
+                </div>
+
+                {/* Interception rate (col-span-5) */}
+                <div className="col-span-6 bg-card p-3 sm:p-4 md:col-span-5">
+                  <div className="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">{t("kpi.interceptionRate")}</div>
+                  <div className="mt-1.5 num text-[1.75rem] font-semibold leading-none text-[hsl(var(--signal-ok))] sm:text-[2.25rem] md:text-[2.75rem]">
+                    <AnimatedNumber value={grand.rate * 100} decimals={1} suffix="%" />
+                  </div>
+                  <div className="mt-1.5 text-[11px] leading-snug text-muted-foreground num">{fmt(grand.destroyed)} {t("kpi.ofSep")} {fmt(grand.launched)}</div>
+                </div>
+
+                {/* Reached target area (col-span-3) */}
+                <div className="col-span-6 bg-card p-3 sm:p-4 md:col-span-3">
+                  <div className="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">{t("kpi.reachedTarget")}</div>
+                  <div className="mt-1.5 num text-[1.5rem] font-semibold leading-none text-foreground sm:text-[1.875rem] md:text-[2.125rem]">
+                    <AnimatedNumber value={reached} />
+                  </div>
+                  <div className="mt-1.5 text-[11px] leading-snug text-muted-foreground num">{leak.toFixed(1)}{t("kpi.leakerPctSuffix")}</div>
+                </div>
+
+                {/* Leak-through (col-span-2) — compact accent tile */}
+                <div className="col-span-12 bg-card p-3 sm:p-4 md:col-span-2">
+                  <div className="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">{t("kpi.leakRate", "Leak-through")}</div>
+                  <div className="mt-1.5 num text-[1.5rem] font-semibold leading-none text-[hsl(var(--signal))] sm:text-[1.75rem] md:text-[2rem]">
+                    {leak.toFixed(1)}%
+                  </div>
+                  <div className="mt-1.5 text-[10.5px] leading-snug text-muted-foreground">vs intercepted</div>
+                </div>
+
+                {/* 30-day strip — Launched / Intercepted / Reached */}
+                {w && (
+                  <>
+                    <div className="col-span-12 bg-card px-3 pt-2 pb-1 md:col-span-12">
+                      <div className="flex flex-wrap items-baseline gap-x-2 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                        <span>{t("masthead.insight")}</span>
+                        <span className="normal-case tracking-normal opacity-70">— {t("masthead.vsPrev30")}</span>
+                      </div>
+                    </div>
+                    <div className="col-span-4 bg-card p-3 sm:p-4">
+                      <div className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-muted-foreground">{t("masthead.insightLaunched")}</div>
+                      <div className="mt-1 num text-[1.25rem] font-semibold leading-none sm:text-[1.5rem]">{fmt(w.last30.launched)}</div>
+                      <div className="mt-1.5"><TrendBadge delta={pctChange(w.last30.launched, w.prev30.launched)} direction="down-is-good" /></div>
+                    </div>
+                    <div className="col-span-4 bg-card p-3 sm:p-4">
+                      <div className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-muted-foreground">{t("masthead.insightIntercepted")}</div>
+                      <div className="mt-1 num text-[1.25rem] font-semibold leading-none sm:text-[1.5rem]">{fmt(w.last30.destroyed)}</div>
+                      <div className="mt-1.5"><TrendBadge delta={pctChange(w.last30.destroyed, w.prev30.destroyed)} direction="up-is-good" /></div>
+                    </div>
+                    <div className="col-span-4 bg-card p-3 sm:p-4">
+                      <div className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-muted-foreground">{t("masthead.insightReached")}</div>
+                      <div className="mt-1 num text-[1.25rem] font-semibold leading-none sm:text-[1.5rem]">{fmt(wReached)}</div>
+                      <div className="mt-1.5"><TrendBadge delta={pctChange(wReached, wReachedPrev)} direction="down-is-good" /></div>
+                    </div>
+                  </>
                 )}
               </div>
-
-              {/* TIER 2 — Interception rate + Reached target area (col-span-5, stacked) */}
-              <div className="md:col-span-5 grid grid-cols-2 gap-3 md:grid-cols-1 md:gap-4">
-                <div className="rounded-md border border-border bg-card p-4 sm:p-5">
-                  <KPI
-                    label={t("kpi.interceptionRate")}
-                    numeric={grand.rate * 100}
-                    decimals={1}
-                    suffix="%"
-                    size="lg"
-                    sub={`${fmt(grand.destroyed)} ${t("kpi.ofSep")} ${fmt(grand.launched)} ${t("kpi.confirmedInterceptions")}`}
-                    info={{ label: t("kpi.tip.interceptionRateLabel"), body: t("kpi.tip.interceptionRate") }}
-                  />
-                </div>
-                <div className="rounded-md border border-border bg-card p-4 sm:p-5">
-                  <KPI
-                    label={t("kpi.reachedTarget")}
-                    numeric={reached}
-                    size="lg"
-                    sub={grand.launched > 0 ? `${((reached / grand.launched) * 100).toFixed(1)}${t("kpi.leakerPctSuffix")}` : "—"}
-                    info={{ label: t("kpi.tip.reachedTargetLabel"), body: t("kpi.tip.reachedTarget") }}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
       </section>
+
 
 
 
