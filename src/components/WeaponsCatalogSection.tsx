@@ -87,6 +87,13 @@ export function WeaponsCatalogSection() {
           </p>
         </div>
 
+        <div className="mb-6 rounded-sm border border-border bg-card/60 p-5">
+          <ArsenalTreemap
+            selected={treemapFilter}
+            onSelect={(name) => setTreemapFilter(name)}
+          />
+        </div>
+
         <Panel source={t("arsenal.source")} note={t("arsenal.note")}>
           <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="flex flex-wrap gap-1">
