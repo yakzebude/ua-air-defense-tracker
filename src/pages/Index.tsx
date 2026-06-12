@@ -728,72 +728,148 @@ const Index = () => {
 
 
           {ready && (
-            <div className="mt-6 grid gap-3 md:mt-8 md:grid-cols-12 md:gap-4">
-              {/* TIER 1 — hero KPI: Total launched (col-span-7) */}
-              <div className="md:col-span-7 rounded-md border border-border bg-card p-4 sm:p-5 md:p-7">
-                <KPI
-                  label={t("kpi.totalLaunched")}
-                  numeric={grand.launched}
-                  size="xl"
-                  signal
-                  sub={`${t("kpi.totalLaunchedSub")}${dataTimeframe ? ` · ${dataTimeframe.first} – ${dataTimeframe.last}` : ""}`}
-                  info={{ label: t("kpi.tip.totalLaunchedLabel"), body: t("kpi.tip.totalLaunched") }}
-                />
-
-                {/* TIER 3 — rolling 30-day insight strip */}
+            <div className="mt-6 space-y-3 md:mt-8 md:space-y-4">
+              {/* ───────── LAYER 1 — LIVE THREAT STATUS (24h) ───────── */}
+              <div className="rounded-md border border-[hsl(var(--signal)/0.35)] bg-card p-4 sm:p-5 md:p-6">
+                <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                  <div className="flex items-center gap-2 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
+                    <span className="relative inline-flex h-1.5 w-1.5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--signal))] opacity-60" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
+                    </span>
+                    <span className="text-foreground">{t("hero.layer1.kicker")}</span>
+                    <span aria-hidden className="h-3 w-px bg-border" />
+                    <span>{t("hero.layer1.window")}</span>
+                  </div>
+                  {windowStats?.last24h.dataDay && (
+                    <span className="text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] text-muted-foreground">
+                      {t("hero.layer1.dataDay")}{" "}
+                      <span className="num text-foreground">
+                        {windowStats.last24h.dataDay.toISOString().slice(0, 10)}
+                      </span>
+                    </span>
+                  )}
+                </div>
                 {windowStats && (
-                  <div className="mt-5 rounded-sm border border-border bg-background/60 p-3 sm:p-4">
-                    <div className="mb-2.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.16em] text-muted-foreground">
-                      <span>{t("masthead.insight")}</span>
-                      <span className="text-muted-foreground/70 normal-case tracking-normal">— {t("masthead.vsPrev30")}</span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                      {(() => {
-                        const l = windowStats.last30.launched;
-                        const d = windowStats.last30.destroyed;
-                        const reachedW = Math.max(l - d, 0);
-                        const lPrev = windowStats.prev30.launched;
-                        const dPrev = windowStats.prev30.destroyed;
-                        const rPrev = Math.max(lPrev - dPrev, 0);
-                        return (
-                          <>
-                            <div className="min-w-0">
-                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightLaunched")}</div>
-                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(l)}</div>
-                              <div className="mt-1"><TrendBadge delta={pctChange(l, lPrev)} direction="down-is-good" /></div>
-                            </div>
-                            <div className="min-w-0">
-                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightIntercepted")}</div>
-                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(d)}</div>
-                              <div className="mt-1"><TrendBadge delta={pctChange(d, dPrev)} direction="up-is-good" /></div>
-                            </div>
-                            <div className="min-w-0">
-                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightReached")}</div>
-                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(reachedW)}</div>
-                              <div className="mt-1"><TrendBadge delta={pctChange(reachedW, rPrev)} direction="down-is-good" /></div>
-                            </div>
-                          </>
-                        );
-                      })()}
-                    </div>
+                  <div className="grid grid-cols-3 gap-3 sm:gap-5">
+                    <KPI
+                      label={t("hero.layer1.launched")}
+                      numeric={windowStats.last24h.launched}
+                      size="lg"
+                      signal
+                    />
+                    <KPI
+                      label={t("hero.layer1.intercepted")}
+                      numeric={windowStats.last24h.destroyed}
+                      size="lg"
+                    />
+                    <KPI
+                      label={t("hero.layer1.reached")}
+                      numeric={Math.max(windowStats.last24h.launched - windowStats.last24h.destroyed, 0)}
+                      size="lg"
+                    />
                   </div>
                 )}
               </div>
 
-              {/* TIER 2 — Interception rate + Reached target area (col-span-5, stacked) */}
-              <div className="md:col-span-5 grid grid-cols-2 gap-3 md:grid-cols-1 md:gap-4">
-                <div className="rounded-md border border-border bg-card p-4 sm:p-5">
+              {/* ───────── LAYER 2 — CURRENT MONTH ATTACK VELOCITY ───────── */}
+              {monthVelocity && (
+                <div className="rounded-md border border-border bg-card p-4 sm:p-5 md:p-6">
+                  <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                      <span className="text-foreground">{t("hero.layer2.kicker")}</span>
+                      <span aria-hidden className="h-3 w-px bg-border" />
+                      <span>{t("hero.layer2.window", { month: monthVelocity.curLabel })}</span>
+                    </div>
+                    <span className="normal-case tracking-[0.14em]">
+                      {t("hero.layer2.compare", { prev: monthVelocity.prevLabel })}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-4">
+                    <div className="min-w-0">
+                      <div className="min-h-[2.4em] text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">
+                        {t("hero.layer2.launched")}
+                      </div>
+                      <div className="mt-1 num text-[1.5rem] sm:text-[1.875rem] md:text-[2.25rem] font-semibold leading-none">
+                        <AnimatedNumber value={monthVelocity.curLaunched} />
+                      </div>
+                      <div className="mt-1.5">
+                        <TrendBadge delta={pctChange(monthVelocity.curLaunched, monthVelocity.prevLaunched)} direction="down-is-good" label={t("hero.layer2.mom")} />
+                      </div>
+                    </div>
+                    <div className="min-w-0">
+                      <div className="min-h-[2.4em] text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">
+                        {t("hero.layer2.intercepted")}
+                      </div>
+                      <div className="mt-1 num text-[1.5rem] sm:text-[1.875rem] md:text-[2.25rem] font-semibold leading-none">
+                        <AnimatedNumber value={monthVelocity.curDestroyed} />
+                      </div>
+                      <div className="mt-1.5">
+                        <TrendBadge delta={pctChange(monthVelocity.curDestroyed, monthVelocity.prevDestroyed)} direction="up-is-good" label={t("hero.layer2.mom")} />
+                      </div>
+                    </div>
+                    <div className="min-w-0">
+                      <div className="min-h-[2.4em] text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">
+                        {t("hero.layer2.dailyPace")}
+                      </div>
+                      <div className="mt-1 num text-[1.5rem] sm:text-[1.875rem] md:text-[2.25rem] font-semibold leading-none">
+                        <AnimatedNumber value={monthVelocity.dayOfMonth > 0 ? monthVelocity.curLaunched / monthVelocity.dayOfMonth : 0} decimals={1} />
+                      </div>
+                      <div className="mt-1 text-[10.5px] font-mono uppercase tracking-[0.14em] text-muted-foreground">
+                        {t("hero.layer2.perDay", { d: monthVelocity.dayOfMonth })}
+                      </div>
+                    </div>
+                    <div className="min-w-0">
+                      <div className="min-h-[2.4em] text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">
+                        {t("hero.layer2.projected")}
+                      </div>
+                      <div className="mt-1 num text-[1.5rem] sm:text-[1.875rem] md:text-[2.25rem] font-semibold leading-none">
+                        <AnimatedNumber value={monthVelocity.dayOfMonth > 0 ? Math.round((monthVelocity.curLaunched / monthVelocity.dayOfMonth) * monthVelocity.daysInCur) : 0} />
+                      </div>
+                      <div className="mt-1.5">
+                        <TrendBadge
+                          delta={pctChange(
+                            monthVelocity.dayOfMonth > 0 ? (monthVelocity.curLaunched / monthVelocity.dayOfMonth) * monthVelocity.daysInCur : 0,
+                            monthVelocity.prevLaunched,
+                          )}
+                          direction="down-is-good"
+                          label={t("hero.layer2.vsPrev")}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ───────── LAYER 3 — WAR-TO-DATE TOTALS (archive) ───────── */}
+              <div className="rounded-md border border-border bg-secondary/30 p-4 sm:p-5 md:p-6">
+                <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
+                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                    <span className="text-foreground">{t("hero.layer3.kicker")}</span>
+                    <span aria-hidden className="h-3 w-px bg-border" />
+                    <span>{dataTimeframe ? `${dataTimeframe.first} – ${dataTimeframe.last}` : ""}</span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-4">
+                  <KPI
+                    label={t("kpi.totalLaunched")}
+                    numeric={grand.launched}
+                    size="lg"
+                    info={{ label: t("kpi.tip.totalLaunchedLabel"), body: t("kpi.tip.totalLaunched") }}
+                  />
+                  <KPI
+                    label={t("kpi.confirmedDestroyed")}
+                    numeric={grand.destroyed}
+                    size="lg"
+                  />
                   <KPI
                     label={t("kpi.interceptionRate")}
                     numeric={grand.rate * 100}
                     decimals={1}
                     suffix="%"
                     size="lg"
-                    sub={`${fmt(grand.destroyed)} ${t("kpi.ofSep")} ${fmt(grand.launched)} ${t("kpi.confirmedInterceptions")}`}
                     info={{ label: t("kpi.tip.interceptionRateLabel"), body: t("kpi.tip.interceptionRate") }}
                   />
-                </div>
-                <div className="rounded-md border border-border bg-card p-4 sm:p-5">
                   <KPI
                     label={t("kpi.reachedTarget")}
                     numeric={reached}
