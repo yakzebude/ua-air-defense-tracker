@@ -157,7 +157,6 @@ function SectionNav() {
   const items = [
     { id: "summary", label: t("nav.summary") },
     { id: "analytics", label: t("nav.analytics") },
-    { id: "alerts", label: t("nav.alerts") },
     { id: "drones", label: t("nav.drones") },
     { id: "cruise", label: t("nav.cruise") },
     { id: "ballistic", label: t("nav.ballistic") },
