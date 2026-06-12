@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Trans, useTranslation } from "react-i18next";
 import { ChevronRight } from "lucide-react";
@@ -538,6 +538,7 @@ const Index = () => {
   const [error, setError] = useState<string | null>(null);
   const [latestDataPoint, setLatestDataPoint] = useState<Date | null>(null);
   const [completeMonth, setCompleteMonth] = useState<{ key: string; label: string } | null>(null);
+  const categoriesScrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     loadShahedData()
