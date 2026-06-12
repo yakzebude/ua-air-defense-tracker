@@ -107,10 +107,13 @@ export function ChartInsights({
     return data.filter((m) => m.date.getTime() < cutoff);
   }, [data]);
 
-  const insights = useMemo(
-    () => computeMonthlyInsights(completeData, { metric, unit, direction }),
-    [completeData, metric, unit, direction],
-  );
+  const insights = useMemo(() => {
+    const all = computeMonthlyInsights(completeData, { metric, unit, direction });
+    const wanted = ["Peak month", "Largest drop", "Largest jump"];
+    return wanted
+      .map((label) => all.find((i) => i.label === label))
+      .filter((i): i is NonNullable<typeof i> => Boolean(i));
+  }, [completeData, metric, unit, direction]);
 
   // Build the series values that the spark uses (matches the metric).
   const series = useMemo(
