@@ -608,14 +608,16 @@ function AnalyticsPager(props: Props) {
               </span>
             </div>
           </Panel>
-          <ChartInsights
-            data={props.shahed.months}
-            metric="launched"
-            unit="UAVs"
-            accent={CAT_COLORS.uavs}
-            direction="down-is-good"
-            subtitle="Plain-language summary of monthly UAV launches detected at Ukrainian airspace."
-          />
+          <div className="mt-4">
+            <ChartInsights
+              data={props.shahed.months}
+              metric="launched"
+              unit="UAVs"
+              accent={CAT_COLORS.uavs}
+              direction="down-is-good"
+              subtitle="Plain-language summary of monthly UAV launches detected at Ukrainian airspace."
+            />
+          </div>
         </>
       )}
 
