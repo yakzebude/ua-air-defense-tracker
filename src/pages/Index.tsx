@@ -678,45 +678,70 @@ const Index = () => {
                   info={{ label: t("kpi.tip.totalLaunchedLabel"), body: t("kpi.tip.totalLaunched") }}
                 />
 
-                {/* TIER 3 — rolling 30-day insight strip · Bloomberg-style terminal block */}
-                {windowStats && (
+                {/* TIER 3 — last fully-covered calendar month · per-category breakdown */}
+                {completeMonth && (
                   <div className="mt-5 border-t-2 border-foreground bg-background/60">
                     <div className="flex items-center justify-between gap-3 border-b border-border px-3 py-1.5 sm:px-4">
                       <span className="text-[9.5px] sm:text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-foreground truncate">
-                        {windowStats.monthLabel} <span className="text-muted-foreground">· last complete month</span>
+                        {completeMonth.label}
                       </span>
                       <span className="text-[9.5px] sm:text-[10px] font-mono uppercase tracking-[0.16em] text-muted-foreground whitespace-nowrap">
-                        vs {windowStats.prevMonthLabel}
+                        last complete month
                       </span>
                     </div>
-                    <div className="grid grid-cols-3 divide-x divide-border">
-                      {(() => {
-                        const l = windowStats.last30.launched;
-                        const d = windowStats.last30.destroyed;
-                        const reachedW = Math.max(l - d, 0);
-                        const lPrev = windowStats.prev30.launched;
-                        const dPrev = windowStats.prev30.destroyed;
-                        const rPrev = Math.max(lPrev - dPrev, 0);
-                        const Cell = ({ label, value, delta, dir }: { label: string; value: number; delta: number | null; dir: "down-is-good" | "up-is-good" }) => (
-                          <div className="min-w-0 px-2.5 py-3 sm:px-4 sm:py-3.5">
-                            <div className="text-[8.5px] sm:text-[9.5px] font-mono uppercase tracking-[0.18em] leading-none text-muted-foreground truncate">
-                              {label}
-                            </div>
-                            <div className="mt-2 num text-[1.375rem] sm:text-[1.75rem] font-semibold leading-none tracking-tight tabular-nums">
-                              {fmt(value)}
-                            </div>
-                            <div className="mt-2"><TrendBadge delta={delta} direction={dir} /></div>
+                    {(() => {
+                      const pick = (ds: typeof shahed) => ds?.months.find((mp) => mp.key === completeMonth.key);
+                      const uav = pick(shahed);
+                      const cru = pick(cruise);
+                      const bal = pick(ballistic);
+                      const cats = [
+                        { key: "uav", label: t("nav.drones"),    l: uav?.launched ?? 0, d: uav?.destroyed ?? 0 },
+                        { key: "cru", label: t("nav.cruise"),    l: cru?.launched ?? 0, d: cru?.destroyed ?? 0 },
+                        { key: "bal", label: t("nav.ballistic"), l: bal?.launched ?? 0, d: bal?.destroyed ?? 0 },
+                      ];
+                      const total = {
+                        l: cats.reduce((s, c) => s + c.l, 0),
+                        d: cats.reduce((s, c) => s + c.d, 0),
+                      };
+                      const reachedOf = (l: number, d: number) => Math.max(l - d, 0);
+                      const Cell = ({ label, total, values }: { label: string; total: number; values: { k: string; lbl: string; v: number }[] }) => (
+                        <div className="min-w-0 px-2.5 py-3 sm:px-4 sm:py-3.5">
+                          <div className="text-[8.5px] sm:text-[9.5px] font-mono uppercase tracking-[0.18em] leading-none text-muted-foreground truncate">
+                            {label}
                           </div>
-                        );
-                        return (
-                          <>
-                            <Cell label={t("masthead.insightLaunched")} value={l} delta={pctChange(l, lPrev)} dir="down-is-good" />
-                            <Cell label={t("masthead.insightIntercepted")} value={d} delta={pctChange(d, dPrev)} dir="up-is-good" />
-                            <Cell label={t("masthead.insightReached")} value={reachedW} delta={pctChange(reachedW, rPrev)} dir="down-is-good" />
-                          </>
-                        );
-                      })()}
-                    </div>
+                          <div className="mt-2 num text-[1.375rem] sm:text-[1.75rem] font-semibold leading-none tracking-tight tabular-nums">
+                            {fmt(total)}
+                          </div>
+                          <div className="mt-3 space-y-1">
+                            {values.map((v) => (
+                              <div key={v.k} className="flex items-baseline justify-between gap-2 text-[10px] font-mono">
+                                <span className="uppercase tracking-[0.14em] text-muted-foreground truncate">{v.lbl}</span>
+                                <span className="num tabular-nums text-foreground">{fmt(v.v)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                      return (
+                        <div className="grid grid-cols-3 divide-x divide-border">
+                          <Cell
+                            label={t("masthead.insightLaunched")}
+                            total={total.l}
+                            values={cats.map((c) => ({ k: c.key, lbl: c.label, v: c.l }))}
+                          />
+                          <Cell
+                            label={t("masthead.insightIntercepted")}
+                            total={total.d}
+                            values={cats.map((c) => ({ k: c.key, lbl: c.label, v: c.d }))}
+                          />
+                          <Cell
+                            label={t("masthead.insightReached")}
+                            total={reachedOf(total.l, total.d)}
+                            values={cats.map((c) => ({ k: c.key, lbl: c.label, v: reachedOf(c.l, c.d) }))}
+                          />
+                        </div>
+                      );
+                    })()}
                   </div>
                 )}
               </div>
