@@ -756,9 +756,9 @@ const Index = () => {
                 <div className="rounded-md border border-border bg-card p-4 sm:p-5">
                   {(() => {
                     const cats = [
-                      { key: "uav", label: t("nav.drones"), l: shahed!.totals.launched, d: shahed!.totals.destroyed, color: "bg-series-launched" },
-                      { key: "cruise", label: t("nav.cruise"), l: cruise!.totals.launched, d: cruise!.totals.destroyed, color: "bg-series-rate" },
-                      { key: "bal", label: t("nav.ballistic"), l: ballistic!.totals.launched, d: ballistic!.totals.destroyed, color: "bg-series-destroyed" },
+                      { key: "uav", label: t("nav.drones"), l: shahed!.totals.launched, d: shahed!.totals.destroyed, color: "hsl(48 95% 55%)" },
+                      { key: "cruise", label: t("nav.cruise"), l: cruise!.totals.launched, d: cruise!.totals.destroyed, color: "hsl(28 92% 50%)" },
+                      { key: "bal", label: t("nav.ballistic"), l: ballistic!.totals.launched, d: ballistic!.totals.destroyed, color: "hsl(0 78% 45%)" },
                     ];
                     return (
                       <div>
@@ -780,7 +780,7 @@ const Index = () => {
                                   {c.label}
                                 </div>
                                 <div className="h-1.5 w-full overflow-hidden bg-muted">
-                                  <div className={`h-full ${c.color}`} style={{ width: `${Math.min(100, rate * 100)}%` }} />
+                                  <div className="h-full" style={{ width: `${Math.min(100, rate * 100)}%`, background: c.color }} />
                                 </div>
                                 <div className="num text-[13px] font-semibold tabular-nums leading-none tracking-tight">
                                   {pct}<span className="text-muted-foreground">%</span>
