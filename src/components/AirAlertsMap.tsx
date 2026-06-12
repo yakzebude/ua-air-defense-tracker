@@ -24,16 +24,47 @@ const OCCUPIED_ISOS = new Set<string>([
   "UA-65", // Kherson (partial)
 ]);
 
-/** Short 2–3 letter codes shown on the map for each oblast. */
-const OBLAST_CODE: Record<string, string> = {
-  "UA-71": "CHK", "UA-74": "CHR", "UA-77": "CHV", "UA-43": "CRI",
-  "UA-12": "DNI", "UA-14": "DON", "UA-26": "IVF", "UA-63": "KHA",
-  "UA-65": "KHE", "UA-68": "KHM", "UA-30": "KYV", "UA-32": "KYO",
-  "UA-35": "KIR", "UA-09": "LUH", "UA-46": "LVI", "UA-48": "MYK",
-  "UA-51": "ODE", "UA-53": "POL", "UA-56": "RIV", "UA-59": "SUM",
-  "UA-61": "TER", "UA-05": "VIN", "UA-07": "VOL", "UA-21": "ZAK",
-  "UA-23": "ZAP", "UA-18": "ZHY",
+/** Short oblast codes per language. EN/DE/FR use Latin abbreviations;
+ *  UK uses 3-letter Cyrillic abbreviations. Falls back to EN. */
+const OBLAST_CODES: Record<"en" | "de" | "fr" | "uk", Record<string, string>> = {
+  en: {
+    "UA-71": "CHK", "UA-74": "CHR", "UA-77": "CHV", "UA-43": "CRI",
+    "UA-12": "DNI", "UA-14": "DON", "UA-26": "IVF", "UA-63": "KHA",
+    "UA-65": "KHE", "UA-68": "KHM", "UA-30": "KYV", "UA-32": "KYO",
+    "UA-35": "KIR", "UA-09": "LUH", "UA-46": "LVI", "UA-48": "MYK",
+    "UA-51": "ODE", "UA-53": "POL", "UA-56": "RIV", "UA-59": "SUM",
+    "UA-61": "TER", "UA-05": "VIN", "UA-07": "VOL", "UA-21": "ZAK",
+    "UA-23": "ZAP", "UA-18": "ZHY",
+  },
+  de: {
+    "UA-71": "TSK", "UA-74": "TSN", "UA-77": "TSW", "UA-43": "KRI",
+    "UA-12": "DNI", "UA-14": "DON", "UA-26": "IFR", "UA-63": "CHA",
+    "UA-65": "CHE", "UA-68": "CHM", "UA-30": "KYI", "UA-32": "KYG",
+    "UA-35": "KIR", "UA-09": "LUH", "UA-46": "LWI", "UA-48": "MYK",
+    "UA-51": "ODE", "UA-53": "POL", "UA-56": "RIW", "UA-59": "SUM",
+    "UA-61": "TER", "UA-05": "WYN", "UA-07": "WOL", "UA-21": "TRK",
+    "UA-23": "SAP", "UA-18": "SCH",
+  },
+  fr: {
+    "UA-71": "TCK", "UA-74": "TCN", "UA-77": "TCV", "UA-43": "CRI",
+    "UA-12": "DNI", "UA-14": "DON", "UA-26": "IVF", "UA-63": "KHA",
+    "UA-65": "KHE", "UA-68": "KHM", "UA-30": "KYV", "UA-32": "KYO",
+    "UA-35": "KIR", "UA-09": "LOU", "UA-46": "LVI", "UA-48": "MYK",
+    "UA-51": "ODE", "UA-53": "POL", "UA-56": "RIV", "UA-59": "SOU",
+    "UA-61": "TER", "UA-05": "VIN", "UA-07": "VOL", "UA-21": "TCR",
+    "UA-23": "ZAP", "UA-18": "JYT",
+  },
+  uk: {
+    "UA-71": "ЧРК", "UA-74": "ЧРН", "UA-77": "ЧРВ", "UA-43": "КРМ",
+    "UA-12": "ДНП", "UA-14": "ДОН", "UA-26": "ІВФ", "UA-63": "ХРК",
+    "UA-65": "ХРС", "UA-68": "ХМЛ", "UA-30": "КИЇ", "UA-32": "КИО",
+    "UA-35": "КРВ", "UA-09": "ЛУГ", "UA-46": "ЛЬВ", "UA-48": "МИК",
+    "UA-51": "ОДС", "UA-53": "ПЛТ", "UA-56": "РВН", "UA-59": "СУМ",
+    "UA-61": "ТРН", "UA-05": "ВНН", "UA-07": "ВЛН", "UA-21": "ЗАК",
+    "UA-23": "ЗПР", "UA-18": "ЖТМ",
+  },
 };
+
 
 interface OblastStat {
   slug: string;
