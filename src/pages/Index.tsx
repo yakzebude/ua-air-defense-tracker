@@ -884,7 +884,11 @@ const Index = () => {
         </div>
       </section>
 
-
+      {/* Composition shift — sits directly below hero so structural change
+          is the first interpretive frame readers see after the brief. */}
+      {ready && (
+        <CompositionShiftSection shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />
+      )}
 
       <DataConfidenceSection
         lastUpdatedLabel={lastUpdatedLabel}
