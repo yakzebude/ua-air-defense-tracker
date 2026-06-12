@@ -160,7 +160,9 @@ function typeLabel(t: string, tt: (k: string) => string): string {
 }
 
 export function AirAlertsMap({ variant = "compact" }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = ((i18n.language || "en").slice(0, 2) as "en" | "de" | "fr" | "uk");
+  const codeMap = OBLAST_CODES[lang] ?? OBLAST_CODES.en;
   const [data, setData] = useState<ApiPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -419,10 +421,10 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                           fontSize,
                           fontWeight: 700,
                           letterSpacing: "0.06em",
-                          fill: occupied ? "hsl(0 0% 100% / 0.92)" : "hsl(var(--foreground) / 0.78)",
+                          fill: occupied ? "hsl(0 0% 100% / 1)" : "hsl(var(--foreground))",
                           paintOrder: "stroke",
-                          stroke: "hsl(var(--background) / 0.85)",
-                          strokeWidth: 2,
+                          stroke: "hsl(var(--background))",
+                          strokeWidth: 3.5,
                           strokeLinejoin: "round",
                         }}
                       >
