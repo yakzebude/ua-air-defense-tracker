@@ -268,13 +268,13 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
   // Map sizes to fill its panel. The full variant fills a fixed-height
   // container so the map and the threat feed read as equal blocks side-by-side.
   const mapHeightClass = variant === "full"
-    ? "flex-1 min-h-[460px]"
+    ? "h-[460px] sm:h-[560px] lg:h-[640px]"
     : "h-[300px] sm:h-[380px] lg:h-[420px]";
 
   return (
-    <div className={`relative flex flex-col ${variant === "full" ? "h-full w-full" : ""}`}>
+    <div className="relative flex flex-col">
       <div
-        className={`relative overflow-hidden rounded border border-border bg-card ${mapHeightClass}`}
+        className={`relative flex-1 overflow-hidden rounded border border-border bg-card ${mapHeightClass}`}
         onMouseLeave={() => setHovered(null)}
       >
         <ComposableMap
@@ -970,7 +970,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           Folds the former right-hand sidebar into the same block so the map
           panel itself communicates which regions are currently under alert. */}
       {variant === "full" && (
-        <div className="mt-3 mb-6 rounded border border-border bg-card p-3">
+        <div className="mt-3 rounded border border-border bg-card p-3">
           <div className="mb-2 flex items-baseline justify-between gap-2">
             <h3 className="text-[11px] font-mono uppercase tracking-[0.16em] text-foreground">
               {t("airAlerts.sidePanelTitle", { defaultValue: "Active alerts" })}
