@@ -99,6 +99,7 @@ export function ChartInsights({
   title = "Key findings",
   subtitle = "Generated automatically from the selected time range.",
   accent = "hsl(48 95% 55%)",
+  className = "",
 }: Props) {
   // Only consider months that are fully closed (i.e. the calendar month is
   // entirely in the past). The current, partial month would otherwise show
