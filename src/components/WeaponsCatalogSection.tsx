@@ -125,25 +125,13 @@ export function WeaponsCatalogSection() {
               })}
             </div>
             <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
-              <div className="relative min-w-0 flex-1 sm:flex-none">
-                <select
-                  value={origin}
-                  onChange={(e) => setOrigin(e.target.value)}
-                  className="min-w-0 w-full appearance-none rounded-sm border border-border bg-card px-2.5 py-1 pr-7 font-mono text-[11px] uppercase tracking-[0.14em] text-foreground transition-colors hover:bg-secondary focus:outline-none focus:ring-1 focus:ring-foreground/40 sm:w-auto"
-                >
-                  {origins.map((o) => (
-                    <option key={o} value={o}>{o === "all" ? t("arsenal.allOrigins") : o}</option>
-                  ))}
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-              </div>
               <div className="relative min-w-0 flex-1 sm:w-56 sm:flex-none">
                 <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                 <input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   placeholder={t("arsenal.search")}
-                  className="w-full rounded-sm border border-border bg-card py-1.5 pl-7 pr-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-foreground/40"
+                  className="w-full rounded-sm border border-border bg-card py-1 pl-7 pr-2 font-mono text-[11px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-foreground/40"
                 />
               </div>
             </div>
