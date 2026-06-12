@@ -24,16 +24,47 @@ const OCCUPIED_ISOS = new Set<string>([
   "UA-65", // Kherson (partial)
 ]);
 
-/** Short 2–3 letter codes shown on the map for each oblast. */
-const OBLAST_CODE: Record<string, string> = {
-  "UA-71": "CHK", "UA-74": "CHR", "UA-77": "CHV", "UA-43": "CRI",
-  "UA-12": "DNI", "UA-14": "DON", "UA-26": "IVF", "UA-63": "KHA",
-  "UA-65": "KHE", "UA-68": "KHM", "UA-30": "KYV", "UA-32": "KYO",
-  "UA-35": "KIR", "UA-09": "LUH", "UA-46": "LVI", "UA-48": "MYK",
-  "UA-51": "ODE", "UA-53": "POL", "UA-56": "RIV", "UA-59": "SUM",
-  "UA-61": "TER", "UA-05": "VIN", "UA-07": "VOL", "UA-21": "ZAK",
-  "UA-23": "ZAP", "UA-18": "ZHY",
+/** Short oblast codes per language. EN/DE/FR use Latin abbreviations;
+ *  UK uses 3-letter Cyrillic abbreviations. Falls back to EN. */
+const OBLAST_CODES: Record<"en" | "de" | "fr" | "uk", Record<string, string>> = {
+  en: {
+    "UA-71": "CHK", "UA-74": "CHR", "UA-77": "CHV", "UA-43": "CRI",
+    "UA-12": "DNI", "UA-14": "DON", "UA-26": "IVF", "UA-63": "KHA",
+    "UA-65": "KHE", "UA-68": "KHM", "UA-30": "KYV", "UA-32": "KYO",
+    "UA-35": "KIR", "UA-09": "LUH", "UA-46": "LVI", "UA-48": "MYK",
+    "UA-51": "ODE", "UA-53": "POL", "UA-56": "RIV", "UA-59": "SUM",
+    "UA-61": "TER", "UA-05": "VIN", "UA-07": "VOL", "UA-21": "ZAK",
+    "UA-23": "ZAP", "UA-18": "ZHY",
+  },
+  de: {
+    "UA-71": "TSK", "UA-74": "TSN", "UA-77": "TSW", "UA-43": "KRI",
+    "UA-12": "DNI", "UA-14": "DON", "UA-26": "IFR", "UA-63": "CHA",
+    "UA-65": "CHE", "UA-68": "CHM", "UA-30": "KYI", "UA-32": "KYG",
+    "UA-35": "KIR", "UA-09": "LUH", "UA-46": "LWI", "UA-48": "MYK",
+    "UA-51": "ODE", "UA-53": "POL", "UA-56": "RIW", "UA-59": "SUM",
+    "UA-61": "TER", "UA-05": "WYN", "UA-07": "WOL", "UA-21": "TRK",
+    "UA-23": "SAP", "UA-18": "SCH",
+  },
+  fr: {
+    "UA-71": "TCK", "UA-74": "TCN", "UA-77": "TCV", "UA-43": "CRI",
+    "UA-12": "DNI", "UA-14": "DON", "UA-26": "IVF", "UA-63": "KHA",
+    "UA-65": "KHE", "UA-68": "KHM", "UA-30": "KYV", "UA-32": "KYO",
+    "UA-35": "KIR", "UA-09": "LOU", "UA-46": "LVI", "UA-48": "MYK",
+    "UA-51": "ODE", "UA-53": "POL", "UA-56": "RIV", "UA-59": "SOU",
+    "UA-61": "TER", "UA-05": "VIN", "UA-07": "VOL", "UA-21": "TCR",
+    "UA-23": "ZAP", "UA-18": "JYT",
+  },
+  uk: {
+    "UA-71": "ЧРК", "UA-74": "ЧРН", "UA-77": "ЧРВ", "UA-43": "КРМ",
+    "UA-12": "ДНП", "UA-14": "ДОН", "UA-26": "ІВФ", "UA-63": "ХРК",
+    "UA-65": "ХРС", "UA-68": "ХМЛ", "UA-30": "КИЇ", "UA-32": "КИО",
+    "UA-35": "КРВ", "UA-09": "ЛУГ", "UA-46": "ЛЬВ", "UA-48": "МИК",
+    "UA-51": "ОДС", "UA-53": "ПЛТ", "UA-56": "РВН", "UA-59": "СУМ",
+    "UA-61": "ТРН", "UA-05": "ВНН", "UA-07": "ВЛН", "UA-21": "ЗАК",
+    "UA-23": "ЗПР", "UA-18": "ЖТМ",
+  },
 };
+
 
 interface OblastStat {
   slug: string;
@@ -129,13 +160,16 @@ function typeLabel(t: string, tt: (k: string) => string): string {
 }
 
 export function AirAlertsMap({ variant = "compact" }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = ((i18n.language || "en").slice(0, 2) as "en" | "de" | "fr" | "uk");
+  const codeMap = OBLAST_CODES[lang] ?? OBLAST_CODES.en;
   const [data, setData] = useState<ApiPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [hovered, setHovered] = useState<
     | { kind: "oblast"; iso: string; name: string; nameEn: string; x: number; y: number }
     | { kind: "raion"; name: string; oblastIso: string; x: number; y: number }
+    | { kind: "aggressor"; country: "Belarus" | "Russia"; x: number; y: number }
     | null
   >(null);
   const [selected, setSelected] = useState<
@@ -251,31 +285,78 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           style={{ width: "100%", height: "100%" }}
         >
           <ZoomableGroup zoom={1} minZoom={1} maxZoom={variant === "full" ? 6 : 1}>
-            {/* Belarus + Russia underlay for geographic context. Drawn first so
-                Ukraine oblasts sit on top and the UA border reads clearly. */}
+            {/* Diagonal red hatch used to mark aggressor states (RU + BY).
+                A subtle red tint sits underneath so the territories read as
+                hostile even when zoomed out and the stripes blur. */}
+            <defs>
+              <pattern
+                id="aggressor-stripes"
+                patternUnits="userSpaceOnUse"
+                width="6"
+                height="6"
+                patternTransform="rotate(45)"
+              >
+                <rect width="6" height="6" fill="hsl(var(--signal) / 0.16)" />
+                <line x1="0" y1="0" x2="0" y2="6" stroke="hsl(var(--signal) / 0.7)" strokeWidth="1.6" />
+              </pattern>
+            </defs>
+
+            {/* Belarus + Russia — marked as aggressor states with a red
+                diagonal hatch. Interactive: hovering opens an explanatory
+                tooltip. Drawn first so Ukraine oblasts remain on top. */}
             <Geographies geography={WORLD_GEO}>
               {({ geographies }) =>
                 geographies
                   .filter((g) => NEIGHBOUR_NAMES.has(g.properties.name as string))
-                  .map((geo) => (
-                    <Geography
-                      key={geo.rsmKey}
-                      geography={geo}
-                      style={{
-                        default: {
-                          fill: "hsl(var(--muted) / 0.4)",
-                          stroke: "hsl(var(--muted-foreground) / 0.5)",
-                          strokeWidth: 0.5,
-                          outline: "none",
-                          pointerEvents: "none",
-                        },
-                        hover: { fill: "hsl(var(--muted) / 0.4)", outline: "none", pointerEvents: "none" },
-                        pressed: { outline: "none" },
-                      }}
-                    />
-                  ))
+                  .map((geo) => {
+                    const country = geo.properties.name as "Belarus" | "Russia";
+                    return (
+                      <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        onMouseEnter={(e) => {
+                          const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
+                            ?.getBoundingClientRect();
+                          setHovered({
+                            kind: "aggressor",
+                            country,
+                            x: e.clientX - (cont?.left ?? 0),
+                            y: e.clientY - (cont?.top ?? 0),
+                          });
+                        }}
+                        onMouseMove={(e) => {
+                          const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
+                            ?.getBoundingClientRect();
+                          setHovered({
+                            kind: "aggressor",
+                            country,
+                            x: e.clientX - (cont?.left ?? 0),
+                            y: e.clientY - (cont?.top ?? 0),
+                          });
+                        }}
+                        style={{
+                          default: {
+                            fill: "url(#aggressor-stripes)",
+                            stroke: "hsl(var(--signal) / 0.75)",
+                            strokeWidth: 0.7,
+                            outline: "none",
+                            cursor: "help",
+                          },
+                          hover: {
+                            fill: "url(#aggressor-stripes)",
+                            stroke: "hsl(var(--signal))",
+                            strokeWidth: 1.1,
+                            outline: "none",
+                            cursor: "help",
+                          },
+                          pressed: { outline: "none" },
+                        }}
+                      />
+                    );
+                  })
               }
             </Geographies>
+
 
 
             {/* Oblast polygons */}
@@ -367,11 +448,16 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               {({ geographies }) =>
                 geographies.map((geo) => {
                   const iso = geo.properties.iso as string;
-                  const code = OBLAST_CODE[iso];
+                  const code = codeMap[iso];
                   if (!code) return null;
                   const [lng, lat] = geoCentroid(geo);
                   if (!Number.isFinite(lng) || !Number.isFinite(lat)) return null;
                   const occupied = OCCUPIED_ISOS.has(iso);
+                  // Slightly smaller font for Cyrillic so 3-letter codes fit
+                  // tight oblasts; bumped vs prior values for legibility.
+                  const fontSize = variant === "full"
+                    ? (lang === "uk" ? 11 : 12)
+                    : (lang === "uk" ? 9 : 10);
                   return (
                     <Marker key={`lbl-${iso}`} coordinates={[lng, lat]}>
                       <text
@@ -380,13 +466,13 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         style={{
                           pointerEvents: "none",
                           fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-                          fontSize: variant === "full" ? 8 : 7,
-                          fontWeight: 600,
+                          fontSize,
+                          fontWeight: 700,
                           letterSpacing: "0.06em",
-                          fill: occupied ? "hsl(0 0% 100% / 0.92)" : "hsl(var(--foreground) / 0.78)",
+                          fill: occupied ? "hsl(0 0% 100% / 1)" : "hsl(var(--foreground))",
                           paintOrder: "stroke",
-                          stroke: "hsl(var(--background) / 0.85)",
-                          strokeWidth: 2,
+                          stroke: "hsl(var(--background))",
+                          strokeWidth: 3.5,
                           strokeLinejoin: "round",
                         }}
                       >
@@ -558,6 +644,28 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                     <div className="pt-1 text-[9px] text-muted-foreground/70">{t("airAlerts.statsSince", { date: OBLAST_STATS.periodStart })}</div>
                   </div>
                 )}
+              </div>
+            );
+          }
+          if (hovered.kind === "aggressor") {
+            const titles: Record<typeof lang, { by: string; ru: string; line1: string; line2: string }> = {
+              en: { by: "Belarus", ru: "Russia",   line1: "Aggressor state",   line2: "Hostile territory — launches, staging and overflight against Ukraine originate here." },
+              de: { by: "Belarus", ru: "Russland", line1: "Aggressor-Staat",   line2: "Feindliches Gebiet — Starts, Aufmärsche und Überflüge gegen die Ukraine erfolgen von hier." },
+              fr: { by: "Biélorussie", ru: "Russie", line1: "État agresseur", line2: "Territoire hostile — tirs, déploiements et survols contre l'Ukraine partent d'ici." },
+              uk: { by: "Білорусь", ru: "Росія",   line1: "Держава-агресор", line2: "Ворожа територія — звідси здійснюються пуски, розгортання та польоти проти України." },
+            };
+            const tx = titles[lang] ?? titles.en;
+            const name = hovered.country === "Belarus" ? tx.by : tx.ru;
+            return (
+              <div
+                className="pointer-events-none absolute z-10 rounded border border-[hsl(var(--signal)/0.5)] bg-background/95 px-3 py-2 text-xs font-mono shadow-lg backdrop-blur min-w-[200px] max-w-[260px]"
+                style={{ left: hovered.x + 12, top: Math.max(hovered.y - 8, 4), transform: "translateY(-100%)" }}
+              >
+                <div className="font-semibold text-foreground">{name}</div>
+                <div className="mt-1 text-[hsl(var(--signal))] uppercase tracking-[0.16em] text-[10px]">
+                  ● {tx.line1}
+                </div>
+                <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground">{tx.line2}</p>
               </div>
             );
           }
