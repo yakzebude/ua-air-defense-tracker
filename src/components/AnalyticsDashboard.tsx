@@ -677,39 +677,79 @@ function AnalyticsPager(props: Props) {
       )}
 
       {active === "share" && (
-        <Panel
-          title={t("analytics.sharePanel")}
-          subtitle={t("analytics.sharePanelSub")}
-          source={t("primarySourceShort")}
-          action={
-            <PanelActions
-              filename="ua-airdefense-tracker_share-interception.csv"
-              panelTitle={t("analytics.sharePanel")}
-              rows={[
-                { category: "uavs", launched: props.shahed.totals.launched, destroyed: props.shahed.totals.destroyed, interception_rate_pct: +(props.shahed.totals.rate * 100).toFixed(2) },
-                { category: "cruise", launched: props.cruise.totals.launched, destroyed: props.cruise.totals.destroyed, interception_rate_pct: +(props.cruise.totals.rate * 100).toFixed(2) },
-                { category: "ballistic", launched: props.ballistic.totals.launched, destroyed: props.ballistic.totals.destroyed, interception_rate_pct: +(props.ballistic.totals.rate * 100).toFixed(2) },
-              ]}
-              headers={["category", "launched", "destroyed", "interception_rate_pct"]}
-            />
-          }
-        >
-          <ShareInterception {...props} />
-          <div className="mt-3 flex items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
-            <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.uavs }} />
-              {t("category.uavs")}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.cruise }} />
-              {t("category.cruise")}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.ballistic }} />
-              {t("category.ballistic")}
-            </span>
+        <>
+          <Panel
+            title={t("analytics.sharePanel")}
+            subtitle={t("analytics.sharePanelSub")}
+            source={t("primarySourceShort")}
+            action={
+              <PanelActions
+                filename="ua-airdefense-tracker_share-interception.csv"
+                panelTitle={t("analytics.sharePanel")}
+                rows={[
+                  { category: "uavs", launched: props.shahed.totals.launched, destroyed: props.shahed.totals.destroyed, interception_rate_pct: +(props.shahed.totals.rate * 100).toFixed(2) },
+                  { category: "cruise", launched: props.cruise.totals.launched, destroyed: props.cruise.totals.destroyed, interception_rate_pct: +(props.cruise.totals.rate * 100).toFixed(2) },
+                  { category: "ballistic", launched: props.ballistic.totals.launched, destroyed: props.ballistic.totals.destroyed, interception_rate_pct: +(props.ballistic.totals.rate * 100).toFixed(2) },
+                ]}
+                headers={["category", "launched", "destroyed", "interception_rate_pct"]}
+              />
+            }
+          >
+            <ShareInterception {...props} />
+            <div className="mt-3 flex items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.uavs }} />
+                {t("category.uavs")}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.cruise }} />
+                {t("category.cruise")}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.ballistic }} />
+                {t("category.ballistic")}
+              </span>
+            </div>
+          </Panel>
+          <div
+            className="-mx-4 mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0"
+            aria-label="Key findings — swipe horizontally for cruise and ballistic"
+          >
+            <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
+              <ChartInsights
+                data={props.shahed.months}
+                metric="rate"
+                unit=""
+                accent={CAT_COLORS.uavs}
+                direction="up-is-good"
+                title="Key findings · UAV interception rate"
+                subtitle="Plain-language summary of monthly UAV interception rate. Swipe → for cruise and ballistic."
+              />
+            </div>
+            <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
+              <ChartInsights
+                data={props.cruise.months}
+                metric="rate"
+                unit=""
+                accent={CAT_COLORS.cruise}
+                direction="up-is-good"
+                title="Key findings · cruise interception rate"
+                subtitle="Plain-language summary of monthly cruise-missile interception rate."
+              />
+            </div>
+            <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
+              <ChartInsights
+                data={props.ballistic.months}
+                metric="rate"
+                unit=""
+                accent={CAT_COLORS.ballistic}
+                direction="up-is-good"
+                title="Key findings · ballistic interception rate"
+                subtitle="Plain-language summary of monthly ballistic-missile interception rate."
+              />
+            </div>
           </div>
-        </Panel>
+        </>
       )}
 
       {active === "calendar" && (
