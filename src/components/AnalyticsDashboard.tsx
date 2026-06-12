@@ -588,7 +588,6 @@ function AnalyticsPager(props: Props) {
 
       {active === "uavs" && (
         <div className="flex h-full flex-col">
-        <>
           <Panel
             title={t("analytics.uavMonthly")}
             subtitle={t("analytics.uavMonthlySub")}
