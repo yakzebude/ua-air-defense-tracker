@@ -156,10 +156,14 @@ export function ChartInsights({
           const { primary, secondary } = highlightIndices(ins, series);
           // Color logic: red on increase, green on 0 or decrease (remove yellow).
           // Peak month for interception-rate charts is a Ukrainian success → green.
-          // Largest drop on 01 UAV Launches stays white (not red).
-          const isUavLaunches = metric === "launched" && unit === "UAVs";
+          // Largest drop on launch charts stays white (not red).
+          const isLaunchChart =
+            metric === "launched" &&
+            (unit === "UAVs" ||
+              unit === "cruise missiles" ||
+              unit === "ballistic missiles");
           const valueColor =
-            ins.label === "Largest drop" && !isUavLaunches
+            ins.label === "Largest drop" && !isLaunchChart
               ? "hsl(var(--signal))"
               : ins.label === "Largest drop"
                 ? "hsl(var(--foreground))"
