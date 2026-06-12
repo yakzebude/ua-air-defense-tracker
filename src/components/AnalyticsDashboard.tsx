@@ -579,6 +579,7 @@ function AnalyticsPager(props: Props) {
             data={props.shahed.months}
             metric="launched"
             unit="UAVs"
+            accent={CAT_COLORS.uavs}
             direction="down-is-good"
             subtitle="Plain-language summary of monthly UAV launches detected at Ukrainian airspace."
           />
@@ -607,6 +608,7 @@ function AnalyticsPager(props: Props) {
             data={props.cruise.months}
             metric="launched"
             unit="cruise missiles"
+            accent={CAT_COLORS.cruise}
             direction="down-is-good"
             title="Key findings · cruise missiles"
             subtitle="Plain-language summary of monthly cruise-missile launches."
@@ -615,6 +617,7 @@ function AnalyticsPager(props: Props) {
             data={props.ballistic.months}
             metric="launched"
             unit="ballistic missiles"
+            accent={CAT_COLORS.ballistic}
             direction="down-is-good"
             title="Key findings · ballistic missiles"
             subtitle="Plain-language summary of monthly ballistic-missile launches."
