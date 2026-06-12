@@ -398,11 +398,16 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               {({ geographies }) =>
                 geographies.map((geo) => {
                   const iso = geo.properties.iso as string;
-                  const code = OBLAST_CODE[iso];
+                  const code = codeMap[iso];
                   if (!code) return null;
                   const [lng, lat] = geoCentroid(geo);
                   if (!Number.isFinite(lng) || !Number.isFinite(lat)) return null;
                   const occupied = OCCUPIED_ISOS.has(iso);
+                  // Slightly smaller font for Cyrillic so 3-letter codes fit
+                  // tight oblasts; bumped vs prior values for legibility.
+                  const fontSize = variant === "full"
+                    ? (lang === "uk" ? 11 : 12)
+                    : (lang === "uk" ? 9 : 10);
                   return (
                     <Marker key={`lbl-${iso}`} coordinates={[lng, lat]}>
                       <text
@@ -411,8 +416,8 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         style={{
                           pointerEvents: "none",
                           fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-                          fontSize: variant === "full" ? 8 : 7,
-                          fontWeight: 600,
+                          fontSize,
+                          fontWeight: 700,
                           letterSpacing: "0.06em",
                           fill: occupied ? "hsl(0 0% 100% / 0.92)" : "hsl(var(--foreground) / 0.78)",
                           paintOrder: "stroke",
