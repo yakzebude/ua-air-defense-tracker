@@ -187,7 +187,7 @@ export function CategorySparklines({ categories, window = 24 }: Props) {
 
   return (
     <section className="border-t border-border bg-secondary/20">
-      <div className="container py-6 md:py-8">
+      <div className="container py-10 md:py-14">
         <div className="mb-6 max-w-3xl">
           <div className="src-label mb-2">{t("sparklines.kicker", "Category breakdown")}</div>
           <h2 className="text-xl md:text-2xl font-semibold tracking-tight">

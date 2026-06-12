@@ -12,9 +12,9 @@ interface NewsItem {
 }
 
 const REFRESH_MS = 5 * 60 * 1000; // 5 minutes
-// Constant scroll speed (px/sec) — tuned to feel as urgent as Bloomberg /
-// Reuters / FT terminals (≈ 180 px/s on desktop). Live, continuous, no pauses.
-const SCROLL_SPEED_PX_S = 185;
+// Constant scroll speed (px/sec) — yields a smooth, predictable feel
+// regardless of how many headlines are in the loop.
+const SCROLL_SPEED_PX_S = 70;
 
 export const NewsTicker = () => {
   const { i18n } = useTranslation();
@@ -118,11 +118,11 @@ export const NewsTicker = () => {
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="pl-3 pr-2 font-mono text-xs text-white hover:text-amber-400 transition-colors"
+                      className="px-4 font-mono text-xs text-white hover:text-amber-400 transition-colors"
                     >
-                      <span className="text-white/40 mr-1.5">[{item.source}]</span>
+                      <span className="text-white/40 mr-2">[{item.source}]</span>
                       {item.title}
-                      <span className="pl-2 text-white/25">·</span>
+                      <span className="px-4 text-white/30">•</span>
                     </a>
                   ))}
                 </div>
