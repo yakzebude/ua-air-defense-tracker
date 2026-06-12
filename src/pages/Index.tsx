@@ -15,9 +15,8 @@ import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { PanelActions } from "@/components/PanelActions";
 import { WeaponTerm } from "@/components/WeaponTerm";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { AirAlertsMap } from "@/components/AirAlertsMap";
-import { AirThreatFeed } from "@/components/AirThreatFeed";
-import { MiniAlertsMap } from "@/components/MiniAlertsMap";
+
+
 import { CategorySparklines } from "@/components/CategorySparklines";
 import { DataConfidenceSection } from "@/components/DataConfidenceSection";
 import { StatusBanner } from "@/components/StatusBadge";
