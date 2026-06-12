@@ -600,6 +600,12 @@ function AnalyticsPager(props: Props) {
             }
           >
             <CompositionAreaChart data={data} series={["uavs"]} labels={labels} totalLabel={totalLabel} />
+            <div className="mt-3 flex items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.uavs }} />
+                {t("category.uavs")}
+              </span>
+            </div>
           </Panel>
           <ChartInsights
             data={props.shahed.months}
@@ -629,6 +635,16 @@ function AnalyticsPager(props: Props) {
             }
           >
             <CompositionAreaChart data={data} series={["ballistic", "cruise"]} labels={labels} totalLabel={totalLabel} />
+            <div className="mt-3 flex items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.cruise }} />
+                {t("category.cruise")}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.ballistic }} />
+                {t("category.ballistic")}
+              </span>
+            </div>
           </Panel>
           <ChartInsights
             data={props.cruise.months}
@@ -670,6 +686,20 @@ function AnalyticsPager(props: Props) {
           }
         >
           <ShareInterception {...props} />
+          <div className="mt-3 flex items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.uavs }} />
+              {t("category.uavs")}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.cruise }} />
+              {t("category.cruise")}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.ballistic }} />
+              {t("category.ballistic")}
+            </span>
+          </div>
         </Panel>
       )}
 
@@ -699,6 +729,20 @@ function AnalyticsPager(props: Props) {
           }
         >
           <HeatmapMonthlyIntensity {...props} />
+          <div className="mt-3 flex items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.uavs }} />
+              {t("category.uavs")}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.cruise }} />
+              {t("category.cruise")}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.ballistic }} />
+              {t("category.ballistic")}
+            </span>
+          </div>
         </Panel>
       )}
       </div>
@@ -712,24 +756,14 @@ export function AnalyticsDashboard(props: Props) {
   return (
     <section id="analytics" className="scroll-mt-32 border-t border-border bg-background">
       <div className="container py-12 md:py-16">
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <div className="max-w-3xl">
-            <div className="src-label mb-3">{t("analytics.kicker")}</div>
-            <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
-              {t("analytics.title")}
-            </h2>
-            <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">
-              {t("analytics.intro")}
-            </p>
-          </div>
-          <div className="flex items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
-            {(Object.keys(CAT_COLORS) as CategoryKey[]).map((k) => (
-              <span key={k} className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS[k] }} />
-                {t(`category.${k}`)}
-              </span>
-            ))}
-          </div>
+        <div className="mb-8 max-w-3xl">
+          <div className="src-label mb-3">{t("analytics.kicker")}</div>
+          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
+            {t("analytics.title")}
+          </h2>
+          <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">
+            {t("analytics.intro")}
+          </p>
         </div>
 
         <AnalyticsPager {...props} />
