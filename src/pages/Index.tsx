@@ -538,6 +538,7 @@ const Index = () => {
   const [error, setError] = useState<string | null>(null);
   const [latestDataPoint, setLatestDataPoint] = useState<Date | null>(null);
   const [windowStats, setWindowStats] = useState<{
+    last24h: { launched: number; destroyed: number; dataDay: Date | null };
     last30: { launched: number; destroyed: number };
     prev30: { launched: number; destroyed: number };
   } | null>(null);
