@@ -686,6 +686,31 @@ const Index = () => {
     return pick(shahed) ?? pick(cruise) ?? pick(ballistic);
   }, [shahed, cruise, ballistic]);
 
+  /**
+   * For each category, compute the share (0..1) of its monthly launches
+   * relative to the all-category total, for the last 24 *completed* months.
+   * Surface this as a mini-sparkline in each category header.
+   */
+  const categoryShares = useMemo(() => {
+    if (!ready) return null;
+    const now = new Date();
+    const curKey = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
+    const keys = shahed!.months.filter((m) => m.key !== curKey).slice(-24).map((m) => m.key);
+    const labels = shahed!.months.filter((m) => m.key !== curKey).slice(-24).map((m) => m.label);
+    const get = (ds: Dataset, key: string) => ds.months.find((m) => m.key === key)?.launched ?? 0;
+    const shahedShare: number[] = [];
+    const cruiseShare: number[] = [];
+    const ballisticShare: number[] = [];
+    for (const k of keys) {
+      const s = get(shahed!, k), c = get(cruise!, k), b = get(ballistic!, k);
+      const t = s + c + b;
+      shahedShare.push(t > 0 ? s / t : 0);
+      cruiseShare.push(t > 0 ? c / t : 0);
+      ballisticShare.push(t > 0 ? b / t : 0);
+    }
+    return { labels, shahed: shahedShare, cruise: cruiseShare, ballistic: ballisticShare };
+  }, [ready, shahed, cruise, ballistic]);
+
   return (
     <main className="min-h-screen bg-background">
       <StatusBar lastUpdated={lastUpdatedLabel} lastUpdatedDate={lastUpdatedDate} />
