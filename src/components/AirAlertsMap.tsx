@@ -268,13 +268,13 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
   // Map sizes to fill its panel. The full variant fills a fixed-height
   // container so the map and the threat feed read as equal blocks side-by-side.
   const mapHeightClass = variant === "full"
-    ? "h-[460px] sm:h-[560px] lg:h-[640px]"
+    ? "flex-1 min-h-[460px]"
     : "h-[300px] sm:h-[380px] lg:h-[420px]";
 
   return (
-    <div className="relative flex flex-col">
+    <div className={`relative flex flex-col ${variant === "full" ? "h-full w-full" : ""}`}>
       <div
-        className={`relative flex-1 overflow-hidden rounded border border-border bg-card ${mapHeightClass}`}
+        className={`relative overflow-hidden rounded border border-border bg-card ${mapHeightClass}`}
         onMouseLeave={() => setHovered(null)}
       >
         <ComposableMap
