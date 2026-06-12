@@ -279,7 +279,7 @@ export function OblastTileGrid({ embedded = false }: Props) {
               title={tile.name}
               className={`group relative flex flex-col items-start justify-between rounded-sm border p-1.5 text-left transition-all focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground ${
                 isSelected ? "ring-2 ring-foreground" : "ring-0"
-              } ${active ? "animate-pulse-alert border-[hsl(var(--signal))]" : "border-border"}`}
+              } ${active ? "air-alert-pulse border-[hsl(var(--signal))]" : "border-border"}`}
               style={{
                 gridColumn: tile.col,
                 gridRow: tile.row,
