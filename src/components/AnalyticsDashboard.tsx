@@ -384,6 +384,22 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
             </button>
           ))}
         </div>
+        <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+          <span>Low</span>
+          <div className="flex gap-1">
+            {[0.1, 0.3, 0.55, 0.8, 1].map((i) => {
+              const lightness = 92 - i * 82;
+              return (
+                <div
+                  key={i}
+                  className="h-2.5 w-5 rounded-[2px] border border-border/60 dark:border-white/20"
+                  style={{ background: `hsl(0 0% ${lightness}%)` }}
+                />
+              );
+            })}
+          </div>
+          <span>Record · {fmt(max)}</span>
+        </div>
       </div>
 
       <div className="relative" onMouseLeave={() => setHover(null)}>
@@ -492,15 +508,15 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
               </div>
               <div className="space-y-0.5 border-t border-border pt-1.5 text-[10.5px]">
                 <div className="flex items-center justify-between gap-3">
-                  <span className="flex items-center gap-1.5 text-muted-foreground"><span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.uavs }} />UAVs</span>
+                  <span className="text-muted-foreground">UAVs</span>
                   <span className="num text-foreground">{fmt(hover.uavs)} <span className="text-muted-foreground">· {share(hover.uavs)}%</span></span>
                 </div>
                 <div className="flex items-center justify-between gap-3">
-                  <span className="flex items-center gap-1.5 text-muted-foreground"><span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.cruise }} />Cruise</span>
+                  <span className="text-muted-foreground">Cruise</span>
                   <span className="num text-foreground">{fmt(hover.cruise)} <span className="text-muted-foreground">· {share(hover.cruise)}%</span></span>
                 </div>
                 <div className="flex items-center justify-between gap-3">
-                  <span className="flex items-center gap-1.5 text-muted-foreground"><span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.ballistic }} />Ballistic</span>
+                  <span className="text-muted-foreground">Ballistic</span>
                   <span className="num text-foreground">{fmt(hover.ballistic)} <span className="text-muted-foreground">· {share(hover.ballistic)}%</span></span>
                 </div>
               </div>
