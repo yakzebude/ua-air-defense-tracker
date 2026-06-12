@@ -539,6 +539,8 @@ const Index = () => {
   const [windowStats, setWindowStats] = useState<{
     last30: { launched: number; destroyed: number };
     prev30: { launched: number; destroyed: number };
+    monthLabel: string;
+    prevMonthLabel: string;
   } | null>(null);
 
   useEffect(() => {
@@ -552,17 +554,14 @@ const Index = () => {
       })
       .catch((e) => setError(String(e)));
 
-    // Parse raw daily CSVs once: derive latest data point + rolling 30d / prev 30d windows.
+    // Parse raw daily CSVs once: derive latest data point + last fully-covered calendar month.
     Promise.all([
       fetch("/data/shahed_attacks_daily.csv").then((r) => r.ok ? r.text() : ""),
       fetch("/data/missile_attacks_daily.csv").then((r) => r.ok ? r.text() : ""),
     ]).then(([a, b]) => {
+      // Aggregate per UTC day
+      const perDay = new Map<string, { l: number; d: number; ts: number }>();
       let maxMs = 0;
-      const now = Date.now();
-      const DAY = 86_400_000;
-      const last30Start = now - 30 * DAY;
-      const prev30Start = now - 60 * DAY;
-      let l30L = 0, l30D = 0, p30L = 0, p30D = 0;
 
       for (const text of [a, b]) {
         if (!text) continue;
@@ -574,19 +573,46 @@ const Index = () => {
           const ts = Date.parse(iso);
           if (isNaN(ts)) continue;
           if (ts > maxMs) maxMs = ts;
+          const dt = new Date(ts);
+          const key = `${dt.getUTCFullYear()}-${dt.getUTCMonth()}-${dt.getUTCDate()}`;
           const launched = Number.parseFloat(row.launched ?? "") || 0;
           const destroyed = Number.parseFloat(row.destroyed ?? "") || 0;
-          if (ts >= last30Start && ts <= now) {
-            l30L += launched; l30D += destroyed;
-          } else if (ts >= prev30Start && ts < last30Start) {
-            p30L += launched; p30D += destroyed;
-          }
+          const cur = perDay.get(key);
+          if (cur) { cur.l += launched; cur.d += destroyed; }
+          else perDay.set(key, { l: launched, d: destroyed, ts });
         }
       }
-      if (maxMs > 0) setLatestDataPoint(new Date(maxMs));
+
+      if (maxMs === 0) return;
+      setLatestDataPoint(new Date(maxMs));
+
+      // Last fully-covered calendar month: the most recent month whose final day is <= maxDate.
+      const maxDate = new Date(maxMs);
+      const lastDayOfMonth = (y: number, m: number) => new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+      let y = maxDate.getUTCFullYear();
+      let m = maxDate.getUTCMonth();
+      if (maxDate.getUTCDate() < lastDayOfMonth(y, m)) {
+        // current month incomplete → step back one month
+        m -= 1; if (m < 0) { m = 11; y -= 1; }
+      }
+      let py = y, pm = m - 1; if (pm < 0) { pm = 11; py -= 1; }
+
+      let l30L = 0, l30D = 0, p30L = 0, p30D = 0;
+      for (const { l, d, ts } of perDay.values()) {
+        const dt = new Date(ts);
+        const dy = dt.getUTCFullYear(), dm = dt.getUTCMonth();
+        if (dy === y && dm === m) { l30L += l; l30D += d; }
+        else if (dy === py && dm === pm) { p30L += l; p30D += d; }
+      }
+
+      const fmtMonth = (yy: number, mm: number) =>
+        new Date(Date.UTC(yy, mm, 1)).toLocaleString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+
       setWindowStats({
         last30: { launched: Math.round(l30L), destroyed: Math.round(l30D) },
         prev30: { launched: Math.round(p30L), destroyed: Math.round(p30D) },
+        monthLabel: fmtMonth(y, m),
+        prevMonthLabel: fmtMonth(py, pm),
       });
     }).catch(() => {});
   }, []);
@@ -688,12 +714,12 @@ const Index = () => {
                 {/* TIER 3 — rolling 30-day insight strip · Bloomberg-style terminal block */}
                 {windowStats && (
                   <div className="mt-5 border-t-2 border-foreground bg-background/60">
-                    <div className="flex items-center justify-between border-b border-border px-3 py-1.5 sm:px-4">
-                      <span className="text-[9.5px] sm:text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-foreground">
-                        {t("masthead.insight")}
+                    <div className="flex items-center justify-between gap-3 border-b border-border px-3 py-1.5 sm:px-4">
+                      <span className="text-[9.5px] sm:text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-foreground truncate">
+                        {windowStats.monthLabel} <span className="text-muted-foreground">· last complete month</span>
                       </span>
-                      <span className="text-[9.5px] sm:text-[10px] font-mono uppercase tracking-[0.16em] text-muted-foreground">
-                        {t("masthead.vsPrev30")}
+                      <span className="text-[9.5px] sm:text-[10px] font-mono uppercase tracking-[0.16em] text-muted-foreground whitespace-nowrap">
+                        vs {windowStats.prevMonthLabel}
                       </span>
                     </div>
                     <div className="grid grid-cols-3 divide-x divide-border">
