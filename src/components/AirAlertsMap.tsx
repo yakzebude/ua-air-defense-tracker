@@ -647,6 +647,28 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               </div>
             );
           }
+          if (hovered.kind === "aggressor") {
+            const titles: Record<typeof lang, { by: string; ru: string; line1: string; line2: string }> = {
+              en: { by: "Belarus", ru: "Russia",   line1: "Aggressor state",   line2: "Hostile territory — launches, staging and overflight against Ukraine originate here." },
+              de: { by: "Belarus", ru: "Russland", line1: "Aggressor-Staat",   line2: "Feindliches Gebiet — Starts, Aufmärsche und Überflüge gegen die Ukraine erfolgen von hier." },
+              fr: { by: "Biélorussie", ru: "Russie", line1: "État agresseur", line2: "Territoire hostile — tirs, déploiements et survols contre l'Ukraine partent d'ici." },
+              uk: { by: "Білорусь", ru: "Росія",   line1: "Держава-агресор", line2: "Ворожа територія — звідси здійснюються пуски, розгортання та польоти проти України." },
+            };
+            const tx = titles[lang] ?? titles.en;
+            const name = hovered.country === "Belarus" ? tx.by : tx.ru;
+            return (
+              <div
+                className="pointer-events-none absolute z-10 rounded border border-[hsl(var(--signal)/0.5)] bg-background/95 px-3 py-2 text-xs font-mono shadow-lg backdrop-blur min-w-[200px] max-w-[260px]"
+                style={{ left: hovered.x + 12, top: Math.max(hovered.y - 8, 4), transform: "translateY(-100%)" }}
+              >
+                <div className="font-semibold text-foreground">{name}</div>
+                <div className="mt-1 text-[hsl(var(--signal))] uppercase tracking-[0.16em] text-[10px]">
+                  ● {tx.line1}
+                </div>
+                <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground">{tx.line2}</p>
+              </div>
+            );
+          }
           // raion — show tooltip for every raion in free territory.
           const r = activeRaionsByKey.get(`${hovered.oblastIso}::${normRaion(hovered.name)}`);
           const parent = byIso.get(hovered.oblastIso);
