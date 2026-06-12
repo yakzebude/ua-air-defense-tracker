@@ -225,20 +225,20 @@ function KPI({
   size?: "md" | "lg" | "xl";
 }) {
   const sizeClass =
-    size === "xl" ? "text-[3rem] md:text-[4.5rem] tracking-tight"
-    : size === "lg" ? "text-[2.5rem] md:text-[3.25rem]"
-    : "text-[2rem] md:text-[2.5rem]";
+    size === "xl" ? "text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight"
+    : size === "lg" ? "text-[1.875rem] sm:text-[2.25rem] md:text-[2.75rem]"
+    : "text-[1.5rem] sm:text-[1.75rem] md:text-[2.125rem]";
   return (
     <div className="min-w-0">
-      <div className="flex items-center gap-1.5 text-[10.5px] font-mono font-medium uppercase tracking-[0.18em] text-muted-foreground">
-        <span>{label}</span>
+      <div className="flex min-h-[2.4em] items-start gap-1.5 text-[10px] sm:text-[10.5px] font-mono font-medium uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground">
+        <span className="break-words">{label}</span>
         {info && (
           <Tooltip delayDuration={100}>
             <TooltipTrigger asChild>
               <button
                 type="button"
                 aria-label={info.label}
-                className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full border border-muted-foreground/40 text-[9px] leading-none text-muted-foreground transition-colors hover:border-foreground hover:text-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground"
+                className="mt-[1px] inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border border-muted-foreground/40 text-[9px] leading-none text-muted-foreground transition-colors hover:border-foreground hover:text-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground"
               >
                 &zwnj;i
               </button>
@@ -250,10 +250,10 @@ function KPI({
           </Tooltip>
         )}
       </div>
-      <div className={`mt-1.5 num font-semibold leading-none ${sizeClass} ${signal ? "text-signal" : "text-foreground"}`}>
+      <div className={`mt-1 num font-semibold leading-none ${sizeClass} ${signal ? "text-signal" : "text-foreground"}`}>
         {numeric !== undefined ? <AnimatedNumber value={numeric} decimals={decimals} suffix={suffix} /> : value}
       </div>
-      {sub && <div className="mt-2 text-[12px] text-muted-foreground num">{sub}</div>}
+      {sub && <div className="mt-1.5 text-[11.5px] sm:text-[12px] leading-snug text-muted-foreground num">{sub}</div>}
     </div>
   );
 }
@@ -638,18 +638,18 @@ const Index = () => {
 
 
       <section id="summary" className="border-b border-border">
-        <div className="container pt-8 pb-12 md:pt-12 md:pb-16">
+        <div className="container pt-6 pb-8 md:pt-10 md:pb-14">
           {/* Editorial masthead — serif headline, dek, trust/metadata bar */}
           <div className="max-w-4xl">
-            <h1 className="font-serif text-[2.25rem] leading-[1.05] tracking-[-0.02em] md:text-[3.5rem] lg:text-[4rem]">
+            <h1 className="font-serif text-[1.875rem] leading-[1.1] tracking-[-0.02em] sm:text-[2.25rem] md:text-[3rem] lg:text-[3.5rem]">
               {t("masthead.title")}
             </h1>
-            <p className="mt-5 max-w-3xl font-serif text-[1.125rem] leading-[1.45] text-muted-foreground md:text-[1.375rem]">
+            <p className="mt-3 max-w-3xl font-serif text-[1rem] leading-[1.45] text-muted-foreground sm:text-[1.0625rem] md:text-[1.25rem]">
               {t("masthead.tagline")}
             </p>
 
             {/* Trust / metadata bar — primary source attribution + day tracker. */}
-            <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-border py-3 text-[12px]">
+            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-y border-border py-2.5 text-[11.5px] sm:text-[12px]">
               <WarDayTracker />
               {dataTimeframe && (
                 <span className="inline-flex items-center gap-1.5 text-muted-foreground">
@@ -673,9 +673,9 @@ const Index = () => {
 
 
           {ready && (
-            <div className="mt-9 grid gap-5 md:grid-cols-12">
+            <div className="mt-6 grid gap-3 md:mt-8 md:grid-cols-12 md:gap-4">
               {/* TIER 1 — hero KPI: Total launched (col-span-7) */}
-              <div className="md:col-span-7 rounded-md border border-border bg-card p-6 md:p-8">
+              <div className="md:col-span-7 rounded-md border border-border bg-card p-4 sm:p-5 md:p-7">
                 <KPI
                   label={t("kpi.totalLaunched")}
                   numeric={grand.launched}
@@ -687,12 +687,12 @@ const Index = () => {
 
                 {/* TIER 3 — rolling 30-day insight strip */}
                 {windowStats && (
-                  <div className="mt-7 rounded-sm border border-border bg-background/60 p-4">
-                    <div className="mb-3 flex items-baseline gap-2 text-[10.5px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
+                  <div className="mt-5 rounded-sm border border-border bg-background/60 p-3 sm:p-4">
+                    <div className="mb-2.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.16em] text-muted-foreground">
                       <span>{t("masthead.insight")}</span>
                       <span className="text-muted-foreground/70 normal-case tracking-normal">— {t("masthead.vsPrev30")}</span>
                     </div>
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
                       {(() => {
                         const l = windowStats.last30.launched;
                         const d = windowStats.last30.destroyed;
@@ -702,20 +702,20 @@ const Index = () => {
                         const rPrev = Math.max(lPrev - dPrev, 0);
                         return (
                           <>
-                            <div>
-                              <div className="text-[10.5px] font-mono uppercase tracking-[0.16em] text-muted-foreground">{t("masthead.insightLaunched")}</div>
-                              <div className="mt-1 num text-[1.5rem] font-semibold leading-none">{fmt(l)}</div>
-                              <div className="mt-1.5"><TrendBadge delta={pctChange(l, lPrev)} direction="down-is-good" /></div>
+                            <div className="min-w-0">
+                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightLaunched")}</div>
+                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(l)}</div>
+                              <div className="mt-1"><TrendBadge delta={pctChange(l, lPrev)} direction="down-is-good" /></div>
                             </div>
-                            <div>
-                              <div className="text-[10.5px] font-mono uppercase tracking-[0.16em] text-muted-foreground">{t("masthead.insightIntercepted")}</div>
-                              <div className="mt-1 num text-[1.5rem] font-semibold leading-none">{fmt(d)}</div>
-                              <div className="mt-1.5"><TrendBadge delta={pctChange(d, dPrev)} direction="up-is-good" /></div>
+                            <div className="min-w-0">
+                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightIntercepted")}</div>
+                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(d)}</div>
+                              <div className="mt-1"><TrendBadge delta={pctChange(d, dPrev)} direction="up-is-good" /></div>
                             </div>
-                            <div>
-                              <div className="text-[10.5px] font-mono uppercase tracking-[0.16em] text-muted-foreground">{t("masthead.insightReached")}</div>
-                              <div className="mt-1 num text-[1.5rem] font-semibold leading-none">{fmt(reachedW)}</div>
-                              <div className="mt-1.5"><TrendBadge delta={pctChange(reachedW, rPrev)} direction="down-is-good" /></div>
+                            <div className="min-w-0">
+                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightReached")}</div>
+                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(reachedW)}</div>
+                              <div className="mt-1"><TrendBadge delta={pctChange(reachedW, rPrev)} direction="down-is-good" /></div>
                             </div>
                           </>
                         );
@@ -726,8 +726,8 @@ const Index = () => {
               </div>
 
               {/* TIER 2 — Interception rate + Reached target area (col-span-5, stacked) */}
-              <div className="md:col-span-5 grid gap-5">
-                <div className="rounded-md border border-border bg-card p-6">
+              <div className="md:col-span-5 grid grid-cols-2 gap-3 md:grid-cols-1 md:gap-4">
+                <div className="rounded-md border border-border bg-card p-4 sm:p-5">
                   <KPI
                     label={t("kpi.interceptionRate")}
                     numeric={grand.rate * 100}
@@ -738,7 +738,7 @@ const Index = () => {
                     info={{ label: t("kpi.tip.interceptionRateLabel"), body: t("kpi.tip.interceptionRate") }}
                   />
                 </div>
-                <div className="rounded-md border border-border bg-card p-6">
+                <div className="rounded-md border border-border bg-card p-4 sm:p-5">
                   <KPI
                     label={t("kpi.reachedTarget")}
                     numeric={reached}

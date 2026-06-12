@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 
@@ -12,6 +12,9 @@ interface NewsItem {
 }
 
 const REFRESH_MS = 5 * 60 * 1000; // 5 minutes
+// Constant scroll speed (px/sec) — yields a smooth, predictable feel
+// regardless of how many headlines are in the loop.
+const SCROLL_SPEED_PX_S = 70;
 
 export const NewsTicker = () => {
   const { i18n } = useTranslation();
@@ -20,6 +23,9 @@ export const NewsTicker = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const timerRef = useRef<number | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const measureRef = useRef<HTMLDivElement | null>(null);
+  const [duration, setDuration] = useState<number>(40);
 
   // Fetch helper — calls edge function directly with ?lang= so it can translate titles
   const load = async (currentLang: string) => {
@@ -52,6 +58,16 @@ export const NewsTicker = () => {
     };
   }, [lang]);
 
+  // Measure one rendered set and derive duration from a constant scroll speed.
+  // Because we render the set twice and translate by -50%, the loop is seamless
+  // when duration = (width_of_one_set) / SPEED.
+  useLayoutEffect(() => {
+    const el = measureRef.current;
+    if (!el || items.length === 0) return;
+    const w = el.scrollWidth;
+    if (w > 0) setDuration(Math.max(20, w / SCROLL_SPEED_PX_S));
+  }, [items]);
+
   // Status / fallback content
   const status =
     loading ? "Loading air attack updates…" :
@@ -82,11 +98,20 @@ export const NewsTicker = () => {
             </div>
           ) : (
             <div
-              className="flex h-full items-center whitespace-nowrap will-change-transform [animation:ticker-scroll_15s_linear_infinite] group-hover:[animation-play-state:paused]"
+              ref={trackRef}
+              className="flex h-full items-center whitespace-nowrap will-change-transform group-hover:[animation-play-state:paused] motion-reduce:!animation-none"
+              style={{
+                animation: `ticker-scroll ${duration}s linear infinite`,
+              }}
             >
               {/* Render the list twice for a seamless loop */}
               {[0, 1].map((dup) => (
-                <div key={dup} className="flex items-center shrink-0" aria-hidden={dup === 1}>
+                <div
+                  key={dup}
+                  ref={dup === 0 ? measureRef : undefined}
+                  className="flex items-center shrink-0"
+                  aria-hidden={dup === 1}
+                >
                   {items.map((item) => (
                     <a
                       key={`${dup}-${item.id}`}
