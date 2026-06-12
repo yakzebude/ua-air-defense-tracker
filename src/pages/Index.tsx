@@ -225,20 +225,20 @@ function KPI({
   size?: "md" | "lg" | "xl";
 }) {
   const sizeClass =
-    size === "xl" ? "text-[3rem] md:text-[4.5rem] tracking-tight"
-    : size === "lg" ? "text-[2.5rem] md:text-[3.25rem]"
-    : "text-[2rem] md:text-[2.5rem]";
+    size === "xl" ? "text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight"
+    : size === "lg" ? "text-[1.875rem] sm:text-[2.25rem] md:text-[2.75rem]"
+    : "text-[1.5rem] sm:text-[1.75rem] md:text-[2.125rem]";
   return (
     <div className="min-w-0">
-      <div className="flex items-center gap-1.5 text-[10.5px] font-mono font-medium uppercase tracking-[0.18em] text-muted-foreground">
-        <span>{label}</span>
+      <div className="flex min-h-[2.4em] items-start gap-1.5 text-[10px] sm:text-[10.5px] font-mono font-medium uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground">
+        <span className="break-words">{label}</span>
         {info && (
           <Tooltip delayDuration={100}>
             <TooltipTrigger asChild>
               <button
                 type="button"
                 aria-label={info.label}
-                className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full border border-muted-foreground/40 text-[9px] leading-none text-muted-foreground transition-colors hover:border-foreground hover:text-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground"
+                className="mt-[1px] inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border border-muted-foreground/40 text-[9px] leading-none text-muted-foreground transition-colors hover:border-foreground hover:text-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground"
               >
                 &zwnj;i
               </button>
@@ -250,10 +250,10 @@ function KPI({
           </Tooltip>
         )}
       </div>
-      <div className={`mt-1.5 num font-semibold leading-none ${sizeClass} ${signal ? "text-signal" : "text-foreground"}`}>
+      <div className={`mt-1 num font-semibold leading-none ${sizeClass} ${signal ? "text-signal" : "text-foreground"}`}>
         {numeric !== undefined ? <AnimatedNumber value={numeric} decimals={decimals} suffix={suffix} /> : value}
       </div>
-      {sub && <div className="mt-2 text-[12px] text-muted-foreground num">{sub}</div>}
+      {sub && <div className="mt-1.5 text-[11.5px] sm:text-[12px] leading-snug text-muted-foreground num">{sub}</div>}
     </div>
   );
 }
