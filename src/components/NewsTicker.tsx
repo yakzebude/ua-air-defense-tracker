@@ -14,7 +14,7 @@ interface NewsItem {
 const REFRESH_MS = 5 * 60 * 1000; // 5 minutes
 // Constant scroll speed (px/sec) — yields a smooth, predictable feel
 // regardless of how many headlines are in the loop.
-const SCROLL_SPEED_PX_S = 875;
+const SCROLL_SPEED_PX_S = 1000;
 
 export const NewsTicker = () => {
   const { i18n } = useTranslation();
