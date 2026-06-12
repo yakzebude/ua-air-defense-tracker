@@ -135,7 +135,7 @@ export function ChartInsights({
 
   return (
     <section
-      className="mt-4 rounded-sm border border-border bg-card/60 p-4 md:p-5"
+      className={`mt-4 rounded-sm border border-border bg-card/60 p-4 md:p-5 ${className}`}
       aria-label={title}
     >
       <header className="mb-5 flex items-baseline justify-between gap-3 border-b border-border/70 pb-3">
