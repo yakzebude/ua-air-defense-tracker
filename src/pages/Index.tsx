@@ -780,7 +780,7 @@ const Index = () => {
                                   {c.label}
                                 </div>
                                 <div className="h-1.5 w-full overflow-hidden bg-muted">
-                                  <div className={`h-full ${c.color}`} style={{ width: `${Math.min(100, rate * 100)}%` }} />
+                                  <div className="h-full" style={{ width: `${Math.min(100, rate * 100)}%`, background: c.color }} />
                                 </div>
                                 <div className="num text-[13px] font-semibold tabular-nums leading-none tracking-tight">
                                   {pct}<span className="text-muted-foreground">%</span>
