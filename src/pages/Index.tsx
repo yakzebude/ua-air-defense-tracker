@@ -536,12 +536,7 @@ const Index = () => {
   const [ballisticRange, setBallisticRange] = useState<[number, number] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [latestDataPoint, setLatestDataPoint] = useState<Date | null>(null);
-  const [windowStats, setWindowStats] = useState<{
-    last30: { launched: number; destroyed: number };
-    prev30: { launched: number; destroyed: number };
-    monthLabel: string;
-    prevMonthLabel: string;
-  } | null>(null);
+  const [completeMonth, setCompleteMonth] = useState<{ key: string; label: string } | null>(null);
 
   useEffect(() => {
     loadShahedData()
@@ -559,10 +554,7 @@ const Index = () => {
       fetch("/data/shahed_attacks_daily.csv").then((r) => r.ok ? r.text() : ""),
       fetch("/data/missile_attacks_daily.csv").then((r) => r.ok ? r.text() : ""),
     ]).then(([a, b]) => {
-      // Aggregate per UTC day
-      const perDay = new Map<string, { l: number; d: number; ts: number }>();
       let maxMs = 0;
-
       for (const text of [a, b]) {
         if (!text) continue;
         const parsed = Papa.parse<Record<string, string>>(text, { header: true, skipEmptyLines: true });
@@ -573,47 +565,22 @@ const Index = () => {
           const ts = Date.parse(iso);
           if (isNaN(ts)) continue;
           if (ts > maxMs) maxMs = ts;
-          const dt = new Date(ts);
-          const key = `${dt.getUTCFullYear()}-${dt.getUTCMonth()}-${dt.getUTCDate()}`;
-          const launched = Number.parseFloat(row.launched ?? "") || 0;
-          const destroyed = Number.parseFloat(row.destroyed ?? "") || 0;
-          const cur = perDay.get(key);
-          if (cur) { cur.l += launched; cur.d += destroyed; }
-          else perDay.set(key, { l: launched, d: destroyed, ts });
         }
       }
-
       if (maxMs === 0) return;
       setLatestDataPoint(new Date(maxMs));
 
-      // Last fully-covered calendar month: the most recent month whose final day is <= maxDate.
+      // Last fully-covered calendar month: most recent month whose final day is <= maxDate.
       const maxDate = new Date(maxMs);
       const lastDayOfMonth = (y: number, m: number) => new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
       let y = maxDate.getUTCFullYear();
       let m = maxDate.getUTCMonth();
       if (maxDate.getUTCDate() < lastDayOfMonth(y, m)) {
-        // current month incomplete → step back one month
         m -= 1; if (m < 0) { m = 11; y -= 1; }
       }
-      let py = y, pm = m - 1; if (pm < 0) { pm = 11; py -= 1; }
-
-      let l30L = 0, l30D = 0, p30L = 0, p30D = 0;
-      for (const { l, d, ts } of perDay.values()) {
-        const dt = new Date(ts);
-        const dy = dt.getUTCFullYear(), dm = dt.getUTCMonth();
-        if (dy === y && dm === m) { l30L += l; l30D += d; }
-        else if (dy === py && dm === pm) { p30L += l; p30D += d; }
-      }
-
-      const fmtMonth = (yy: number, mm: number) =>
-        new Date(Date.UTC(yy, mm, 1)).toLocaleString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
-
-      setWindowStats({
-        last30: { launched: Math.round(l30L), destroyed: Math.round(l30D) },
-        prev30: { launched: Math.round(p30L), destroyed: Math.round(p30D) },
-        monthLabel: fmtMonth(y, m),
-        prevMonthLabel: fmtMonth(py, pm),
-      });
+      const key = `${y}-${String(m + 1).padStart(2, "0")}`;
+      const label = new Date(Date.UTC(y, m, 1)).toLocaleString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+      setCompleteMonth({ key, label });
     }).catch(() => {});
   }, []);
 
@@ -711,45 +678,70 @@ const Index = () => {
                   info={{ label: t("kpi.tip.totalLaunchedLabel"), body: t("kpi.tip.totalLaunched") }}
                 />
 
-                {/* TIER 3 — rolling 30-day insight strip · Bloomberg-style terminal block */}
-                {windowStats && (
+                {/* TIER 3 — last fully-covered calendar month · per-category breakdown */}
+                {completeMonth && (
                   <div className="mt-5 border-t-2 border-foreground bg-background/60">
                     <div className="flex items-center justify-between gap-3 border-b border-border px-3 py-1.5 sm:px-4">
                       <span className="text-[9.5px] sm:text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-foreground truncate">
-                        {windowStats.monthLabel} <span className="text-muted-foreground">· last complete month</span>
+                        {completeMonth.label}
                       </span>
                       <span className="text-[9.5px] sm:text-[10px] font-mono uppercase tracking-[0.16em] text-muted-foreground whitespace-nowrap">
-                        vs {windowStats.prevMonthLabel}
+                        last complete month
                       </span>
                     </div>
-                    <div className="grid grid-cols-3 divide-x divide-border">
-                      {(() => {
-                        const l = windowStats.last30.launched;
-                        const d = windowStats.last30.destroyed;
-                        const reachedW = Math.max(l - d, 0);
-                        const lPrev = windowStats.prev30.launched;
-                        const dPrev = windowStats.prev30.destroyed;
-                        const rPrev = Math.max(lPrev - dPrev, 0);
-                        const Cell = ({ label, value, delta, dir }: { label: string; value: number; delta: number | null; dir: "down-is-good" | "up-is-good" }) => (
-                          <div className="min-w-0 px-2.5 py-3 sm:px-4 sm:py-3.5">
-                            <div className="text-[8.5px] sm:text-[9.5px] font-mono uppercase tracking-[0.18em] leading-none text-muted-foreground truncate">
-                              {label}
-                            </div>
-                            <div className="mt-2 num text-[1.375rem] sm:text-[1.75rem] font-semibold leading-none tracking-tight tabular-nums">
-                              {fmt(value)}
-                            </div>
-                            <div className="mt-2"><TrendBadge delta={delta} direction={dir} /></div>
+                    {(() => {
+                      const pick = (ds: typeof shahed) => ds?.months.find((mp) => mp.key === completeMonth.key);
+                      const uav = pick(shahed);
+                      const cru = pick(cruise);
+                      const bal = pick(ballistic);
+                      const cats = [
+                        { key: "uav", label: t("nav.drones"),    l: uav?.launched ?? 0, d: uav?.destroyed ?? 0 },
+                        { key: "cru", label: t("nav.cruise"),    l: cru?.launched ?? 0, d: cru?.destroyed ?? 0 },
+                        { key: "bal", label: t("nav.ballistic"), l: bal?.launched ?? 0, d: bal?.destroyed ?? 0 },
+                      ];
+                      const total = {
+                        l: cats.reduce((s, c) => s + c.l, 0),
+                        d: cats.reduce((s, c) => s + c.d, 0),
+                      };
+                      const reachedOf = (l: number, d: number) => Math.max(l - d, 0);
+                      const Cell = ({ label, total, values }: { label: string; total: number; values: { k: string; lbl: string; v: number }[] }) => (
+                        <div className="min-w-0 px-2.5 py-3 sm:px-4 sm:py-3.5">
+                          <div className="text-[8.5px] sm:text-[9.5px] font-mono uppercase tracking-[0.18em] leading-none text-muted-foreground truncate">
+                            {label}
                           </div>
-                        );
-                        return (
-                          <>
-                            <Cell label={t("masthead.insightLaunched")} value={l} delta={pctChange(l, lPrev)} dir="down-is-good" />
-                            <Cell label={t("masthead.insightIntercepted")} value={d} delta={pctChange(d, dPrev)} dir="up-is-good" />
-                            <Cell label={t("masthead.insightReached")} value={reachedW} delta={pctChange(reachedW, rPrev)} dir="down-is-good" />
-                          </>
-                        );
-                      })()}
-                    </div>
+                          <div className="mt-2 num text-[1.375rem] sm:text-[1.75rem] font-semibold leading-none tracking-tight tabular-nums">
+                            {fmt(total)}
+                          </div>
+                          <div className="mt-3 space-y-1">
+                            {values.map((v) => (
+                              <div key={v.k} className="flex items-baseline justify-between gap-2 text-[10px] font-mono">
+                                <span className="uppercase tracking-[0.14em] text-muted-foreground truncate">{v.lbl}</span>
+                                <span className="num tabular-nums text-foreground">{fmt(v.v)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                      return (
+                        <div className="grid grid-cols-3 divide-x divide-border">
+                          <Cell
+                            label={t("masthead.insightLaunched")}
+                            total={total.l}
+                            values={cats.map((c) => ({ k: c.key, lbl: c.label, v: c.l }))}
+                          />
+                          <Cell
+                            label={t("masthead.insightIntercepted")}
+                            total={total.d}
+                            values={cats.map((c) => ({ k: c.key, lbl: c.label, v: c.d }))}
+                          />
+                          <Cell
+                            label={t("masthead.insightReached")}
+                            total={reachedOf(total.l, total.d)}
+                            values={cats.map((c) => ({ k: c.key, lbl: c.label, v: reachedOf(c.l, c.d) }))}
+                          />
+                        </div>
+                      );
+                    })()}
                   </div>
                 )}
               </div>
