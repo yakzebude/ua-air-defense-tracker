@@ -11,28 +11,28 @@
 
 @layer base {
   :root {
-    /* Light — paper / report look (FT/OWID inspired) */
-    --background: 40 20% 99%;             /* warm paper */
-    --foreground: 215 25% 14%;            /* near-black ink */
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 14%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 14%;
+    /* Light — Bloomberg-inspired warm paper */
+    --background: 38 33% 96%;             /* warm cream paper */
+    --foreground: 30 18% 12%;              /* warm near-black ink */
+    --card: 36 30% 98%;                    /* slightly lifted warm cream */
+    --card-foreground: 30 18% 12%;
+    --popover: 36 30% 98%;
+    --popover-foreground: 30 18% 12%;
 
-    --primary: 215 25% 14%;
-    --primary-foreground: 40 20% 99%;
-    --secondary: 215 16% 96%;
-    --secondary-foreground: 215 25% 14%;
-    --muted: 215 16% 96%;
-    --muted-foreground: 215 10% 42%;
-    --accent: 215 16% 96%;
-    --accent-foreground: 215 25% 14%;
+    --primary: 30 18% 12%;
+    --primary-foreground: 38 33% 96%;
+    --secondary: 36 22% 92%;
+    --secondary-foreground: 30 18% 12%;
+    --muted: 36 22% 92%;
+    --muted-foreground: 30 10% 38%;
+    --accent: 36 22% 92%;
+    --accent-foreground: 30 18% 12%;
     --destructive: 0 65% 42%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 215 16% 89%;
-    --input: 215 16% 89%;
-    --ring: 215 25% 14%;
+    --border: 34 18% 85%;
+    --input: 34 18% 85%;
+    --ring: 30 18% 12%;
     --radius: 0.25rem;
 
     --ink: 215 25% 14%;
