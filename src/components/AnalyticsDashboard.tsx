@@ -27,9 +27,9 @@ type CategoryKey = "uavs" | "cruise" | "ballistic";
 // heatmap so every panel reads as one coherent visual system.
 // yellow (lightest threat) → orange → deep red. Grayscale handled separately.
 const CAT_COLORS: Record<CategoryKey, string> = {
-  uavs:      "hsl(48 95% 55%)",   // yellow — largest mass, lowest per-unit threat
-  cruise:    "hsl(28 92% 50%)",   // orange — mid threat
-  ballistic: "hsl(0 78% 45%)",    // deep red — highest per-unit threat
+  uavs:      "hsl(48 80% 55%)",   // yellow — less saturated
+  cruise:    "hsl(28 78% 50%)",   // orange — less saturated
+  ballistic: "hsl(0 65% 48%)",   // deep red — less saturated
 };
 
 interface Props {

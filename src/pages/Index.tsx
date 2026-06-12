@@ -756,9 +756,9 @@ const Index = () => {
                 <div className="rounded-md border border-border bg-card p-4 sm:p-5">
                   {(() => {
                     const cats = [
-                      { key: "uav", label: t("nav.drones"), l: shahed!.totals.launched, d: shahed!.totals.destroyed, color: "hsl(48 95% 55%)" },
-                      { key: "cruise", label: t("nav.cruise"), l: cruise!.totals.launched, d: cruise!.totals.destroyed, color: "hsl(28 92% 50%)" },
-                      { key: "bal", label: t("nav.ballistic"), l: ballistic!.totals.launched, d: ballistic!.totals.destroyed, color: "hsl(0 78% 45%)" },
+                      { key: "uav", label: t("nav.drones"), l: shahed!.totals.launched, d: shahed!.totals.destroyed, color: "hsl(48 80% 55%)" },
+                      { key: "cruise", label: t("nav.cruise"), l: cruise!.totals.launched, d: cruise!.totals.destroyed, color: "hsl(28 78% 50%)" },
+                      { key: "bal", label: t("nav.ballistic"), l: ballistic!.totals.launched, d: ballistic!.totals.destroyed, color: "hsl(0 65% 48%)" },
                     ];
                     return (
                       <div>
