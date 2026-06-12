@@ -5,6 +5,7 @@ import { loadWeaponsCatalog, type Weapon } from "@/lib/weapons-catalog";
 import { loadModelStats, lookupModelStats, type ModelStats } from "@/lib/model-stats";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Panel } from "@/components/ui/panel";
+import { ArsenalTreemap } from "@/components/ArsenalTreemap";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 const COLLAPSED_ROWS = 5;
@@ -21,6 +22,7 @@ export function WeaponsCatalogSection() {
   const [sortKey, setSortKey] = useState<SortKey>("model");
   const [sortAsc, setSortAsc] = useState(true);
   const [expanded, setExpanded] = useState(false);
+  const [treemapFilter, setTreemapFilter] = useState<string | null>(null);
 
   useEffect(() => {
     loadWeaponsCatalog().then(setWeapons).catch(() => setWeapons([]));
@@ -48,9 +50,21 @@ export function WeaponsCatalogSection() {
   const filtered = useMemo(() => {
     if (!weapons) return [];
     const needle = q.trim().toLowerCase();
+    // Treemap-driven token filter: split on non-alphanumerics and require any
+    // significant token to appear in the weapon's name/model/type fields.
+    const tmTokens = treemapFilter
+      ? treemapFilter
+          .toLowerCase()
+          .split(/[\s/+,()]+/)
+          .filter((tok) => tok.length >= 3)
+      : [];
     const arr = weapons.filter((w) => {
       if (cat !== "all" && w.category !== cat) return false;
       if (origin !== "all" && w.national_origin !== origin) return false;
+      if (tmTokens.length) {
+        const hay = [w.model, w.name, w.name_NATO, w.type].join(" ").toLowerCase();
+        if (!tmTokens.some((tok) => hay.includes(tok))) return false;
+      }
       if (!needle) return true;
       return [w.model, w.name, w.name_NATO, w.type, w.manufacturer, w.designer]
         .some((v) => v.toLowerCase().includes(needle));
@@ -62,12 +76,20 @@ export function WeaponsCatalogSection() {
     return arr.sort((a, b) =>
       getKey(a).localeCompare(getKey(b), "en", { numeric: true }) * (sortAsc ? 1 : -1),
     );
-  }, [weapons, cat, origin, q, sortKey, sortAsc]);
+  }, [weapons, cat, origin, q, sortKey, sortAsc, treemapFilter]);
 
   const toggleSort = (k: SortKey) => {
     if (sortKey === k) setSortAsc((v) => !v);
     else { setSortKey(k); setSortAsc(true); }
   };
+
+        <div className="mb-6 rounded-sm border border-border bg-card/60 p-5">
+          <ArsenalTreemap
+            selected={treemapFilter}
+            onSelect={(name) => setTreemapFilter(name)}
+          />
+        </div>
+
 
   return (
     <section id="arsenal" className="scroll-mt-32 border-t border-border">

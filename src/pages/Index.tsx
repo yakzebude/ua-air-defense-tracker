@@ -18,7 +18,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { AirAlertsMap } from "@/components/AirAlertsMap";
 import { AirThreatFeed } from "@/components/AirThreatFeed";
 import { MiniAlertsMap } from "@/components/MiniAlertsMap";
-import { ChartInsights } from "@/components/ChartInsights";
+import { CategorySparklines } from "@/components/CategorySparklines";
 import { DataConfidenceSection } from "@/components/DataConfidenceSection";
 import { StatusBanner } from "@/components/StatusBadge";
 
@@ -481,13 +481,7 @@ function CategorySection({
           <MonthlyTrendChart data={filtered} />
         </Panel>
 
-        <ChartInsights
-          data={filtered}
-          metric="launched"
-          unit={unitNoun}
-          direction="down-is-good"
-          subtitle={`Auto-generated from ${rangeLabel || "the selected range"}. Plain-language summary of launches, peaks and recent trends.`}
-        />
+
 
       </div>
     </section>
@@ -779,6 +773,16 @@ const Index = () => {
       )}
 
       {ready && <AnalyticsDashboard shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />}
+
+      {ready && (
+        <CategorySparklines
+          categories={[
+            { id: "drones",    label: t("category.drones.kicker"),           unit: t("category.drones.unit"),           dataset: shahed!,    href: "#drones" },
+            { id: "cruise",    label: t("category.cruiseSection.kicker"),    unit: t("category.cruiseSection.unit"),    dataset: cruise!,    href: "#cruise" },
+            { id: "ballistic", label: t("category.ballisticSection.kicker"), unit: t("category.ballisticSection.unit"), dataset: ballistic!, href: "#ballistic" },
+          ]}
+        />
+      )}
 
       {/* The full live-alerts section now lives further down (after Ballistic). */}
 
