@@ -539,6 +539,8 @@ const Index = () => {
   const [windowStats, setWindowStats] = useState<{
     last30: { launched: number; destroyed: number };
     prev30: { launched: number; destroyed: number };
+    monthLabel: string;
+    prevMonthLabel: string;
   } | null>(null);
 
   useEffect(() => {
