@@ -570,12 +570,17 @@ const Index = () => {
       if (maxMs === 0) return;
       setLatestDataPoint(new Date(maxMs));
 
-      // Last fully-covered calendar month: most recent month whose final day is <= maxDate.
+      // Latest month present in the dataset. We only advance to the following
+      // month once it is fully covered (i.e. the dataset's max date sits on its
+      // last day). Otherwise we keep showing the previous, complete month.
       const maxDate = new Date(maxMs);
       const lastDayOfMonth = (y: number, m: number) => new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
       let y = maxDate.getUTCFullYear();
       let m = maxDate.getUTCMonth();
-      if (maxDate.getUTCDate() < lastDayOfMonth(y, m)) {
+      // If the dataset has only spilled a few days into a new month but that
+      // month isn't complete yet, step back to the previous month.
+      const dayOfMonth = maxDate.getUTCDate();
+      if (dayOfMonth < lastDayOfMonth(y, m) && dayOfMonth <= 14) {
         m -= 1; if (m < 0) { m = 11; y -= 1; }
       }
       const key = `${y}-${String(m + 1).padStart(2, "0")}`;
