@@ -948,45 +948,62 @@ const Index = () => {
       {/* The full live-alerts section now lives further down (after Ballistic). */}
 
 
-      {shahed && shahedRange && (
-        <CategorySection
+      {/* ── Editorial framing for the category dossiers ── */}
+      {ready && categoryShares && (
+        <section className="border-t border-border">
+          <div className="container pt-6 md:pt-8">
+            <div className="src-label sticky top-[64px] z-10 mb-2 bg-background py-1">
+              {t("intel.dossiersKicker")}
+            </div>
+            <p className="max-w-3xl text-[15px] leading-[1.55] text-foreground">
+              {t("intel.dossiersFraming")}
+            </p>
+          </div>
+        </section>
+      )}
+
+      {shahed && categoryShares && (
+        <CategoryIntelligenceBlock
           id="drones"
-          glossaryKey="drones"
+          index={1}
           kicker={t("category.drones.kicker")}
           title={t("category.drones.title")}
-          description={t("category.drones.description")}
-          unitNoun={t("category.drones.unit")}
+          framing={t("intel.framing.drones")}
+          unit={t("category.drones.unit")}
+          accent="hsl(var(--series-launched))"
           dataset={shahed}
-          range={shahedRange}
-          onRangeChange={setShahedRange}
+          shareSeries={categoryShares.shahed}
+          shareLabels={categoryShares.labels}
         />
       )}
 
-      {cruise && cruiseRange && (
-        <CategorySection
-          id="cruise"
-          glossaryKey="cruise"
-          kicker={t("category.cruiseSection.kicker")}
-          title={t("category.cruiseSection.title")}
-          description={t("category.cruiseSection.description")}
-          unitNoun={t("category.cruiseSection.unit")}
-          dataset={cruise}
-          range={cruiseRange}
-          onRangeChange={setCruiseRange}
-        />
-      )}
-
-      {ballistic && ballisticRange && (
-        <CategorySection
+      {ballistic && categoryShares && (
+        <CategoryIntelligenceBlock
           id="ballistic"
-          glossaryKey="ballistic"
+          index={2}
           kicker={t("category.ballisticSection.kicker")}
           title={t("category.ballisticSection.title")}
-          description={t("category.ballisticSection.description")}
-          unitNoun={t("category.ballisticSection.unit")}
+          framing={t("intel.framing.ballistic")}
+          unit={t("category.ballisticSection.unit")}
+          accent="hsl(var(--signal))"
           dataset={ballistic}
-          range={ballisticRange}
-          onRangeChange={setBallisticRange}
+          shareSeries={categoryShares.ballistic}
+          shareLabels={categoryShares.labels}
+        />
+      )}
+
+      {cruise && categoryShares && (
+        <CategoryIntelligenceBlock
+          id="cruise"
+          index={3}
+          kicker={t("category.cruiseSection.kicker")}
+          title={t("category.cruiseSection.title")}
+          framing={t("intel.framing.cruise")}
+          unit={t("category.cruiseSection.unit")}
+          accent="hsl(var(--series-rate))"
+          dataset={cruise}
+          shareSeries={categoryShares.cruise}
+          shareLabels={categoryShares.labels}
         />
       )}
 
