@@ -11,6 +11,8 @@ interface Props {
   subtitle?: string;
   /** Accent colour for the sparkline (matches the parent series). */
   accent?: string;
+  /** Extra classes appended to the root section (e.g. mt-auto for layout). */
+  className?: string;
 }
 
 /** Pull the headline number out of an insight sentence for the big stat.
