@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Trans, useTranslation } from "react-i18next";
-import { ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Papa from "papaparse";
 import { loadShahedData, type Dataset, type MonthPoint } from "@/lib/shahed-data";
 import { loadAllMissileCategories } from "@/lib/missiles-data";
@@ -879,7 +879,7 @@ const Index = () => {
               </div>
             )}
             {cruise && cruiseRange && (
-              <div className="min-w-full snap-start shrink-0 border-r border-border last:border-r-0">
+              <div className="relative min-w-full snap-start shrink-0 border-r border-border last:border-r-0">
                 <CategorySection
                   id="cruise"
                   glossaryKey="cruise"
@@ -891,10 +891,32 @@ const Index = () => {
                   range={cruiseRange}
                   onRangeChange={setCruiseRange}
                 />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = categoriesScrollRef.current;
+                    if (el) el.scrollBy({ left: -el.clientWidth, behavior: "smooth" });
+                  }}
+                  aria-label="Previous visualization"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 md:left-4 flex h-10 w-10 items-center justify-center rounded-full bg-background/80 shadow-sm backdrop-blur-sm transition hover:bg-background md:h-12 md:w-12"
+                >
+                  <ChevronLeft className="h-5 w-5 text-muted-foreground md:h-6 md:w-6" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = categoriesScrollRef.current;
+                    if (el) el.scrollBy({ left: el.clientWidth, behavior: "smooth" });
+                  }}
+                  aria-label="Next visualization"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 md:right-4 flex h-10 w-10 items-center justify-center rounded-full bg-background/80 shadow-sm backdrop-blur-sm transition hover:bg-background md:h-12 md:w-12"
+                >
+                  <ChevronRight className="h-5 w-5 text-muted-foreground md:h-6 md:w-6" />
+                </button>
               </div>
             )}
             {ballistic && ballisticRange && (
-              <div className="min-w-full snap-start shrink-0 border-r border-border last:border-r-0">
+              <div className="relative min-w-full snap-start shrink-0 border-r border-border last:border-r-0">
                 <CategorySection
                   id="ballistic"
                   glossaryKey="ballistic"
@@ -906,6 +928,17 @@ const Index = () => {
                   range={ballisticRange}
                   onRangeChange={setBallisticRange}
                 />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = categoriesScrollRef.current;
+                    if (el) el.scrollBy({ left: -el.clientWidth, behavior: "smooth" });
+                  }}
+                  aria-label="Previous visualization"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 md:left-4 flex h-10 w-10 items-center justify-center rounded-full bg-background/80 shadow-sm backdrop-blur-sm transition hover:bg-background md:h-12 md:w-12"
+                >
+                  <ChevronLeft className="h-5 w-5 text-muted-foreground md:h-6 md:w-6" />
+                </button>
               </div>
             )}
           </div>
