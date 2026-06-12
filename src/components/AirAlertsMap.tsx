@@ -285,31 +285,78 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           style={{ width: "100%", height: "100%" }}
         >
           <ZoomableGroup zoom={1} minZoom={1} maxZoom={variant === "full" ? 6 : 1}>
-            {/* Belarus + Russia underlay for geographic context. Drawn first so
-                Ukraine oblasts sit on top and the UA border reads clearly. */}
+            {/* Diagonal red hatch used to mark aggressor states (RU + BY).
+                A subtle red tint sits underneath so the territories read as
+                hostile even when zoomed out and the stripes blur. */}
+            <defs>
+              <pattern
+                id="aggressor-stripes"
+                patternUnits="userSpaceOnUse"
+                width="6"
+                height="6"
+                patternTransform="rotate(45)"
+              >
+                <rect width="6" height="6" fill="hsl(var(--signal) / 0.16)" />
+                <line x1="0" y1="0" x2="0" y2="6" stroke="hsl(var(--signal) / 0.7)" strokeWidth="1.6" />
+              </pattern>
+            </defs>
+
+            {/* Belarus + Russia — marked as aggressor states with a red
+                diagonal hatch. Interactive: hovering opens an explanatory
+                tooltip. Drawn first so Ukraine oblasts remain on top. */}
             <Geographies geography={WORLD_GEO}>
               {({ geographies }) =>
                 geographies
                   .filter((g) => NEIGHBOUR_NAMES.has(g.properties.name as string))
-                  .map((geo) => (
-                    <Geography
-                      key={geo.rsmKey}
-                      geography={geo}
-                      style={{
-                        default: {
-                          fill: "hsl(var(--muted) / 0.4)",
-                          stroke: "hsl(var(--muted-foreground) / 0.5)",
-                          strokeWidth: 0.5,
-                          outline: "none",
-                          pointerEvents: "none",
-                        },
-                        hover: { fill: "hsl(var(--muted) / 0.4)", outline: "none", pointerEvents: "none" },
-                        pressed: { outline: "none" },
-                      }}
-                    />
-                  ))
+                  .map((geo) => {
+                    const country = geo.properties.name as "Belarus" | "Russia";
+                    return (
+                      <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        onMouseEnter={(e) => {
+                          const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
+                            ?.getBoundingClientRect();
+                          setHovered({
+                            kind: "aggressor",
+                            country,
+                            x: e.clientX - (cont?.left ?? 0),
+                            y: e.clientY - (cont?.top ?? 0),
+                          });
+                        }}
+                        onMouseMove={(e) => {
+                          const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
+                            ?.getBoundingClientRect();
+                          setHovered({
+                            kind: "aggressor",
+                            country,
+                            x: e.clientX - (cont?.left ?? 0),
+                            y: e.clientY - (cont?.top ?? 0),
+                          });
+                        }}
+                        style={{
+                          default: {
+                            fill: "url(#aggressor-stripes)",
+                            stroke: "hsl(var(--signal) / 0.75)",
+                            strokeWidth: 0.7,
+                            outline: "none",
+                            cursor: "help",
+                          },
+                          hover: {
+                            fill: "url(#aggressor-stripes)",
+                            stroke: "hsl(var(--signal))",
+                            strokeWidth: 1.1,
+                            outline: "none",
+                            cursor: "help",
+                          },
+                          pressed: { outline: "none" },
+                        }}
+                      />
+                    );
+                  })
               }
             </Geographies>
+
 
 
             {/* Oblast polygons */}
