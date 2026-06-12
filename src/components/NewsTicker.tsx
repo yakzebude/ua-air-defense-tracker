@@ -14,7 +14,7 @@ interface NewsItem {
 const REFRESH_MS = 5 * 60 * 1000; // 5 minutes
 // Constant scroll speed (px/sec) — yields a smooth, predictable feel
 // regardless of how many headlines are in the loop.
-const SCROLL_SPEED_PX_S = 440;
+const SCROLL_SPEED_PX_S = 700;
 
 export const NewsTicker = () => {
   const { i18n } = useTranslation();
@@ -82,7 +82,7 @@ export const NewsTicker = () => {
     >
       <div className="mx-auto flex h-full max-w-[1440px] items-stretch">
         {/* LIVE NEWS badge */}
-        <div className="flex items-center gap-2 px-3 border-r border-white/10 shrink-0 font-mono text-[10px] uppercase tracking-[0.18em] text-red-500">
+        <div className="flex items-center gap-2 px-3 border-r border-white/10 shrink-0 font-mono text-[10px] uppercase tracking-[0.18em] text-red-500 font-bold">
           Live News
         </div>
 
