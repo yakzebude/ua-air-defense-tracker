@@ -312,7 +312,7 @@ function RelatedSourcesSection() {
   const { t } = useTranslation();
   return (
     <section id="related" className="scroll-mt-32 border-t border-border">
-      <div className="container py-12 md:py-16">
+      <div className="container py-6 md:py-8">
         <div className="mb-8 max-w-3xl">
           <div className="src-label mb-3">{t("related.kicker")}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("related.title")}</h2>
@@ -355,7 +355,7 @@ function HowToHelpSection() {
   const { t } = useTranslation();
   return (
     <section id="help" className="scroll-mt-32 border-t border-border">
-      <div className="container py-12 md:py-16">
+      <div className="container py-6 md:py-8">
         <div className="mb-8 max-w-3xl">
           <div className="src-label mb-3">{t("donate.kicker")}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("donate.title")}</h2>
@@ -427,7 +427,7 @@ function CategorySection({
 
   return (
     <section id={id} className="scroll-mt-32 border-t border-border">
-      <div className="container py-12 md:py-16">
+      <div className="container py-6 md:py-8">
         <div className="mb-8 max-w-3xl">
           <div className="src-label mb-3">{kicker}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{title}</h2>
@@ -756,7 +756,7 @@ const Index = () => {
           {ready && (
             <div className="mt-6 space-y-3 md:mt-8 md:space-y-4">
               {/* ───────── LAYER 1 — LIVE THREAT STATUS (24h) ───────── */}
-              <div className="rounded-md border border-[hsl(var(--signal)/0.35)] bg-card p-4 sm:p-5 md:p-6">
+              <div className="rounded-md border border-[hsl(var(--signal)/0.35)] bg-card p-3 sm:p-4">
                 <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
                   <div className="flex items-center gap-2 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
                     <span className="relative inline-flex h-1.5 w-1.5">
@@ -800,7 +800,7 @@ const Index = () => {
 
               {/* ───────── LAYER 2 — CURRENT MONTH ATTACK VELOCITY ───────── */}
               {monthVelocity && (
-                <div className="rounded-md border border-border bg-card p-4 sm:p-5 md:p-6">
+                <div className="rounded-md border border-border bg-card p-3 sm:p-4">
                   <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
                     <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                       <span className="text-foreground">{t("hero.layer2.kicker")}</span>
@@ -868,7 +868,7 @@ const Index = () => {
               )}
 
               {/* ───────── LAYER 3 — WAR-TO-DATE TOTALS (archive) ───────── */}
-              <div className="rounded-md border border-border bg-secondary/30 p-4 sm:p-5 md:p-6">
+              <div className="rounded-md border border-border bg-secondary/30 p-3 sm:p-4">
                 <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
                   <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                     <span className="text-foreground">{t("hero.layer3.kicker")}</span>
@@ -1009,7 +1009,7 @@ const Index = () => {
 
       {/* Live situation — collapsible. Historical data remains the primary focus. */}
       <section id="alerts" className="scroll-mt-32 border-t border-border bg-secondary/30">
-        <div className="container py-10 md:py-14">
+        <div className="container py-6 md:py-8">
           <details className="group">
             <summary className="flex cursor-pointer list-none flex-wrap items-end justify-between gap-3 [&::-webkit-details-marker]:hidden">
               <div>
