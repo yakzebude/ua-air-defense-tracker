@@ -13,22 +13,26 @@ interface Props {
   accent?: string;
 }
 
-/** Pull the headline number out of an insight sentence for the big stat. */
+/** Pull the headline number out of an insight sentence for the big stat.
+ *  Strip "'NN" year tokens first so a year like '24 is never mistaken
+ *  for the headline value. */
 function splitInsight(ins: Insight): { value: string; caption: string } {
-  const m = ins.text.match(/([+\-]?\d[\d,]*(?:\.\d+)?\s*%?)/);
+  const cleaned = ins.text.replace(/'\d{2}\b/g, "");
+  const m = cleaned.match(/([+\-]?\d[\d,]*(?:\.\d+)?\s*%?)/);
   if (!m) return { value: "", caption: ins.text };
   return { value: m[0].trim(), caption: ins.text };
 }
 
 /** Map an insight back to one or two indices in the supplied series so the
- *  sparkline can highlight exactly the months the finding refers to. */
+ *  sparkline can highlight exactly the months the finding refers to.
+ *  Matches the project's label format ("May '24"). */
 function highlightIndices(
   ins: Insight,
   series: MonthPoint[],
 ): { primary: number | null; secondary: number | null } {
   const labels = series.map((m) => m.label);
-  // Capture every "Mon YYYY"-style token in the insight sentence.
-  const tokens = ins.text.match(/[A-Z][a-z]{2,8}\s+\d{4}/g) ?? [];
+  // "May '24" — three-letter month + apostrophe + two-digit year.
+  const tokens = ins.text.match(/[A-Z][a-z]{2}\s+'\d{2}/g) ?? [];
   const idxs = tokens
     .map((tok) => labels.findIndex((l) => l === tok))
     .filter((i) => i >= 0);
@@ -39,38 +43,36 @@ function highlightIndices(
 }
 
 /** Mini bar-sparkline of the whole series; the months the finding refers to
- *  are highlighted in the accent colour, every other month sits in a neutral
- *  grayscale so the eye locks onto the highlighted bar(s). */
+ *  are highlighted in a darker neutral gray so the eye locks onto them
+ *  without competing with the category colour used elsewhere on the page.
+ *  When a finding compares two months (e.g. largest jump/drop), BOTH bars
+ *  are coloured equally. */
 function Sparkline({
   series,
   values,
   primary,
   secondary,
-  accent,
 }: {
   series: MonthPoint[];
   values: number[];
   primary: number | null;
   secondary: number | null;
-  accent: string;
 }) {
   const max = Math.max(1, ...values);
+  const baseBg = "hsl(var(--muted-foreground) / 0.18)";
+  const hiBg = "hsl(var(--muted-foreground) / 0.85)";
   return (
     <div className="mt-2 flex h-10 items-end gap-[1px]" aria-hidden>
       {values.map((v, i) => {
         const h = (Math.max(v, 0) / max) * 100;
-        const isPrimary = i === primary;
-        const isSecondary = i === secondary;
-        const isHi = isPrimary || isSecondary;
-        const bg = isHi ? accent : "hsl(var(--muted-foreground) / 0.22)";
+        const isHi = i === primary || i === secondary;
         return (
           <div
             key={i}
             className="flex-1"
             style={{
               height: `${Math.max(h, 2)}%`,
-              background: bg,
-              opacity: isSecondary ? 0.6 : 1,
+              background: isHi ? hiBg : baseBg,
               minWidth: 2,
             }}
             title={`${series[i]?.label ?? ""}: ${v.toLocaleString("en-US")}`}
@@ -96,15 +98,24 @@ export function ChartInsights({
   subtitle = "Generated automatically from the selected time range.",
   accent = "hsl(48 95% 55%)",
 }: Props) {
+  // Only consider months that are fully closed (i.e. the calendar month is
+  // entirely in the past). The current, partial month would otherwise show
+  // up as a misleading "low" / "biggest drop" in the findings.
+  const completeData = useMemo(() => {
+    const now = new Date();
+    const cutoff = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1);
+    return data.filter((m) => m.date.getTime() < cutoff);
+  }, [data]);
+
   const insights = useMemo(
-    () => computeMonthlyInsights(data, { metric, unit, direction }),
-    [data, metric, unit, direction],
+    () => computeMonthlyInsights(completeData, { metric, unit, direction }),
+    [completeData, metric, unit, direction],
   );
 
   // Build the series values that the spark uses (matches the metric).
   const series = useMemo(
-    () => data.filter((m) => m.launched > 0 || metric === "rate"),
-    [data, metric],
+    () => completeData.filter((m) => m.launched > 0 || metric === "rate"),
+    [completeData, metric],
   );
   const values = useMemo(() => {
     return series.map((m) => {
@@ -140,15 +151,23 @@ export function ChartInsights({
         {insights.map((ins, i) => {
           const { value, caption } = splitInsight(ins);
           const { primary, secondary } = highlightIndices(ins, series);
+          // Always lead with the month abbreviation in front of the year, and
+          // show BOTH months when the finding compares two of them.
+          const monthTag =
+            primary !== null && secondary !== null
+              ? `${series[primary]?.label} → ${series[secondary]?.label}`
+              : primary !== null
+                ? series[primary]?.label
+                : null;
           return (
             <li key={i} className="flex flex-col">
               <div className="flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                 <span>
                   {String(i + 1).padStart(2, "0")} · {ins.label}
                 </span>
-                {primary !== null && (
-                  <span className="tabular-nums text-muted-foreground/70">
-                    {series[primary]?.label}
+                {monthTag && (
+                  <span className="tabular-nums text-muted-foreground/80">
+                    {monthTag}
                   </span>
                 )}
               </div>
@@ -165,7 +184,6 @@ export function ChartInsights({
                 values={values}
                 primary={primary}
                 secondary={secondary}
-                accent={accent}
               />
               <p className="mt-2.5 text-[12.5px] leading-[1.55] text-muted-foreground">{caption}</p>
             </li>
