@@ -685,14 +685,18 @@ const Index = () => {
                   info={{ label: t("kpi.tip.totalLaunchedLabel"), body: t("kpi.tip.totalLaunched") }}
                 />
 
-                {/* TIER 3 — rolling 30-day insight strip */}
+                {/* TIER 3 — rolling 30-day insight strip · Bloomberg-style terminal block */}
                 {windowStats && (
-                  <div className="mt-5 rounded-sm border border-border bg-background/60 p-3 sm:p-4">
-                    <div className="mb-2.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.16em] text-muted-foreground">
-                      <span>{t("masthead.insight")}</span>
-                      <span className="text-muted-foreground/70 normal-case tracking-normal">— {t("masthead.vsPrev30")}</span>
+                  <div className="mt-5 border-t-2 border-foreground bg-background/60">
+                    <div className="flex items-center justify-between border-b border-border px-3 py-1.5 sm:px-4">
+                      <span className="text-[9.5px] sm:text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-foreground">
+                        {t("masthead.insight")}
+                      </span>
+                      <span className="text-[9.5px] sm:text-[10px] font-mono uppercase tracking-[0.16em] text-muted-foreground">
+                        {t("masthead.vsPrev30")}
+                      </span>
                     </div>
-                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                    <div className="grid grid-cols-3 divide-x divide-border">
                       {(() => {
                         const l = windowStats.last30.launched;
                         const d = windowStats.last30.destroyed;
@@ -700,23 +704,22 @@ const Index = () => {
                         const lPrev = windowStats.prev30.launched;
                         const dPrev = windowStats.prev30.destroyed;
                         const rPrev = Math.max(lPrev - dPrev, 0);
+                        const Cell = ({ label, value, delta, dir }: { label: string; value: number; delta: number | null; dir: "down-is-good" | "up-is-good" }) => (
+                          <div className="min-w-0 px-2.5 py-3 sm:px-4 sm:py-3.5">
+                            <div className="text-[8.5px] sm:text-[9.5px] font-mono uppercase tracking-[0.18em] leading-none text-muted-foreground truncate">
+                              {label}
+                            </div>
+                            <div className="mt-2 num text-[1.375rem] sm:text-[1.75rem] font-semibold leading-none tracking-tight tabular-nums">
+                              {fmt(value)}
+                            </div>
+                            <div className="mt-2"><TrendBadge delta={delta} direction={dir} /></div>
+                          </div>
+                        );
                         return (
                           <>
-                            <div className="min-w-0">
-                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightLaunched")}</div>
-                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(l)}</div>
-                              <div className="mt-1"><TrendBadge delta={pctChange(l, lPrev)} direction="down-is-good" /></div>
-                            </div>
-                            <div className="min-w-0">
-                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightIntercepted")}</div>
-                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(d)}</div>
-                              <div className="mt-1"><TrendBadge delta={pctChange(d, dPrev)} direction="up-is-good" /></div>
-                            </div>
-                            <div className="min-w-0">
-                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightReached")}</div>
-                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(reachedW)}</div>
-                              <div className="mt-1"><TrendBadge delta={pctChange(reachedW, rPrev)} direction="down-is-good" /></div>
-                            </div>
+                            <Cell label={t("masthead.insightLaunched")} value={l} delta={pctChange(l, lPrev)} dir="down-is-good" />
+                            <Cell label={t("masthead.insightIntercepted")} value={d} delta={pctChange(d, dPrev)} dir="up-is-good" />
+                            <Cell label={t("masthead.insightReached")} value={reachedW} delta={pctChange(reachedW, rPrev)} dir="down-is-good" />
                           </>
                         );
                       })()}
@@ -728,15 +731,47 @@ const Index = () => {
               {/* TIER 2 — Interception rate + Reached target area (col-span-5, stacked) */}
               <div className="md:col-span-5 grid grid-cols-2 gap-3 md:grid-cols-1 md:gap-4">
                 <div className="rounded-md border border-border bg-card p-4 sm:p-5">
-                  <KPI
-                    label={t("kpi.interceptionRate")}
-                    numeric={grand.rate * 100}
-                    decimals={1}
-                    suffix="%"
-                    size="lg"
-                    sub={`${fmt(grand.destroyed)} ${t("kpi.ofSep")} ${fmt(grand.launched)} ${t("kpi.confirmedInterceptions")}`}
-                    info={{ label: t("kpi.tip.interceptionRateLabel"), body: t("kpi.tip.interceptionRate") }}
-                  />
+                  {(() => {
+                    const cats = [
+                      { key: "uav", label: t("nav.drones"), l: shahed!.totals.launched, d: shahed!.totals.destroyed, color: "bg-series-launched" },
+                      { key: "cruise", label: t("nav.cruise"), l: cruise!.totals.launched, d: cruise!.totals.destroyed, color: "bg-series-rate" },
+                      { key: "bal", label: t("nav.ballistic"), l: ballistic!.totals.launched, d: ballistic!.totals.destroyed, color: "bg-series-destroyed" },
+                    ];
+                    return (
+                      <div>
+                        <div className="flex items-baseline justify-between gap-2">
+                          <div className="text-[10px] sm:text-[10.5px] font-mono font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                            {t("kpi.interceptionRate")}
+                          </div>
+                          <div className="num text-[1.125rem] font-semibold tabular-nums leading-none">
+                            {(grand.rate * 100).toFixed(1)}<span className="text-muted-foreground">%</span>
+                          </div>
+                        </div>
+                        <div className="mt-3 divide-y divide-border border-t border-border">
+                          {cats.map((c) => {
+                            const rate = c.l > 0 ? c.d / c.l : 0;
+                            const pct = (rate * 100).toFixed(1);
+                            return (
+                              <div key={c.key} className="grid grid-cols-[64px_1fr_auto] items-center gap-3 py-2.5">
+                                <div className="text-[10px] font-mono uppercase tracking-[0.16em] text-foreground">
+                                  {c.label}
+                                </div>
+                                <div className="h-1.5 w-full overflow-hidden bg-muted">
+                                  <div className={`h-full ${c.color}`} style={{ width: `${Math.min(100, rate * 100)}%` }} />
+                                </div>
+                                <div className="num text-[13px] font-semibold tabular-nums leading-none tracking-tight">
+                                  {pct}<span className="text-muted-foreground">%</span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <div className="mt-2.5 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.12em] text-muted-foreground">
+                          {fmt(grand.destroyed)} {t("kpi.ofSep")} {fmt(grand.launched)} {t("kpi.confirmedInterceptions")}
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
                 <div className="rounded-md border border-border bg-card p-4 sm:p-5">
                   <KPI
