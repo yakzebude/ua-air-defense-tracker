@@ -22,6 +22,7 @@ export function WeaponsCatalogSection() {
   const [sortKey, setSortKey] = useState<SortKey>("model");
   const [sortAsc, setSortAsc] = useState(true);
   const [expanded, setExpanded] = useState(false);
+  const [treemapFilter, setTreemapFilter] = useState<string | null>(null);
 
   useEffect(() => {
     loadWeaponsCatalog().then(setWeapons).catch(() => setWeapons([]));
