@@ -5,6 +5,7 @@ import { loadWeaponsCatalog, type Weapon } from "@/lib/weapons-catalog";
 import { loadModelStats, lookupModelStats, type ModelStats } from "@/lib/model-stats";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Panel } from "@/components/ui/panel";
+import { ArsenalTreemap } from "@/components/ArsenalTreemap";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 const COLLAPSED_ROWS = 5;
