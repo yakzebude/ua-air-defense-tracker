@@ -851,7 +851,7 @@ const Index = () => {
             aria-label="Categories — swipe horizontally between UAVs, cruise and ballistic"
           >
             {shahed && shahedRange && (
-              <div className="min-w-full snap-start shrink-0 border-r border-border last:border-r-0">
+              <div className="relative min-w-full snap-start shrink-0 border-r border-border last:border-r-0">
                 <CategorySection
                   id="drones"
                   glossaryKey="drones"
@@ -863,6 +863,11 @@ const Index = () => {
                   range={shahedRange}
                   onRangeChange={setShahedRange}
                 />
+                <div className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 md:right-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background/80 shadow-sm backdrop-blur-sm md:h-12 md:w-12">
+                    <ChevronRight className="h-5 w-5 text-muted-foreground md:h-6 md:w-6" />
+                  </div>
+                </div>
               </div>
             )}
             {cruise && cruiseRange && (
