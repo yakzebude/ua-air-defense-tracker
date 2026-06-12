@@ -154,15 +154,18 @@ export function ChartInsights({
         {insights.map((ins, i) => {
           const { value, caption } = splitInsight(ins);
           const { primary, secondary } = highlightIndices(ins, series);
-          // Color logic: red on increase, green on 0 or decrease (remove yellow)
+          // Color logic: red on increase, green on 0 or decrease (remove yellow).
+          // Peak month for interception-rate charts is a Ukrainian success → green.
           const valueColor =
             ins.label === "Largest drop"
               ? "hsl(var(--foreground))"
-              : ins.tone === "bad" || ins.tone === "warn"
-                ? "hsl(var(--signal))"
-                : ins.tone === "good" || ins.tone === "neutral"
-                  ? "hsl(var(--signal-ok))"
-                  : "hsl(var(--foreground))";
+              : ins.label === "Peak month" && metric === "rate"
+                ? "hsl(var(--signal-ok))"
+                : ins.tone === "bad" || ins.tone === "warn"
+                  ? "hsl(var(--signal))"
+                  : ins.tone === "good" || ins.tone === "neutral"
+                    ? "hsl(var(--signal-ok))"
+                    : "hsl(var(--foreground))";
           // Always lead with the month abbreviation in front of the year, and
           // show BOTH months when the finding compares two of them.
           const monthTag =
