@@ -24,6 +24,17 @@ const OCCUPIED_ISOS = new Set<string>([
   "UA-65", // Kherson (partial)
 ]);
 
+/** Short 2–3 letter codes shown on the map for each oblast. */
+const OBLAST_CODE: Record<string, string> = {
+  "UA-71": "CHK", "UA-74": "CHR", "UA-77": "CHV", "UA-43": "CRI",
+  "UA-12": "DNI", "UA-14": "DON", "UA-26": "IVF", "UA-63": "KHA",
+  "UA-65": "KHE", "UA-68": "KHM", "UA-30": "KYV", "UA-32": "KYO",
+  "UA-35": "KIR", "UA-09": "LUH", "UA-46": "LVI", "UA-48": "MYK",
+  "UA-51": "ODE", "UA-53": "POL", "UA-56": "RIV", "UA-59": "SUM",
+  "UA-61": "TER", "UA-05": "VIN", "UA-07": "VOL", "UA-21": "ZAK",
+  "UA-23": "ZAP", "UA-18": "ZHY",
+};
+
 interface OblastStat {
   slug: string;
   alarms?: number;
@@ -343,12 +354,50 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         },
                         pressed: { fill: baseFill, outline: "none" },
                       }}
-                      className={isFull ? "air-alert-pulse" : undefined}
+                      className={(isFull || isPartial) ? "air-alert-pulse" : undefined}
                     />
                   );
                 })
               }
             </Geographies>
+
+            {/* Oblast abbreviation labels — placed at the polygon centroid.
+                Pointer-events disabled so they never intercept hover/click. */}
+            <Geographies geography={OBLASTS_GEO}>
+              {({ geographies }) =>
+                geographies.map((geo) => {
+                  const iso = geo.properties.iso as string;
+                  const code = OBLAST_CODE[iso];
+                  if (!code) return null;
+                  const [lng, lat] = geoCentroid(geo);
+                  if (!Number.isFinite(lng) || !Number.isFinite(lat)) return null;
+                  const occupied = OCCUPIED_ISOS.has(iso);
+                  return (
+                    <Marker key={`lbl-${iso}`} coordinates={[lng, lat]}>
+                      <text
+                        textAnchor="middle"
+                        dy={3}
+                        style={{
+                          pointerEvents: "none",
+                          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+                          fontSize: variant === "full" ? 8 : 7,
+                          fontWeight: 600,
+                          letterSpacing: "0.06em",
+                          fill: occupied ? "hsl(0 0% 100% / 0.92)" : "hsl(var(--foreground) / 0.78)",
+                          paintOrder: "stroke",
+                          stroke: "hsl(var(--background) / 0.85)",
+                          strokeWidth: 2,
+                          strokeLinejoin: "round",
+                        }}
+                      >
+                        {code}
+                      </text>
+                    </Marker>
+                  );
+                })
+              }
+            </Geographies>
+
 
             {/* Raion subdivisions. Always drawn on the full map as thin
                 borders so visitors can read alert geography at finer than
