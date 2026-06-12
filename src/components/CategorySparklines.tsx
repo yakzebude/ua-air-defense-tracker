@@ -109,7 +109,7 @@ function CategoryCard({ input, window }: { input: CategoryInput; window: number 
           {input.label}
         </div>
         <div
-          className={`inline-flex items-center gap-1 font-mono text-[15px] font-semibold uppercase tracking-[0.14em] ${deltaTone}`}
+          className={`inline-flex items-center gap-1 font-mono text-[22px] font-semibold uppercase tracking-[0.14em] ${deltaTone}`}
           title={`Change between ${s.start?.label ?? "—"} and ${s.end?.label ?? "—"}`}
         >
           <span aria-hidden>{deltaArrow}</span>
