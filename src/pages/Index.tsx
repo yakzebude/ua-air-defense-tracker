@@ -481,13 +481,7 @@ function CategorySection({
           <MonthlyTrendChart data={filtered} />
         </Panel>
 
-        <ChartInsights
-          data={filtered}
-          metric="launched"
-          unit={unitNoun}
-          direction="down-is-good"
-          subtitle={`Auto-generated from ${rangeLabel || "the selected range"}. Plain-language summary of launches, peaks and recent trends.`}
-        />
+
 
       </div>
     </section>
