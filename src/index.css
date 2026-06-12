@@ -40,7 +40,8 @@
     --signal-soft: 0 70% 95%;
     --signal-ok: 152 45% 32%;             /* calm forest green */
     --signal-warn: 35 75% 42%;            /* honest amber */
-    --occupied: 0 60% 22%;                /* dark red — territories under occupation */
+    --occupied: 215 18% 32%;              /* dark slate — territories under occupation */
+    --occupied-border: 215 30% 12%;       /* annexation outline */
 
     --ua-yellow: 48 85% 50%;
     --ua-blue: 211 88% 36%;
@@ -102,7 +103,8 @@
     --signal-soft: 0 35% 22%;
     --signal-ok: 152 40% 50%;
     --signal-warn: 35 75% 55%;
-    --occupied: 0 55% 28%;
+    --occupied: 215 22% 14%;
+    --occupied-border: 0 0% 92%;
 
     --ua-yellow: 48 85% 55%;
     --ua-blue: 211 88% 60%;

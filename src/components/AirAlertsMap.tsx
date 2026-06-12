@@ -420,16 +420,16 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       style={{
                         default: {
                           fill: baseFill,
-                          stroke: "hsl(var(--foreground) / 0.6)",
-                          strokeWidth: 0.7,
+                          stroke: occupied ? "hsl(var(--occupied-border))" : "hsl(var(--foreground) / 0.6)",
+                          strokeWidth: occupied ? 1.4 : 0.7,
                           outline: "none",
                           transition: "fill 200ms ease",
                           cursor: variant === "full" ? "pointer" : "default",
                         },
                         hover: {
                           fill: hoverFill,
-                          stroke: "hsl(var(--foreground) / 0.85)",
-                          strokeWidth: 0.9,
+                          stroke: occupied ? "hsl(var(--occupied-border))" : "hsl(var(--foreground) / 0.85)",
+                          strokeWidth: occupied ? 1.6 : 0.9,
                           outline: "none",
                           cursor: variant === "full" ? "pointer" : "default",
                         },
@@ -469,9 +469,9 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                           fontSize,
                           fontWeight: 700,
                           letterSpacing: "0.06em",
-                          fill: occupied ? "hsl(0 0% 100% / 1)" : "hsl(var(--foreground))",
+                          fill: occupied ? "hsl(0 0% 100%)" : "hsl(var(--foreground))",
                           paintOrder: "stroke",
-                          stroke: "hsl(var(--background))",
+                          stroke: occupied ? "hsl(215 30% 8% / 0.95)" : "hsl(var(--background))",
                           strokeWidth: 3.5,
                           strokeLinejoin: "round",
                         }}
