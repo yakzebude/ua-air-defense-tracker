@@ -217,8 +217,8 @@ export function AirThreatFeed() {
       </div>
 
       <ul
-        className={`flex-1 divide-y divide-border overflow-y-auto ${
-          expanded ? "max-h-[640px]" : ""
+        className={`divide-y divide-border overflow-y-auto ${
+          expanded ? "flex-1 max-h-[640px]" : ""
         }`}
       >
         {visibleMsgs.map((m) => {
