@@ -156,11 +156,13 @@ export function ChartInsights({
           const { primary, secondary } = highlightIndices(ins, series);
           // Color logic: red on increase, green on 0 or decrease (remove yellow)
           const valueColor =
-            ins.tone === "bad" || ins.tone === "warn"
-              ? "hsl(var(--signal))"
-              : ins.tone === "good" || ins.tone === "neutral"
-                ? "hsl(var(--signal-ok))"
-                : "hsl(var(--foreground))";
+            ins.label === "Largest drop"
+              ? "hsl(var(--foreground))"
+              : ins.tone === "bad" || ins.tone === "warn"
+                ? "hsl(var(--signal))"
+                : ins.tone === "good" || ins.tone === "neutral"
+                  ? "hsl(var(--signal-ok))"
+                  : "hsl(var(--foreground))";
           // Always lead with the month abbreviation in front of the year, and
           // show BOTH months when the finding compares two of them.
           const monthTag =
