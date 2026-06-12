@@ -93,7 +93,7 @@ export function WeaponsCatalogSection() {
 
   return (
     <section id="arsenal" className="scroll-mt-32 border-t border-border">
-      <div className="container py-12 md:py-16">
+      <div className="container py-8 md:py-10">
         <div className="mb-6 max-w-3xl">
           <div className="src-label mb-3">{t("arsenal.kicker")}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">

@@ -309,7 +309,7 @@ function RelatedSourcesSection() {
   const { t } = useTranslation();
   return (
     <section id="related" className="scroll-mt-32 border-t border-border">
-      <div className="container py-12 md:py-16">
+      <div className="container py-8 md:py-10">
         <div className="mb-8 max-w-3xl">
           <div className="src-label mb-3">{t("related.kicker")}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("related.title")}</h2>
@@ -352,7 +352,7 @@ function HowToHelpSection() {
   const { t } = useTranslation();
   return (
     <section id="help" className="scroll-mt-32 border-t border-border">
-      <div className="container py-12 md:py-16">
+      <div className="container py-8 md:py-10">
         <div className="mb-8 max-w-3xl">
           <div className="src-label mb-3">{t("donate.kicker")}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("donate.title")}</h2>
@@ -424,7 +424,7 @@ function CategorySection({
 
   return (
     <section id={id} className="scroll-mt-32 border-t border-border">
-      <div className="container py-12 md:py-16">
+      <div className="container py-8 md:py-10">
         <div className="mb-8 max-w-3xl">
           <div className="src-label mb-3">{kicker}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{title}</h2>
@@ -863,7 +863,7 @@ const Index = () => {
 
       {/* Live situation — collapsible. Historical data remains the primary focus. */}
       <section id="alerts" className="scroll-mt-32 border-t border-border bg-secondary/30">
-        <div className="container py-10 md:py-14">
+        <div className="container py-6 md:py-8">
           <details className="group">
             <summary className="flex cursor-pointer list-none flex-wrap items-end justify-between gap-3 [&::-webkit-details-marker]:hidden">
               <div>
