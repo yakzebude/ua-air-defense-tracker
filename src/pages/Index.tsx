@@ -888,7 +888,7 @@ const Index = () => {
       {/* Live situation — collapsible. Historical data remains the primary focus. */}
       <section id="alerts" className="scroll-mt-32 border-t border-border bg-secondary/30">
         <div className="container py-10 md:py-14">
-          <details className="group">
+          <details className="group" open>
             <summary className="flex cursor-pointer list-none flex-wrap items-end justify-between gap-3 [&::-webkit-details-marker]:hidden">
               <div>
                 <div className="src-label mb-1 flex items-center gap-2">
