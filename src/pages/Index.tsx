@@ -847,6 +847,7 @@ const Index = () => {
       {(shahed && shahedRange) || (cruise && cruiseRange) || (ballistic && ballisticRange) ? (
         <div className="border-t border-border">
           <div
+            ref={categoriesScrollRef}
             className="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:thin]"
             aria-label="Categories — swipe horizontally between UAVs, cruise and ballistic"
           >
@@ -863,11 +864,17 @@ const Index = () => {
                   range={shahedRange}
                   onRangeChange={setShahedRange}
                 />
-                <div className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 md:right-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background/80 shadow-sm backdrop-blur-sm md:h-12 md:w-12">
-                    <ChevronRight className="h-5 w-5 text-muted-foreground md:h-6 md:w-6" />
-                  </div>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = categoriesScrollRef.current;
+                    if (el) el.scrollBy({ left: el.clientWidth, behavior: "smooth" });
+                  }}
+                  aria-label="Next visualization"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 md:right-4 flex h-10 w-10 items-center justify-center rounded-full bg-background/80 shadow-sm backdrop-blur-sm transition hover:bg-background md:h-12 md:w-12"
+                >
+                  <ChevronRight className="h-5 w-5 text-muted-foreground md:h-6 md:w-6" />
+                </button>
               </div>
             )}
             {cruise && cruiseRange && (
