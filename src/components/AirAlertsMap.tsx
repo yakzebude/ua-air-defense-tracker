@@ -970,7 +970,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           Folds the former right-hand sidebar into the same block so the map
           panel itself communicates which regions are currently under alert. */}
       {variant === "full" && (
-        <div className="mt-3 rounded border border-border bg-card p-3">
+        <div className="mt-3 mb-6 rounded border border-border bg-card p-3">
           <div className="mb-2 flex items-baseline justify-between gap-2">
             <h3 className="text-[11px] font-mono uppercase tracking-[0.16em] text-foreground">
               {t("airAlerts.sidePanelTitle", { defaultValue: "Active alerts" })}
