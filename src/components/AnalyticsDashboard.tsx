@@ -580,13 +580,14 @@ function AnalyticsPager(props: Props) {
         })}
       </div>
 
-      {/* Equal-height shell — every tab takes exactly the same vertical space
-          so switching panels never causes the page below to jump. Tall enough
-          to fit the tallest tab (Share & interception with its swipe row). */}
-      <div className="min-h-[1040px] md:min-h-[1080px]">
+      {/* Equal-height shell — every tab occupies EXACTLY the same vertical
+          space. Each tab is a flex column whose last child uses mt-auto, so
+          shorter tabs gain whitespace at the bottom instead of looking
+          smaller than the tallest tab (Share & interception). */}
+      <div className="relative h-[1120px] md:h-[1160px]">
 
       {active === "uavs" && (
-        <>
+        <div className="flex h-full flex-col">
           <Panel
             title={t("analytics.uavMonthly")}
             subtitle={t("analytics.uavMonthlySub")}
@@ -616,12 +617,13 @@ function AnalyticsPager(props: Props) {
             accent={CAT_COLORS.uavs}
             direction="down-is-good"
             subtitle="Plain-language summary of monthly UAV launches detected at Ukrainian airspace."
+            className="mt-auto"
           />
-        </>
+        </div>
       )}
 
       {active === "cruiseBal" && (
-        <>
+        <div className="flex h-full flex-col">
           <Panel
             title={t("analytics.cruiseBalMonthly")}
             subtitle={t("analytics.cruiseBalMonthlySub")}
@@ -649,7 +651,7 @@ function AnalyticsPager(props: Props) {
             </div>
           </Panel>
           <div
-            className="-mx-4 mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0"
+            className="-mx-4 mt-auto flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0"
             aria-label="Key findings — swipe horizontally for ballistic missiles"
           >
             <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
@@ -675,11 +677,11 @@ function AnalyticsPager(props: Props) {
               />
             </div>
           </div>
-        </>
+        </div>
       )}
 
       {active === "share" && (
-        <>
+        <div className="flex h-full flex-col">
           <Panel
             title={t("analytics.sharePanel")}
             subtitle={t("analytics.sharePanelSub")}
@@ -714,7 +716,7 @@ function AnalyticsPager(props: Props) {
             </div>
           </Panel>
           <div
-            className="-mx-4 mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0"
+            className="-mx-4 mt-auto flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0"
             aria-label="Key findings — swipe horizontally for cruise and ballistic"
           >
             <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
@@ -751,11 +753,11 @@ function AnalyticsPager(props: Props) {
               />
             </div>
           </div>
-        </>
+        </div>
       )}
 
       {active === "calendar" && (
-        <>
+        <div className="flex h-full flex-col">
           <Panel
             title={t("analytics.calendarPanel")}
             subtitle={t("analytics.calendarPanelSub")}
@@ -797,7 +799,7 @@ function AnalyticsPager(props: Props) {
             </div>
           </Panel>
           <div
-            className="-mx-4 mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0"
+            className="-mx-4 mt-auto flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0"
             aria-label="Key findings — swipe horizontally for cruise and ballistic"
           >
             <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
@@ -834,7 +836,7 @@ function AnalyticsPager(props: Props) {
               />
             </div>
           </div>
-        </>
+        </div>
       )}
       </div>
     </div>

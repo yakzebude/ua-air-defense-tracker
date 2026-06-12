@@ -11,6 +11,8 @@ interface Props {
   subtitle?: string;
   /** Accent colour for the sparkline (matches the parent series). */
   accent?: string;
+  /** Extra classes appended to the root section (e.g. mt-auto for layout). */
+  className?: string;
 }
 
 /** Pull the headline number out of an insight sentence for the big stat.
@@ -97,6 +99,7 @@ export function ChartInsights({
   title = "Key findings",
   subtitle = "Generated automatically from the selected time range.",
   accent = "hsl(48 95% 55%)",
+  className = "",
 }: Props) {
   // Only consider months that are fully closed (i.e. the calendar month is
   // entirely in the past). The current, partial month would otherwise show
@@ -132,7 +135,7 @@ export function ChartInsights({
 
   return (
     <section
-      className="mt-4 rounded-sm border border-border bg-card/60 p-4 md:p-5"
+      className={`mt-4 rounded-sm border border-border bg-card/60 p-4 md:p-5 ${className}`}
       aria-label={title}
     >
       <header className="mb-5 flex items-baseline justify-between gap-3 border-b border-border/70 pb-3">
