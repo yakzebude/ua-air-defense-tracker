@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 
@@ -12,6 +12,9 @@ interface NewsItem {
 }
 
 const REFRESH_MS = 5 * 60 * 1000; // 5 minutes
+// Constant scroll speed (px/sec) — yields a smooth, predictable feel
+// regardless of how many headlines are in the loop.
+const SCROLL_SPEED_PX_S = 70;
 
 export const NewsTicker = () => {
   const { i18n } = useTranslation();
@@ -20,6 +23,9 @@ export const NewsTicker = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const timerRef = useRef<number | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const measureRef = useRef<HTMLDivElement | null>(null);
+  const [duration, setDuration] = useState<number>(40);
 
   // Fetch helper — calls edge function directly with ?lang= so it can translate titles
   const load = async (currentLang: string) => {
