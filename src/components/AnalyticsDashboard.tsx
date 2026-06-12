@@ -398,62 +398,88 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
           <span>Record · {fmt(max)}</span>
         </div>
       </div>
-      <div className="relative overflow-x-auto" onMouseLeave={() => setHover(null)}>
-        <table className="w-full border-separate" style={{ borderSpacing: 2 }}>
-          <thead>
-            <tr>
-              <th />
-              {monthLabels.map((m, i) => (
-                <th key={i} className="font-mono text-[10px] font-normal uppercase text-muted-foreground">
-                  {m}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {years.map((y) => (
-              <tr key={y}>
-                <td className="pr-2 text-right font-mono text-[10.5px] uppercase tracking-wider text-muted-foreground">
-                  {y}
-                </td>
-                {Array.from({ length: 12 }, (_, mo) => {
-                  const k = `${y}-${mo}`;
-                  const v = grid.get(k) ?? 0;
-                  const intensity = max > 0 ? Math.pow(v / max, 0.7) : 0;
-                  const has = v > 0;
-                  const bd = breakdown.get(k) ?? { uavs: 0, cruise: 0, ballistic: 0 };
-                  return (
-                    <td key={mo} className="p-0">
-                      <div
-                        className="aspect-square w-full min-w-[20px] cursor-pointer rounded-[2px] border border-border/60 transition-transform hover:scale-110 hover:ring-1 hover:ring-foreground/40"
-                        style={{
-                          background: has ? rampColor(intensity, 1) : "hsl(var(--card))",
-                        }}
-                        onMouseEnter={(e) => {
-                          const cont = (e.currentTarget.closest(".overflow-x-auto") as HTMLDivElement | null)?.getBoundingClientRect();
-                          setHover({
-                            x: e.clientX - (cont?.left ?? 0),
-                            y: e.clientY - (cont?.top ?? 0),
-                            year: y,
-                            month: mo,
-                            total: v,
-                            uavs: bd.uavs,
-                            cruise: bd.cruise,
-                            ballistic: bd.ballistic,
-                          });
-                        }}
-                        onMouseMove={(e) => {
-                          const cont = (e.currentTarget.closest(".overflow-x-auto") as HTMLDivElement | null)?.getBoundingClientRect();
-                          setHover((h) => h && { ...h, x: e.clientX - (cont?.left ?? 0), y: e.clientY - (cont?.top ?? 0) });
-                        }}
-                      />
-                    </td>
-                  );
-                })}
-              </tr>
+      <div className="relative" onMouseLeave={() => setHover(null)}>
+        <div className="space-y-1.5">
+          {/* Month header — month initials sit above the grid for orientation. */}
+          <div className="grid items-end gap-1.5" style={{ gridTemplateColumns: "44px repeat(12, minmax(0, 1fr))" }}>
+            <div />
+            {monthLabels.map((m, i) => (
+              <div key={i} className="text-center font-mono text-[9.5px] uppercase tracking-[0.18em] text-muted-foreground">
+                {m}
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+
+          {years.map((y) => (
+            <div
+              key={y}
+              className="grid items-stretch gap-1.5"
+              style={{ gridTemplateColumns: "44px repeat(12, minmax(0, 1fr))" }}
+            >
+              <div className="flex items-center justify-end pr-1 font-mono text-[11px] tabular-nums tracking-wider text-muted-foreground">
+                {y}
+              </div>
+              {Array.from({ length: 12 }, (_, mo) => {
+                const k = `${y}-${mo}`;
+                const v = grid.get(k) ?? 0;
+                const intensity = max > 0 ? Math.pow(v / max, 0.7) : 0;
+                const has = v > 0;
+                const bd = breakdown.get(k) ?? { uavs: 0, cruise: 0, ballistic: 0 };
+                // Tier-aware text colour: dark ink on light yellow, white on
+                // saturated orange/red. Keeps the big numbers legible across
+                // the whole ramp without per-cell guessing.
+                const textColor = !has
+                  ? "hsl(var(--muted-foreground) / 0.55)"
+                  : intensity >= 0.55
+                    ? "hsl(0 0% 100%)"
+                    : "hsl(0 0% 8%)";
+                const display = !has
+                  ? "—"
+                  : v >= 10000 ? `${(v / 1000).toFixed(1)}k`
+                  : v >= 1000  ? `${(v / 1000).toFixed(1)}k`
+                  : `${v}`;
+                return (
+                  <button
+                    key={mo}
+                    type="button"
+                    aria-label={`${monthFull[mo]} ${y}: ${fmt(v)}`}
+                    onMouseEnter={(e) => {
+                      const cont = (e.currentTarget.closest(".relative") as HTMLDivElement | null)?.getBoundingClientRect();
+                      setHover({
+                        x: e.clientX - (cont?.left ?? 0),
+                        y: e.clientY - (cont?.top ?? 0),
+                        year: y, month: mo, total: v,
+                        uavs: bd.uavs, cruise: bd.cruise, ballistic: bd.ballistic,
+                      });
+                    }}
+                    onMouseMove={(e) => {
+                      const cont = (e.currentTarget.closest(".relative") as HTMLDivElement | null)?.getBoundingClientRect();
+                      setHover((h) => h && { ...h, x: e.clientX - (cont?.left ?? 0), y: e.clientY - (cont?.top ?? 0) });
+                    }}
+                    className="group relative flex h-[58px] flex-col justify-between rounded-[3px] border border-border/40 px-1.5 py-1 text-left transition-transform hover:z-10 hover:scale-[1.06] hover:ring-1 hover:ring-foreground/60"
+                    style={{
+                      background: has ? rampColor(intensity, 1) : "hsl(var(--muted) / 0.35)",
+                    }}
+                  >
+                    <span
+                      className="font-mono text-[8.5px] uppercase tracking-[0.16em] opacity-80"
+                      style={{ color: textColor }}
+                    >
+                      {monthLabels[mo]}
+                    </span>
+                    <span
+                      className="self-end font-mono text-[13px] font-semibold leading-none tabular-nums"
+                      style={{ color: textColor }}
+                    >
+                      {display}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+
 
         {hover && (() => {
           const tier = tierLabel(hover.total);
