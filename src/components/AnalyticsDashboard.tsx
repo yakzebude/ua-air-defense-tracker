@@ -790,20 +790,6 @@ function AnalyticsPager(props: Props) {
             }
           >
             <HeatmapMonthlyIntensity {...props} />
-            <div className="mt-3 flex items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.uavs }} />
-                {t("category.uavs")}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.cruise }} />
-                {t("category.cruise")}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.ballistic }} />
-                {t("category.ballistic")}
-              </span>
-            </div>
           </Panel>
           <div
             className="-mx-4 mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0"
