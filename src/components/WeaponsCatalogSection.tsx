@@ -39,6 +39,7 @@ export function WeaponsCatalogSection() {
     { key: "guided bomb", label: t("arsenal.guidedBombs") },
   ];
 
+  const filtered = useMemo(() => {
     if (!weapons) return [];
     const needle = q.trim().toLowerCase();
     // Treemap-driven token filter: split on non-alphanumerics and require any
