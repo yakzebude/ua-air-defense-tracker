@@ -156,16 +156,20 @@ export function ChartInsights({
           const { primary, secondary } = highlightIndices(ins, series);
           // Color logic: red on increase, green on 0 or decrease (remove yellow).
           // Peak month for interception-rate charts is a Ukrainian success → green.
+          // Largest drop on 01 UAV Launches stays white (not red).
+          const isUavLaunches = metric === "launched" && unit === "UAVs";
           const valueColor =
-            ins.label === "Largest drop"
+            ins.label === "Largest drop" && !isUavLaunches
               ? "hsl(var(--signal))"
-              : ins.label === "Peak month" && metric === "rate"
-                ? "hsl(var(--signal-ok))"
-                : ins.tone === "bad" || ins.tone === "warn"
-                  ? "hsl(var(--signal))"
-                  : ins.tone === "good" || ins.tone === "neutral"
-                    ? "hsl(var(--signal-ok))"
-                    : "hsl(var(--foreground))";
+              : ins.label === "Largest drop"
+                ? "hsl(var(--foreground))"
+                : ins.label === "Peak month" && metric === "rate"
+                  ? "hsl(var(--signal-ok))"
+                  : ins.tone === "bad" || ins.tone === "warn"
+                    ? "hsl(var(--signal))"
+                    : ins.tone === "good" || ins.tone === "neutral"
+                      ? "hsl(var(--signal-ok))"
+                      : "hsl(var(--foreground))";
           // Always lead with the month abbreviation in front of the year, and
           // show BOTH months when the finding compares two of them.
           const monthTag =
