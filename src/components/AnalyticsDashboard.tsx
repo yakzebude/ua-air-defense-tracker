@@ -581,9 +581,8 @@ function AnalyticsPager(props: Props) {
       </div>
 
       {/* Equal-height shell — every tab takes exactly the same vertical space
-          so switching panels never causes the page below to jump. Tall enough
-          to fit the tallest tab (Share & interception with its swipe row). */}
-      <div className="min-h-[1040px] md:min-h-[1080px]">
+          so switching panels never causes the page below to jump. */}
+      <div>
 
       {active === "uavs" && (
         <>
