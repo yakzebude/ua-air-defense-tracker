@@ -714,12 +714,12 @@ const Index = () => {
                 {/* TIER 3 — rolling 30-day insight strip · Bloomberg-style terminal block */}
                 {windowStats && (
                   <div className="mt-5 border-t-2 border-foreground bg-background/60">
-                    <div className="flex items-center justify-between border-b border-border px-3 py-1.5 sm:px-4">
-                      <span className="text-[9.5px] sm:text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-foreground">
-                        {t("masthead.insight")}
+                    <div className="flex items-center justify-between gap-3 border-b border-border px-3 py-1.5 sm:px-4">
+                      <span className="text-[9.5px] sm:text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-foreground truncate">
+                        {windowStats.monthLabel} <span className="text-muted-foreground">· last complete month</span>
                       </span>
-                      <span className="text-[9.5px] sm:text-[10px] font-mono uppercase tracking-[0.16em] text-muted-foreground">
-                        {t("masthead.vsPrev30")}
+                      <span className="text-[9.5px] sm:text-[10px] font-mono uppercase tracking-[0.16em] text-muted-foreground whitespace-nowrap">
+                        vs {windowStats.prevMonthLabel}
                       </span>
                     </div>
                     <div className="grid grid-cols-3 divide-x divide-border">
