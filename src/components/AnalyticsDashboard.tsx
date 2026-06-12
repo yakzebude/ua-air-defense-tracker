@@ -618,12 +618,13 @@ function AnalyticsPager(props: Props) {
             accent={CAT_COLORS.uavs}
             direction="down-is-good"
             subtitle="Plain-language summary of monthly UAV launches detected at Ukrainian airspace."
+            className="mt-auto"
           />
-        </>
+        </div>
       )}
 
       {active === "cruiseBal" && (
-        <>
+        <div className="flex h-full flex-col">
           <Panel
             title={t("analytics.cruiseBalMonthly")}
             subtitle={t("analytics.cruiseBalMonthlySub")}
