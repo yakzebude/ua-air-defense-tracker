@@ -719,7 +719,7 @@ const Index = () => {
 
 
       <section id="summary" className="border-b border-border">
-        <div className="container pt-6 pb-8 md:pt-10 md:pb-14">
+        <div className="container pt-4 pb-6 md:pt-6 md:pb-8">
           {/* Editorial masthead — serif headline, dek, trust/metadata bar */}
           <div className="max-w-4xl">
             <h1 className="font-serif text-[1.875rem] leading-[1.1] tracking-[-0.02em] sm:text-[2.25rem] md:text-[3rem] lg:text-[3.5rem]">
