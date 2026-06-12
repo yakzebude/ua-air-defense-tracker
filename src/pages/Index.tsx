@@ -20,6 +20,7 @@ import { AirThreatFeed } from "@/components/AirThreatFeed";
 import { MiniAlertsMap } from "@/components/MiniAlertsMap";
 import { CategorySparklines } from "@/components/CategorySparklines";
 import { CompositionShiftSection } from "@/components/CompositionShiftChart";
+import { CategoryIntelligenceBlock } from "@/components/CategoryIntelligenceBlock";
 import { DataConfidenceSection } from "@/components/DataConfidenceSection";
 import { StatusBanner } from "@/components/StatusBadge";
 
@@ -160,8 +161,8 @@ function SectionNav() {
     { id: "analytics", label: t("nav.analytics") },
     { id: "alerts", label: t("nav.alerts") },
     { id: "drones", label: t("nav.drones") },
-    { id: "cruise", label: t("nav.cruise") },
     { id: "ballistic", label: t("nav.ballistic") },
+    { id: "cruise", label: t("nav.cruise") },
     { id: "arsenal", label: t("nav.arsenal") },
     { id: "methodology", label: t("nav.methodology") },
     { id: "related", label: t("nav.sources") },
@@ -311,7 +312,7 @@ function RelatedSourcesSection() {
   const { t } = useTranslation();
   return (
     <section id="related" className="scroll-mt-32 border-t border-border">
-      <div className="container py-12 md:py-16">
+      <div className="container py-6 md:py-8">
         <div className="mb-8 max-w-3xl">
           <div className="src-label mb-3">{t("related.kicker")}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("related.title")}</h2>
@@ -354,7 +355,7 @@ function HowToHelpSection() {
   const { t } = useTranslation();
   return (
     <section id="help" className="scroll-mt-32 border-t border-border">
-      <div className="container py-12 md:py-16">
+      <div className="container py-6 md:py-8">
         <div className="mb-8 max-w-3xl">
           <div className="src-label mb-3">{t("donate.kicker")}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("donate.title")}</h2>
@@ -426,7 +427,7 @@ function CategorySection({
 
   return (
     <section id={id} className="scroll-mt-32 border-t border-border">
-      <div className="container py-12 md:py-16">
+      <div className="container py-6 md:py-8">
         <div className="mb-8 max-w-3xl">
           <div className="src-label mb-3">{kicker}</div>
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{title}</h2>
@@ -686,6 +687,31 @@ const Index = () => {
     return pick(shahed) ?? pick(cruise) ?? pick(ballistic);
   }, [shahed, cruise, ballistic]);
 
+  /**
+   * For each category, compute the share (0..1) of its monthly launches
+   * relative to the all-category total, for the last 24 *completed* months.
+   * Surface this as a mini-sparkline in each category header.
+   */
+  const categoryShares = useMemo(() => {
+    if (!ready) return null;
+    const now = new Date();
+    const curKey = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
+    const keys = shahed!.months.filter((m) => m.key !== curKey).slice(-24).map((m) => m.key);
+    const labels = shahed!.months.filter((m) => m.key !== curKey).slice(-24).map((m) => m.label);
+    const get = (ds: Dataset, key: string) => ds.months.find((m) => m.key === key)?.launched ?? 0;
+    const shahedShare: number[] = [];
+    const cruiseShare: number[] = [];
+    const ballisticShare: number[] = [];
+    for (const k of keys) {
+      const s = get(shahed!, k), c = get(cruise!, k), b = get(ballistic!, k);
+      const t = s + c + b;
+      shahedShare.push(t > 0 ? s / t : 0);
+      cruiseShare.push(t > 0 ? c / t : 0);
+      ballisticShare.push(t > 0 ? b / t : 0);
+    }
+    return { labels, shahed: shahedShare, cruise: cruiseShare, ballistic: ballisticShare };
+  }, [ready, shahed, cruise, ballistic]);
+
   return (
     <main className="min-h-screen bg-background">
       <StatusBar lastUpdated={lastUpdatedLabel} lastUpdatedDate={lastUpdatedDate} />
@@ -693,7 +719,7 @@ const Index = () => {
 
 
       <section id="summary" className="border-b border-border">
-        <div className="container pt-6 pb-8 md:pt-10 md:pb-14">
+        <div className="container pt-4 pb-6 md:pt-6 md:pb-8">
           {/* Editorial masthead — serif headline, dek, trust/metadata bar */}
           <div className="max-w-4xl">
             <h1 className="font-serif text-[1.875rem] leading-[1.1] tracking-[-0.02em] sm:text-[2.25rem] md:text-[3rem] lg:text-[3.5rem]">
@@ -728,9 +754,9 @@ const Index = () => {
 
 
           {ready && (
-            <div className="mt-6 space-y-3 md:mt-8 md:space-y-4">
+            <div className="mt-4 space-y-2 md:mt-5 md:space-y-3">
               {/* ───────── LAYER 1 — LIVE THREAT STATUS (24h) ───────── */}
-              <div className="rounded-md border border-[hsl(var(--signal)/0.35)] bg-card p-4 sm:p-5 md:p-6">
+              <div className="rounded-md border border-[hsl(var(--signal)/0.35)] bg-card p-3 sm:p-4">
                 <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
                   <div className="flex items-center gap-2 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
                     <span className="relative inline-flex h-1.5 w-1.5">
@@ -774,7 +800,7 @@ const Index = () => {
 
               {/* ───────── LAYER 2 — CURRENT MONTH ATTACK VELOCITY ───────── */}
               {monthVelocity && (
-                <div className="rounded-md border border-border bg-card p-4 sm:p-5 md:p-6">
+                <div className="rounded-md border border-border bg-card p-3 sm:p-4">
                   <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
                     <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                       <span className="text-foreground">{t("hero.layer2.kicker")}</span>
@@ -842,7 +868,7 @@ const Index = () => {
               )}
 
               {/* ───────── LAYER 3 — WAR-TO-DATE TOTALS (archive) ───────── */}
-              <div className="rounded-md border border-border bg-secondary/30 p-4 sm:p-5 md:p-6">
+              <div className="rounded-md border border-border bg-secondary/30 p-3 sm:p-4">
                 <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
                   <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                     <span className="text-foreground">{t("hero.layer3.kicker")}</span>
@@ -922,51 +948,68 @@ const Index = () => {
       {/* The full live-alerts section now lives further down (after Ballistic). */}
 
 
-      {shahed && shahedRange && (
-        <CategorySection
+      {/* ── Editorial framing for the category dossiers ── */}
+      {ready && categoryShares && (
+        <section className="border-t border-border">
+          <div className="container pt-6 md:pt-8">
+            <div className="src-label sticky top-[64px] z-10 mb-2 bg-background py-1">
+              {t("intel.dossiersKicker")}
+            </div>
+            <p className="max-w-3xl text-[15px] leading-[1.55] text-foreground">
+              {t("intel.dossiersFraming")}
+            </p>
+          </div>
+        </section>
+      )}
+
+      {shahed && categoryShares && (
+        <CategoryIntelligenceBlock
           id="drones"
-          glossaryKey="drones"
+          index={1}
           kicker={t("category.drones.kicker")}
           title={t("category.drones.title")}
-          description={t("category.drones.description")}
-          unitNoun={t("category.drones.unit")}
+          framing={t("intel.framing.drones")}
+          unit={t("category.drones.unit")}
+          accent="hsl(var(--series-launched))"
           dataset={shahed}
-          range={shahedRange}
-          onRangeChange={setShahedRange}
+          shareSeries={categoryShares.shahed}
+          shareLabels={categoryShares.labels}
         />
       )}
 
-      {cruise && cruiseRange && (
-        <CategorySection
-          id="cruise"
-          glossaryKey="cruise"
-          kicker={t("category.cruiseSection.kicker")}
-          title={t("category.cruiseSection.title")}
-          description={t("category.cruiseSection.description")}
-          unitNoun={t("category.cruiseSection.unit")}
-          dataset={cruise}
-          range={cruiseRange}
-          onRangeChange={setCruiseRange}
-        />
-      )}
-
-      {ballistic && ballisticRange && (
-        <CategorySection
+      {ballistic && categoryShares && (
+        <CategoryIntelligenceBlock
           id="ballistic"
-          glossaryKey="ballistic"
+          index={2}
           kicker={t("category.ballisticSection.kicker")}
           title={t("category.ballisticSection.title")}
-          description={t("category.ballisticSection.description")}
-          unitNoun={t("category.ballisticSection.unit")}
+          framing={t("intel.framing.ballistic")}
+          unit={t("category.ballisticSection.unit")}
+          accent="hsl(var(--signal))"
           dataset={ballistic}
-          range={ballisticRange}
-          onRangeChange={setBallisticRange}
+          shareSeries={categoryShares.ballistic}
+          shareLabels={categoryShares.labels}
+        />
+      )}
+
+      {cruise && categoryShares && (
+        <CategoryIntelligenceBlock
+          id="cruise"
+          index={3}
+          kicker={t("category.cruiseSection.kicker")}
+          title={t("category.cruiseSection.title")}
+          framing={t("intel.framing.cruise")}
+          unit={t("category.cruiseSection.unit")}
+          accent="hsl(var(--series-rate))"
+          dataset={cruise}
+          shareSeries={categoryShares.cruise}
+          shareLabels={categoryShares.labels}
         />
       )}
 
       {/* Live situation — collapsible. Historical data remains the primary focus. */}
       <section id="alerts" className="scroll-mt-32 border-t border-border bg-secondary/30">
-        <div className="container py-10 md:py-14">
+        <div className="container py-6 md:py-8">
           <details className="group">
             <summary className="flex cursor-pointer list-none flex-wrap items-end justify-between gap-3 [&::-webkit-details-marker]:hidden">
               <div>

@@ -107,6 +107,24 @@
     "monthTotal": "Monatssumme",
     "axisNote": "Anteilsverteilung, {{first}} – {{last}}. Laufender Monat ausgeschlossen."
   },
+  "intel": {
+    "dossiersKicker": "Kategorie-Dossiers",
+    "dossiersFraming": "Drei Waffenklassen prägen nahezu jeden gemeldeten Angriff. Die folgenden Dossiers — geordnet nach operativer Relevanz, nicht alphabetisch — lesen jede Klasse als eigenständiges Intelligence-Objekt: Gesamtvolumen, Abfangleistung, letzte zwölf Monate und Monatsveränderung in einem einzigen Block.",
+    "shareLast24m": "Anteil · 24 Mon.",
+    "shareDelta": "Anteilsveränderung im Zeitraum",
+    "totalLaunched": "Gesamt gestartet ({{unit}})",
+    "interceptionRate": "Abfangrate",
+    "last12m": "Letzte 12 Monate",
+    "mom": "MoM Δ Starts",
+    "signalLine": "Signalkurve · gestartet vs. abgefangen ({{unit}})",
+    "legendLaunched": "Gestartet",
+    "legendIntercepted": "Abgefangen",
+    "framing": {
+      "drones": "UAVs bilden die Volumenebene der russischen Luftkampagne — Shahed-Loitering-Munition trifft in nächtlichen Wellen ein, um die Luftverteidigung zu sättigen und Abfangbestände aufzuzehren, bevor die Raketen fliegen.",
+      "ballistic": "Ballistische Systeme sind die Letalitätsebene — wenigste Starts, höchste Durchschlagsquote. Iskander-M, KN-23 und Kinzhal erreichen im Endanflug Mach 5+, lassen nur Minuten Vorwarnzeit und bieten realistische Abfangchancen nur für Patriot-Klasse-Systeme.",
+      "cruise": "Marschflugkörper sind die Präzisionsebene — werden in koordinierten Paketen zusammen mit Drohnen und ballistischen Raketen abgefeuert, um dieselben Ziele aus mehreren Höhen und Richtungen anzugreifen."
+    }
+  },
   "primarySource": "Air Force Command of the Armed Forces of Ukraine (wöchentliche Berichte, via Kaggle Datensatz, Petro Ivaniuk)",
   "primarySourceShort": "Air Force Command of the Armed Forces of Ukraine (via Kaggle)",
   "category": {

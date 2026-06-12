@@ -274,14 +274,37 @@
     100% { transform: translate3d(-50%, 0, 0); }
   }
 
-  /* Source / uncertainty micro-label */
+  /* Source / uncertainty micro-label — uses BODY font (not monospace) so the
+     page has a single typographic voice. Differentiation comes from tracking
+     and weight only, per the intelligence-system visual language. */
   .src-label {
-    font-family: 'IBM Plex Mono', ui-monospace, monospace;
-    font-size: 10px;
+    font-family: inherit;
+    font-size: 10.5px;
     line-height: 1.4;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.16em;
+    font-weight: 600;
     text-transform: uppercase;
     color: hsl(var(--muted-foreground));
+  }
+
+  /* Inline data tag: same family as body, differentiated via tracking + weight. */
+  .data-tag {
+    font-family: inherit;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Interrupted horizontal divider — a hairline with a small gap on the left
+     where a sticky section label can sit. */
+  .divider-interrupted {
+    border-top: 1px solid hsl(var(--border));
+    background-image: linear-gradient(to right, hsl(var(--background)) 0, hsl(var(--background)) 64px, transparent 64px);
+    background-repeat: no-repeat;
+    background-size: 100% 1px;
+    background-position: top left;
   }
 }
 
