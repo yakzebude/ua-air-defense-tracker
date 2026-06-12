@@ -272,7 +272,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
     : "h-[300px] sm:h-[380px] lg:h-[420px]";
 
   return (
-    <div className="relative flex flex-col">
+    <div className="relative flex flex-col h-full w-full">
       <div
         className={`relative flex-1 overflow-hidden rounded border border-border bg-card ${mapHeightClass}`}
         onMouseLeave={() => setHovered(null)}
