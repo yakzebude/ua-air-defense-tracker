@@ -158,7 +158,7 @@ export function ChartInsights({
           // Peak month for interception-rate charts is a Ukrainian success → green.
           const valueColor =
             ins.label === "Largest drop"
-              ? "hsl(var(--foreground))"
+              ? "hsl(var(--signal))"
               : ins.label === "Peak month" && metric === "rate"
                 ? "hsl(var(--signal-ok))"
                 : ins.tone === "bad" || ins.tone === "warn"
