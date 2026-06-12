@@ -896,6 +896,12 @@ const Index = () => {
       <RelatedSourcesSection />
       <HowToHelpSection />
 
+      <DataConfidenceSection
+        lastUpdatedLabel={lastUpdatedLabel}
+        lastUpdatedDate={lastUpdatedDate}
+      />
+
+
 
 
 
