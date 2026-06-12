@@ -98,15 +98,24 @@ export function ChartInsights({
   subtitle = "Generated automatically from the selected time range.",
   accent = "hsl(48 95% 55%)",
 }: Props) {
+  // Only consider months that are fully closed (i.e. the calendar month is
+  // entirely in the past). The current, partial month would otherwise show
+  // up as a misleading "low" / "biggest drop" in the findings.
+  const completeData = useMemo(() => {
+    const now = new Date();
+    const cutoff = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1);
+    return data.filter((m) => m.date.getTime() < cutoff);
+  }, [data]);
+
   const insights = useMemo(
-    () => computeMonthlyInsights(data, { metric, unit, direction }),
-    [data, metric, unit, direction],
+    () => computeMonthlyInsights(completeData, { metric, unit, direction }),
+    [completeData, metric, unit, direction],
   );
 
   // Build the series values that the spark uses (matches the metric).
   const series = useMemo(
-    () => data.filter((m) => m.launched > 0 || metric === "rate"),
-    [data, metric],
+    () => completeData.filter((m) => m.launched > 0 || metric === "rate"),
+    [completeData, metric],
   );
   const values = useMemo(() => {
     return series.map((m) => {
@@ -142,15 +151,23 @@ export function ChartInsights({
         {insights.map((ins, i) => {
           const { value, caption } = splitInsight(ins);
           const { primary, secondary } = highlightIndices(ins, series);
+          // Always lead with the month abbreviation in front of the year, and
+          // show BOTH months when the finding compares two of them.
+          const monthTag =
+            primary !== null && secondary !== null
+              ? `${series[primary]?.label} → ${series[secondary]?.label}`
+              : primary !== null
+                ? series[primary]?.label
+                : null;
           return (
             <li key={i} className="flex flex-col">
               <div className="flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                 <span>
                   {String(i + 1).padStart(2, "0")} · {ins.label}
                 </span>
-                {primary !== null && (
-                  <span className="tabular-nums text-muted-foreground/70">
-                    {series[primary]?.label}
+                {monthTag && (
+                  <span className="tabular-nums text-muted-foreground/80">
+                    {monthTag}
                   </span>
                 )}
               </div>
@@ -167,7 +184,6 @@ export function ChartInsights({
                 values={values}
                 primary={primary}
                 secondary={secondary}
-                accent={accent}
               />
               <p className="mt-2.5 text-[12.5px] leading-[1.55] text-muted-foreground">{caption}</p>
             </li>
