@@ -754,7 +754,7 @@ const Index = () => {
 
 
           {ready && (
-            <div className="mt-6 space-y-3 md:mt-8 md:space-y-4">
+            <div className="mt-4 space-y-2 md:mt-5 md:space-y-3">
               {/* ───────── LAYER 1 — LIVE THREAT STATUS (24h) ───────── */}
               <div className="rounded-md border border-[hsl(var(--signal)/0.35)] bg-card p-3 sm:p-4">
                 <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
