@@ -646,24 +646,33 @@ function AnalyticsPager(props: Props) {
               </span>
             </div>
           </Panel>
-          <ChartInsights
-            data={props.cruise.months}
-            metric="launched"
-            unit="cruise missiles"
-            accent={CAT_COLORS.cruise}
-            direction="down-is-good"
-            title="Key findings · cruise missiles"
-            subtitle="Plain-language summary of monthly cruise-missile launches."
-          />
-          <ChartInsights
-            data={props.ballistic.months}
-            metric="launched"
-            unit="ballistic missiles"
-            accent={CAT_COLORS.ballistic}
-            direction="down-is-good"
-            title="Key findings · ballistic missiles"
-            subtitle="Plain-language summary of monthly ballistic-missile launches."
-          />
+          <div
+            className="-mx-4 mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0"
+            aria-label="Key findings — swipe horizontally for ballistic missiles"
+          >
+            <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
+              <ChartInsights
+                data={props.cruise.months}
+                metric="launched"
+                unit="cruise missiles"
+                accent={CAT_COLORS.cruise}
+                direction="down-is-good"
+                title="Key findings · cruise missiles"
+                subtitle="Plain-language summary of monthly cruise-missile launches. Swipe → for ballistic."
+              />
+            </div>
+            <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
+              <ChartInsights
+                data={props.ballistic.months}
+                metric="launched"
+                unit="ballistic missiles"
+                accent={CAT_COLORS.ballistic}
+                direction="down-is-good"
+                title="Key findings · ballistic missiles"
+                subtitle="Plain-language summary of monthly ballistic-missile launches."
+              />
+            </div>
+          </div>
         </>
       )}
 
