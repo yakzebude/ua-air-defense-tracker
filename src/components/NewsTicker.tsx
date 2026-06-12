@@ -118,11 +118,11 @@ export const NewsTicker = () => {
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-4 font-mono text-xs text-white hover:text-amber-400 transition-colors"
+                      className="pl-3 pr-2 font-mono text-xs text-white hover:text-amber-400 transition-colors"
                     >
-                      <span className="text-white/40 mr-2">[{item.source}]</span>
+                      <span className="text-white/40 mr-1.5">[{item.source}]</span>
                       {item.title}
-                      <span className="px-4 text-white/30">•</span>
+                      <span className="pl-2 text-white/25">·</span>
                     </a>
                   ))}
                 </div>
