@@ -774,6 +774,16 @@ const Index = () => {
 
       {ready && <AnalyticsDashboard shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />}
 
+      {ready && (
+        <CategorySparklines
+          categories={[
+            { id: "drones",    label: t("category.drones.kicker"),           unit: t("category.drones.unit"),           dataset: shahed!,    href: "#drones" },
+            { id: "cruise",    label: t("category.cruiseSection.kicker"),    unit: t("category.cruiseSection.unit"),    dataset: cruise!,    href: "#cruise" },
+            { id: "ballistic", label: t("category.ballisticSection.kicker"), unit: t("category.ballisticSection.unit"), dataset: ballistic!, href: "#ballistic" },
+          ]}
+        />
+      )}
+
       {/* The full live-alerts section now lives further down (after Ballistic). */}
 
 
