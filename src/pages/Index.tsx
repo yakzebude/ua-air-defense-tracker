@@ -787,10 +787,8 @@ const Index = () => {
 
 
 
-      <DataConfidenceSection
-        lastUpdatedLabel={lastUpdatedLabel}
-        lastUpdatedDate={lastUpdatedDate}
-      />
+
+
 
       {error && (
         <div className="container py-6">
