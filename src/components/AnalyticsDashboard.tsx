@@ -384,19 +384,8 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-          <span>Low</span>
-          <div className="flex gap-1">
-            {[0.1, 0.3, 0.55, 0.8, 1].map((i) => (
-              <div
-                key={i}
-                className="h-2.5 w-5 rounded-[2px] border border-border/60"
-                style={{ background: rampColor(i, 1) }}
-              />
-            ))}
-          </div>
-          <span>Record · {fmt(max)}</span>
-        </div>
+      </div>
+
       </div>
       <div className="relative" onMouseLeave={() => setHover(null)}>
         <div className="space-y-1.5">
