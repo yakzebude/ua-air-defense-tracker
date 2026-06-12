@@ -573,25 +573,46 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               {parent && (
                 <div className="text-[10px] text-muted-foreground">{parent.nameEn}</div>
               )}
-              <div className="mt-1">
-                {r ? (
+              {(() => {
+                // If the raion itself is flagged, show raion-level alert.
+                // Otherwise inherit the parent oblast's alert state so users
+                // never see "ALL CLEAR" while hovering inside an oblast that
+                // is currently under a full/partial air-raid alert.
+                const parentActive = parent && isActiveAlert(parent) && !OCCUPIED_ISOS.has(parent.iso);
+                const types = r?.types ?? (parentActive ? parent?.types : undefined);
+                const since = r?.changedAt ?? (parentActive ? parent?.changedAt : undefined);
+                const showActive = !!r || parentActive;
+                return (
                   <>
-                    <span className="text-[hsl(var(--signal))]">● {t("airAlerts.active")}</span>
-                    <span className="ml-2 text-muted-foreground">{durationLabel(r.changedAt, true)}</span>
+                    <div className="mt-1">
+                      {showActive ? (
+                        <>
+                          <span className="text-[hsl(var(--signal))]">● {t("airAlerts.active")}</span>
+                          {since && (
+                            <span className="ml-2 text-muted-foreground">{durationLabel(since, true)}</span>
+                          )}
+                          {!r && parentActive && (
+                            <span className="ml-2 text-[10px] text-muted-foreground/80">
+                              (oblast-wide)
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="text-muted-foreground">{t("airAlerts.clear")}</span>
+                      )}
+                    </div>
+                    {types && types.length > 0 && (
+                      <div className="mt-1 flex flex-wrap gap-1">
+                        {types.map((tp) => (
+                          <span key={tp} className="rounded bg-[hsl(var(--signal)/0.2)] px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-foreground">
+                            {typeLabel(tp, t)}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </>
-                ) : (
-                  <span className="text-muted-foreground">{t("airAlerts.clear")}</span>
-                )}
-              </div>
-              {r?.types && r.types.length > 0 && (
-                <div className="mt-1 flex flex-wrap gap-1">
-                  {r.types.map((tp) => (
-                    <span key={tp} className="rounded bg-[hsl(var(--signal)/0.2)] px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-foreground">
-                      {typeLabel(tp, t)}
-                    </span>
-                  ))}
-                </div>
-              )}
+                );
+              })()}
               <div className="mt-1.5 text-[9px] text-muted-foreground/70">Click for details</div>
             </div>
           );
