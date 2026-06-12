@@ -23,10 +23,13 @@ const fmt = (n: number) => n.toLocaleString("en-US");
 
 type CategoryKey = "uavs" | "cruise" | "ballistic";
 
+// Unified threat-ramp palette — identical stops to the escalation-calendar
+// heatmap so every panel reads as one coherent visual system.
+// yellow (lightest threat) → orange → deep red. Grayscale handled separately.
 const CAT_COLORS: Record<CategoryKey, string> = {
-  uavs:      "hsl(var(--series-rate))",   // neutrales mittelgrau — größte Masse
-  cruise:    "hsl(0 65% 38%)",            // karmesin
-  ballistic: "hsl(15 78% 48%)",           // orange-rot — abgesetzter Rotton
+  uavs:      "hsl(48 95% 55%)",   // yellow — largest mass, lowest per-unit threat
+  cruise:    "hsl(28 92% 50%)",   // orange — mid threat
+  ballistic: "hsl(0 78% 45%)",    // deep red — highest per-unit threat
 };
 
 interface Props {
