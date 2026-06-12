@@ -13,22 +13,26 @@ interface Props {
   accent?: string;
 }
 
-/** Pull the headline number out of an insight sentence for the big stat. */
+/** Pull the headline number out of an insight sentence for the big stat.
+ *  Strip "'NN" year tokens first so a year like '24 is never mistaken
+ *  for the headline value. */
 function splitInsight(ins: Insight): { value: string; caption: string } {
-  const m = ins.text.match(/([+\-]?\d[\d,]*(?:\.\d+)?\s*%?)/);
+  const cleaned = ins.text.replace(/'\d{2}\b/g, "");
+  const m = cleaned.match(/([+\-]?\d[\d,]*(?:\.\d+)?\s*%?)/);
   if (!m) return { value: "", caption: ins.text };
   return { value: m[0].trim(), caption: ins.text };
 }
 
 /** Map an insight back to one or two indices in the supplied series so the
- *  sparkline can highlight exactly the months the finding refers to. */
+ *  sparkline can highlight exactly the months the finding refers to.
+ *  Matches the project's label format ("May '24"). */
 function highlightIndices(
   ins: Insight,
   series: MonthPoint[],
 ): { primary: number | null; secondary: number | null } {
   const labels = series.map((m) => m.label);
-  // Capture every "Mon YYYY"-style token in the insight sentence.
-  const tokens = ins.text.match(/[A-Z][a-z]{2,8}\s+\d{4}/g) ?? [];
+  // "May '24" — three-letter month + apostrophe + two-digit year.
+  const tokens = ins.text.match(/[A-Z][a-z]{2}\s+'\d{2}/g) ?? [];
   const idxs = tokens
     .map((tok) => labels.findIndex((l) => l === tok))
     .filter((i) => i >= 0);
