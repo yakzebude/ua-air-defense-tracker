@@ -386,7 +386,6 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
         </div>
       </div>
 
-      </div>
       <div className="relative" onMouseLeave={() => setHover(null)}>
         <div className="space-y-1.5">
           {/* Month header — month initials sit above the grid for orientation. */}
