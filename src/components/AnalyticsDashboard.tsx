@@ -608,7 +608,7 @@ function AnalyticsPager(props: Props) {
               </span>
             </div>
           </Panel>
-          <div className="mt-4">
+          <div className="mt-8">
             <ChartInsights
               data={props.shahed.months}
               metric="launched"
