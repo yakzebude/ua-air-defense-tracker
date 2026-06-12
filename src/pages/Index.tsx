@@ -536,12 +536,7 @@ const Index = () => {
   const [ballisticRange, setBallisticRange] = useState<[number, number] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [latestDataPoint, setLatestDataPoint] = useState<Date | null>(null);
-  const [windowStats, setWindowStats] = useState<{
-    last30: { launched: number; destroyed: number };
-    prev30: { launched: number; destroyed: number };
-    monthLabel: string;
-    prevMonthLabel: string;
-  } | null>(null);
+  const [completeMonth, setCompleteMonth] = useState<{ key: string; label: string } | null>(null);
 
   useEffect(() => {
     loadShahedData()
