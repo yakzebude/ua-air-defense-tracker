@@ -566,6 +566,12 @@ const Index = () => {
       const prev30Start = now - 60 * DAY;
       let l30L = 0, l30D = 0, p30L = 0, p30D = 0;
 
+      // For "last 24h" we sum the most recent calendar day present in the
+      // CSV (data is daily-aggregated, so the freshest meaningful slice is
+      // the latest reported day across both feeds).
+      type DayBucket = { launched: number; destroyed: number };
+      const dayBuckets = new Map<string, DayBucket>();
+
       for (const text of [a, b]) {
         if (!text) continue;
         const parsed = Papa.parse<Record<string, string>>(text, { header: true, skipEmptyLines: true });
@@ -583,10 +589,25 @@ const Index = () => {
           } else if (ts >= prev30Start && ts < last30Start) {
             p30L += launched; p30D += destroyed;
           }
+          const dayKey = iso.slice(0, 10);
+          const db = dayBuckets.get(dayKey) ?? { launched: 0, destroyed: 0 };
+          db.launched += launched; db.destroyed += destroyed;
+          dayBuckets.set(dayKey, db);
         }
       }
       if (maxMs > 0) setLatestDataPoint(new Date(maxMs));
+
+      let latestDay: { key: string; launched: number; destroyed: number } | null = null;
+      for (const [key, v] of dayBuckets) {
+        if (!latestDay || key > latestDay.key) latestDay = { key, ...v };
+      }
+
       setWindowStats({
+        last24h: {
+          launched: Math.round(latestDay?.launched ?? 0),
+          destroyed: Math.round(latestDay?.destroyed ?? 0),
+          dataDay: latestDay ? new Date(`${latestDay.key}T00:00:00Z`) : null,
+        },
         last30: { launched: Math.round(l30L), destroyed: Math.round(l30D) },
         prev30: { launched: Math.round(p30L), destroyed: Math.round(p30D) },
       });
