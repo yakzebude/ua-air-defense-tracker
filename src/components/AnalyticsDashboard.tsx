@@ -418,9 +418,12 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
                 // the whole ramp without per-cell guessing.
                 const textColor = !has
                   ? "hsl(var(--muted-foreground) / 0.55)"
-                  : intensity >= 0.55
+                  : intensity >= 0.5
                     ? "hsl(0 0% 100%)"
                     : "hsl(0 0% 8%)";
+                // Grayscale ramp — lighter for low intensity, darker for high.
+                // Lightness goes from ~92% (low) down to ~10% (record).
+                const lightness = 92 - intensity * 82;
                 const display = !has
                   ? "—"
                   : v >= 10000 ? `${(v / 1000).toFixed(0)}k`
@@ -444,11 +447,12 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
                       const cont = (e.currentTarget.closest(".relative") as HTMLDivElement | null)?.getBoundingClientRect();
                       setHover((h) => h && { ...h, x: e.clientX - (cont?.left ?? 0), y: e.clientY - (cont?.top ?? 0) });
                     }}
-                    className="group relative flex h-[58px] flex-col justify-between rounded-[3px] border border-border/40 px-1.5 py-1 text-left transition-transform hover:z-10 hover:scale-[1.06] hover:ring-1 hover:ring-foreground/60"
+                    className="group relative flex h-[58px] flex-col justify-between rounded-[3px] border border-border/40 px-1.5 py-1 text-left transition-transform hover:z-10 hover:scale-[1.06] hover:ring-1 hover:ring-foreground/60 dark:border-white/15"
                     style={{
-                      background: has ? rampColor(intensity, 1) : "hsl(var(--muted) / 0.35)",
+                      background: has ? `hsl(0 0% ${lightness}%)` : "hsl(var(--muted) / 0.35)",
                     }}
                   >
+
                     <span
                       className="font-mono text-[8.5px] uppercase tracking-[0.16em] opacity-80"
                       style={{ color: textColor }}
