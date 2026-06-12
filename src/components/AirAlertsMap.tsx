@@ -469,9 +469,9 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                           fontSize,
                           fontWeight: 700,
                           letterSpacing: "0.06em",
-                          fill: occupied ? "hsl(0 0% 100% / 1)" : "hsl(var(--foreground))",
+                          fill: occupied ? "hsl(0 0% 100%)" : "hsl(var(--foreground))",
                           paintOrder: "stroke",
-                          stroke: "hsl(var(--background))",
+                          stroke: occupied ? "hsl(215 30% 8% / 0.95)" : "hsl(var(--background))",
                           strokeWidth: 3.5,
                           strokeLinejoin: "round",
                         }}
