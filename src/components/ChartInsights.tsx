@@ -43,38 +43,36 @@ function highlightIndices(
 }
 
 /** Mini bar-sparkline of the whole series; the months the finding refers to
- *  are highlighted in the accent colour, every other month sits in a neutral
- *  grayscale so the eye locks onto the highlighted bar(s). */
+ *  are highlighted in a darker neutral gray so the eye locks onto them
+ *  without competing with the category colour used elsewhere on the page.
+ *  When a finding compares two months (e.g. largest jump/drop), BOTH bars
+ *  are coloured equally. */
 function Sparkline({
   series,
   values,
   primary,
   secondary,
-  accent,
 }: {
   series: MonthPoint[];
   values: number[];
   primary: number | null;
   secondary: number | null;
-  accent: string;
 }) {
   const max = Math.max(1, ...values);
+  const baseBg = "hsl(var(--muted-foreground) / 0.18)";
+  const hiBg = "hsl(var(--muted-foreground) / 0.85)";
   return (
     <div className="mt-2 flex h-10 items-end gap-[1px]" aria-hidden>
       {values.map((v, i) => {
         const h = (Math.max(v, 0) / max) * 100;
-        const isPrimary = i === primary;
-        const isSecondary = i === secondary;
-        const isHi = isPrimary || isSecondary;
-        const bg = isHi ? accent : "hsl(var(--muted-foreground) / 0.22)";
+        const isHi = i === primary || i === secondary;
         return (
           <div
             key={i}
             className="flex-1"
             style={{
               height: `${Math.max(h, 2)}%`,
-              background: bg,
-              opacity: isSecondary ? 0.6 : 1,
+              background: isHi ? hiBg : baseBg,
               minWidth: 2,
             }}
             title={`${series[i]?.label ?? ""}: ${v.toLocaleString("en-US")}`}
