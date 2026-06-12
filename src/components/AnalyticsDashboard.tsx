@@ -258,7 +258,7 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
             <YAxis
               type="category"
               dataKey="name"
-              width={160}
+              width={175}
               tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
               tickLine={false}
               axisLine={false}
