@@ -245,7 +245,7 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
           look-and-feel of the launches panel. */}
       <div style={{ height: 240 }} className="w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} layout="vertical" margin={{ top: 8, right: 24, left: 8, bottom: 4 }}>
+          <BarChart data={chartData} layout="vertical" margin={{ top: 8, right: 24, left: 16, bottom: 4 }}>
             <CartesianGrid stroke="hsl(var(--border) / 0.2)" horizontal={false} />
             <XAxis
               type="number"
@@ -258,7 +258,7 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
             <YAxis
               type="category"
               dataKey="name"
-              width={104}
+              width={144}
               tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
               tickLine={false}
               axisLine={false}
