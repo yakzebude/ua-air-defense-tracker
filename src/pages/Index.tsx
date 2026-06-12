@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Trans, useTranslation } from "react-i18next";
+import { ChevronRight } from "lucide-react";
 import Papa from "papaparse";
 import { loadShahedData, type Dataset, type MonthPoint } from "@/lib/shahed-data";
 import { loadAllMissileCategories } from "@/lib/missiles-data";
