@@ -435,8 +435,8 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
                     : "hsl(0 0% 8%)";
                 const display = !has
                   ? "—"
-                  : v >= 10000 ? `${(v / 1000).toFixed(1)}k`
-                  : v >= 1000  ? `${(v / 1000).toFixed(1)}k`
+                  : v >= 10000 ? `${(v / 1000).toFixed(0)}k`
+                  : v >= 1000  ? fmt(v)
                   : `${v}`;
                 return (
                   <button
