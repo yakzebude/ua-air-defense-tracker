@@ -50,7 +50,7 @@
 
     /* Chart series (legacy compatibility) */
     --series-launched: 0 65% 42%;
-    --series-destroyed: 152 45% 32%;
+    --series-destroyed: 215 10% 55%;       /* neutral gray (light mode) */
     --series-rate: 215 14% 45%;
     --grid: 215 16% 89%;
 
