@@ -652,7 +652,7 @@ function AnalyticsPager(props: Props) {
             </div>
           </Panel>
           <div
-            className="-mx-4 mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0"
+            className="-mx-4 mt-auto flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0"
             aria-label="Key findings — swipe horizontally for ballistic missiles"
           >
             <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
@@ -678,11 +678,11 @@ function AnalyticsPager(props: Props) {
               />
             </div>
           </div>
-        </>
+        </div>
       )}
 
       {active === "share" && (
-        <>
+        <div className="flex h-full flex-col">
           <Panel
             title={t("analytics.sharePanel")}
             subtitle={t("analytics.sharePanelSub")}
