@@ -859,49 +859,10 @@ const Index = () => {
         />
       )}
 
-      {/* Live situation — collapsible. Historical data remains the primary focus. */}
-      <section id="alerts" className="scroll-mt-32 border-t border-border bg-secondary/30">
-        <div className="container py-6 md:py-8">
-          <details className="group">
-            <summary className="flex cursor-pointer list-none flex-wrap items-end justify-between gap-3 [&::-webkit-details-marker]:hidden">
-              <div>
-                <div className="src-label mb-1 flex items-center gap-2">
-                  <span className="relative inline-flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--signal))] opacity-60" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
-                  </span>
-                  <span>{t("airAlerts.kicker")}</span>
-                </div>
-                <h2 className="font-serif text-[1.75rem] leading-tight tracking-tight md:text-[2.25rem]">
-                  {t("airAlerts.title")}
-                </h2>
-                <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-                  {t("airAlerts.subtitle")}
-                </p>
-              </div>
-              <span className="inline-flex items-center gap-2 rounded-sm border border-border bg-card px-3 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground transition-colors group-hover:text-foreground">
-                <span className="group-open:hidden">{t("airAlerts.expand")}</span>
-                <span className="hidden group-open:inline">{t("airAlerts.collapse")}</span>
-                <span aria-hidden className="transition-transform group-open:rotate-180">▾</span>
-              </span>
-            </summary>
-            <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-stretch">
-              <div className="lg:col-span-2 flex">
-                <div className="w-full"><AirAlertsMap variant="full" /></div>
-              </div>
-              <div className="lg:col-span-1 flex">
-                <div className="w-full"><AirThreatFeed /></div>
-              </div>
-            </div>
-          </details>
-        </div>
-      </section>
-
-
       <WeaponsCatalogSection />
 
       <section id="methodology" className="scroll-mt-32 border-t border-border">
-        <div className="container grid gap-8 py-12 md:grid-cols-12 md:py-16">
+        <div className="container grid gap-6 py-8 md:grid-cols-12 md:py-10">
           <div className="md:col-span-4">
             <div className="src-label mb-3">{t("methodologyInline.kicker")}</div>
             <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
