@@ -685,14 +685,18 @@ const Index = () => {
                   info={{ label: t("kpi.tip.totalLaunchedLabel"), body: t("kpi.tip.totalLaunched") }}
                 />
 
-                {/* TIER 3 — rolling 30-day insight strip */}
+                {/* TIER 3 — rolling 30-day insight strip · Bloomberg-style terminal block */}
                 {windowStats && (
-                  <div className="mt-5 rounded-sm border border-border bg-background/60 p-3 sm:p-4">
-                    <div className="mb-2.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.16em] text-muted-foreground">
-                      <span>{t("masthead.insight")}</span>
-                      <span className="text-muted-foreground/70 normal-case tracking-normal">— {t("masthead.vsPrev30")}</span>
+                  <div className="mt-5 border-t-2 border-foreground bg-background/60">
+                    <div className="flex items-center justify-between border-b border-border px-3 py-1.5 sm:px-4">
+                      <span className="text-[9.5px] sm:text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-foreground">
+                        {t("masthead.insight")}
+                      </span>
+                      <span className="text-[9.5px] sm:text-[10px] font-mono uppercase tracking-[0.16em] text-muted-foreground">
+                        {t("masthead.vsPrev30")}
+                      </span>
                     </div>
-                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                    <div className="grid grid-cols-3 divide-x divide-border">
                       {(() => {
                         const l = windowStats.last30.launched;
                         const d = windowStats.last30.destroyed;
@@ -700,23 +704,22 @@ const Index = () => {
                         const lPrev = windowStats.prev30.launched;
                         const dPrev = windowStats.prev30.destroyed;
                         const rPrev = Math.max(lPrev - dPrev, 0);
+                        const Cell = ({ label, value, delta, dir }: { label: string; value: number; delta: number | null; dir: "down-is-good" | "up-is-good" }) => (
+                          <div className="min-w-0 px-2.5 py-3 sm:px-4 sm:py-3.5">
+                            <div className="text-[8.5px] sm:text-[9.5px] font-mono uppercase tracking-[0.18em] leading-none text-muted-foreground truncate">
+                              {label}
+                            </div>
+                            <div className="mt-2 num text-[1.375rem] sm:text-[1.75rem] font-semibold leading-none tracking-tight tabular-nums">
+                              {fmt(value)}
+                            </div>
+                            <div className="mt-2"><TrendBadge delta={delta} direction={dir} /></div>
+                          </div>
+                        );
                         return (
                           <>
-                            <div className="min-w-0">
-                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightLaunched")}</div>
-                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(l)}</div>
-                              <div className="mt-1"><TrendBadge delta={pctChange(l, lPrev)} direction="down-is-good" /></div>
-                            </div>
-                            <div className="min-w-0">
-                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightIntercepted")}</div>
-                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(d)}</div>
-                              <div className="mt-1"><TrendBadge delta={pctChange(d, dPrev)} direction="up-is-good" /></div>
-                            </div>
-                            <div className="min-w-0">
-                              <div className="min-h-[2.4em] text-[9.5px] sm:text-[10.5px] font-mono uppercase tracking-[0.14em] leading-[1.2] text-muted-foreground">{t("masthead.insightReached")}</div>
-                              <div className="mt-1 num text-[1.125rem] sm:text-[1.375rem] font-semibold leading-none">{fmt(reachedW)}</div>
-                              <div className="mt-1"><TrendBadge delta={pctChange(reachedW, rPrev)} direction="down-is-good" /></div>
-                            </div>
+                            <Cell label={t("masthead.insightLaunched")} value={l} delta={pctChange(l, lPrev)} dir="down-is-good" />
+                            <Cell label={t("masthead.insightIntercepted")} value={d} delta={pctChange(d, dPrev)} dir="up-is-good" />
+                            <Cell label={t("masthead.insightReached")} value={reachedW} delta={pctChange(reachedW, rPrev)} dir="down-is-good" />
                           </>
                         );
                       })()}
