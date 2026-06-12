@@ -554,6 +554,9 @@ function AnalyticsPager(props: Props) {
         })}
       </div>
 
+      {/* Equal-height shell — every tab takes the same vertical space so
+          switching panels never causes the page below to jump. */}
+      <div className="min-h-[680px]">
       {active === "uavs" && (
         <>
           <Panel
@@ -669,6 +672,7 @@ function AnalyticsPager(props: Props) {
           <HeatmapMonthlyIntensity {...props} />
         </Panel>
       )}
+      </div>
     </div>
   );
 }
