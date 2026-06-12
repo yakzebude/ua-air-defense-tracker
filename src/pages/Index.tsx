@@ -843,47 +843,66 @@ const Index = () => {
       {/* The full live-alerts section now lives further down (after Ballistic). */}
 
 
-      {shahed && shahedRange && (
-        <CategorySection
-          id="drones"
-          glossaryKey="drones"
-          kicker={t("category.drones.kicker")}
-          title={t("category.drones.title")}
-          description={t("category.drones.description")}
-          unitNoun={t("category.drones.unit")}
-          dataset={shahed}
-          range={shahedRange}
-          onRangeChange={setShahedRange}
-        />
-      )}
+      {(shahed && shahedRange) || (cruise && cruiseRange) || (ballistic && ballisticRange) ? (
+        <div className="border-t border-border">
+          <div
+            className="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:thin]"
+            aria-label="Categories — swipe horizontally between UAVs, cruise and ballistic"
+          >
+            {shahed && shahedRange && (
+              <div className="min-w-full snap-start shrink-0 border-r border-border last:border-r-0">
+                <CategorySection
+                  id="drones"
+                  glossaryKey="drones"
+                  kicker={t("category.drones.kicker")}
+                  title={t("category.drones.title")}
+                  description={t("category.drones.description")}
+                  unitNoun={t("category.drones.unit")}
+                  dataset={shahed}
+                  range={shahedRange}
+                  onRangeChange={setShahedRange}
+                />
+              </div>
+            )}
+            {cruise && cruiseRange && (
+              <div className="min-w-full snap-start shrink-0 border-r border-border last:border-r-0">
+                <CategorySection
+                  id="cruise"
+                  glossaryKey="cruise"
+                  kicker={t("category.cruiseSection.kicker")}
+                  title={t("category.cruiseSection.title")}
+                  description={t("category.cruiseSection.description")}
+                  unitNoun={t("category.cruiseSection.unit")}
+                  dataset={cruise}
+                  range={cruiseRange}
+                  onRangeChange={setCruiseRange}
+                />
+              </div>
+            )}
+            {ballistic && ballisticRange && (
+              <div className="min-w-full snap-start shrink-0 border-r border-border last:border-r-0">
+                <CategorySection
+                  id="ballistic"
+                  glossaryKey="ballistic"
+                  kicker={t("category.ballisticSection.kicker")}
+                  title={t("category.ballisticSection.title")}
+                  description={t("category.ballisticSection.description")}
+                  unitNoun={t("category.ballisticSection.unit")}
+                  dataset={ballistic}
+                  range={ballisticRange}
+                  onRangeChange={setBallisticRange}
+                />
+              </div>
+            )}
+          </div>
+          <div className="container flex items-center justify-center gap-2 pb-4 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            <span aria-hidden>←</span>
+            <span>{t("analytics.swipeHint", { defaultValue: "Swipe / scroll horizontally" })}</span>
+            <span aria-hidden>→</span>
+          </div>
+        </div>
+      ) : null}
 
-      {cruise && cruiseRange && (
-        <CategorySection
-          id="cruise"
-          glossaryKey="cruise"
-          kicker={t("category.cruiseSection.kicker")}
-          title={t("category.cruiseSection.title")}
-          description={t("category.cruiseSection.description")}
-          unitNoun={t("category.cruiseSection.unit")}
-          dataset={cruise}
-          range={cruiseRange}
-          onRangeChange={setCruiseRange}
-        />
-      )}
-
-      {ballistic && ballisticRange && (
-        <CategorySection
-          id="ballistic"
-          glossaryKey="ballistic"
-          kicker={t("category.ballisticSection.kicker")}
-          title={t("category.ballisticSection.title")}
-          description={t("category.ballisticSection.description")}
-          unitNoun={t("category.ballisticSection.unit")}
-          dataset={ballistic}
-          range={ballisticRange}
-          onRangeChange={setBallisticRange}
-        />
-      )}
 
       {/* Live situation — collapsible. Historical data remains the primary focus. */}
       <section id="alerts" className="scroll-mt-32 border-t border-border bg-secondary/30">
