@@ -75,6 +75,38 @@
     "refreshBadge": "Last refresh",
     "timeframe": "Timeframe"
   },
+  "hero": {
+    "layer1": {
+      "kicker": "Live threat status",
+      "window": "Last 24 hours",
+      "dataDay": "Data day",
+      "launched": "Launched",
+      "intercepted": "Intercepted",
+      "reached": "Reached target"
+    },
+    "layer2": {
+      "kicker": "Attack velocity",
+      "window": "{{month}} so far",
+      "compare": "vs. {{prev}} (full month)",
+      "launched": "Launched this month",
+      "intercepted": "Intercepted this month",
+      "dailyPace": "Daily pace",
+      "perDay": "avg / day · {{d}} d in",
+      "projected": "Projected month total",
+      "mom": "MoM",
+      "vsPrev": "vs. prev."
+    },
+    "layer3": {
+      "kicker": "War-to-date totals"
+    }
+  },
+  "composition": {
+    "kicker": "Structural shift",
+    "title": "How attack composition shifted over the last 24 months",
+    "subtitle": "Share of monthly launches by weapon class — UAVs, cruise and ballistic. Stacked to 100% to surface structural change in Russia's air-attack mix, independent of absolute volume.",
+    "monthTotal": "Monthly total",
+    "axisNote": "Composition share, {{first}} – {{last}}. Current month excluded."
+  },
   "primarySource": "Air Force Command of the Armed Forces of Ukraine (weekly reports, via Kaggle dataset, Petro Ivaniuk)",
   "primarySourceShort": "Air Force Command of the Armed Forces of Ukraine (weekly reports, via Kaggle)",
   "category": {

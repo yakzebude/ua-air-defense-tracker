@@ -75,6 +75,38 @@
     "refreshBadge": "Dernière actualisation",
     "timeframe": "Période"
   },
+  "hero": {
+    "layer1": {
+      "kicker": "Statut de menace en direct",
+      "window": "24 dernières heures",
+      "dataDay": "Jour des données",
+      "launched": "Lancés",
+      "intercepted": "Interceptés",
+      "reached": "Cible atteinte"
+    },
+    "layer2": {
+      "kicker": "Vélocité des attaques",
+      "window": "{{month}} à ce jour",
+      "compare": "vs. {{prev}} (mois complet)",
+      "launched": "Lancés ce mois-ci",
+      "intercepted": "Interceptés ce mois-ci",
+      "dailyPace": "Rythme quotidien",
+      "perDay": "moy. / jour · {{d}} j écoulés",
+      "projected": "Total mensuel projeté",
+      "mom": "M/M",
+      "vsPrev": "vs. préc."
+    },
+    "layer3": {
+      "kicker": "Totaux depuis le début de la guerre"
+    }
+  },
+  "composition": {
+    "kicker": "Évolution structurelle",
+    "title": "Comment la composition des attaques a évolué sur les 24 derniers mois",
+    "subtitle": "Part des lancements mensuels par classe d'arme — UAVs, missiles de croisière et balistiques. Empilé à 100 % pour révéler les changements structurels du mix d'attaques aériennes russes, indépendamment du volume absolu.",
+    "monthTotal": "Total mensuel",
+    "axisNote": "Part de composition, {{first}} – {{last}}. Mois en cours exclu."
+  },
   "primarySource": "Commandement de la Force aérienne des forces armées ukrainiennes (rapports hebdomadaires, via le jeu de données Kaggle, Petro Ivaniuk)",
   "primarySourceShort": "Commandement de la Force aérienne (via Kaggle)",
   "category": {

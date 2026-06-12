@@ -75,6 +75,38 @@
     "refreshBadge": "Letzte Aktualisierung",
     "timeframe": "Zeitraum"
   },
+  "hero": {
+    "layer1": {
+      "kicker": "Aktuelle Bedrohungslage",
+      "window": "Letzte 24 Stunden",
+      "dataDay": "Datentag",
+      "launched": "Gestartet",
+      "intercepted": "Abgefangen",
+      "reached": "Ziel erreicht"
+    },
+    "layer2": {
+      "kicker": "Angriffstempo",
+      "window": "{{month}} bisher",
+      "compare": "vs. {{prev}} (gesamter Monat)",
+      "launched": "Diesen Monat gestartet",
+      "intercepted": "Diesen Monat abgefangen",
+      "dailyPace": "Tägliches Tempo",
+      "perDay": "Ø / Tag · Tag {{d}}",
+      "projected": "Projektion Monatssumme",
+      "mom": "MoM",
+      "vsPrev": "vs. Vormonat"
+    },
+    "layer3": {
+      "kicker": "Gesamtsummen seit Kriegsbeginn"
+    }
+  },
+  "composition": {
+    "kicker": "Strukturelle Verschiebung",
+    "title": "Wie sich die Angriffszusammensetzung in den letzten 24 Monaten verändert hat",
+    "subtitle": "Anteil der monatlichen Starts nach Waffenklasse — UAVs, Marschflugkörper und ballistische Raketen. Auf 100 % gestapelt, um strukturelle Verschiebungen im russischen Angriffsmix sichtbar zu machen, unabhängig vom absoluten Volumen.",
+    "monthTotal": "Monatssumme",
+    "axisNote": "Anteilsverteilung, {{first}} – {{last}}. Laufender Monat ausgeschlossen."
+  },
   "primarySource": "Air Force Command of the Armed Forces of Ukraine (wöchentliche Berichte, via Kaggle Datensatz, Petro Ivaniuk)",
   "primarySourceShort": "Air Force Command of the Armed Forces of Ukraine (via Kaggle)",
   "category": {
