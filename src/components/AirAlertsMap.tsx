@@ -169,6 +169,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
   const [hovered, setHovered] = useState<
     | { kind: "oblast"; iso: string; name: string; nameEn: string; x: number; y: number }
     | { kind: "raion"; name: string; oblastIso: string; x: number; y: number }
+    | { kind: "aggressor"; country: "Belarus" | "Russia"; x: number; y: number }
     | null
   >(null);
   const [selected, setSelected] = useState<
