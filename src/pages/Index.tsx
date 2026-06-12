@@ -554,10 +554,7 @@ const Index = () => {
       fetch("/data/shahed_attacks_daily.csv").then((r) => r.ok ? r.text() : ""),
       fetch("/data/missile_attacks_daily.csv").then((r) => r.ok ? r.text() : ""),
     ]).then(([a, b]) => {
-      // Aggregate per UTC day
-      const perDay = new Map<string, { l: number; d: number; ts: number }>();
       let maxMs = 0;
-
       for (const text of [a, b]) {
         if (!text) continue;
         const parsed = Papa.parse<Record<string, string>>(text, { header: true, skipEmptyLines: true });
@@ -568,47 +565,22 @@ const Index = () => {
           const ts = Date.parse(iso);
           if (isNaN(ts)) continue;
           if (ts > maxMs) maxMs = ts;
-          const dt = new Date(ts);
-          const key = `${dt.getUTCFullYear()}-${dt.getUTCMonth()}-${dt.getUTCDate()}`;
-          const launched = Number.parseFloat(row.launched ?? "") || 0;
-          const destroyed = Number.parseFloat(row.destroyed ?? "") || 0;
-          const cur = perDay.get(key);
-          if (cur) { cur.l += launched; cur.d += destroyed; }
-          else perDay.set(key, { l: launched, d: destroyed, ts });
         }
       }
-
       if (maxMs === 0) return;
       setLatestDataPoint(new Date(maxMs));
 
-      // Last fully-covered calendar month: the most recent month whose final day is <= maxDate.
+      // Last fully-covered calendar month: most recent month whose final day is <= maxDate.
       const maxDate = new Date(maxMs);
       const lastDayOfMonth = (y: number, m: number) => new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
       let y = maxDate.getUTCFullYear();
       let m = maxDate.getUTCMonth();
       if (maxDate.getUTCDate() < lastDayOfMonth(y, m)) {
-        // current month incomplete → step back one month
         m -= 1; if (m < 0) { m = 11; y -= 1; }
       }
-      let py = y, pm = m - 1; if (pm < 0) { pm = 11; py -= 1; }
-
-      let l30L = 0, l30D = 0, p30L = 0, p30D = 0;
-      for (const { l, d, ts } of perDay.values()) {
-        const dt = new Date(ts);
-        const dy = dt.getUTCFullYear(), dm = dt.getUTCMonth();
-        if (dy === y && dm === m) { l30L += l; l30D += d; }
-        else if (dy === py && dm === pm) { p30L += l; p30D += d; }
-      }
-
-      const fmtMonth = (yy: number, mm: number) =>
-        new Date(Date.UTC(yy, mm, 1)).toLocaleString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
-
-      setWindowStats({
-        last30: { launched: Math.round(l30L), destroyed: Math.round(l30D) },
-        prev30: { launched: Math.round(p30L), destroyed: Math.round(p30D) },
-        monthLabel: fmtMonth(y, m),
-        prevMonthLabel: fmtMonth(py, pm),
-      });
+      const key = `${y}-${String(m + 1).padStart(2, "0")}`;
+      const label = new Date(Date.UTC(y, m, 1)).toLocaleString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+      setCompleteMonth({ key, label });
     }).catch(() => {});
   }, []);
 
