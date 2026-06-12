@@ -975,10 +975,10 @@ const Index = () => {
             </summary>
             <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-stretch">
               <div className="lg:col-span-2 flex">
-                <div className="w-full"><AirAlertsMap variant="full" /></div>
+                <div className="w-full h-full"><AirAlertsMap variant="full" /></div>
               </div>
-              <div className="lg:col-span-1 flex">
-                <div className="w-full"><AirThreatFeed /></div>
+              <div className="lg:col-span-1 flex min-h-0">
+                <div className="w-full h-full"><AirThreatFeed /></div>
               </div>
             </div>
           </details>
