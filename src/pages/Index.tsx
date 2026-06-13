@@ -1080,13 +1080,50 @@ const Index = () => {
         </div>
       </section>
 
+      <Dialog open={contactOpen} onOpenChange={setContactOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-base font-semibold tracking-tight">{t("prefooter.contactTitle")}</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              {t("prefooter.contactDescription")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <Mail className="h-4 w-4 text-muted-foreground" />
+              <a href="mailto:contact@ua-airdefense-tracker.org" className="text-foreground underline underline-offset-4 hover:no-underline">
+                contact@ua-airdefense-tracker.org
+              </a>
+            </div>
+            <div className="border-t border-border pt-3 mt-3">
+              <p className="text-[12.5px]">
+                <span className="text-foreground font-medium">{t("prefooter.initiatorLabel")}</span>{" "}
+                {t("prefooter.initiator")}
+              </p>
+              <p className="text-[12.5px] mt-1">
+                <span className="text-foreground font-medium">{t("prefooter.responsibleLabel")}</span>{" "}
+                {t("prefooter.responsible")}
+              </p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <footer className="border-t border-border">
         <div className="container flex flex-col gap-3 py-5 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[12.5px] text-muted-foreground">
-            <Link to="/contact" className="hover:text-foreground transition-colors">{t("nav.contact")}</Link>
-            <a href="https://github.com/PetroIvaniuk/massive-missile-attacks-on-ukraine" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">GitHub</a>
+            <button
+              type="button"
+              onClick={() => setContactOpen(true)}
+              className="hover:text-foreground transition-colors"
+            >
+              {t("nav.contact")}
+            </button>
             <Link to="/imprint" className="hover:text-foreground transition-colors">{t("prefooter.privacy")}</Link>
             <Link to="/disclaimer" className="hover:text-foreground transition-colors">{t("prefooter.terms")}</Link>
+          </div>
+          <div className="text-[12.5px] text-muted-foreground">
+            <span className="text-foreground">{t("prefooter.initiator")}</span> · {t("prefooter.responsible")}
           </div>
           <div className="text-[12.5px] text-muted-foreground">
             {t("prefooter.lastUpdated")}: <span className="text-foreground">{lastUpdatedLabel ?? "—"}</span>
