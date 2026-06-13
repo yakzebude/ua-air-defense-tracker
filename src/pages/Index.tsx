@@ -54,7 +54,7 @@ function GlossaryChips({ category }: { category: keyof typeof GLOSSARY }) {
     <div className="mb-6 flex flex-wrap items-center gap-2">
       <span className="src-label mr-1">{t("glossary.label")}</span>
       {items.map((w) => (
-        <WeaponTerm key={w.term} term={w.term} description={w.description} />
+        <WeaponTerm key={w.term} term={w.term} description={w.description} arsenalQuery={w.q} />
       ))}
     </div>
   );
