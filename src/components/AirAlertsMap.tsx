@@ -693,22 +693,19 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                 return (
                   <>
                     <div className="mt-1">
-                      {showActive ? (
-                        <>
-                          <span className="text-[hsl(var(--signal))]">● {t("airAlerts.active")}</span>
-                          {since && (
-                            <span className="ml-2 text-muted-foreground">{durationLabel(since, true)}</span>
-                          )}
-                          {!r && parentActive && (
-                            <span className="ml-2 text-[10px] text-muted-foreground/80">
-                              (oblast-wide)
-                            </span>
-                          )}
-                        </>
-                      ) : (
-                        <span className="text-muted-foreground">{t("airAlerts.clear")}</span>
-                      )}
-                    </div>
+                       {showActive ? (
+                         <>
+                           <span className="text-[hsl(var(--signal))]">● {t("airAlerts.active")}</span>
+                           {!r && parentActive && (
+                             <span className="ml-2 text-[10px] text-muted-foreground/80">
+                               (oblast-wide)
+                             </span>
+                           )}
+                         </>
+                       ) : (
+                         <span className="text-muted-foreground">{t("airAlerts.clear")}</span>
+                       )}
+                     </div>
                     {types && types.length > 0 && (
                       <div className="mt-1 flex flex-wrap gap-1">
                         {types.map((tp) => (
@@ -912,6 +909,11 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           {selected?.kind === "raion" && (() => {
             const r = selected.raion;
             const parent = byIso.get(selected.oblastIso);
+            const parentActive = !!parent && isActiveAlert(parent) && !OCCUPIED_ISOS.has(parent.iso);
+            const showActive = !!r?.active || parentActive;
+            const activeTypes = r?.active ? r.types : (parentActive ? parent?.types : undefined);
+            const activeSince = r?.active ? r.changedAt : (parentActive ? parent?.changedAt : undefined);
+            const stat = OBLAST_STATS.regions[selected.oblastIso];
             return (
               <>
                 <SheetHeader>
@@ -923,19 +925,25 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                 <div className="mt-6 space-y-4 text-sm">
                   <div>
                     <div className="src-label mb-1">{t("airAlerts.status")}</div>
-                    {r?.active ? (
+                    {showActive ? (
                       <div className="text-[hsl(var(--signal))] font-semibold">
-                        ● {t("airAlerts.active")} — {durationLabel(r.changedAt, true)}
+                        ● {t("airAlerts.active")}
+                        {activeSince && <> — {durationLabel(activeSince, true)}</>}
+                        {!r?.active && parentActive && (
+                          <span className="ml-2 text-[10px] font-normal text-muted-foreground/80">
+                            (oblast-wide)
+                          </span>
+                        )}
                       </div>
                     ) : (
                       <div className="text-muted-foreground">{t("airAlerts.clear")}</div>
                     )}
                   </div>
-                  {r?.active && r.types && r.types.length > 0 && (
+                  {showActive && activeTypes && activeTypes.length > 0 && (
                     <div>
                       <div className="src-label mb-1">{t("airAlerts.threatType")}</div>
                       <div className="flex flex-wrap gap-1.5">
-                        {r.types.map((tp) => (
+                        {activeTypes.map((tp) => (
                           <span key={tp} className="rounded bg-[hsl(var(--signal)/0.2)] px-2 py-0.5 text-[11px] uppercase tracking-wider text-foreground">
                             {typeLabel(tp, t)}
                           </span>
@@ -943,10 +951,52 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       </div>
                     </div>
                   )}
-                  {r && (
+                  {activeSince && (
                     <div>
                       <div className="src-label mb-1">{t("airAlerts.changedAt")}</div>
-                      <div>{new Date(r.changedAt).toUTCString()}</div>
+                      <div>{new Date(activeSince).toUTCString()}</div>
+                    </div>
+                  )}
+                  {stat && (
+                    <div className="pt-4 border-t border-border space-y-2">
+                      <div className="src-label">
+                        {t("airAlerts.statsHeading", { date: OBLAST_STATS.periodStart })}
+                      </div>
+                      <p className="text-[10px] text-muted-foreground/80 -mt-1">
+                        Raion-level historical data is not publicly aggregated; figures below are for the parent oblast ({parent?.nameEn}).
+                      </p>
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                        <div>
+                          <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsAlerts")}</div>
+                          <div className="text-base font-semibold tabular-nums">{fmtNum(stat.alarms)}</div>
+                        </div>
+                        {stat.explosionReports !== undefined && (
+                          <div>
+                            <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsExplosions")}</div>
+                            <div className="text-base font-semibold tabular-nums">{fmtNum(stat.explosionReports)}</div>
+                          </div>
+                        )}
+                        {stat.avgDuration && (
+                          <div>
+                            <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsAvgDuration")}</div>
+                            <div className="tabular-nums">{stat.avgDuration}</div>
+                          </div>
+                        )}
+                        {stat.longest && (
+                          <div>
+                            <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{t("airAlerts.statsLongest")}</div>
+                            <div className="tabular-nums">{stat.longest}</div>
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-[10px] text-muted-foreground/80">
+                        {t("airAlerts.statsSource")}:{" "}
+                        <a href={OBLAST_STATS.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-foreground">
+                          {OBLAST_STATS.source}
+                        </a>
+                        {" · "}
+                        {t("airAlerts.statsAsOf", { date: OBLAST_STATS.asOf })}
+                      </p>
                     </div>
                   )}
                   <div className="pt-4 border-t border-border">
