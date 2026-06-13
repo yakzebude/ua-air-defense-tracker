@@ -29,6 +29,22 @@ export function WeaponsCatalogSection() {
     loadModelStats().then(setStats).catch(() => setStats(new Map()));
   }, []);
 
+  // Sync search input with the `?arsenal=` URL query so deep-links from
+  // WeaponTerm chips pre-filter this section.
+  useEffect(() => {
+    const sync = () => {
+      const p = new URLSearchParams(window.location.search).get("arsenal");
+      if (p) {
+        setQ(p);
+        setCat("all");
+        setOrigin("all");
+      }
+    };
+    sync();
+    window.addEventListener("popstate", sync);
+    return () => window.removeEventListener("popstate", sync);
+  }, []);
+
   useEffect(() => { setExpanded(false); }, [cat, origin, q]);
 
   const CATEGORIES = [
