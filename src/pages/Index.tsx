@@ -1123,7 +1123,7 @@ const Index = () => {
             <Link to="/disclaimer" className="hover:text-foreground transition-colors">{t("prefooter.terms")}</Link>
           </div>
           <div className="text-[12.5px] text-muted-foreground">
-            <span className="text-foreground">{t("prefooter.initiator")}</span> · {t("prefooter.responsible")}
+            <span className="text-foreground">{t("prefooter.initiator")}</span> · {t("prefooter.initiatorLabel")} & {t("prefooter.responsibleLabel")}
           </div>
           <div className="text-[12.5px] text-muted-foreground">
             {t("prefooter.lastUpdated")}: <span className="text-foreground">{lastUpdatedLabel ?? "—"}</span>
