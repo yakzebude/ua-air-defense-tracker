@@ -128,7 +128,14 @@ export function WeaponsCatalogSection() {
                 return (
                   <button
                     key={c.key}
-                    onClick={() => setCat(c.key)}
+                    onClick={() => {
+                      setCat(c.key);
+                      setQ("");
+                      setTreemapFilter(null);
+                      const url = new URL(window.location.href);
+                      url.searchParams.delete("arsenal");
+                      window.history.replaceState({}, "", url);
+                    }}
                     className={`rounded-sm border px-2.5 py-1 text-[11px] font-mono uppercase tracking-[0.14em] transition-colors ${
                       active
                         ? "border-foreground bg-foreground text-background"
