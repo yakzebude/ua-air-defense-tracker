@@ -536,6 +536,12 @@
     "helpBody": "Signalez les erreurs d’agrégation, de cartographie ou d’étiquetage, proposez des sources ou contribuez au jeu de données amont.",
     "helpReport": "Signaler un problème sur GitHub ↗",
     "helpContact": "Contacter le responsable →",
+    "contactTitle": "Contact",
+    "contactDescription": "Pour toute demande, correction ou suggestion de source, veuillez nous contacter par e-mail.",
+    "initiatorLabel": "Initiateur du projet",
+    "initiator": "Alexander Anton-Boicuk",
+    "responsibleLabel": "Responsable de ce site",
+    "responsible": "Alexander Anton-Boicuk",
     "privacy": "Confidentialité",
     "terms": "Conditions",
     "lastUpdated": "Dernière mise à jour"

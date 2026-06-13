@@ -542,6 +542,12 @@
     "helpBody": "Melden Sie Fehler in Aggregation, Zuordnung oder Beschriftung, schlagen Sie Quellen vor oder tragen Sie zum Datensatz bei.",
     "helpReport": "Problem auf GitHub melden ↗",
     "helpContact": "Kontakt zum Betreiber →",
+    "contactTitle": "Kontakt",
+    "contactDescription": "Für Anfragen, Korrekturen oder Quellenvorschläge erreichen Sie uns per E-Mail.",
+    "initiatorLabel": "Projektinitiator",
+    "initiator": "Alexander Anton-Boicuk",
+    "responsibleLabel": "Verpflichtender dieser Webseite",
+    "responsible": "Alexander Anton-Boicuk",
     "privacy": "Datenschutz",
     "terms": "Nutzungsbedingungen",
     "lastUpdated": "Zuletzt aktualisiert"
