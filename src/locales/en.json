@@ -524,5 +524,26 @@
     "methodology": "Methodology",
     "downloadDataset": "Download dataset (CSV)",
     "allSources": "All sources"
+  },
+  "prefooter": {
+    "eyebrow": "About this project",
+    "aboutTitle": "About this tracker",
+    "aboutBody": "An independent, non-commercial intelligence dashboard tracking Russian aerial weapons launched against Ukraine and Ukrainian air-defense performance, compiled from official daily reports.",
+    "aboutLink": "Read more →",
+    "methodologyTitle": "Methodology",
+    "methodologyBody": "Daily bulletins from the Air Force Command of the Armed Forces of Ukraine are normalized into a monthly time series, categorized by weapon family, and computed for through-rate and interception rate.",
+    "methodologyLink": "Full methodology →",
+    "limitationsTitle": "Data limitations",
+    "limitationsBody": "Figures reflect reported launches and confirmed interceptions only. Weapons jammed, lost, or unverified are excluded. Mixed-model salvos contribute to every category they list. Values are reviewed and revised on a rolling basis.",
+    "sourcesTitle": "Sources",
+    "sourcesBody": "Primary source: Air Force Command of Ukraine, mirrored via the Kaggle dataset “Massive Missile Attacks on Ukraine”. Licensed ODC-BY 1.0.",
+    "sourcesAll": "All sources →",
+    "helpTitle": "How to help",
+    "helpBody": "Report aggregation, mapping, or labeling errors, suggest sources, or contribute to the upstream dataset.",
+    "helpReport": "Report an issue on GitHub ↗",
+    "helpContact": "Contact the maintainer →",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "lastUpdated": "Last updated"
   }
 }

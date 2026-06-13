@@ -524,5 +524,26 @@
     "methodology": "Methodik",
     "downloadDataset": "Datensatz herunterladen (CSV)",
     "allSources": "Alle Quellen"
+  },
+  "prefooter": {
+    "eyebrow": "Über dieses Projekt",
+    "aboutTitle": "Über diesen Tracker",
+    "aboutBody": "Ein unabhängiges, nichtkommerzielles Intelligence-Dashboard zu russischen Luftangriffen auf die Ukraine und zur Leistung der ukrainischen Luftverteidigung, basierend auf offiziellen Tagesberichten.",
+    "aboutLink": "Mehr lesen →",
+    "methodologyTitle": "Methodik",
+    "methodologyBody": "Tägliche Bulletins des Luftwaffenkommandos der Ukraine werden zu einer monatlichen Zeitreihe normalisiert, nach Waffenfamilie kategorisiert und für Durchschlags- und Abfangrate ausgewertet.",
+    "methodologyLink": "Vollständige Methodik →",
+    "limitationsTitle": "Datenlimitierungen",
+    "limitationsBody": "Die Zahlen umfassen nur gemeldete Starts und bestätigte Abfangungen. Gestörte, verlorene oder nicht verifizierte Waffen sind ausgeschlossen. Salven mit mehreren Modellen werden allen genannten Kategorien zugeordnet. Werte werden laufend überprüft und revidiert.",
+    "sourcesTitle": "Quellen",
+    "sourcesBody": "Primärquelle: Luftwaffenkommando der Ukraine, gespiegelt im Kaggle-Datensatz „Massive Missile Attacks on Ukraine“. Lizenziert unter ODC-BY 1.0.",
+    "sourcesAll": "Alle Quellen →",
+    "helpTitle": "Wie Sie helfen können",
+    "helpBody": "Melden Sie Fehler in Aggregation, Zuordnung oder Beschriftung, schlagen Sie Quellen vor oder tragen Sie zum Datensatz bei.",
+    "helpReport": "Problem auf GitHub melden ↗",
+    "helpContact": "Kontakt zum Betreiber →",
+    "privacy": "Datenschutz",
+    "terms": "Nutzungsbedingungen",
+    "lastUpdated": "Zuletzt aktualisiert"
   }
 }
