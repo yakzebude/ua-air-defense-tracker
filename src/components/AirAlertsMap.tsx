@@ -693,22 +693,19 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                 return (
                   <>
                     <div className="mt-1">
-                      {showActive ? (
-                        <>
-                          <span className="text-[hsl(var(--signal))]">● {t("airAlerts.active")}</span>
-                          {since && (
-                            <span className="ml-2 text-muted-foreground">{durationLabel(since, true)}</span>
-                          )}
-                          {!r && parentActive && (
-                            <span className="ml-2 text-[10px] text-muted-foreground/80">
-                              (oblast-wide)
-                            </span>
-                          )}
-                        </>
-                      ) : (
-                        <span className="text-muted-foreground">{t("airAlerts.clear")}</span>
-                      )}
-                    </div>
+                       {showActive ? (
+                         <>
+                           <span className="text-[hsl(var(--signal))]">● {t("airAlerts.active")}</span>
+                           {!r && parentActive && (
+                             <span className="ml-2 text-[10px] text-muted-foreground/80">
+                               (oblast-wide)
+                             </span>
+                           )}
+                         </>
+                       ) : (
+                         <span className="text-muted-foreground">{t("airAlerts.clear")}</span>
+                       )}
+                     </div>
                     {types && types.length > 0 && (
                       <div className="mt-1 flex flex-wrap gap-1">
                         {types.map((tp) => (
