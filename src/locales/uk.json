@@ -536,6 +536,12 @@
     "helpBody": "Повідомляйте про помилки агрегації, прив’язки чи маркування, пропонуйте джерела або долучайтеся до базового датасету.",
     "helpReport": "Повідомити про проблему на GitHub ↗",
     "helpContact": "Зв’язатися з куратором →",
+    "contactTitle": "Контакт",
+    "contactDescription": "Для запитів, виправлень чи пропозицій джерел, будь ласка, зв’яжіться з нами електронною поштою.",
+    "initiatorLabel": "Ініціатор проєкту",
+    "initiator": "Alexander Anton-Boicuk",
+    "responsibleLabel": "Відповідальний за цей сайт",
+    "responsible": "Alexander Anton-Boicuk",
     "privacy": "Конфіденційність",
     "terms": "Умови",
     "lastUpdated": "Останнє оновлення"

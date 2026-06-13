@@ -542,6 +542,12 @@
     "helpBody": "Report aggregation, mapping, or labeling errors, suggest sources, or contribute to the upstream dataset.",
     "helpReport": "Report an issue on GitHub ↗",
     "helpContact": "Contact the maintainer →",
+    "contactTitle": "Contact",
+    "contactDescription": "For inquiries, corrections, or source suggestions, please reach out via email.",
+    "initiatorLabel": "Project initiator",
+    "initiator": "Alexander Anton-Boicuk",
+    "responsibleLabel": "Responsible for this website",
+    "responsible": "Alexander Anton-Boicuk",
     "privacy": "Privacy",
     "terms": "Terms",
     "lastUpdated": "Last updated"
