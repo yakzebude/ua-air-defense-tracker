@@ -63,10 +63,6 @@ export function DateRangeFilter({ months, range, onChange }: Props) {
         onValueChange={(v) => onChange([v[0], v[1]] as [number, number])}
         className="w-full"
       />
-      <div className="flex justify-between font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground num">
-        <span>{months[0]?.label ?? ""}</span>
-        <span>{months[months.length - 1]?.label ?? ""}</span>
-      </div>
     </div>
   );
 }
