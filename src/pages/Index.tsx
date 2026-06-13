@@ -1031,64 +1031,65 @@ const Index = () => {
 
 
 
+      <section aria-labelledby="prefooter-heading" className="border-t border-border">
+        <div className="container py-12 md:py-14">
+          <div className="src-label mb-8">{t("prefooter.eyebrow")}</div>
+          <div className="grid gap-12 md:grid-cols-2 md:gap-20">
+            <div className="space-y-7 max-w-xl">
+              <div>
+                <h3 id="prefooter-heading" className="text-[14.5px] font-semibold tracking-tight mb-1.5 text-foreground">{t("prefooter.aboutTitle")}</h3>
+                <p className="text-[13.5px] leading-[1.65] text-muted-foreground">
+                  {t("prefooter.aboutBody")}{" "}
+                  <Link to="/about" className="text-foreground underline underline-offset-4 hover:no-underline">{t("prefooter.aboutLink")}</Link>
+                </p>
+              </div>
+              <div>
+                <h3 className="text-[14.5px] font-semibold tracking-tight mb-1.5 text-foreground">{t("prefooter.methodologyTitle")}</h3>
+                <p className="text-[13.5px] leading-[1.65] text-muted-foreground">
+                  {t("prefooter.methodologyBody")}{" "}
+                  <Link to="/methodology" className="text-foreground underline underline-offset-4 hover:no-underline">{t("prefooter.methodologyLink")}</Link>
+                </p>
+              </div>
+              <div>
+                <h3 className="text-[14.5px] font-semibold tracking-tight mb-1.5 text-foreground">{t("prefooter.limitationsTitle")}</h3>
+                <p className="text-[13.5px] leading-[1.65] text-muted-foreground">{t("prefooter.limitationsBody")}</p>
+              </div>
+            </div>
+            <div className="space-y-7 max-w-xl">
+              <div>
+                <h3 className="text-[14.5px] font-semibold tracking-tight mb-2 text-foreground">{t("prefooter.sourcesTitle")}</h3>
+                <p className="text-[13.5px] leading-[1.65] text-muted-foreground mb-2">{t("prefooter.sourcesBody")}</p>
+                <ul className="space-y-1 text-[13.5px]">
+                  <li><Link to="/sources" className="text-foreground underline underline-offset-4 hover:no-underline">{t("prefooter.sourcesAll")}</Link></li>
+                  <li><a href="/data/missile_attacks_daily.csv" download className="text-foreground underline underline-offset-4 hover:no-underline">{t("footer.downloadCsv")}</a></li>
+                  <li><a href="/data/datapackage.json" target="_blank" rel="noopener noreferrer" className="text-foreground underline underline-offset-4 hover:no-underline">{t("footer.dataPackage")}</a></li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-[14.5px] font-semibold tracking-tight mb-2 text-foreground">{t("prefooter.helpTitle")}</h3>
+                <p className="text-[13.5px] leading-[1.65] text-muted-foreground mb-2">{t("prefooter.helpBody")}</p>
+                <ul className="space-y-1 text-[13.5px]">
+                  <li><a href="https://github.com/PetroIvaniuk/massive-missile-attacks-on-ukraine" target="_blank" rel="noopener noreferrer" className="text-foreground underline underline-offset-4 hover:no-underline">{t("prefooter.helpReport")}</a></li>
+                  <li><Link to="/contact" className="text-foreground underline underline-offset-4 hover:no-underline">{t("prefooter.helpContact")}</Link></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <footer className="border-t border-border">
-        <div className="container grid gap-8 py-10 md:grid-cols-4">
-          <div>
-            <div className="src-label mb-3">{t("footer.colAbout")}</div>
-            <ul className="space-y-2 text-[13px]">
-              <li><Link to="/about" className="text-foreground hover:underline underline-offset-4">{t("nav.about")}</Link></li>
-              
-              <li className="text-muted-foreground">{t("footer.curatedBy")} <span className="text-foreground">Alexander Anton-Boicuk</span></li>
-              <li className="text-muted-foreground">Dataset: <span className="text-foreground">Petro Ivaniuk</span></li>
-            </ul>
+        <div className="container flex flex-col gap-3 py-5 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[12.5px] text-muted-foreground">
+            <Link to="/contact" className="hover:text-foreground transition-colors">{t("nav.contact")}</Link>
+            <a href="https://github.com/PetroIvaniuk/massive-missile-attacks-on-ukraine" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">GitHub</a>
+            <Link to="/imprint" className="hover:text-foreground transition-colors">{t("prefooter.privacy")}</Link>
+            <Link to="/disclaimer" className="hover:text-foreground transition-colors">{t("prefooter.terms")}</Link>
           </div>
-
-          <div>
-            <div className="src-label mb-3">{t("footer.colData")}</div>
-            <ul className="space-y-2 text-[13px]">
-              <li><Link to="/methodology" className="text-foreground hover:underline underline-offset-4">{t("nav.methodology")}</Link></li>
-              <li><Link to="/sources" className="text-foreground hover:underline underline-offset-4">{t("nav.sources")}</Link></li>
-              <li>
-                <a href="/data/missile_attacks_daily.csv" download className="text-foreground hover:underline underline-offset-4">
-                  {t("footer.downloadCsv")}
-                </a>
-              </li>
-              <li>
-                <a href="/data/datapackage.json" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline underline-offset-4">
-                  {t("footer.dataPackage")}
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <div className="src-label mb-3">{t("footer.colLegal")}</div>
-            <ul className="space-y-2 text-[13px]">
-              <li><Link to="/imprint" className="text-foreground hover:underline underline-offset-4">{t("nav.imprint")}</Link></li>
-              <li><Link to="/disclaimer" className="text-foreground hover:underline underline-offset-4">{t("footer.disclaimer")}</Link></li>
-              <li className="text-muted-foreground">
-                {t("footer.license")}{" "}
-                <a href="https://opendatacommons.org/licenses/by/1-0/" target="_blank" rel="noopener noreferrer external" className="text-foreground hover:underline underline-offset-4">
-                  ODC-BY 1.0
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <div className="src-label mb-3">{t("footer.colMeta")}</div>
-            <ul className="space-y-2 text-[13px] text-muted-foreground">
-              
-              <li>{t("footer.availableIn")} <span className="text-foreground">EN · DE · FR · UK</span></li>
-            </ul>
+          <div className="text-[12.5px] text-muted-foreground">
+            {t("prefooter.lastUpdated")}: <span className="text-foreground">{lastUpdatedLabel ?? "—"}</span>
           </div>
         </div>
-        <div className="border-t border-border bg-card">
-          <div className="container py-5">
-            <p className="text-[12.5px] leading-[1.7] text-muted-foreground">
-              {t("footer.provenance")}
-            </p>
-          </div>
-        </div>
-
       </footer>
 
       {!ready && !error && (

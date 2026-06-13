@@ -518,5 +518,26 @@
     "methodology": "Méthodologie",
     "downloadDataset": "Télécharger le jeu de données (CSV)",
     "allSources": "Toutes les sources"
+  },
+  "prefooter": {
+    "eyebrow": "À propos de ce projet",
+    "aboutTitle": "À propos de ce tracker",
+    "aboutBody": "Un tableau de bord de renseignement indépendant et non commercial qui suit les armes aériennes russes lancées contre l’Ukraine et la performance de la défense aérienne ukrainienne, à partir des rapports quotidiens officiels.",
+    "aboutLink": "En savoir plus →",
+    "methodologyTitle": "Méthodologie",
+    "methodologyBody": "Les bulletins quotidiens du Commandement de l’Armée de l’air ukrainienne sont normalisés en série mensuelle, classés par famille d’armes et utilisés pour calculer le taux de passage et le taux d’interception.",
+    "methodologyLink": "Méthodologie complète →",
+    "limitationsTitle": "Limites des données",
+    "limitationsBody": "Les chiffres ne reflètent que les lancements rapportés et les interceptions confirmées. Les armes brouillées, perdues ou non vérifiées sont exclues. Les salves mixtes sont comptées dans chaque catégorie listée. Les valeurs sont revues et révisées en continu.",
+    "sourcesTitle": "Sources",
+    "sourcesBody": "Source primaire : Commandement de l’Armée de l’air ukrainienne, miroir via le jeu de données Kaggle « Massive Missile Attacks on Ukraine ». Licence ODC-BY 1.0.",
+    "sourcesAll": "Toutes les sources →",
+    "helpTitle": "Comment contribuer",
+    "helpBody": "Signalez les erreurs d’agrégation, de cartographie ou d’étiquetage, proposez des sources ou contribuez au jeu de données amont.",
+    "helpReport": "Signaler un problème sur GitHub ↗",
+    "helpContact": "Contacter le responsable →",
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "lastUpdated": "Dernière mise à jour"
   }
 }
