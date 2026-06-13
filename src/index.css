@@ -112,7 +112,7 @@
     --cyber-glow: 38 100% 65%;
 
     --series-launched: 0 78% 58%;
-    --series-destroyed: 38 100% 58%;       /* amber for destroyed series */
+    --series-destroyed: 0 0% 55%;          /* neutral gray in dark mode */
     --series-rate: 40 15% 75%;
     --grid: 0 0% 16%;
 
