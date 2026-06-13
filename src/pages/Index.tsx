@@ -540,6 +540,7 @@ const Index = () => {
   const [latestDataPoint, setLatestDataPoint] = useState<Date | null>(null);
   const [completeMonth, setCompleteMonth] = useState<{ key: string; label: string } | null>(null);
   const categoriesScrollRef = useRef<HTMLDivElement | null>(null);
+  const [contactOpen, setContactOpen] = useState(false);
 
   useEffect(() => {
     loadShahedData()
