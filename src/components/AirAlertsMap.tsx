@@ -928,7 +928,6 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                     {showActive ? (
                       <div className="text-[hsl(var(--signal))] font-semibold">
                         ● {t("airAlerts.active")}
-                        {activeSince && <> — {durationLabel(activeSince, true)}</>}
                         {!r?.active && parentActive && (
                           <span className="ml-2 text-[10px] font-normal text-muted-foreground/80">
                             (oblast-wide)
