@@ -26,23 +26,23 @@ import { StatusBanner } from "@/components/StatusBadge";
 const fmt = (n: number) => n.toLocaleString("en-US");
 
 /** Compact glossary of representative weapons per category for hover tooltips. */
-const GLOSSARY: Record<string, Array<{ term: string; description: string }>> = {
+const GLOSSARY: Record<string, Array<{ term: string; description: string; q?: string }>> = {
   drones: [
-    { term: "Shahed-136 / 131", description: "Iranian-designed delta-wing loitering munition (~50 kg warhead, 1,800+ km range). Mass-launched at night against energy & civilian infrastructure; slow and noisy but cheap (~$20–50k per unit)." },
-    { term: "Lancet-3", description: "Russian loitering munition (~3 kg warhead). Used tactically against artillery, air-defense and armoured vehicles at the front line." },
-    { term: "Orlan-10 / ZALA", description: "Russian reconnaissance UAVs used to spot targets for artillery and missile strikes; unarmed but force-multipliers." },
+    { term: "Shahed-136 / 131", q: "Shahed", description: "Iranian-designed delta-wing loitering munition (~50 kg warhead, 1,800+ km range). Mass-launched at night against energy & civilian infrastructure; slow and noisy but cheap (~$20–50k per unit)." },
+    { term: "Lancet-3", q: "Lancet", description: "Russian loitering munition (~3 kg warhead). Used tactically against artillery, air-defense and armoured vehicles at the front line." },
+    { term: "Orlan-10 / ZALA", q: "Orlan", description: "Russian reconnaissance UAVs used to spot targets for artillery and missile strikes; unarmed but force-multipliers." },
   ],
   cruise: [
-    { term: "Kh-101 / Kh-555", description: "Russian air-launched stealth cruise missile (~450 kg warhead, ~2,500 km range). Subsonic, low-altitude flight; primary strategic strike weapon against infrastructure." },
-    { term: "Kalibr (3M14)", description: "Sea-launched cruise missile fired from Black Sea ships and submarines. Subsonic, GPS/INS-guided, ~450 kg warhead." },
-    { term: "Kh-22 / Kh-32", description: "Heavy Soviet-era anti-ship cruise missile (~1,000 kg warhead). Used in surface-attack mode; very hard to intercept due to terminal-dive profile." },
-    { term: "Iskander-K", description: "Ground-launched 9M728/9M729 cruise missile variant of the Iskander system. Low-altitude, terrain-hugging flight; ~500 km range." },
+    { term: "Kh-101 / Kh-555", q: "Kh-101", description: "Russian air-launched stealth cruise missile (~450 kg warhead, ~2,500 km range). Subsonic, low-altitude flight; primary strategic strike weapon against infrastructure." },
+    { term: "Kalibr (3M14)", q: "Kalibr", description: "Sea-launched cruise missile fired from Black Sea ships and submarines. Subsonic, GPS/INS-guided, ~450 kg warhead." },
+    { term: "Kh-22 / Kh-32", q: "Kh-22", description: "Heavy Soviet-era anti-ship cruise missile (~1,000 kg warhead). Used in surface-attack mode; very hard to intercept due to terminal-dive profile." },
+    { term: "Iskander-K", q: "Iskander", description: "Ground-launched 9M728/9M729 cruise missile variant of the Iskander system. Low-altitude, terrain-hugging flight; ~500 km range." },
   ],
   ballistic: [
-    { term: "Iskander-M / 9K720", description: "Russian short-range ballistic missile (~480 km, 700 kg warhead). Quasi-ballistic trajectory with mid-course maneuvers; only Patriot-class systems can reliably intercept." },
-    { term: "Kh-47M2 Kinzhal", description: "Air-launched aero-ballistic missile derived from Iskander, carried by MiG-31K. Hypersonic terminal speed (~Mach 10); intercepted by Patriot PAC-3 since May 2023." },
-    { term: "KN-23", description: "North Korean short-range ballistic missile (similar to Iskander). Transferred to Russia since late 2023; lower accuracy but high terminal speed." },
-    { term: "S-300 / S-400 (S2S mode)", description: "Surface-to-air missiles repurposed for surface-to-surface strikes against ground targets. Limited warhead but very fast and used in saturation attacks." },
+    { term: "Iskander-M / 9K720", q: "Iskander", description: "Russian short-range ballistic missile (~480 km, 700 kg warhead). Quasi-ballistic trajectory with mid-course maneuvers; only Patriot-class systems can reliably intercept." },
+    { term: "Kh-47M2 Kinzhal", q: "Kinzhal", description: "Air-launched aero-ballistic missile derived from Iskander, carried by MiG-31K. Hypersonic terminal speed (~Mach 10); intercepted by Patriot PAC-3 since May 2023." },
+    { term: "KN-23", q: "KN-23", description: "North Korean short-range ballistic missile (similar to Iskander). Transferred to Russia since late 2023; lower accuracy but high terminal speed." },
+    { term: "S-300 / S-400 (S2S mode)", q: "S-300", description: "Surface-to-air missiles repurposed for surface-to-surface strikes against ground targets. Limited warhead but very fast and used in saturation attacks." },
   ],
 };
 
