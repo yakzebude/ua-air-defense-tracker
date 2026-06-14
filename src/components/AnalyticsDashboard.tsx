@@ -565,7 +565,7 @@ function AnalyticsPager(props: Props) {
       <div
         role="tablist"
         aria-label={t("analytics.title")}
-        className="-mx-4 mb-4 flex snap-x snap-mandatory gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:flex-wrap md:overflow-visible md:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="-mx-4 mb-4 flex snap-x snap-mandatory gap-1.5 overflow-x-auto px-4 pb-2 md:mx-0 md:flex-wrap md:gap-2 md:overflow-visible md:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {tabs.map((tab, i) => {
           const isActive = active === tab.key;
@@ -575,18 +575,24 @@ function AnalyticsPager(props: Props) {
               role="tab"
               aria-selected={isActive}
               onClick={() => setActive(tab.key)}
-              className={`snap-start shrink-0 whitespace-nowrap border px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors ${
+              className={`snap-start shrink-0 whitespace-nowrap border px-2.5 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors md:px-3 md:py-2 md:text-[11px] md:tracking-[0.14em] ${
                 isActive
                   ? "border-foreground bg-foreground text-background"
                   : "border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/40"
               }`}
             >
-              <span className="mr-2 opacity-60">{String(i + 1).padStart(2, "0")}</span>
+              <span className="mr-1.5 opacity-60 md:mr-2">{String(i + 1).padStart(2, "0")}</span>
               {tab.label}
             </button>
           );
         })}
       </div>
+      <div className="mb-3 flex items-center justify-center gap-2 font-mono text-[9.5px] uppercase tracking-[0.18em] text-muted-foreground md:hidden">
+        <span aria-hidden>←</span>
+        <span>{t("analytics.swipeHint", { defaultValue: "Swipe to switch panels" })}</span>
+        <span aria-hidden>→</span>
+      </div>
+
 
       {/* Equal-height shell — every tab takes exactly the same vertical space
           so switching panels never causes the page below to jump. */}
