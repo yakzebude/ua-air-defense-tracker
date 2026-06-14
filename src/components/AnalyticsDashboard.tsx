@@ -254,70 +254,109 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
 
   return (
     <div className="space-y-5">
-      <div style={{ height: isNarrow ? 200 : 240 }} className="w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={chartData}
-            layout="vertical"
-            margin={isNarrow ? { top: 4, right: 36, left: 4, bottom: 4 } : { top: 8, right: 24, left: 16, bottom: 4 }}
-          >
-            <CartesianGrid stroke="hsl(var(--border) / 0.2)" horizontal={false} />
-            <XAxis
-              type="number"
-              domain={[0, 100]}
-              unit="%"
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: isNarrow ? 10 : 11 }}
-              tickLine={false}
-              axisLine={{ stroke: "hsl(var(--border))" }}
-            />
-            <YAxis
-              type="category"
-              dataKey="name"
-              width={isNarrow ? 78 : 175}
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: isNarrow ? 10 : 11 }}
-              tickLine={false}
-              axisLine={false}
-            />
-            <Tooltip
-              cursor={{ fill: "hsl(var(--foreground) / 0.05)" }}
-              content={({ active, payload }: any) => {
-                if (!active || !payload?.length) return null;
-                const d = payload[0].payload;
-                return (
-                  <div className="panel min-w-[200px] px-3 py-2 font-mono text-[11px]">
-                    <div className="mb-1.5 src-label">{d.fullName}</div>
-                    <div className="space-y-0.5 text-foreground">
-                      <div className="flex justify-between gap-6"><span className="text-muted-foreground">{t("kpi.interceptionRate")}</span><span className="num font-semibold">{d.rate}%</span></div>
-                      <div className="flex justify-between gap-6"><span className="text-muted-foreground">{t("chart.share")}</span><span className="num">{d.share}%</span></div>
-                      <div className="mt-1 flex justify-between gap-6 border-t border-border pt-1"><span className="text-muted-foreground">{t("chart.destroyed")} / {t("chart.launched")}</span><span className="num">{fmt(d.destroyed)} / {fmt(d.launched)}</span></div>
-                    </div>
-                  </div>
-                );
-              }}
-            />
-            <Bar dataKey="rate" radius={[0, 2, 2, 0]} barSize={isNarrow ? 18 : 22}>
-              {chartData.map((d, i) => (
-                <Cell key={i} fill={d.color} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+      {isNarrow ? (
+        // Mobile: condensed inline bar list — no recharts axes/labels overlap.
+        <ul className="space-y-3" aria-label={t("kpi.interceptionRate")}>
+          {chartData.map((d) => (
+            <li key={d.fullName} className="space-y-1.5">
+              <div className="flex items-baseline justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-2">
+                  <span className="h-2 w-2 shrink-0 rounded-sm" style={{ background: d.color }} />
+                  <span className="truncate font-mono text-[11px] uppercase tracking-[0.14em] text-foreground">
+                    {d.fullName}
+                  </span>
+                </div>
+                <span className="num text-sm font-semibold tabular-nums text-foreground">
+                  {d.rate}%
+                </span>
+              </div>
+              <div
+                className="h-1.5 w-full overflow-hidden rounded-sm bg-foreground/5"
+                role="progressbar"
+                aria-valuenow={d.rate}
+                aria-valuemin={0}
+                aria-valuemax={100}
+              >
+                <div
+                  className="h-full rounded-sm"
+                  style={{ width: `${Math.min(d.rate, 100)}%`, background: d.color }}
+                />
+              </div>
+              <div className="flex items-center justify-between font-mono text-[10px] text-muted-foreground">
+                <span>{fmt(d.destroyed)} / {fmt(d.launched)}</span>
+                <span>{d.share}{t("chart.shareSuffix")}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <>
+          <div style={{ height: 240 }} className="w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={chartData}
+                layout="vertical"
+                margin={{ top: 8, right: 24, left: 16, bottom: 4 }}
+              >
+                <CartesianGrid stroke="hsl(var(--border) / 0.2)" horizontal={false} />
+                <XAxis
+                  type="number"
+                  domain={[0, 100]}
+                  unit="%"
+                  tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+                  tickLine={false}
+                  axisLine={{ stroke: "hsl(var(--border))" }}
+                />
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  width={175}
+                  tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <Tooltip
+                  cursor={{ fill: "hsl(var(--foreground) / 0.05)" }}
+                  content={({ active, payload }: any) => {
+                    if (!active || !payload?.length) return null;
+                    const d = payload[0].payload;
+                    return (
+                      <div className="panel min-w-[200px] px-3 py-2 font-mono text-[11px]">
+                        <div className="mb-1.5 src-label">{d.fullName}</div>
+                        <div className="space-y-0.5 text-foreground">
+                          <div className="flex justify-between gap-6"><span className="text-muted-foreground">{t("kpi.interceptionRate")}</span><span className="num font-semibold">{d.rate}%</span></div>
+                          <div className="flex justify-between gap-6"><span className="text-muted-foreground">{t("chart.share")}</span><span className="num">{d.share}%</span></div>
+                          <div className="mt-1 flex justify-between gap-6 border-t border-border pt-1"><span className="text-muted-foreground">{t("chart.destroyed")} / {t("chart.launched")}</span><span className="num">{fmt(d.destroyed)} / {fmt(d.launched)}</span></div>
+                        </div>
+                      </div>
+                    );
+                  }}
+                />
+                <Bar dataKey="rate" radius={[0, 2, 2, 0]} barSize={22}>
+                  {chartData.map((d, i) => (
+                    <Cell key={i} fill={d.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
 
-      <ul className="grid gap-2 sm:grid-cols-3">
-        {chartData.map((d) => (
-          <li key={d.fullName} className="rounded-sm border border-border bg-background/60 p-3">
-            <div className="mb-1 flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground">
-              <span className="h-2 w-2 rounded-sm" style={{ background: d.color }} />
-              <span className="truncate">{d.fullName}</span>
-            </div>
-            <div className="num text-[1.25rem] font-semibold leading-none text-foreground">{d.rate}%</div>
-            <div className="mt-1 font-mono text-[10.5px] text-muted-foreground">
-              {fmt(d.destroyed)} / {fmt(d.launched)} · {d.share}{t("chart.shareSuffix")}
-            </div>
-          </li>
-        ))}
-      </ul>
+          <ul className="grid gap-2 sm:grid-cols-3">
+            {chartData.map((d) => (
+              <li key={d.fullName} className="rounded-sm border border-border bg-background/60 p-3">
+                <div className="mb-1 flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground">
+                  <span className="h-2 w-2 rounded-sm" style={{ background: d.color }} />
+                  <span className="truncate">{d.fullName}</span>
+                </div>
+                <div className="num text-[1.25rem] font-semibold leading-none text-foreground">{d.rate}%</div>
+                <div className="mt-1 font-mono text-[10.5px] text-muted-foreground">
+                  {fmt(d.destroyed)} / {fmt(d.launched)} · {d.share}{t("chart.shareSuffix")}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 }
