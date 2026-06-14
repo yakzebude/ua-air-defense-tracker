@@ -222,7 +222,7 @@ function CompositionPair(props: Props) {
 
 function useIsNarrow(bp = 640): boolean {
   const [n, setN] = useState<boolean>(typeof window !== "undefined" ? window.innerWidth < bp : false);
-  useMemo(() => {
+  useEffect(() => {
     if (typeof window === "undefined") return;
     const on = () => setN(window.innerWidth < bp);
     window.addEventListener("resize", on);
