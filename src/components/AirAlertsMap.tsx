@@ -761,8 +761,13 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           )}
           {data && (
             <span className="inline-flex items-center gap-1.5">
-              <span className={`h-1.5 w-1.5 rounded-full ${data.stale ? "bg-[hsl(var(--signal-warn))]" : "bg-[hsl(var(--signal-ok))]"}`} />
-              {data.stale ? "Delayed" : "Operational"} · {t("airAlerts.lastUpdate")}: {new Date(data.updatedAt).toUTCString().slice(17, 22)} UTC
+              {data.stale && (
+                <>
+                  <span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal-warn))]" />
+                  Delayed ·{" "}
+                </>
+              )}
+              {t("airAlerts.lastUpdate")}: {new Date(data.updatedAt).toUTCString().slice(17, 22)} UTC
             </span>
           )}
           {variant === "compact" && (
