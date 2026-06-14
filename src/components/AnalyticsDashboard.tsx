@@ -220,17 +220,30 @@ function CompositionPair(props: Props) {
 }
 
 
+function useIsNarrow(bp = 640): boolean {
+  const [n, setN] = useState<boolean>(typeof window !== "undefined" ? window.innerWidth < bp : false);
+  useMemo(() => {
+    if (typeof window === "undefined") return;
+    const on = () => setN(window.innerWidth < bp);
+    window.addEventListener("resize", on);
+    return () => window.removeEventListener("resize", on);
+  }, [bp]);
+  return n;
+}
+
 function ShareInterception({ shahed, cruise, ballistic }: Props) {
   const { t } = useTranslation();
+  const isNarrow = useIsNarrow(640);
   const rows = [
-    { key: "uavs",      label: t("category.uavs"),      color: CAT_COLORS.uavs,      ds: shahed },
-    { key: "cruise",    label: t("category.cruise"),    color: CAT_COLORS.cruise,    ds: cruise },
-    { key: "ballistic", label: t("category.ballistic"), color: CAT_COLORS.ballistic, ds: ballistic },
+    { key: "uavs",      label: t("category.uavs"),      short: "UAVs",      color: CAT_COLORS.uavs,      ds: shahed },
+    { key: "cruise",    label: t("category.cruise"),    short: t("category.cruise").split(" ")[0],    color: CAT_COLORS.cruise,    ds: cruise },
+    { key: "ballistic", label: t("category.ballistic"), short: t("category.ballistic").split(" ")[0], color: CAT_COLORS.ballistic, ds: ballistic },
   ];
   const grandLaunched = rows.reduce((s, r) => s + r.ds.totals.launched, 0);
 
   const chartData = rows.map((r) => ({
-    name: r.label,
+    name: isNarrow ? r.short : r.label,
+    fullName: r.label,
     color: r.color,
     launched: r.ds.totals.launched,
     destroyed: r.ds.totals.destroyed,
@@ -240,26 +253,28 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
   }));
 
   return (
-    <div className="space-y-6">
-      {/* Bar chart — interception rate per category, matching the area-chart
-          look-and-feel of the launches panel. */}
-      <div style={{ height: 240 }} className="w-full">
+    <div className="space-y-5">
+      <div style={{ height: isNarrow ? 200 : 240 }} className="w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} layout="vertical" margin={{ top: 8, right: 24, left: 16, bottom: 4 }}>
+          <BarChart
+            data={chartData}
+            layout="vertical"
+            margin={isNarrow ? { top: 4, right: 36, left: 4, bottom: 4 } : { top: 8, right: 24, left: 16, bottom: 4 }}
+          >
             <CartesianGrid stroke="hsl(var(--border) / 0.2)" horizontal={false} />
             <XAxis
               type="number"
               domain={[0, 100]}
               unit="%"
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: isNarrow ? 10 : 11 }}
               tickLine={false}
               axisLine={{ stroke: "hsl(var(--border))" }}
             />
             <YAxis
               type="category"
               dataKey="name"
-              width={175}
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+              width={isNarrow ? 78 : 175}
+              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: isNarrow ? 10 : 11 }}
               tickLine={false}
               axisLine={false}
             />
@@ -270,7 +285,7 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
                 const d = payload[0].payload;
                 return (
                   <div className="panel min-w-[200px] px-3 py-2 font-mono text-[11px]">
-                    <div className="mb-1.5 src-label">{d.name}</div>
+                    <div className="mb-1.5 src-label">{d.fullName}</div>
                     <div className="space-y-0.5 text-foreground">
                       <div className="flex justify-between gap-6"><span className="text-muted-foreground">{t("kpi.interceptionRate")}</span><span className="num font-semibold">{d.rate}%</span></div>
                       <div className="flex justify-between gap-6"><span className="text-muted-foreground">{t("chart.share")}</span><span className="num">{d.share}%</span></div>
@@ -280,7 +295,7 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
                 );
               }}
             />
-            <Bar dataKey="rate" radius={[0, 2, 2, 0]} barSize={22}>
+            <Bar dataKey="rate" radius={[0, 2, 2, 0]} barSize={isNarrow ? 18 : 22}>
               {chartData.map((d, i) => (
                 <Cell key={i} fill={d.color} />
               ))}
@@ -289,14 +304,12 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
         </ResponsiveContainer>
       </div>
 
-      {/* Compact summary row keeps the per-category totals visible without
-          duplicating the dual progress bars that lived here before. */}
       <ul className="grid gap-2 sm:grid-cols-3">
         {chartData.map((d) => (
-          <li key={d.name} className="rounded-sm border border-border bg-background/60 p-3">
+          <li key={d.fullName} className="rounded-sm border border-border bg-background/60 p-3">
             <div className="mb-1 flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground">
               <span className="h-2 w-2 rounded-sm" style={{ background: d.color }} />
-              {d.name}
+              <span className="truncate">{d.fullName}</span>
             </div>
             <div className="num text-[1.25rem] font-semibold leading-none text-foreground">{d.rate}%</div>
             <div className="mt-1 font-mono text-[10.5px] text-muted-foreground">
