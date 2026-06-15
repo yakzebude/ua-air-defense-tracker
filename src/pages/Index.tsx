@@ -681,15 +681,15 @@ const Index = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 items-start gap-6 sm:gap-6">
                   {/* Left: BREACHED AIR DEFENSE — primary, emphasized */}
                   <div className="min-w-0">
-                    <div className="border-l-[3px] border-signal-warn pl-3">
-                      <div className="flex min-h-[2.4em] items-start gap-1.5 text-[10px] sm:text-[10.5px] font-mono font-semibold uppercase tracking-[0.16em] leading-[1.2] text-signal-warn">
+                    <div>
+                      <div className="flex min-h-[2.4em] items-start gap-1.5 text-[10px] sm:text-[10.5px] font-mono font-semibold uppercase tracking-[0.16em] leading-[1.2] text-foreground/80">
                         <span className="break-words">{t("kpi.reachedTarget")}</span>
                         <Tooltip delayDuration={100}>
                           <TooltipTrigger asChild>
                             <button
                               type="button"
                               aria-label={t("kpi.tip.reachedTargetLabel")}
-                              className="mt-[1px] inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border border-signal-warn/40 text-[9px] leading-none text-signal-warn transition-colors hover:border-signal-warn hover:bg-signal-warn/10 focus:outline-none focus-visible:ring-1 focus-visible:ring-signal-warn"
+                              className="mt-[1px] inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border border-foreground/30 text-[9px] leading-none text-foreground/80 transition-colors hover:border-foreground/60 hover:bg-foreground/5 focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground/40"
                             >
                               &zwnj;i
                             </button>
@@ -700,7 +700,7 @@ const Index = () => {
                           </TooltipContent>
                         </Tooltip>
                       </div>
-                      <div className="mt-1 num font-mono font-bold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-signal-warn">
+                      <div className="mt-1 num font-mono font-bold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-foreground/80">
                         <AnimatedNumber value={reached} />
                       </div>
                       <div className="mt-2 text-[11px] sm:text-[12px] leading-snug text-muted-foreground">
