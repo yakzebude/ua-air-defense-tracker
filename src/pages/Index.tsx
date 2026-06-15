@@ -807,7 +807,7 @@ const Index = () => {
                         <div className="flex min-h-[2.4em] items-start justify-end text-[10px] sm:text-[10.5px] font-mono font-semibold uppercase tracking-[0.18em] leading-[1.2] text-muted-foreground">
                           {t("kpi.interceptionRate")}
                         </div>
-                        <div className="mt-1 num font-mono font-semibold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-foreground text-right tabular-nums">
+                        <div className="mt-1 num font-mono font-semibold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-foreground/80 text-right tabular-nums">
                           {(grand.rate * 100).toFixed(1)}<span className="text-muted-foreground text-[0.45em] align-baseline ml-1">%</span>
                         </div>
                         <div className="mt-1.5 text-[11.5px] sm:text-[12px] leading-snug text-muted-foreground num text-right">
@@ -821,10 +821,10 @@ const Index = () => {
                             return (
                               <div key={c.key} className="space-y-1">
                                 <div className="flex items-baseline justify-between gap-3">
-                                  <span className="text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.16em] text-foreground">
+                                  <span className="text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.16em] text-foreground/80">
                                     {c.label}
                                   </span>
-                                  <span className="num font-mono text-[14px] sm:text-[15px] font-semibold tabular-nums leading-none tracking-tight">
+                                  <span className="num font-mono text-[14px] sm:text-[15px] font-semibold tabular-nums leading-none tracking-tight text-foreground/80">
                                     {pct}<span className="text-muted-foreground">%</span>
                                   </span>
                                 </div>
