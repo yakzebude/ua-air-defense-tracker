@@ -794,9 +794,9 @@ const Index = () => {
                 )}
               </div>
 
-              {/* TIER 2 — Interception rate + Reached target area (col-span-5, stacked) */}
-              <div className="md:col-span-5 grid grid-cols-2 gap-3 md:grid-cols-1 md:gap-4">
-                <div className="rounded-md border border-border bg-card p-4 sm:p-5">
+              {/* TIER 2 — Interception rate (col-span-5, full height) */}
+              <div className="md:col-span-5 flex">
+                <div className="flex w-full flex-col rounded-md border border-border bg-card p-4 sm:p-5 md:p-7">
                   {(() => {
                     const cats = [
                       { key: "uav", label: t("nav.drones"), l: shahed!.totals.launched, d: shahed!.totals.destroyed, color: "hsl(48 80% 55%)" },
@@ -804,49 +804,47 @@ const Index = () => {
                       { key: "bal", label: t("nav.ballistic"), l: ballistic!.totals.launched, d: ballistic!.totals.destroyed, color: "hsl(0 65% 48%)" },
                     ];
                     return (
-                      <div>
-                        <div className="flex items-baseline justify-between gap-2">
+                      <div className="flex h-full flex-col">
+                        <div className="flex items-start justify-between gap-2">
                           <div className="text-[10px] sm:text-[10.5px] font-mono font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                             {t("kpi.interceptionRate")}
                           </div>
-                          <div className="num text-[1.125rem] font-semibold tabular-nums leading-none">
-                            {(grand.rate * 100).toFixed(1)}<span className="text-muted-foreground">%</span>
-                          </div>
                         </div>
-                        <div className="mt-3 divide-y divide-border border-t border-border">
+                        <div className="mt-2 num font-semibold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-foreground tabular-nums">
+                          {(grand.rate * 100).toFixed(1)}<span className="text-muted-foreground text-[0.45em] align-baseline ml-1">%</span>
+                        </div>
+                        <div className="mt-1.5 text-[11.5px] sm:text-[12px] leading-snug text-muted-foreground num">
+                          {fmt(grand.destroyed)} {t("kpi.ofSep")} {fmt(grand.launched)} {t("kpi.confirmedInterceptions")}
+                        </div>
+
+                        <div className="mt-5 flex-1 flex flex-col justify-end space-y-3 border-t border-border pt-4">
                           {cats.map((c) => {
                             const rate = c.l > 0 ? c.d / c.l : 0;
                             const pct = (rate * 100).toFixed(1);
                             return (
-                              <div key={c.key} className="grid grid-cols-[64px_1fr_auto] items-center gap-3 py-2.5">
-                                <div className="text-[10px] font-mono uppercase tracking-[0.16em] text-foreground">
-                                  {c.label}
+                              <div key={c.key} className="space-y-1">
+                                <div className="flex items-baseline justify-between gap-3">
+                                  <span className="text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.16em] text-foreground">
+                                    {c.label}
+                                  </span>
+                                  <span className="num text-[14px] sm:text-[15px] font-semibold tabular-nums leading-none tracking-tight">
+                                    {pct}<span className="text-muted-foreground">%</span>
+                                  </span>
                                 </div>
-                                <div className="h-1.5 w-full overflow-hidden bg-muted">
-                                  <div className="h-full" style={{ width: `${Math.min(100, rate * 100)}%`, background: c.color }} />
+                                <div className="h-2.5 w-full overflow-hidden bg-muted">
+                                  <div className="h-full transition-[width]" style={{ width: `${Math.min(100, rate * 100)}%`, background: c.color }} />
                                 </div>
-                                <div className="num text-[13px] font-semibold tabular-nums leading-none tracking-tight">
-                                  {pct}<span className="text-muted-foreground">%</span>
+                                <div className="flex justify-between text-[10px] font-mono uppercase tracking-[0.14em] text-muted-foreground num tabular-nums">
+                                  <span>{fmt(c.d)} / {fmt(c.l)}</span>
+                                  <span>{fmt(Math.max(c.l - c.d, 0))} {t("kpi.leakerPctSuffix").trim() ? "→" : ""} {t("masthead.insightReached", "reached")}</span>
                                 </div>
                               </div>
                             );
                           })}
                         </div>
-                        <div className="mt-2.5 text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.12em] text-muted-foreground">
-                          {fmt(grand.destroyed)} {t("kpi.ofSep")} {fmt(grand.launched)} {t("kpi.confirmedInterceptions")}
-                        </div>
                       </div>
                     );
                   })()}
-                </div>
-                <div className="rounded-md border border-border bg-card p-4 sm:p-5">
-                  <KPI
-                    label={t("kpi.reachedTarget")}
-                    numeric={reached}
-                    size="lg"
-                    sub={grand.launched > 0 ? `${((reached / grand.launched) * 100).toFixed(1)}${t("kpi.leakerPctSuffix")}` : "—"}
-                    info={{ label: t("kpi.tip.reachedTargetLabel"), body: t("kpi.tip.reachedTarget") }}
-                  />
                 </div>
               </div>
             </div>
