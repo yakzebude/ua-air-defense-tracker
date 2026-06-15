@@ -711,21 +711,15 @@ const Index = () => {
 
                   {/* Right: TOTAL LAUNCHED — secondary, muted */}
                   <div className="min-w-0 text-left sm:text-right">
-                    <div className="flex min-h-[2.4em] items-start sm:justify-end gap-2 text-[10px] sm:text-[10.5px] font-mono font-medium uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground/80">
+                    <div className="flex min-h-[2.4em] items-start sm:justify-end gap-2 text-[10px] sm:text-[10.5px] font-mono font-medium uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground">
                       <span className="break-words">{t("kpi.totalLaunched")}</span>
                       {grand.launched > 0 && (
-                        <span
-                          className="inline-flex shrink-0 items-baseline gap-0.5 rounded-sm border border-muted-foreground/20 bg-muted/30 px-1.5 py-0.5 font-mono text-[10px] sm:text-[10.5px] font-semibold uppercase tracking-[0.1em] text-muted-foreground"
-                          title={t("kpi.tip.reachedTargetLabel")}
-                        >
-                          <span aria-hidden>≈</span>
-                          <span className="num tabular-nums">
-                            {((reached / grand.launched) * 100).toFixed(1)}{t("kpi.leakerPctSuffix")}
-                          </span>
+                        <span className="num tabular-nums text-foreground/80">
+                          ≈ {((reached / grand.launched) * 100).toFixed(1)}{t("kpi.leakerPctSuffix")}
                         </span>
                       )}
                     </div>
-                    <div className="mt-1 num font-mono font-semibold leading-none text-[1.75rem] sm:text-[2.25rem] md:text-[3rem] tracking-tight text-muted-foreground/60">
+                    <div className="mt-1 num font-mono font-semibold leading-none text-[1.75rem] sm:text-[2.25rem] md:text-[3rem] tracking-tight text-foreground/80">
                       <AnimatedNumber value={grand.launched} />
                     </div>
                   </div>
