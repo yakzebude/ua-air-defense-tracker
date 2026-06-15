@@ -727,9 +727,9 @@ const Index = () => {
 
                 {/* TIER 3 — last fully-covered calendar month · per-category breakdown */}
                 {completeMonth && (
-                  <div className="mt-3 border-t-2 border-foreground bg-background/60">
+                  <div className="mt-3 border-t border-border bg-background/60">
                     <div className="flex items-center justify-between gap-3 border-b border-border px-3 py-1.5 sm:px-4">
-                      <span className="text-[9.5px] sm:text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-foreground truncate">
+                      <span className="text-[9.5px] sm:text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-foreground/80 truncate">
                         {completeMonth.label}
                       </span>
                       <span className="text-[9.5px] sm:text-[10px] font-mono uppercase tracking-[0.16em] text-muted-foreground whitespace-nowrap">
