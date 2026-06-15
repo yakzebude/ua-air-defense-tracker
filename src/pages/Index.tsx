@@ -756,14 +756,14 @@ const Index = () => {
                           <div className="text-[8.5px] sm:text-[9.5px] font-mono uppercase tracking-[0.18em] leading-none text-muted-foreground truncate">
                             {label}
                           </div>
-                          <div className="mt-2 num text-[1.375rem] sm:text-[1.75rem] font-semibold leading-none tracking-tight tabular-nums">
+                          <div className="mt-2 num text-[1.375rem] sm:text-[1.75rem] font-semibold leading-none tracking-tight tabular-nums text-foreground/80">
                             {fmt(total)}
                           </div>
                           <div className="mt-3 space-y-1">
                             {values.map((v) => (
                               <div key={v.k} className="flex items-baseline justify-between gap-2 text-[10px] font-mono">
                                 <span className="uppercase tracking-[0.14em] text-muted-foreground truncate">{v.lbl}</span>
-                                <span className="num tabular-nums text-foreground">{fmt(v.v)}</span>
+                                <span className="num tabular-nums text-foreground/80">{fmt(v.v)}</span>
                               </div>
                             ))}
                           </div>
