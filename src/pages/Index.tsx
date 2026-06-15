@@ -678,7 +678,7 @@ const Index = () => {
             <div className="mt-6 grid gap-3 md:mt-8 md:grid-cols-12 md:gap-4">
               {/* TIER 1 — hero KPI: Breached air defense + Total launched (col-span-7) */}
               <div className="md:col-span-7 rounded-md border border-border bg-card p-4 sm:p-5 md:p-7">
-                <div className="grid grid-cols-2 items-start gap-4 sm:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 items-start gap-6 sm:gap-6">
                   {/* Left: BREACHED AIR DEFENSE — primary, emphasized */}
                   <div className="min-w-0">
                     <div className="border-l-[3px] border-signal-warn pl-3">
@@ -710,8 +710,8 @@ const Index = () => {
                   </div>
 
                   {/* Right: TOTAL LAUNCHED — secondary, muted */}
-                  <div className="min-w-0 text-right">
-                    <div className="flex min-h-[2.4em] items-start justify-end gap-2 text-[10px] sm:text-[10.5px] font-mono font-medium uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground/80">
+                  <div className="min-w-0 text-left sm:text-right">
+                    <div className="flex min-h-[2.4em] items-start sm:justify-end gap-2 text-[10px] sm:text-[10.5px] font-mono font-medium uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground/80">
                       <span className="break-words">{t("kpi.totalLaunched")}</span>
                       {grand.launched > 0 && (
                         <span
