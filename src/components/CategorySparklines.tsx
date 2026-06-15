@@ -70,7 +70,7 @@ function SparkTooltip({ active, payload }: any) {
   return (
     <div className="rounded-sm border border-border bg-card px-2.5 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.14em] shadow-md">
       <div className="text-muted-foreground">{p.label}</div>
-      <div className="mt-0.5 text-foreground">
+      <div className="mt-0.5 text-foreground/80">
         <span className="num font-semibold">{fmt(p.launched)}</span>
         <span className="ml-1 normal-case tracking-normal text-muted-foreground">
           launched
