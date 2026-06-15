@@ -678,7 +678,7 @@ const Index = () => {
             <div className="mt-6 grid gap-3 md:mt-8 md:grid-cols-12 md:gap-4">
               {/* TIER 1 — hero KPI: Reached target area + Total launched (col-span-7) */}
               <div className="md:col-span-7 rounded-md border border-border bg-card p-4 sm:p-5 md:p-7">
-                <div className="flex items-start justify-between gap-4">
+                <div className="grid grid-cols-2 items-start gap-4 sm:gap-6">
                   {/* Left: OVERALL REACHED TARGET AREA (xl, signal) */}
                   <div className="min-w-0">
                     <div className="flex min-h-[2.4em] items-start gap-1.5 text-[10px] sm:text-[10.5px] font-mono font-medium uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground">
@@ -702,19 +702,25 @@ const Index = () => {
                     <div className="mt-1 num font-semibold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-signal">
                       <AnimatedNumber value={reached} />
                     </div>
-                    {grand.launched > 0 && (
-                      <div className="mt-1.5 text-[11.5px] sm:text-[12px] leading-snug text-muted-foreground num">
-                        {((reached / grand.launched) * 100).toFixed(1)}{t("kpi.leakerPctSuffix")}
-                      </div>
-                    )}
                   </div>
 
-                  {/* Right: TOTAL LAUNCHED (md, black/text-foreground) */}
+                  {/* Right: TOTAL LAUNCHED — same size, with ≈% badge */}
                   <div className="min-w-0 text-right">
-                    <div className="text-[10px] sm:text-[10.5px] font-mono font-medium uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground">
-                      {t("kpi.totalLaunched")}
+                    <div className="flex min-h-[2.4em] items-start justify-end gap-2 text-[10px] sm:text-[10.5px] font-mono font-medium uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground">
+                      <span className="break-words">{t("kpi.totalLaunched")}</span>
+                      {grand.launched > 0 && (
+                        <span
+                          className="inline-flex shrink-0 items-baseline gap-0.5 rounded-sm border border-foreground/20 bg-foreground/[0.04] px-1.5 py-0.5 font-mono text-[10px] sm:text-[10.5px] font-semibold uppercase tracking-[0.1em] text-foreground"
+                          title={t("kpi.tip.reachedTargetLabel")}
+                        >
+                          <span aria-hidden>≈</span>
+                          <span className="num tabular-nums">
+                            {((reached / grand.launched) * 100).toFixed(1)}{t("kpi.leakerPctSuffix")}
+                          </span>
+                        </span>
+                      )}
                     </div>
-                    <div className="mt-1 num font-semibold leading-none text-[1.5rem] sm:text-[1.75rem] md:text-[2.125rem] text-foreground">
+                    <div className="mt-1 num font-semibold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-foreground">
                       <AnimatedNumber value={grand.launched} />
                     </div>
                   </div>
