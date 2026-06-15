@@ -46,7 +46,7 @@ function StackedTooltip({ active, payload, label, totalLabel }: any) {
       <div className="mb-1.5 src-label">{label}</div>
       <div className="space-y-1">
         {payload.slice().reverse().map((p: any) => (
-          <div key={p.dataKey} className="flex items-center justify-between gap-6 text-foreground">
+          <div key={p.dataKey} className="flex items-center justify-between gap-6 text-foreground/80">
             <span className="flex items-center gap-2">
               <span className="h-2 w-2 rounded-sm" style={{ background: p.color }} />
               {p.name}
@@ -56,7 +56,7 @@ function StackedTooltip({ active, payload, label, totalLabel }: any) {
         ))}
         <div className="mt-1 flex items-center justify-between gap-6 border-t border-border pt-1 text-muted-foreground">
           <span>{totalLabel}</span>
-          <span className="num font-semibold text-foreground">{fmt(total)}</span>
+          <span className="num font-semibold text-foreground/80">{fmt(total)}</span>
         </div>
       </div>
     </div>
