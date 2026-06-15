@@ -56,8 +56,12 @@ export default {
           blue: "hsl(var(--ua-blue))",
         },
         ink: "hsl(var(--ink))",
-        signal: "hsl(var(--signal))",
-        "signal-soft": "hsl(var(--signal-soft))",
+        signal: {
+          DEFAULT: "hsl(var(--signal))",
+          soft: "hsl(var(--signal-soft))",
+          warn: "hsl(var(--signal-warn))",
+          ok: "hsl(var(--signal-ok))",
+        },
         cyber: {
           DEFAULT: "hsl(var(--cyber))",
           glow: "hsl(var(--cyber-glow))",

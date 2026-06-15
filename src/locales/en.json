@@ -34,8 +34,9 @@
     "confirmedDestroyed": "Confirmed destroyed",
     "confirmedDestroyedSub": "Air defense interceptions",
     "interceptionRate": "OVERALL INTERCEPTION RATE",
-    "reachedTarget": "OVERALL REACHED TARGET AREA",
+    "reachedTarget": "BREACHED AIR DEFENSE",
     "reachedTargetSub": "Estimated leakers",
+    "breachedAirDefenseSub": "Targets that breached Ukrainian air defenses",
     "launchedReported": "Launched (reported)",
     "destroyedConfirmed": "Destroyed (confirmed)",
     "confirmedInterceptions": "confirmed interceptions",
@@ -48,8 +49,8 @@
       "totalLaunched": "Every aerial threat (UAV, cruise missile or ballistic missile) officially reported as launched by the Ukrainian Air Force Command since October 2022. Each entry corresponds to one detected weapon; reconnaissance UAVs are included where the Air Force lists them.",
       "interceptionRateLabel": "Interception rate — how it's calculated",
       "interceptionRate": "Share of launched threats that the Ukrainian Air Force confirmed as shot down or otherwise neutralised in flight. Calculated as confirmed destroyed ÷ total launched. Cruise and UAV interception rates are typically higher than ballistic ones.",
-      "reachedTargetLabel": "Reached target area — methodology note",
-      "reachedTarget": "Launched threats that were not confirmed destroyed. Used as a proxy for 'leakers' that reached or impacted near a target. Note: includes weapons that crashed, fell as debris, or were lost from tracking — it is an upper bound, not a damage count."
+      "reachedTargetLabel": "Breached air defense — methodology note",
+      "reachedTarget": "Launched threats that were not confirmed destroyed. Used as a proxy for weapons that breached Ukrainian air defenses and reached or impacted near a target. Note: includes weapons that crashed, fell as debris, or were lost from tracking — it is an upper bound, not a damage count."
     }
   },
   "masthead": {
