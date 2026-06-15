@@ -46,7 +46,7 @@ function StackedTooltip({ active, payload, label, totalLabel }: any) {
       <div className="mb-1.5 src-label">{label}</div>
       <div className="space-y-1">
         {payload.slice().reverse().map((p: any) => (
-          <div key={p.dataKey} className="flex items-center justify-between gap-6 text-foreground">
+          <div key={p.dataKey} className="flex items-center justify-between gap-6 text-foreground/80">
             <span className="flex items-center gap-2">
               <span className="h-2 w-2 rounded-sm" style={{ background: p.color }} />
               {p.name}
@@ -56,7 +56,7 @@ function StackedTooltip({ active, payload, label, totalLabel }: any) {
         ))}
         <div className="mt-1 flex items-center justify-between gap-6 border-t border-border pt-1 text-muted-foreground">
           <span>{totalLabel}</span>
-          <span className="num font-semibold text-foreground">{fmt(total)}</span>
+          <span className="num font-semibold text-foreground/80">{fmt(total)}</span>
         </div>
       </div>
     </div>
@@ -262,11 +262,11 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
               <div className="flex items-baseline justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-2">
                   <span className="h-2 w-2 shrink-0 rounded-sm" style={{ background: d.color }} />
-                  <span className="truncate font-mono text-[11px] uppercase tracking-[0.14em] text-foreground">
+                  <span className="truncate font-mono text-[11px] uppercase tracking-[0.14em] text-foreground/80">
                     {d.fullName}
                   </span>
                 </div>
-                <span className="num text-sm font-semibold tabular-nums text-foreground">
+                  <span className="num text-sm font-semibold tabular-nums text-foreground/80">
                   {d.rate}%
                 </span>
               </div>
@@ -323,7 +323,7 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
                     return (
                       <div className="panel min-w-[200px] px-3 py-2 font-mono text-[11px]">
                         <div className="mb-1.5 src-label">{d.fullName}</div>
-                        <div className="space-y-0.5 text-foreground">
+                        <div className="space-y-0.5 text-foreground/80">
                           <div className="flex justify-between gap-6"><span className="text-muted-foreground">{t("kpi.interceptionRate")}</span><span className="num font-semibold">{d.rate}%</span></div>
                           <div className="flex justify-between gap-6"><span className="text-muted-foreground">{t("chart.share")}</span><span className="num">{d.share}%</span></div>
                           <div className="mt-1 flex justify-between gap-6 border-t border-border pt-1"><span className="text-muted-foreground">{t("chart.destroyed")} / {t("chart.launched")}</span><span className="num">{fmt(d.destroyed)} / {fmt(d.launched)}</span></div>
@@ -348,7 +348,7 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
                   <span className="h-2 w-2 rounded-sm" style={{ background: d.color }} />
                   <span className="truncate">{d.fullName}</span>
                 </div>
-                <div className="num text-[1.25rem] font-semibold leading-none text-foreground">{d.rate}%</div>
+                <div className="num text-[1.25rem] font-semibold leading-none text-foreground/80">{d.rate}%</div>
                 <div className="mt-1 font-mono text-[10.5px] text-muted-foreground">
                   {fmt(d.destroyed)} / {fmt(d.launched)} · {d.share}{t("chart.shareSuffix")}
                 </div>
@@ -551,25 +551,25 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
               style={{ left: hover.x + 14, top: Math.max(hover.y - 8, 4), transform: "translateY(-100%)" }}
             >
               <div className="mb-1 flex items-baseline justify-between gap-3">
-                <span className="font-semibold text-foreground">{monthFull[hover.month]} {hover.year}</span>
+                <span className="font-semibold text-foreground/80">{monthFull[hover.month]} {hover.year}</span>
                 <span className={`text-[10px] uppercase tracking-wider ${tier.tone}`}>{tier.label}</span>
               </div>
               <div className="mb-1.5 flex items-baseline justify-between gap-3">
                 <span className="text-muted-foreground">Total launches</span>
-                <span className="num font-semibold text-foreground">{fmt(hover.total)}</span>
+                <span className="num font-semibold text-foreground/80">{fmt(hover.total)}</span>
               </div>
               <div className="space-y-0.5 border-t border-border pt-1.5 text-[10.5px]">
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-muted-foreground">UAVs</span>
-                  <span className="num text-foreground">{fmt(hover.uavs)} <span className="text-muted-foreground">· {share(hover.uavs)}%</span></span>
+                  <span className="num text-foreground/80">{fmt(hover.uavs)} <span className="text-muted-foreground">· {share(hover.uavs)}%</span></span>
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-muted-foreground">Cruise</span>
-                  <span className="num text-foreground">{fmt(hover.cruise)} <span className="text-muted-foreground">· {share(hover.cruise)}%</span></span>
+                  <span className="num text-foreground/80">{fmt(hover.cruise)} <span className="text-muted-foreground">· {share(hover.cruise)}%</span></span>
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-muted-foreground">Ballistic</span>
-                  <span className="num text-foreground">{fmt(hover.ballistic)} <span className="text-muted-foreground">· {share(hover.ballistic)}%</span></span>
+                  <span className="num text-foreground/80">{fmt(hover.ballistic)} <span className="text-muted-foreground">· {share(hover.ballistic)}%</span></span>
                 </div>
               </div>
               {max > 0 && (

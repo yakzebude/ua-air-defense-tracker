@@ -681,15 +681,15 @@ const Index = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 items-start gap-6 sm:gap-6">
                   {/* Left: BREACHED AIR DEFENSE — primary, emphasized */}
                   <div className="min-w-0">
-                    <div className="border-l-[3px] border-signal-warn pl-3">
-                      <div className="flex min-h-[2.4em] items-start gap-1.5 text-[10px] sm:text-[10.5px] font-mono font-semibold uppercase tracking-[0.16em] leading-[1.2] text-signal-warn">
+                    <div>
+                      <div className="flex min-h-[2.4em] items-start gap-1.5 text-[10px] sm:text-[10.5px] font-mono font-semibold uppercase tracking-[0.16em] leading-[1.2] text-foreground/80">
                         <span className="break-words">{t("kpi.reachedTarget")}</span>
                         <Tooltip delayDuration={100}>
                           <TooltipTrigger asChild>
                             <button
                               type="button"
                               aria-label={t("kpi.tip.reachedTargetLabel")}
-                              className="mt-[1px] inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border border-signal-warn/40 text-[9px] leading-none text-signal-warn transition-colors hover:border-signal-warn hover:bg-signal-warn/10 focus:outline-none focus-visible:ring-1 focus-visible:ring-signal-warn"
+                              className="mt-[1px] inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border border-foreground/30 text-[9px] leading-none text-foreground/80 transition-colors hover:border-foreground/60 hover:bg-foreground/5 focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground/40"
                             >
                               &zwnj;i
                             </button>
@@ -700,7 +700,7 @@ const Index = () => {
                           </TooltipContent>
                         </Tooltip>
                       </div>
-                      <div className="mt-1 num font-mono font-bold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-signal-warn">
+                      <div className="mt-1 num font-mono font-bold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-foreground/80">
                         <AnimatedNumber value={reached} />
                       </div>
                       <div className="mt-2 text-[11px] sm:text-[12px] leading-snug text-muted-foreground">
@@ -711,21 +711,15 @@ const Index = () => {
 
                   {/* Right: TOTAL LAUNCHED — secondary, muted */}
                   <div className="min-w-0 text-left sm:text-right">
-                    <div className="flex min-h-[2.4em] items-start sm:justify-end gap-2 text-[10px] sm:text-[10.5px] font-mono font-medium uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground/80">
+                    <div className="flex min-h-[2.4em] items-start sm:justify-end gap-2 text-[10px] sm:text-[10.5px] font-mono font-medium uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground">
                       <span className="break-words">{t("kpi.totalLaunched")}</span>
                       {grand.launched > 0 && (
-                        <span
-                          className="inline-flex shrink-0 items-baseline gap-0.5 rounded-sm border border-muted-foreground/20 bg-muted/30 px-1.5 py-0.5 font-mono text-[10px] sm:text-[10.5px] font-semibold uppercase tracking-[0.1em] text-muted-foreground"
-                          title={t("kpi.tip.reachedTargetLabel")}
-                        >
-                          <span aria-hidden>≈</span>
-                          <span className="num tabular-nums">
-                            {((reached / grand.launched) * 100).toFixed(1)}{t("kpi.leakerPctSuffix")}
-                          </span>
+                        <span className="num tabular-nums text-foreground/80">
+                          ≈ {((reached / grand.launched) * 100).toFixed(1)}{t("kpi.leakerPctSuffix")}
                         </span>
                       )}
                     </div>
-                    <div className="mt-1 num font-mono font-semibold leading-none text-[1.75rem] sm:text-[2.25rem] md:text-[3rem] tracking-tight text-muted-foreground/60">
+                    <div className="mt-1 num font-mono font-semibold leading-none text-[1.75rem] sm:text-[2.25rem] md:text-[3rem] tracking-tight text-foreground/80">
                       <AnimatedNumber value={grand.launched} />
                     </div>
                   </div>
@@ -733,9 +727,9 @@ const Index = () => {
 
                 {/* TIER 3 — last fully-covered calendar month · per-category breakdown */}
                 {completeMonth && (
-                  <div className="mt-3 border-t-2 border-foreground bg-background/60">
+                  <div className="mt-3 border-t border-border bg-background/60">
                     <div className="flex items-center justify-between gap-3 border-b border-border px-3 py-1.5 sm:px-4">
-                      <span className="text-[9.5px] sm:text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-foreground truncate">
+                      <span className="text-[9.5px] sm:text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-foreground/80 truncate">
                         {completeMonth.label}
                       </span>
                       <span className="text-[9.5px] sm:text-[10px] font-mono uppercase tracking-[0.16em] text-muted-foreground whitespace-nowrap">
@@ -762,14 +756,14 @@ const Index = () => {
                           <div className="text-[8.5px] sm:text-[9.5px] font-mono uppercase tracking-[0.18em] leading-none text-muted-foreground truncate">
                             {label}
                           </div>
-                          <div className="mt-2 num text-[1.375rem] sm:text-[1.75rem] font-semibold leading-none tracking-tight tabular-nums">
+                          <div className="mt-2 num text-[1.375rem] sm:text-[1.75rem] font-semibold leading-none tracking-tight tabular-nums text-foreground/80">
                             {fmt(total)}
                           </div>
                           <div className="mt-3 space-y-1">
                             {values.map((v) => (
                               <div key={v.k} className="flex items-baseline justify-between gap-2 text-[10px] font-mono">
                                 <span className="uppercase tracking-[0.14em] text-muted-foreground truncate">{v.lbl}</span>
-                                <span className="num tabular-nums text-foreground">{fmt(v.v)}</span>
+                                <span className="num tabular-nums text-foreground/80">{fmt(v.v)}</span>
                               </div>
                             ))}
                           </div>
@@ -813,7 +807,7 @@ const Index = () => {
                         <div className="flex min-h-[2.4em] items-start justify-end text-[10px] sm:text-[10.5px] font-mono font-semibold uppercase tracking-[0.18em] leading-[1.2] text-muted-foreground">
                           {t("kpi.interceptionRate")}
                         </div>
-                        <div className="mt-1 num font-mono font-semibold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-foreground text-right tabular-nums">
+                        <div className="mt-1 num font-mono font-semibold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-foreground/80 text-right tabular-nums">
                           {(grand.rate * 100).toFixed(1)}<span className="text-muted-foreground text-[0.45em] align-baseline ml-1">%</span>
                         </div>
                         <div className="mt-1.5 text-[11.5px] sm:text-[12px] leading-snug text-muted-foreground num text-right">
@@ -827,10 +821,10 @@ const Index = () => {
                             return (
                               <div key={c.key} className="space-y-1">
                                 <div className="flex items-baseline justify-between gap-3">
-                                  <span className="text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.16em] text-foreground">
+                                  <span className="text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.16em] text-foreground/80">
                                     {c.label}
                                   </span>
-                                  <span className="num font-mono text-[14px] sm:text-[15px] font-semibold tabular-nums leading-none tracking-tight">
+                                  <span className="num font-mono text-[14px] sm:text-[15px] font-semibold tabular-nums leading-none tracking-tight text-foreground/80">
                                     {pct}<span className="text-muted-foreground">%</span>
                                   </span>
                                 </div>

@@ -70,7 +70,7 @@ function SparkTooltip({ active, payload }: any) {
   return (
     <div className="rounded-sm border border-border bg-card px-2.5 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.14em] shadow-md">
       <div className="text-muted-foreground">{p.label}</div>
-      <div className="mt-0.5 text-foreground">
+      <div className="mt-0.5 text-foreground/80">
         <span className="num font-semibold">{fmt(p.launched)}</span>
         <span className="ml-1 normal-case tracking-normal text-muted-foreground">
           launched
@@ -105,7 +105,7 @@ function CategoryCard({ input, window }: { input: CategoryInput; window: number 
       aria-label={`${input.label} — jump to detail section`}
     >
       <div className="flex items-baseline justify-between gap-2">
-        <div className="font-mono text-[10.5px] font-medium uppercase tracking-[0.18em] text-foreground">
+        <div className="font-mono text-[10.5px] font-medium uppercase tracking-[0.18em] text-foreground/80">
           {input.label}
         </div>
         <div
@@ -126,7 +126,7 @@ function CategoryCard({ input, window }: { input: CategoryInput; window: number 
         </div>
         <div className="text-right num text-[10.5px] text-muted-foreground">
           <span className="block leading-none">{s.end?.label ?? "—"}</span>
-          <span className="mt-0.5 block leading-none num font-semibold text-foreground text-[15px]">
+          <span className="mt-0.5 block leading-none num font-semibold text-foreground/80 text-[15px]">
             {s.end ? fmt(s.endVal) : "—"}
           </span>
         </div>
