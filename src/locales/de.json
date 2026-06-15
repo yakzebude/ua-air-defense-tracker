@@ -34,8 +34,9 @@
     "confirmedDestroyed": "Bestätigt zerstört",
     "confirmedDestroyedSub": "Abfangungen durch Luftverteidigung",
     "interceptionRate": "GESAMTE ABFANGQUOTE",
-    "reachedTarget": "OVERALL REACHED TARGET AREA",
+    "reachedTarget": "LUFTVERTEIDIGUNG DURCHBROCHEN",
     "reachedTargetSub": "Geschätzte Durchbrüche",
+    "breachedAirDefenseSub": "Ziele, die die ukrainische Luftverteidigung durchbrachen",
     "launchedReported": "Gestartet (gemeldet)",
     "destroyedConfirmed": "Zerstört (bestätigt)",
     "confirmedInterceptions": "bestätigte Abfangungen",
@@ -48,8 +49,8 @@
       "totalLaunched": "Jede vom ukrainischen Luftwaffenkommando seit Oktober 2022 offiziell als gestartet gemeldete Luftbedrohung (UAV, Marschflugkörper oder ballistische Rakete). Jeder Eintrag entspricht einer erkannten Waffe; Aufklärungs-UAVs sind enthalten, sofern die Luftwaffe sie auflistet.",
       "interceptionRateLabel": "Abfangrate — Berechnung",
       "interceptionRate": "Anteil der gestarteten Bedrohungen, die von der ukrainischen Luftwaffe als abgeschossen oder im Flug neutralisiert bestätigt wurden. Berechnet als bestätigt zerstört ÷ gesamt gestartet. Marschflugkörper und UAVs werden in der Regel mit höheren Raten abgefangen als ballistische Systeme.",
-      "reachedTargetLabel": "Zielgebiet erreicht — methodische Anmerkung",
-      "reachedTarget": "Gestartete Bedrohungen, die nicht als zerstört bestätigt wurden. Wird als Näherung für „Durchbrüche“ verwendet. Hinweis: enthält auch Waffen, die abstürzten, als Trümmer fielen oder aus der Verfolgung verloren gingen — es handelt sich um eine Obergrenze, nicht um eine Schadensbilanz."
+      "reachedTargetLabel": "Luftverteidigung durchbrochen — methodische Anmerkung",
+      "reachedTarget": "Gestartete Bedrohungen, die nicht als zerstört bestätigt wurden. Dient als Näherung für Waffen, die die ukrainische Luftverteidigung durchbrachen und ein Zielgebiet erreichten oder in dessen Nähe einschlugen. Hinweis: Enthält auch Waffen, die abstürzten, als Trümmer fielen oder aus der Verfolgung verloren gingen — es handelt sich um eine Obergrenze, nicht um eine Schadensbilanz."
     }
   },
   "masthead": {

@@ -34,8 +34,9 @@
     "confirmedDestroyed": "Confirmés détruits",
     "confirmedDestroyedSub": "Interceptions de la défense aérienne",
     "interceptionRate": "TAUX D'INTERCEPTION GLOBAL",
-    "reachedTarget": "ZONE CIBLE ATTEINTE GLOBALE",
+    "reachedTarget": "DÉFENSE AÉRIENNE PÉNÉTRÉE",
     "reachedTargetSub": "Estimations non-interceptés",
+    "breachedAirDefenseSub": "Cibles ayant pénétré les défenses aériennes ukrainiennes",
     "launchedReported": "Lancés (rapportés)",
     "destroyedConfirmed": "Détruits (confirmés)",
     "confirmedInterceptions": "interceptions confirmées",
@@ -48,8 +49,8 @@
       "totalLaunched": "Chaque menace aérienne (UAV, missile de croisière ou balistique) officiellement rapportée comme lancée par le Commandement de la Force aérienne ukrainienne depuis octobre 2022. Chaque entrée correspond à une arme détectée ; les UAV de reconnaissance sont inclus lorsqu'ils figurent dans les rapports.",
       "interceptionRateLabel": "Taux d'interception — calcul",
       "interceptionRate": "Part des menaces lancées que la Force aérienne ukrainienne a confirmées abattues ou neutralisées en vol. Calcul : détruits confirmés ÷ total lancés. Les missiles de croisière et les UAV sont généralement interceptés à un taux plus élevé que les systèmes balistiques.",
-      "reachedTargetLabel": "Zone cible atteinte — note méthodologique",
-      "reachedTarget": "Menaces lancées non confirmées détruites. Utilisé comme estimation des « fuites » ayant atteint ou impacté une cible. Note : inclut les armes écrasées, tombées en débris ou perdues du suivi — il s'agit d'une borne haute, pas d'un bilan de dégâts."
+      "reachedTargetLabel": "Défense aérienne pénétrée — note méthodologique",
+      "reachedTarget": "Menaces lancées non confirmées détruites. Utilisé comme estimation des armes ayant pénétré les défenses aériennes ukrainiennes et atteint ou impacté une cible. Note : inclut les armes écrasées, tombées en débris ou perdues du suivi — il s'agit d'une borne haute, pas d'un bilan de dégâts."
     }
   },
   "masthead": {
