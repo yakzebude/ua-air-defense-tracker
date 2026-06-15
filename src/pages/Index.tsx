@@ -676,16 +676,49 @@ const Index = () => {
 
           {ready && (
             <div className="mt-6 grid gap-3 md:mt-8 md:grid-cols-12 md:gap-4">
-              {/* TIER 1 — hero KPI: Total launched (col-span-7) */}
+              {/* TIER 1 — hero KPI: Reached target area + Total launched (col-span-7) */}
               <div className="md:col-span-7 rounded-md border border-border bg-card p-4 sm:p-5 md:p-7">
-                <KPI
-                  label={t("kpi.totalLaunched")}
-                  numeric={grand.launched}
-                  size="xl"
-                  signal
-                  sub={`${t("kpi.totalLaunchedSub")}${dataTimeframe ? ` · ${dataTimeframe.first} – ${dataTimeframe.last}` : ""}`}
-                  info={{ label: t("kpi.tip.totalLaunchedLabel"), body: t("kpi.tip.totalLaunched") }}
-                />
+                <div className="flex items-start justify-between gap-4">
+                  {/* Left: OVERALL REACHED TARGET AREA (xl, signal) */}
+                  <div className="min-w-0">
+                    <div className="flex min-h-[2.4em] items-start gap-1.5 text-[10px] sm:text-[10.5px] font-mono font-medium uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground">
+                      <span className="break-words">{t("kpi.reachedTarget")}</span>
+                      <Tooltip delayDuration={100}>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            aria-label={t("kpi.tip.reachedTargetLabel")}
+                            className="mt-[1px] inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border border-muted-foreground/40 text-[9px] leading-none text-muted-foreground transition-colors hover:border-foreground hover:text-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground"
+                          >
+                            &zwnj;i
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" align="start" className="max-w-xs font-sans text-[12px] font-light leading-relaxed normal-case tracking-normal">
+                          <div className="mb-1 font-sans text-[10px] font-light uppercase tracking-[0.18em]">{t("kpi.tip.reachedTargetLabel")}</div>
+                          <div className="font-sans font-light">{t("kpi.tip.reachedTarget")}</div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                    <div className="mt-1 num font-semibold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-signal">
+                      <AnimatedNumber value={reached} />
+                    </div>
+                    {grand.launched > 0 && (
+                      <div className="mt-1.5 text-[11.5px] sm:text-[12px] leading-snug text-muted-foreground num">
+                        {((reached / grand.launched) * 100).toFixed(1)}{t("kpi.leakerPctSuffix")}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right: TOTAL LAUNCHED (md, black/text-foreground) */}
+                  <div className="min-w-0 text-right">
+                    <div className="text-[10px] sm:text-[10.5px] font-mono font-medium uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground">
+                      {t("kpi.totalLaunched")}
+                    </div>
+                    <div className="mt-1 num font-semibold leading-none text-[1.5rem] sm:text-[1.75rem] md:text-[2.125rem] text-foreground">
+                      <AnimatedNumber value={grand.launched} />
+                    </div>
+                  </div>
+                </div>
 
                 {/* TIER 3 — last fully-covered calendar month · per-category breakdown */}
                 {completeMonth && (
