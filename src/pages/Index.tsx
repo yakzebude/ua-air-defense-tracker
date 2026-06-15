@@ -699,7 +699,7 @@ const Index = () => {
                         </TooltipContent>
                       </Tooltip>
                     </div>
-                    <div className="mt-1 num font-semibold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-signal">
+                    <div className="mt-1 num font-mono font-semibold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-signal">
                       <AnimatedNumber value={reached} />
                     </div>
                   </div>
@@ -720,7 +720,7 @@ const Index = () => {
                         </span>
                       )}
                     </div>
-                    <div className="mt-1 num font-semibold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-foreground">
+                    <div className="mt-1 num font-mono font-semibold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-foreground">
                       <AnimatedNumber value={grand.launched} />
                     </div>
                   </div>
@@ -728,7 +728,7 @@ const Index = () => {
 
                 {/* TIER 3 — last fully-covered calendar month · per-category breakdown */}
                 {completeMonth && (
-                  <div className="mt-5 border-t-2 border-foreground bg-background/60">
+                  <div className="mt-3 border-t-2 border-foreground bg-background/60">
                     <div className="flex items-center justify-between gap-3 border-b border-border px-3 py-1.5 sm:px-4">
                       <span className="text-[9.5px] sm:text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-foreground truncate">
                         {completeMonth.label}
@@ -805,19 +805,17 @@ const Index = () => {
                     ];
                     return (
                       <div className="flex h-full flex-col">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="text-[10px] sm:text-[10.5px] font-mono font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                            {t("kpi.interceptionRate")}
-                          </div>
+                        <div className="flex min-h-[2.4em] items-start justify-end text-[10px] sm:text-[10.5px] font-mono font-semibold uppercase tracking-[0.18em] leading-[1.2] text-muted-foreground">
+                          {t("kpi.interceptionRate")}
                         </div>
-                        <div className="mt-2 num font-semibold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-foreground tabular-nums">
+                        <div className="mt-1 num font-mono font-semibold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-foreground text-right tabular-nums">
                           {(grand.rate * 100).toFixed(1)}<span className="text-muted-foreground text-[0.45em] align-baseline ml-1">%</span>
                         </div>
-                        <div className="mt-1.5 text-[11.5px] sm:text-[12px] leading-snug text-muted-foreground num">
+                        <div className="mt-1.5 text-[11.5px] sm:text-[12px] leading-snug text-muted-foreground num text-right">
                           {fmt(grand.destroyed)} {t("kpi.ofSep")} {fmt(grand.launched)} {t("kpi.confirmedInterceptions")}
                         </div>
 
-                        <div className="mt-5 flex-1 flex flex-col justify-end space-y-3 border-t border-border pt-4">
+                        <div className="mt-3 flex flex-col space-y-3 border-t border-border pt-4">
                           {cats.map((c) => {
                             const rate = c.l > 0 ? c.d / c.l : 0;
                             const pct = (rate * 100).toFixed(1);
@@ -827,7 +825,7 @@ const Index = () => {
                                   <span className="text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.16em] text-foreground">
                                     {c.label}
                                   </span>
-                                  <span className="num text-[14px] sm:text-[15px] font-semibold tabular-nums leading-none tracking-tight">
+                                  <span className="num font-mono text-[14px] sm:text-[15px] font-semibold tabular-nums leading-none tracking-tight">
                                     {pct}<span className="text-muted-foreground">%</span>
                                   </span>
                                 </div>
