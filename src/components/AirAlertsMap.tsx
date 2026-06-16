@@ -296,8 +296,8 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                 height="6"
                 patternTransform="rotate(45)"
               >
-                <rect width="6" height="6" fill="hsl(var(--signal) / 0.16)" />
-                <line x1="0" y1="0" x2="0" y2="6" stroke="hsl(var(--signal) / 0.7)" strokeWidth="1.6" />
+                <rect width="6" height="6" fill="hsl(var(--muted-foreground) / 0.10)" />
+                <line x1="0" y1="0" x2="0" y2="6" stroke="hsl(var(--muted-foreground) / 0.45)" strokeWidth="1.6" />
               </pattern>
             </defs>
 
