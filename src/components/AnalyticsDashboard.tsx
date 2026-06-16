@@ -78,12 +78,20 @@ function CompositionAreaChart({
   labels: Record<CategoryKey, string>;
   totalLabel: string;
 }) {
-  const ticks = useMemo(() => data.filter((_, i) => i % 5 === 0).map((m) => m.label), [data]);
-  const angled = data.length > 8;
+  const step = data.length <= 6 ? 1 : data.length <= 14 ? 2 : data.length <= 36 ? 3 : 6;
+  const ticks = useMemo(
+    () => data.filter((_, i) => i % step === 0).map((m) => m.label),
+    [data, step],
+  );
   return (
     <div style={{ height }} className="w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data} margin={{ top: 8, right: 12, left: 0, bottom: angled ? 28 : 4 }}>
+        <BarChart
+          data={data}
+          margin={{ top: 8, right: 12, left: 0, bottom: 28 }}
+          barCategoryGap="18%"
+          barGap={1}
+        >
           <CartesianGrid stroke="hsl(var(--border) / 0.15)" vertical={false} />
           <XAxis
             dataKey="label"
@@ -95,35 +103,36 @@ function CompositionAreaChart({
             textAnchor="end"
             height={48}
             interval="preserveStartEnd"
+            minTickGap={6}
           />
-
           <YAxis
             tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
-
             tickLine={false}
             axisLine={false}
             width={48}
             tickFormatter={(v) => fmt(v as number)}
           />
-          <Tooltip content={<StackedTooltip totalLabel={totalLabel} />} cursor={{ stroke: "hsl(var(--foreground))", strokeOpacity: 0.2 }} />
+          <Tooltip
+            content={<StackedTooltip totalLabel={totalLabel} />}
+            cursor={{ fill: "hsl(var(--foreground) / 0.05)" }}
+          />
           {series.map((k) => (
-            <Area
+            <Bar
               key={k}
-              type="monotone"
               dataKey={k}
               name={labels[k]}
               stackId="1"
-              stroke={CAT_COLORS[k]}
-              strokeWidth={1.25}
               fill={CAT_COLORS[k]}
-              fillOpacity={0.35}
+              fillOpacity={0.85}
+              maxBarSize={22}
             />
           ))}
-        </AreaChart>
+        </BarChart>
       </ResponsiveContainer>
     </div>
   );
 }
+
 
 function useCompositionData({ shahed, cruise, ballistic }: Props) {
   return useMemo(() => {
@@ -585,7 +594,7 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
   );
 }
 
-type PagerKey = "uavs" | "cruiseBal" | "share" | "calendar";
+type PagerKey = "uavs" | "cruiseBal" | "share";
 
 function AnalyticsPager(props: Props) {
   const { t } = useTranslation();
@@ -609,8 +618,8 @@ function AnalyticsPager(props: Props) {
     { key: "uavs", label: t("analytics.uavMonthly") },
     { key: "cruiseBal", label: t("analytics.cruiseBalMonthly") },
     { key: "share", label: t("analytics.sharePanel") },
-    { key: "calendar", label: t("analytics.calendarPanel") },
   ];
+
 
   return (
     <div>
