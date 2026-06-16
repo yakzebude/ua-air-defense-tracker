@@ -396,10 +396,12 @@ type CategorySectionProps = {
   dataset: Dataset;
   range: [number, number];
   onRangeChange: (r: [number, number]) => void;
+  tabs?: React.ReactNode;
 };
 
 function CategorySection({
   id, glossaryKey, kicker, title, description, unitNoun, dataset, range, onRangeChange,
+  tabs,
 }: CategorySectionProps) {
   const { t } = useTranslation();
   const filtered = dataset.months.slice(range[0], range[1] + 1);
@@ -429,10 +431,13 @@ function CategorySection({
   return (
     <section id={id} className="scroll-mt-32 border-t border-border">
       <div className="container py-12 md:py-16">
-        <div className="mb-8 max-w-3xl">
-          <div className="src-label mb-3">{kicker}</div>
-          <h2 className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">{title}</h2>
-          <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">{description}</p>
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
+          <div className="max-w-3xl">
+            <div className="src-label mb-3">{kicker}</div>
+            <h2 className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">{title}</h2>
+            <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">{description}</p>
+          </div>
+          {tabs}
         </div>
 
         {glossaryKey && <GlossaryChips category={glossaryKey} />}
@@ -527,6 +532,59 @@ function useUrlRange(
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, range?.[0], range?.[1], maxIndex]);
+}
+
+function CategoryTabs({
+  activeCategory,
+  onChange,
+  shahed,
+  shahedRange,
+  cruise,
+  cruiseRange,
+  ballistic,
+  ballisticRange,
+}: {
+  activeCategory: "drones" | "cruise" | "ballistic";
+  onChange: (c: "drones" | "cruise" | "ballistic") => void;
+  shahed: Dataset | null;
+  shahedRange: [number, number] | null;
+  cruise: Dataset | null;
+  cruiseRange: [number, number] | null;
+  ballistic: Dataset | null;
+  ballisticRange: [number, number] | null;
+}) {
+  return (
+    <div
+      role="tablist"
+      aria-label="Categories — switch between UAVs, cruise and ballistic"
+      className="flex flex-wrap items-center gap-1.5 md:gap-2"
+    >
+      {([
+        { key: "drones" as const,    label: "UAVs",      enabled: !!(shahed && shahedRange) },
+        { key: "cruise" as const,    label: "Cruise",    enabled: !!(cruise && cruiseRange) },
+        { key: "ballistic" as const, label: "Ballistic", enabled: !!(ballistic && ballisticRange) },
+      ]).map((tab, i) => {
+        if (!tab.enabled) return null;
+        const isActive = activeCategory === tab.key;
+        return (
+          <button
+            key={tab.key}
+            role="tab"
+            aria-selected={isActive}
+            onClick={() => onChange(tab.key)}
+            className={`snap-start shrink-0 whitespace-nowrap border px-2.5 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors md:px-3 md:py-2 md:text-[11px] md:tracking-[0.14em] ${
+              isActive
+                ? "border-foreground bg-foreground text-background"
+                : "border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/40"
+            }`}
+          >
+            <span className="mr-1.5 opacity-60 md:mr-2">{String(i + 1).padStart(2, "0")}</span>
+            {tab.label}
+          </button>
+        );
+      })}
+    </div>
+  );
 }
 
 const Index = () => {
@@ -864,39 +922,6 @@ const Index = () => {
 
       {(shahed && shahedRange) || (cruise && cruiseRange) || (ballistic && ballisticRange) ? (
         <div className="border-t border-border">
-          <div className="container pt-6 md:pt-8">
-            <div
-              role="tablist"
-              aria-label="Categories — switch between UAVs, cruise and ballistic"
-              className="-mx-4 flex snap-x snap-mandatory gap-1.5 overflow-x-auto px-4 pb-2 md:mx-0 md:flex-wrap md:gap-2 md:overflow-visible md:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-            >
-              {([
-                { key: "drones" as const,    label: t("category.drones.kicker"),           enabled: !!(shahed && shahedRange) },
-                { key: "cruise" as const,    label: t("category.cruiseSection.kicker"),    enabled: !!(cruise && cruiseRange) },
-                { key: "ballistic" as const, label: t("category.ballisticSection.kicker"), enabled: !!(ballistic && ballisticRange) },
-              ]).map((tab, i) => {
-                if (!tab.enabled) return null;
-                const isActive = activeCategory === tab.key;
-                return (
-                  <button
-                    key={tab.key}
-                    role="tab"
-                    aria-selected={isActive}
-                    onClick={() => setActiveCategory(tab.key)}
-                    className={`snap-start shrink-0 whitespace-nowrap border px-2.5 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors md:px-3 md:py-2 md:text-[11px] md:tracking-[0.14em] ${
-                      isActive
-                        ? "border-foreground bg-foreground text-background"
-                        : "border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/40"
-                    }`}
-                  >
-                    <span className="mr-1.5 opacity-60 md:mr-2">{String(i + 1).padStart(2, "0")}</span>
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
           {activeCategory === "drones" && shahed && shahedRange && (
             <CategorySection
               id="drones"
@@ -908,6 +933,18 @@ const Index = () => {
               dataset={shahed}
               range={shahedRange}
               onRangeChange={setShahedRange}
+              tabs={
+                <CategoryTabs
+                  activeCategory={activeCategory}
+                  onChange={setActiveCategory}
+                  shahed={shahed}
+                  shahedRange={shahedRange}
+                  cruise={cruise}
+                  cruiseRange={cruiseRange}
+                  ballistic={ballistic}
+                  ballisticRange={ballisticRange}
+                />
+              }
             />
           )}
           {activeCategory === "cruise" && cruise && cruiseRange && (
@@ -921,6 +958,18 @@ const Index = () => {
               dataset={cruise}
               range={cruiseRange}
               onRangeChange={setCruiseRange}
+              tabs={
+                <CategoryTabs
+                  activeCategory={activeCategory}
+                  onChange={setActiveCategory}
+                  shahed={shahed}
+                  shahedRange={shahedRange}
+                  cruise={cruise}
+                  cruiseRange={cruiseRange}
+                  ballistic={ballistic}
+                  ballisticRange={ballisticRange}
+                />
+              }
             />
           )}
           {activeCategory === "ballistic" && ballistic && ballisticRange && (
@@ -934,6 +983,18 @@ const Index = () => {
               dataset={ballistic}
               range={ballisticRange}
               onRangeChange={setBallisticRange}
+              tabs={
+                <CategoryTabs
+                  activeCategory={activeCategory}
+                  onChange={setActiveCategory}
+                  shahed={shahed}
+                  shahedRange={shahedRange}
+                  cruise={cruise}
+                  cruiseRange={cruiseRange}
+                  ballistic={ballistic}
+                  ballisticRange={ballisticRange}
+                />
+              }
             />
           )}
         </div>
