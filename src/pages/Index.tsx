@@ -534,6 +534,59 @@ function useUrlRange(
   }, [key, range?.[0], range?.[1], maxIndex]);
 }
 
+function CategoryTabs({
+  activeCategory,
+  onChange,
+  shahed,
+  shahedRange,
+  cruise,
+  cruiseRange,
+  ballistic,
+  ballisticRange,
+}: {
+  activeCategory: "drones" | "cruise" | "ballistic";
+  onChange: (c: "drones" | "cruise" | "ballistic") => void;
+  shahed: Dataset | null;
+  shahedRange: [number, number] | null;
+  cruise: Dataset | null;
+  cruiseRange: [number, number] | null;
+  ballistic: Dataset | null;
+  ballisticRange: [number, number] | null;
+}) {
+  return (
+    <div
+      role="tablist"
+      aria-label="Categories — switch between UAVs, cruise and ballistic"
+      className="flex flex-wrap items-center gap-1.5 md:gap-2"
+    >
+      {([
+        { key: "drones" as const,    label: "UAVs",      enabled: !!(shahed && shahedRange) },
+        { key: "cruise" as const,    label: "Cruise",    enabled: !!(cruise && cruiseRange) },
+        { key: "ballistic" as const, label: "Ballistic", enabled: !!(ballistic && ballisticRange) },
+      ]).map((tab, i) => {
+        if (!tab.enabled) return null;
+        const isActive = activeCategory === tab.key;
+        return (
+          <button
+            key={tab.key}
+            role="tab"
+            aria-selected={isActive}
+            onClick={() => onChange(tab.key)}
+            className={`snap-start shrink-0 whitespace-nowrap border px-2.5 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors md:px-3 md:py-2 md:text-[11px] md:tracking-[0.14em] ${
+              isActive
+                ? "border-foreground bg-foreground text-background"
+                : "border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/40"
+            }`}
+          >
+            <span className="mr-1.5 opacity-60 md:mr-2">{String(i + 1).padStart(2, "0")}</span>
+            {tab.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 const Index = () => {
   const { t } = useTranslation();
   const [shahed, setShahed] = useState<Dataset | null>(null);
