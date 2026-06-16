@@ -140,10 +140,10 @@ export function HeroTrendChart({ shahed, cruise, ballistic }: Props) {
   }, [rows]);
 
   const tabs: { k: TabKey; label: string }[] = [
-    { k: "all", label: t("hero.tabAll", "All") },
-    { k: "uav", label: t("nav.drones") },
-    { k: "cruise", label: t("nav.cruise") },
-    { k: "ballistic", label: t("nav.ballistic") },
+    { k: "all", label: "ALL" },
+    { k: "uav", label: "UAVS" },
+    { k: "cruise", label: "CRUISE" },
+    { k: "ballistic", label: "BALLISTIC" },
   ];
 
   return (
@@ -167,7 +167,7 @@ export function HeroTrendChart({ shahed, cruise, ballistic }: Props) {
           <div
             role="tablist"
             aria-label="Weapon type"
-            className="inline-flex rounded-sm border border-border bg-card p-0.5 font-mono text-[10.5px] uppercase tracking-[0.14em]"
+            className="flex flex-wrap items-center justify-end gap-1 md:gap-1.5"
           >
             {tabs.map((tt) => (
               <button
@@ -175,10 +175,10 @@ export function HeroTrendChart({ shahed, cruise, ballistic }: Props) {
                 role="tab"
                 aria-selected={tab === tt.k}
                 onClick={() => setTab(tt.k)}
-                className={`px-3 py-1.5 transition-colors ${
+                className={`shrink-0 border px-2 py-1 text-center font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors md:px-2.5 md:py-1.5 md:text-[11px] md:tracking-[0.14em] min-w-[68px] md:min-w-[76px] ${
                   tab === tt.k
-                    ? "bg-foreground text-background"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/40"
                 }`}
               >
                 {tt.label}
@@ -217,7 +217,7 @@ export function HeroTrendChart({ shahed, cruise, ballistic }: Props) {
               <Bar
                 dataKey="launched"
                 name="Launched"
-                fill="hsl(var(--muted-foreground) / 0.28)"
+                fill="hsl(var(--series-launched))"
                 maxBarSize={26}
               />
               <Line
