@@ -396,10 +396,12 @@ type CategorySectionProps = {
   dataset: Dataset;
   range: [number, number];
   onRangeChange: (r: [number, number]) => void;
+  tabs?: React.ReactNode;
 };
 
 function CategorySection({
   id, glossaryKey, kicker, title, description, unitNoun, dataset, range, onRangeChange,
+  tabs,
 }: CategorySectionProps) {
   const { t } = useTranslation();
   const filtered = dataset.months.slice(range[0], range[1] + 1);
