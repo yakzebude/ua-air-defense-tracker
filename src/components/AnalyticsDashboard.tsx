@@ -830,74 +830,7 @@ function AnalyticsPager(props: Props) {
         </>
       )}
 
-      {active === "calendar" && (
-        <>
-          <Panel
-            title={t("analytics.calendarPanel")}
-            subtitle={t("analytics.calendarPanelSub")}
-            source={t("primarySourceShort")}
-            action={
-              <PanelActions
-                filename="ua-airdefense-tracker_calendar-heatmap.csv"
-                panelTitle={t("analytics.calendarPanel")}
-                rows={(() => {
-                  const map = new Map<string, { month: string; uavs: number; cruise: number; ballistic: number }>();
-                  const add = (m: MonthPoint, key: CategoryKey) => {
-                    const k = m.key;
-                    if (!map.has(k)) map.set(k, { month: k, uavs: 0, cruise: 0, ballistic: 0 });
-                    map.get(k)![key] += m.launched;
-                  };
-                  props.shahed.months.forEach((m) => add(m, "uavs"));
-                  props.cruise.months.forEach((m) => add(m, "cruise"));
-                  props.ballistic.months.forEach((m) => add(m, "ballistic"));
-                  return Array.from(map.values()).sort((a, b) => a.month.localeCompare(b.month));
-                })()}
-                headers={["month", "uavs", "cruise", "ballistic"]}
-              />
-            }
-          >
-            <HeatmapMonthlyIntensity {...props} />
-          </Panel>
-          <div
-            className="-mx-4 mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0"
-            aria-label="Key findings — swipe horizontally for cruise and ballistic"
-          >
-            <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
-              <ChartInsights
-                data={props.shahed.months}
-                metric="reached"
-                unit="UAVs"
-                accent={CAT_COLORS.uavs}
-                direction="down-is-good"
-                title="Key findings · UAVs reaching target"
-                subtitle="Plain-language summary of monthly UAVs not intercepted. Swipe → for cruise and ballistic."
-              />
-            </div>
-            <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
-              <ChartInsights
-                data={props.cruise.months}
-                metric="reached"
-                unit="cruise missiles"
-                accent={CAT_COLORS.cruise}
-                direction="down-is-good"
-                title="Key findings · cruise reaching target"
-                subtitle="Plain-language summary of monthly cruise missiles not intercepted."
-              />
-            </div>
-            <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
-              <ChartInsights
-                data={props.ballistic.months}
-                metric="reached"
-                unit="ballistic missiles"
-                accent={CAT_COLORS.ballistic}
-                direction="down-is-good"
-                title="Key findings · ballistic reaching target"
-                subtitle="Plain-language summary of monthly ballistic missiles not intercepted."
-              />
-            </div>
-          </div>
-        </>
-      )}
+
       </div>
     </div>
   );
