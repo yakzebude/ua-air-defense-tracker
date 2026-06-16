@@ -741,10 +741,8 @@ const Index = () => {
               label: string; value: string; sub?: string; tipLabel: string; tip: string;
               primary?: boolean; accent?: boolean; suffix?: string;
             }) => (
-              <div className={`min-w-0 rounded-md border bg-card p-4 sm:p-5 ${
-                primary ? "border-[hsl(var(--signal-warn)/0.6)] sm:col-span-2 md:col-span-1" : "border-border"
-              }`}>
-                <div className="flex min-h-[2.4em] items-start gap-1.5 text-[10px] sm:text-[10.5px] font-mono font-semibold uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground">
+              <div className="min-w-0 rounded-md border border-border bg-card p-4 sm:p-5">
+                <div className="flex min-h-[2.4em] items-start gap-1.5 text-[11px] font-mono font-semibold uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground">
                   <span className="break-words">{label}</span>
                   <Tooltip delayDuration={100}>
                     <TooltipTrigger asChild>
@@ -756,27 +754,23 @@ const Index = () => {
                         &zwnj;i
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="top" align="start" className="max-w-xs font-sans text-[12px] font-light leading-relaxed normal-case tracking-normal">
-                      <div className="mb-1 font-sans text-[10px] font-light uppercase tracking-[0.18em]">{tipLabel}</div>
+                    <TooltipContent side="top" align="start" className="max-w-xs font-sans text-[13px] font-light leading-relaxed normal-case tracking-normal">
+                      <div className="mb-1 font-sans text-[11px] font-light uppercase tracking-[0.18em]">{tipLabel}</div>
                       <div className="font-sans font-light">{tip}</div>
                     </TooltipContent>
                   </Tooltip>
                 </div>
                 <div
-                  className={`mt-2 num font-mono leading-none tracking-tight tabular-nums ${
-                    primary
-                      ? "font-bold text-[2rem] sm:text-[2.5rem] md:text-[2.75rem]"
-                      : "font-semibold text-[1.5rem] sm:text-[1.75rem] md:text-[1.875rem] text-foreground/80"
-                  }`}
-                  style={primary ? { color: "hsl(var(--signal-warn))" } : accent ? { color: "hsl(var(--signal-warn))" } : undefined}
+                  className="mt-2 num font-mono font-semibold leading-none tracking-tight tabular-nums text-[1.75rem] sm:text-[2rem] md:text-[2.25rem]"
+                  style={primary || accent ? { color: "hsl(var(--signal-warn))" } : { color: "hsl(var(--foreground) / 0.8)" }}
                 >
                   {value}
                   {suffix && (
-                    <span className="text-muted-foreground text-[0.45em] align-baseline ml-1">{suffix}</span>
+                    <span className="text-muted-foreground text-[0.5em] align-baseline ml-1">{suffix}</span>
                   )}
                 </div>
                 {sub && (
-                  <div className="mt-2 text-[11px] leading-snug text-muted-foreground">{sub}</div>
+                  <div className="mt-2 text-[13px] leading-snug text-muted-foreground">{sub}</div>
                 )}
               </div>
             );
