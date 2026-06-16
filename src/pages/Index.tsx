@@ -431,7 +431,7 @@ function CategorySection({
   return (
     <section id={id} className="scroll-mt-32 border-t border-border">
       <div className="container py-12 md:py-16">
-        <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
+        <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
           <div className="max-w-3xl">
             <div className="src-label mb-3">{kicker}</div>
             <h2 className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">{title}</h2>
@@ -560,9 +560,9 @@ function CategoryTabs({
       className="flex flex-wrap items-center justify-end gap-1 md:gap-1.5"
     >
       {([
-        { key: "drones" as const,    label: "UAVs",      enabled: !!(shahed && shahedRange) },
-        { key: "cruise" as const,    label: "Cruise",    enabled: !!(cruise && cruiseRange) },
-        { key: "ballistic" as const, label: "Ballistic", enabled: !!(ballistic && ballisticRange) },
+        { key: "drones" as const,    label: "UAVS",      enabled: !!(shahed && shahedRange) },
+        { key: "cruise" as const,    label: "CRUISE",    enabled: !!(cruise && cruiseRange) },
+        { key: "ballistic" as const, label: "BALLISTIC", enabled: !!(ballistic && ballisticRange) },
       ]).map((tab) => {
         if (!tab.enabled) return null;
         const isActive = activeCategory === tab.key;

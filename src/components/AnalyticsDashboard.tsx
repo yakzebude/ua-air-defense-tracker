@@ -590,7 +590,7 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
   );
 }
 
-type PagerKey = "uavs" | "cruiseBal" | "share";
+type PagerKey = "uavs" | "cruise" | "ballistic" | "share";
 
 function AnalyticsPager(props: Props) {
   const { t } = useTranslation();
@@ -611,9 +611,10 @@ function AnalyticsPager(props: Props) {
   }));
 
   const tabs: { key: PagerKey; label: string }[] = [
-    { key: "uavs", label: t("analytics.uavMonthly") },
-    { key: "cruiseBal", label: t("analytics.cruiseBalMonthly") },
-    { key: "share", label: t("analytics.sharePanel") },
+    { key: "uavs", label: "UAVS" },
+    { key: "cruise", label: "CRUISE" },
+    { key: "ballistic", label: "BALLISTIC" },
+    { key: "share", label: "COMPOSITION" },
   ];
 
 
@@ -622,9 +623,9 @@ function AnalyticsPager(props: Props) {
       <div
         role="tablist"
         aria-label={t("analytics.title")}
-        className="-mx-4 mb-4 flex snap-x snap-mandatory gap-1.5 overflow-x-auto px-4 pb-2 md:mx-0 md:flex-wrap md:gap-2 md:overflow-visible md:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="mb-4 flex flex-wrap items-center justify-end gap-1 md:gap-1.5"
       >
-        {tabs.map((tab, i) => {
+        {tabs.map((tab) => {
           const isActive = active === tab.key;
           return (
             <button
@@ -632,13 +633,12 @@ function AnalyticsPager(props: Props) {
               role="tab"
               aria-selected={isActive}
               onClick={() => setActive(tab.key)}
-              className={`snap-start shrink-0 whitespace-nowrap border px-2.5 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors md:px-3 md:py-2 md:text-[11px] md:tracking-[0.14em] ${
+              className={`shrink-0 border px-2 py-1 text-center font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors md:px-2.5 md:py-1.5 md:text-[11px] md:tracking-[0.14em] min-w-[68px] md:min-w-[76px] ${
                 isActive
                   ? "border-foreground bg-foreground text-background"
                   : "border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/40"
               }`}
             >
-              <span className="mr-1.5 opacity-60 md:mr-2">{String(i + 1).padStart(2, "0")}</span>
               {tab.label}
             </button>
           );
@@ -692,61 +692,57 @@ function AnalyticsPager(props: Props) {
         </>
       )}
 
-      {active === "cruiseBal" && (
+      {active === "cruise" && (
         <>
           <Panel
-            title={t("analytics.cruiseBalMonthly")}
+            title="Cruise missiles"
             subtitle={t("analytics.cruiseBalMonthlySub")}
             source={t("primarySourceShort")}
             note={t("analytics.cruiseBalMonthlyNote")}
             action={
               <PanelActions
-                filename="ua-airdefense-tracker_cruise-ballistic-monthly.csv"
-                panelTitle={t("analytics.cruiseBalMonthly")}
-                rows={compRows.map(({ month, cruise, ballistic }) => ({ month, cruise, ballistic }))}
-                headers={["month", "cruise", "ballistic"]}
+                filename="ua-airdefense-tracker_cruise-monthly.csv"
+                panelTitle="Cruise missiles"
+                rows={compRows.map(({ month, cruise }) => ({ month, cruise }))}
+                headers={["month", "cruise"]}
               />
             }
           >
-            <CompositionAreaChart data={data} series={["ballistic", "cruise"]} labels={labels} totalLabel={totalLabel} />
+            <CompositionAreaChart data={data} series={["cruise"]} labels={labels} totalLabel={totalLabel} />
             <div className="mt-3 flex items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.cruise }} />
                 {t("category.cruise")}
               </span>
+            </div>
+          </Panel>
+        </>
+      )}
+
+      {active === "ballistic" && (
+        <>
+          <Panel
+            title="Ballistic missiles"
+            subtitle={t("analytics.cruiseBalMonthlySub")}
+            source={t("primarySourceShort")}
+            note={t("analytics.cruiseBalMonthlyNote")}
+            action={
+              <PanelActions
+                filename="ua-airdefense-tracker_ballistic-monthly.csv"
+                panelTitle="Ballistic missiles"
+                rows={compRows.map(({ month, ballistic }) => ({ month, ballistic }))}
+                headers={["month", "ballistic"]}
+              />
+            }
+          >
+            <CompositionAreaChart data={data} series={["ballistic"]} labels={labels} totalLabel={totalLabel} />
+            <div className="mt-3 flex items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-sm" style={{ background: CAT_COLORS.ballistic }} />
                 {t("category.ballistic")}
               </span>
             </div>
           </Panel>
-          <div
-            className="-mx-4 mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0"
-            aria-label="Key findings — swipe horizontally for ballistic missiles"
-          >
-            <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
-              <ChartInsights
-                data={props.cruise.months}
-                metric="launched"
-                unit="cruise missiles"
-                accent={CAT_COLORS.cruise}
-                direction="down-is-good"
-                title="Key findings · cruise missiles"
-                subtitle="Plain-language summary of monthly cruise-missile launches. Swipe → for ballistic."
-              />
-            </div>
-            <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
-              <ChartInsights
-                data={props.ballistic.months}
-                metric="launched"
-                unit="ballistic missiles"
-                accent={CAT_COLORS.ballistic}
-                direction="down-is-good"
-                title="Key findings · ballistic missiles"
-                subtitle="Plain-language summary of monthly ballistic-missile launches."
-              />
-            </div>
-          </div>
         </>
       )}
 
