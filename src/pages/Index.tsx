@@ -689,7 +689,7 @@ const Index = () => {
               const d = new Date(Date.UTC(y, m - 2, 1));
               return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
             };
-            let sentence: React.ReactNode = null;
+            let sentence: JSX.Element | null = null;
             if (completeMonth) {
               const cur = [shahed!, cruise!, ballistic!]
                 .map((d) => pickMonth(d, completeMonth.key))
