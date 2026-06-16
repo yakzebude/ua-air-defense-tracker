@@ -21,6 +21,7 @@ import { AirAlertsMap } from "@/components/AirAlertsMap";
 import { AirThreatFeed } from "@/components/AirThreatFeed";
 import { MiniAlertsMap } from "@/components/MiniAlertsMap";
 import { CategorySparklines } from "@/components/CategorySparklines";
+import { HeroTrendChart } from "@/components/HeroTrendChart";
 import { DataConfidenceSection } from "@/components/DataConfidenceSection";
 import { StatusBanner } from "@/components/StatusBadge";
 
@@ -845,6 +846,10 @@ const Index = () => {
             meta={<span>Status: source unreachable · auto-retrying</span>}
           />
         </div>
+      )}
+
+      {ready && (
+        <HeroTrendChart shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />
       )}
 
       {ready && (
