@@ -25,6 +25,7 @@ interface Props {
   window?: number;
 }
 
+
 const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
 
 /** Build the trailing slice used by the sparkline, excluding the current
@@ -180,7 +181,7 @@ function CategoryCard({ input, window }: { input: CategoryInput; window: number 
  * Small-multiples overview: one mini line chart per weapon category.
  * Replaces text-based "Key Findings" with a comparative, scannable grid.
  */
-export function CategorySparklines({ categories, window = 24 }: Props) {
+export function CategorySparklines({ categories, window = 12 }: Props) {
   const { t } = useTranslation();
   const valid = categories.filter((c) => c.dataset?.months?.length);
   if (!valid.length) return null;
@@ -191,7 +192,7 @@ export function CategorySparklines({ categories, window = 24 }: Props) {
         <div className="mb-6 max-w-3xl">
           <div className="src-label mb-2">{t("sparklines.kicker", "Category breakdown")}</div>
           <h2 className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">
-            {t("sparklines.title", "How each category has moved over the last 24 months")}
+            {t("sparklines.title", "How each category has moved over the last 12 months")}
           </h2>
           <p className="mt-2 text-[13.5px] leading-[1.6] text-muted-foreground">
             {t(
