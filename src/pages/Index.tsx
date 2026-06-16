@@ -316,7 +316,7 @@ function RelatedSourcesSection() {
       <div className="container py-12 md:py-16">
         <div className="mb-8 max-w-3xl">
           <div className="src-label mb-3">{t("related.kicker")}</div>
-          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("related.title")}</h2>
+          <h2 className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">{t("related.title")}</h2>
           <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">{t("related.intro")}</p>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -359,7 +359,7 @@ function HowToHelpSection() {
       <div className="container py-12 md:py-16">
         <div className="mb-8 max-w-3xl">
           <div className="src-label mb-3">{t("donate.kicker")}</div>
-          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{t("donate.title")}</h2>
+          <h2 className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">{t("donate.title")}</h2>
           <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">{t("donate.intro")}</p>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -431,7 +431,7 @@ function CategorySection({
       <div className="container py-12 md:py-16">
         <div className="mb-8 max-w-3xl">
           <div className="src-label mb-3">{kicker}</div>
-          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{title}</h2>
+          <h2 className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">{title}</h2>
           <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">{description}</p>
         </div>
 
@@ -976,7 +976,7 @@ const Index = () => {
                 <div className="src-label mb-1 flex items-center gap-2">
                   <span>{t("airAlerts.kicker")}</span>
                 </div>
-                <h2 className="font-serif text-[1.75rem] leading-tight tracking-tight md:text-[2.25rem]">
+                <h2 className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">
                   {t("airAlerts.title")}
                 </h2>
                 <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
@@ -1013,7 +1013,7 @@ const Index = () => {
         <div className="container grid gap-8 py-12 md:grid-cols-12 md:py-16">
           <div className="md:col-span-4">
             <div className="src-label mb-3">{t("methodologyInline.kicker")}</div>
-            <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
+            <h2 className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">
               {t("methodologyInline.title")}
             </h2>
           </div>

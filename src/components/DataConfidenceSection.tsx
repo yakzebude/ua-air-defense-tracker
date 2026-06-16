@@ -94,7 +94,7 @@ export function DataConfidenceSection({ lastUpdatedLabel, lastUpdatedDate }: Pro
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-3xl">
             <div className="src-label mb-3">Data confidence · Methodology</div>
-            <h2 id="confidence-title" className="text-2xl font-semibold tracking-tight md:text-3xl">
+            <h2 id="confidence-title" className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">
               How this data is collected, validated and labelled
             </h2>
             <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">
