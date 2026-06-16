@@ -54,6 +54,11 @@
     --series-rate: 0 0% 82%;              /* very light gray */
     --grid: 215 16% 89%;
 
+    /* Per-category bar fills — grayscale only */
+    --bar-uavs: 0 0% 68%;
+    --bar-cruise: 0 0% 55%;
+    --bar-ballistic: 0 0% 42%;
+
     /* Weapon-category palette — red/grayscale only (green reserved for positive deltas). */
     --weapon-uav: 0 0% 32%;                /* dark gray */
     --weapon-cruise: 0 65% 42%;            /* red */
@@ -110,10 +115,14 @@
     --cyber: 0 0% 70%;
     --cyber-glow: 0 0% 80%;
 
-    --series-launched: 0 0% 70%;
-    --series-destroyed: 0 0% 52%;
-    --series-rate: 0 0% 82%;
+    --series-launched: 0 0% 50%;
+    --series-destroyed: 0 0% 38%;
+    --series-rate: 0 0% 62%;
     --grid: 0 0% 16%;
+
+    --bar-uavs: 0 0% 48%;
+    --bar-cruise: 0 0% 35%;
+    --bar-ballistic: 0 0% 24%;
 
     --weapon-uav: 0 0% 70%;                /* light gray */
     --weapon-cruise: 0 78% 58%;            /* red */
