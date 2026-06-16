@@ -23,9 +23,9 @@ type CategoryKey = "uavs" | "cruise" | "ballistic";
 
 // Unified palette — grayscale only.
 const CAT_COLORS: Record<CategoryKey, string> = {
-  uavs:      "hsl(0 0% 55%)",     // medium gray
-  cruise:    "hsl(0 0% 42%)",     // dark gray
-  ballistic: "hsl(0 0% 30%)",     // very dark gray
+  uavs:      "hsl(0 0% 70%)",     // light gray
+  cruise:    "hsl(0 0% 55%)",     // medium gray
+  ballistic: "hsl(0 0% 42%)",     // dark gray
 };
 
 interface Props {
