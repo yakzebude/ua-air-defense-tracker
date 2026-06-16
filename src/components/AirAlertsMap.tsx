@@ -337,14 +337,14 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         style={{
                           default: {
                             fill: "url(#aggressor-stripes)",
-                            stroke: "hsl(var(--muted-foreground) / 0.55)",
+                            stroke: "hsl(var(--signal) / 0.75)",
                             strokeWidth: 0.7,
                             outline: "none",
                             cursor: "help",
                           },
                           hover: {
                             fill: "url(#aggressor-stripes)",
-                            stroke: "hsl(var(--muted-foreground) / 0.80)",
+                            stroke: "hsl(var(--signal))",
                             strokeWidth: 1.1,
                             outline: "none",
                             cursor: "help",
@@ -420,7 +420,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       style={{
                         default: {
                           fill: baseFill,
-                          stroke: occupied ? "hsl(var(--occupied-border))" : "hsl(var(--foreground) / 0.6)",
+                          stroke: occupied ? "hsl(var(--signal) / 0.85)" : "hsl(var(--foreground) / 0.6)",
                           strokeWidth: occupied ? 1.4 : 0.7,
                           outline: "none",
                           transition: "fill 200ms ease",
@@ -428,7 +428,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         },
                         hover: {
                           fill: hoverFill,
-                          stroke: occupied ? "hsl(var(--occupied-border))" : "hsl(var(--foreground) / 0.85)",
+                          stroke: occupied ? "hsl(var(--signal))" : "hsl(var(--foreground) / 0.85)",
                           strokeWidth: occupied ? 1.6 : 0.9,
                           outline: "none",
                           cursor: variant === "full" ? "pointer" : "default",
