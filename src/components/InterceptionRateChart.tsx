@@ -73,7 +73,7 @@ export function InterceptionRateChart({ data }: Props) {
           />
           <Tooltip content={<RateTooltip />} cursor={{ fill: "hsl(var(--foreground))", fillOpacity: 0.04 }} />
           <ReferenceLine y={50} stroke="hsl(var(--border))" strokeDasharray="3 3" />
-          <Bar dataKey="ratePct" fill="hsl(var(--series-rate))" fillOpacity={0.85} maxBarSize={22} />
+          <Bar dataKey="ratePct" fill="hsl(var(--series-rate))" fillOpacity={0.22} maxBarSize={22} />
           <Line
             type="monotone"
             dataKey="ratePct"
