@@ -197,7 +197,7 @@ export function CategorySparklines({ categories, window = 12 }: Props) {
           <p className="mt-2 text-[13.5px] leading-[1.6] text-muted-foreground">
             {t(
               "sparklines.subtitle",
-              "Each panel shows monthly launches for one weapon family, anchored on the first and last completed month. Δ% compares start vs. end. Click a card to jump to its detail section.",
+              "Each panel shows monthly launches for one weapon family across the last 12 completed months, anchored on the first and last point. Δ% compares start vs. end. Click a card to jump to its detail section.",
             )}
           </p>
         </div>
