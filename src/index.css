@@ -48,10 +48,10 @@
     --cyber: 215 10% 40%;
     --cyber-glow: 215 10% 40%;
 
-    /* Chart series — restrained red + grayscale only */
-    --series-launched: 0 65% 42%;          /* red */
-    --series-destroyed: 30 8% 55%;         /* warm gray */
-    --series-rate: 30 8% 38%;              /* dark gray */
+    /* Chart series — grayscale only */
+    --series-launched: 0 0% 60%;          /* medium gray */
+    --series-destroyed: 0 0% 42%;         /* dark gray */
+    --series-rate: 0 0% 72%;              /* light gray */
     --grid: 215 16% 89%;
 
     /* Weapon-category palette — red/grayscale only (green reserved for positive deltas). */
@@ -110,8 +110,8 @@
     --cyber: 0 0% 70%;
     --cyber-glow: 0 0% 80%;
 
-    --series-launched: 0 78% 58%;
-    --series-destroyed: 0 0% 55%;
+    --series-launched: 0 0% 55%;
+    --series-destroyed: 0 0% 38%;
     --series-rate: 0 0% 75%;
     --grid: 0 0% 16%;
 

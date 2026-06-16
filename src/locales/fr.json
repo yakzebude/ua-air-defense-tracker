@@ -90,13 +90,13 @@
     },
     "cruiseSection": {
       "kicker": "02 · Croisière et air-sol",
-      "title": "Missiles de croisière",
+      "title": "Lancement de missiles de croisière contre l'Ukraine",
       "description": "Missiles de croisière et air-sol — Kalibr, X-101/X-555, X-22, X-32, X-59/X-69, X-31, X-35, Iskander-K et P-800 Oniks. Généralement subsoniques ; historiquement interceptés à des taux plus élevés que les systèmes balistiques.",
       "unit": "missiles"
     },
     "ballisticSection": {
       "kicker": "03 · Balistique et quasi-balistique",
-      "title": "Missiles balistiques",
+      "title": "Lancement de missiles balistiques contre l'Ukraine",
       "description": "Systèmes balistiques et quasi-balistiques — Iskander-M / KN-23, X-47 Kinzhal, 3M22 Zircon, ICBMs et S-300 / S-400 utilisés en mode surface-surface. La vitesse et la trajectoire élevées produisent généralement les taux d'interception les plus bas.",
       "unit": "missiles"
     },
