@@ -431,7 +431,7 @@ function CategorySection({
   return (
     <section id={id} className="scroll-mt-32 border-t border-border">
       <div className="container py-12 md:py-16">
-        <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
+        <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
           <div className="max-w-3xl">
             <div className="src-label mb-3">{kicker}</div>
             <h2 className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">{title}</h2>
