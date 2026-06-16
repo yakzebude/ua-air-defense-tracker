@@ -146,8 +146,8 @@ export function MonthlyTrendChart({ data }: Props) {
               />
             )}
             <Tooltip content={<ChartTooltip t={t} />} cursor={{ stroke: "hsl(var(--foreground))", strokeOpacity: 0.18 }} />
-            <Bar yAxisId="count" dataKey="launched" name={t("chart.launched")} fill={COLOR_LAUNCHED} fillOpacity={0.85} maxBarSize={isNarrow ? 18 : 22} />
-            <Bar yAxisId="count" dataKey="destroyed" name={t("chart.destroyed")} fill={COLOR_DESTROYED} fillOpacity={0.85} maxBarSize={isNarrow ? 18 : 22} />
+            <Bar yAxisId="count" dataKey="launched" name={t("chart.launched")} fill={COLOR_LAUNCHED} fillOpacity={0.85} maxBarSize={isNarrow ? 14 : 18} />
+            <Bar yAxisId="count" dataKey="destroyed" name={t("chart.destroyed")} fill={COLOR_DESTROYED} fillOpacity={0.85} maxBarSize={isNarrow ? 14 : 18} />
             {!isNarrow && (
               <Line
                 yAxisId="count"
@@ -168,7 +168,7 @@ export function MonthlyTrendChart({ data }: Props) {
                 dataKey="ratePct"
                 name={t("chart.interceptionRate")}
                 stroke={COLOR_RATE}
-                strokeWidth={1.25}
+                strokeWidth={1}
                 strokeDasharray="3 3"
                 dot={false}
               />
