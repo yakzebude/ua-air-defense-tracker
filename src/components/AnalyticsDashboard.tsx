@@ -23,13 +23,13 @@ const fmt = (n: number) => n.toLocaleString("en-US");
 
 type CategoryKey = "uavs" | "cruise" | "ballistic";
 
-// Unified threat-ramp palette — identical stops to the escalation-calendar
-// heatmap so every panel reads as one coherent visual system.
-// yellow (lightest threat) → orange → deep red. Grayscale handled separately.
+// Unified palette — red / grayscale only. Lighter gray for the largest-volume
+// (lowest-threat-per-unit) category, mid red and dark red for the heavier
+// weapon classes. Green is reserved for positive deltas only.
 const CAT_COLORS: Record<CategoryKey, string> = {
-  uavs:      "hsl(48 80% 55%)",   // yellow — less saturated
-  cruise:    "hsl(28 78% 50%)",   // orange — less saturated
-  ballistic: "hsl(0 65% 48%)",   // deep red — less saturated
+  uavs:      "hsl(0 0% 55%)",     // gray
+  cruise:    "hsl(0 65% 48%)",    // red
+  ballistic: "hsl(0 70% 32%)",    // dark red
 };
 
 interface Props {
