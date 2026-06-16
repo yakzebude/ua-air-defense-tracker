@@ -31,10 +31,15 @@
   "kpi": {
     "totalLaunched": "Total launched",
     "totalLaunchedSub": "UAVs, cruise & ballistic combined",
+    "launchedSub": "UAVs, cruise & ballistic combined",
     "confirmedDestroyed": "Confirmed destroyed",
     "confirmedDestroyedSub": "Air defense interceptions",
-    "interceptionRate": "OVERALL INTERCEPTION RATE",
-    "reachedTarget": "BREACHED AIR DEFENSE",
+    "intercepted": "Total intercepted",
+    "interceptedSub": "Confirmed shoot-downs",
+    "interceptionRate": "Interception rate",
+    "breachRate": "Breach rate",
+    "breachRateSub": "Share of launches that got through",
+    "reachedTarget": "Breached air defense",
     "reachedTargetSub": "Estimated leakers",
     "breachedAirDefenseSub": "Targets that breached Ukrainian air defenses",
     "launchedReported": "Launched (reported)",
@@ -52,6 +57,15 @@
       "reachedTargetLabel": "Breached air defense — methodology note",
       "reachedTarget": "Launched threats that were not confirmed destroyed. Used as a proxy for weapons that breached Ukrainian air defenses and reached or impacted near a target. Note: includes weapons that crashed, fell as debris, or were lost from tracking — it is an upper bound, not a damage count."
     }
+  },
+  "hero": {
+    "trendKicker": "Monthly trend",
+    "trendTitle": "Launched, intercepted, and what got through",
+    "trendSubtitle": "Monthly totals since October 2022. Bars show launches; the amber line marks the count that breached air defenses.",
+    "trendSource": "Source: Ukrainian Air Force Command (via Kaggle, Petro Ivaniuk).",
+    "tabAll": "All",
+    "peakLaunched": "Largest wave",
+    "peakBreached": "Most breached"
   },
   "masthead": {
     "kicker": "OSINT",
