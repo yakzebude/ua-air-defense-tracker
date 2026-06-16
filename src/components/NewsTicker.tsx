@@ -64,8 +64,21 @@ export const NewsTicker = () => {
   useLayoutEffect(() => {
     const el = measureRef.current;
     if (!el || items.length === 0) return;
-    const w = el.scrollWidth;
-    if (w > 0) setDuration(Math.max(20, w / SCROLL_SPEED_PX_S));
+    const recompute = () => {
+      const w = el.scrollWidth;
+      if (w > 0) setDuration(Math.max(20, w / SCROLL_SPEED_PX_S));
+    };
+    recompute();
+    // Re-measure once webfonts finish loading (avoids width drift mid-scroll).
+    const fonts = (document as any).fonts;
+    if (fonts?.ready) fonts.ready.then(recompute).catch(() => {});
+    const ro = new ResizeObserver(recompute);
+    ro.observe(el);
+    window.addEventListener("resize", recompute);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", recompute);
+    };
   }, [items]);
 
   // Status / fallback content
@@ -77,19 +90,19 @@ export const NewsTicker = () => {
   return (
     <div
       className="group w-full bg-[#111] text-white border-b border-white/10 overflow-hidden"
-      style={{ height: 54 }}
+      style={{ height: 43 }}
       aria-label="Live news ticker — Russian air attacks against Ukraine"
     >
       <div className="mx-auto flex h-full max-w-[1440px] items-stretch">
         {/* LIVE NEWS badge */}
-        <div className="flex items-center gap-2 px-3 border-r border-white/10 shrink-0 font-mono text-sm uppercase tracking-[0.18em] text-red-500 font-bold">
+        <div className="flex items-center gap-2 px-3 border-r border-white/10 shrink-0 font-mono text-[11px] uppercase tracking-[0.18em] text-red-500 font-bold">
           Live News
         </div>
 
         {/* Marquee / status */}
         <div className="relative flex-1 overflow-hidden">
           {status ? (
-            <div className="flex h-full items-center px-4 font-mono text-base text-white/70">
+            <div className="flex h-full items-center px-4 font-mono text-[13px] text-white/70">
               {status}
             </div>
           ) : (
@@ -114,7 +127,7 @@ export const NewsTicker = () => {
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center px-4 font-mono text-base text-white hover:text-amber-400 transition-colors"
+                      className="flex items-center px-4 font-mono text-[13px] text-white hover:text-amber-400 transition-colors"
                     >
                       {index > 0 && (
                         <span className="pr-4 text-white/30">•</span>
