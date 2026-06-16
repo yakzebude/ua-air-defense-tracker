@@ -21,6 +21,7 @@ import { AirAlertsMap } from "@/components/AirAlertsMap";
 import { AirThreatFeed } from "@/components/AirThreatFeed";
 import { MiniAlertsMap } from "@/components/MiniAlertsMap";
 import { CategorySparklines } from "@/components/CategorySparklines";
+import { HeroTrendChart } from "@/components/HeroTrendChart";
 import { DataConfidenceSection } from "@/components/DataConfidenceSection";
 import { StatusBanner } from "@/components/StatusBadge";
 
@@ -674,178 +675,159 @@ const Index = () => {
 
 
 
-          {ready && (
-            <div className="mt-6 grid gap-3 md:mt-8 md:grid-cols-12 md:gap-4">
-              {/* TIER 1 — hero KPI: Breached air defense + Total launched (col-span-7) */}
-              <div className="md:col-span-7 rounded-md border border-border bg-card p-4 sm:p-5 md:p-7">
-                <div className="grid grid-cols-1 sm:grid-cols-2 items-start gap-6 sm:gap-6">
-                  {/* Left: BREACHED AIR DEFENSE — primary, emphasized */}
-                  <div className="min-w-0">
-                    <div>
-                      <div className="flex min-h-[2.4em] items-start gap-1.5 text-[10px] sm:text-[10.5px] font-mono font-semibold uppercase tracking-[0.16em] leading-[1.2] text-foreground/80">
-                        <span className="break-words">{t("kpi.reachedTarget")}</span>
-                        <Tooltip delayDuration={100}>
-                          <TooltipTrigger asChild>
-                            <button
-                              type="button"
-                              aria-label={t("kpi.tip.reachedTargetLabel")}
-                              className="mt-[1px] inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border border-foreground/30 text-[9px] leading-none text-foreground/80 transition-colors hover:border-foreground/60 hover:bg-foreground/5 focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground/40"
-                            >
-                              &zwnj;i
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent side="top" align="start" className="max-w-xs font-sans text-[12px] font-light leading-relaxed normal-case tracking-normal">
-                            <div className="mb-1 font-sans text-[10px] font-light uppercase tracking-[0.18em]">{t("kpi.tip.reachedTargetLabel")}</div>
-                            <div className="font-sans font-light">{t("kpi.tip.reachedTarget")}</div>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                      <div className="mt-1 num font-mono font-bold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-foreground/80">
-                        <AnimatedNumber value={reached} />
-                      </div>
-                      <div className="mt-2 text-[11px] sm:text-[12px] leading-snug text-muted-foreground">
-                        {t("kpi.breachedAirDefenseSub")}
-                      </div>
-                    </div>
-                  </div>
+          {ready && (() => {
+            const intercepted = grand.destroyed;
+            const launched = grand.launched;
+            const breached = reached;
+            const interceptionPct = launched > 0 ? (intercepted / launched) * 100 : 0;
+            const breachPct = launched > 0 ? (breached / launched) * 100 : 0;
 
-                  {/* Right: TOTAL LAUNCHED — secondary, muted */}
-                  <div className="min-w-0 text-left sm:text-right">
-                    <div className="flex min-h-[2.4em] items-start sm:justify-end gap-2 text-[10px] sm:text-[10.5px] font-mono font-medium uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground">
-                      <span className="break-words">{t("kpi.totalLaunched")}</span>
-                      {grand.launched > 0 && (
-                        <span className="num tabular-nums text-foreground/80">
-                          ≈ {((reached / grand.launched) * 100).toFixed(1)}{t("kpi.leakerPctSuffix")}
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-1 num font-mono font-semibold leading-none text-[1.75rem] sm:text-[2.25rem] md:text-[3rem] tracking-tight text-foreground/80">
-                      <AnimatedNumber value={grand.launched} />
-                    </div>
-                  </div>
+            // Build "what changed this month" sentence from completeMonth + prior month.
+            const pickMonth = (ds: Dataset, k: string) => ds.months.find((m) => m.key === k);
+            const prevKey = (k: string) => {
+              const [y, m] = k.split("-").map(Number);
+              const d = new Date(Date.UTC(y, m - 2, 1));
+              return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
+            };
+            let sentence: JSX.Element | null = null;
+            if (completeMonth) {
+              const cur = [shahed!, cruise!, ballistic!]
+                .map((d) => pickMonth(d, completeMonth.key))
+                .filter(Boolean) as MonthPoint[];
+              const pk = prevKey(completeMonth.key);
+              const prev = [shahed!, cruise!, ballistic!]
+                .map((d) => pickMonth(d, pk))
+                .filter(Boolean) as MonthPoint[];
+              const sum = (arr: MonthPoint[], k: "launched" | "destroyed") =>
+                arr.reduce((s, m) => s + m[k], 0);
+              const cL = sum(cur, "launched");
+              const cD = sum(cur, "destroyed");
+              const cB = Math.max(cL - cD, 0);
+              const pL = sum(prev, "launched");
+              const pD = sum(prev, "destroyed");
+              const pB = Math.max(pL - pD, 0);
+              const cBR = cL > 0 ? (cB / cL) * 100 : 0;
+              const pBR = pL > 0 ? (pB / pL) * 100 : 0;
+              const dBR = cBR - pBR;
+              const arrow = dBR > 0.5 ? "▲" : dBR < -0.5 ? "▼" : "•";
+              const dBRabs = Math.abs(dBR).toFixed(1);
+              sentence = (
+                <p className="mt-6 max-w-4xl font-serif text-[1rem] leading-[1.55] sm:text-[1.0625rem] md:text-[1.125rem] text-foreground/80">
+                  In <strong className="text-foreground">{completeMonth.label}</strong>, Russia launched{" "}
+                  <strong className="text-foreground num">{fmt(cL)}</strong> aerial weapons.
+                  Ukrainian air defenses intercepted{" "}
+                  <strong className="text-foreground num">{fmt(cD)}</strong>{" "}
+                  ({(cL > 0 ? (cD / cL) * 100 : 0).toFixed(1)}%);{" "}
+                  <strong style={{ color: "hsl(var(--signal-warn))" }} className="num">
+                    {fmt(cB)} breached
+                  </strong>{" "}
+                  air defenses
+                  {prev.length > 0 && (
+                    <>
+                      {" "}— breach rate{" "}
+                      <span className="num font-semibold" style={{ color: dBR > 0 ? "hsl(var(--signal-warn))" : "hsl(var(--signal-ok))" }}>
+                        {arrow} {dBRabs} pp
+                      </span>{" "}
+                      vs. previous month.
+                    </>
+                  )}
+                </p>
+              );
+            }
+
+            const Kpi = ({
+              label, value, sub, tipLabel, tip, primary = false, accent = false, suffix,
+            }: {
+              label: string; value: string; sub?: string; tipLabel: string; tip: string;
+              primary?: boolean; accent?: boolean; suffix?: string;
+            }) => (
+              <div className={`min-w-0 rounded-md border bg-card p-4 sm:p-5 ${
+                primary ? "border-[hsl(var(--signal-warn)/0.6)] sm:col-span-2 md:col-span-1" : "border-border"
+              }`}>
+                <div className="flex min-h-[2.4em] items-start gap-1.5 text-[10px] sm:text-[10.5px] font-mono font-semibold uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground">
+                  <span className="break-words">{label}</span>
+                  <Tooltip delayDuration={100}>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label={tipLabel}
+                        className="mt-[1px] inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border border-foreground/30 text-[9px] leading-none text-foreground/70 transition-colors hover:border-foreground/60 hover:bg-foreground/5 focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground/40"
+                      >
+                        &zwnj;i
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" align="start" className="max-w-xs font-sans text-[12px] font-light leading-relaxed normal-case tracking-normal">
+                      <div className="mb-1 font-sans text-[10px] font-light uppercase tracking-[0.18em]">{tipLabel}</div>
+                      <div className="font-sans font-light">{tip}</div>
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
-
-                {/* TIER 3 — last fully-covered calendar month · per-category breakdown */}
-                {completeMonth && (
-                  <div className="mt-3 border-t border-border bg-background/60">
-                    <div className="flex items-center justify-between gap-3 border-b border-border px-3 py-1.5 sm:px-4">
-                      <span className="text-[9.5px] sm:text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-foreground/80 truncate">
-                        {completeMonth.label}
-                      </span>
-                      <span className="text-[9.5px] sm:text-[10px] font-mono uppercase tracking-[0.16em] text-muted-foreground whitespace-nowrap">
-                        last complete month
-                      </span>
-                    </div>
-                    {(() => {
-                      const pick = (ds: typeof shahed) => ds?.months.find((mp) => mp.key === completeMonth.key);
-                      const uav = pick(shahed);
-                      const cru = pick(cruise);
-                      const bal = pick(ballistic);
-                      const cats = [
-                        { key: "uav", label: t("nav.drones"),    l: uav?.launched ?? 0, d: uav?.destroyed ?? 0 },
-                        { key: "cru", label: t("nav.cruise"),    l: cru?.launched ?? 0, d: cru?.destroyed ?? 0 },
-                        { key: "bal", label: t("nav.ballistic"), l: bal?.launched ?? 0, d: bal?.destroyed ?? 0 },
-                      ];
-                      const total = {
-                        l: cats.reduce((s, c) => s + c.l, 0),
-                        d: cats.reduce((s, c) => s + c.d, 0),
-                      };
-                      const reachedOf = (l: number, d: number) => Math.max(l - d, 0);
-                      const Cell = ({ label, total, values }: { label: string; total: number; values: { k: string; lbl: string; v: number }[] }) => (
-                        <div className="min-w-0 px-2.5 py-3 sm:px-4 sm:py-3.5">
-                          <div className="text-[8.5px] sm:text-[9.5px] font-mono uppercase tracking-[0.18em] leading-none text-muted-foreground truncate">
-                            {label}
-                          </div>
-                          <div className="mt-2 num text-[1.375rem] sm:text-[1.75rem] font-semibold leading-none tracking-tight tabular-nums text-foreground/80">
-                            {fmt(total)}
-                          </div>
-                          <div className="mt-3 space-y-1">
-                            {values.map((v) => (
-                              <div key={v.k} className="flex items-baseline justify-between gap-2 text-[10px] font-mono">
-                                <span className="uppercase tracking-[0.14em] text-muted-foreground truncate">{v.lbl}</span>
-                                <span className="num tabular-nums text-foreground/80">{fmt(v.v)}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      );
-                      return (
-                        <div className="grid grid-cols-3 divide-x divide-border">
-                          <Cell
-                            label={t("masthead.insightLaunched")}
-                            total={total.l}
-                            values={cats.map((c) => ({ k: c.key, lbl: c.label, v: c.l }))}
-                          />
-                          <Cell
-                            label={t("masthead.insightIntercepted")}
-                            total={total.d}
-                            values={cats.map((c) => ({ k: c.key, lbl: c.label, v: c.d }))}
-                          />
-                          <Cell
-                            label={t("masthead.insightReached")}
-                            total={reachedOf(total.l, total.d)}
-                            values={cats.map((c) => ({ k: c.key, lbl: c.label, v: reachedOf(c.l, c.d) }))}
-                          />
-                        </div>
-                      );
-                    })()}
-                  </div>
+                <div
+                  className={`mt-2 num font-mono leading-none tracking-tight tabular-nums ${
+                    primary
+                      ? "font-bold text-[2rem] sm:text-[2.5rem] md:text-[2.75rem]"
+                      : "font-semibold text-[1.5rem] sm:text-[1.75rem] md:text-[1.875rem] text-foreground/80"
+                  }`}
+                  style={primary ? { color: "hsl(var(--signal-warn))" } : accent ? { color: "hsl(var(--signal-warn))" } : undefined}
+                >
+                  {value}
+                  {suffix && (
+                    <span className="text-muted-foreground text-[0.45em] align-baseline ml-1">{suffix}</span>
+                  )}
+                </div>
+                {sub && (
+                  <div className="mt-2 text-[11px] leading-snug text-muted-foreground">{sub}</div>
                 )}
               </div>
+            );
 
-              {/* TIER 2 — Interception rate (col-span-5, full height) */}
-              <div className="md:col-span-5 flex">
-                <div className="flex w-full flex-col rounded-md border border-border bg-card p-4 sm:p-5 md:p-7">
-                  {(() => {
-                    const cats = [
-                      { key: "uav", label: t("nav.drones"), l: shahed!.totals.launched, d: shahed!.totals.destroyed, color: "hsl(48 80% 55%)" },
-                      { key: "cruise", label: t("nav.cruise"), l: cruise!.totals.launched, d: cruise!.totals.destroyed, color: "hsl(28 78% 50%)" },
-                      { key: "bal", label: t("nav.ballistic"), l: ballistic!.totals.launched, d: ballistic!.totals.destroyed, color: "hsl(0 65% 48%)" },
-                    ];
-                    return (
-                      <div className="flex h-full flex-col">
-                        <div className="flex min-h-[2.4em] items-start justify-end text-[10px] sm:text-[10.5px] font-mono font-semibold uppercase tracking-[0.18em] leading-[1.2] text-muted-foreground">
-                          {t("kpi.interceptionRate")}
-                        </div>
-                        <div className="mt-1 num font-mono font-semibold leading-none text-[2.25rem] sm:text-[3rem] md:text-[4rem] tracking-tight text-foreground/80 text-right tabular-nums">
-                          {(grand.rate * 100).toFixed(1)}<span className="text-muted-foreground text-[0.45em] align-baseline ml-1">%</span>
-                        </div>
-                        <div className="mt-1.5 text-[11.5px] sm:text-[12px] leading-snug text-muted-foreground num text-right">
-                          {fmt(grand.destroyed)} {t("kpi.ofSep")} {fmt(grand.launched)} {t("kpi.confirmedInterceptions")}
-                        </div>
-
-                        <div className="mt-3 flex flex-col space-y-3 border-t border-border pt-4">
-                          {cats.map((c) => {
-                            const rate = c.l > 0 ? c.d / c.l : 0;
-                            const pct = (rate * 100).toFixed(1);
-                            return (
-                              <div key={c.key} className="space-y-1">
-                                <div className="flex items-baseline justify-between gap-3">
-                                  <span className="text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.16em] text-foreground/80">
-                                    {c.label}
-                                  </span>
-                                  <span className="num font-mono text-[14px] sm:text-[15px] font-semibold tabular-nums leading-none tracking-tight text-foreground/80">
-                                    {pct}<span className="text-muted-foreground">%</span>
-                                  </span>
-                                </div>
-                                <div className="h-2.5 w-full overflow-hidden bg-muted">
-                                  <div className="h-full transition-[width]" style={{ width: `${Math.min(100, rate * 100)}%`, background: c.color }} />
-                                </div>
-                                <div className="flex justify-between text-[10px] font-mono uppercase tracking-[0.14em] text-muted-foreground num tabular-nums">
-                                  <span>{fmt(c.d)} / {fmt(c.l)}</span>
-                                  <span>{fmt(Math.max(c.l - c.d, 0))} {t("kpi.leakerPctSuffix").trim() ? "→" : ""} {t("masthead.insightReached", "reached")}</span>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })()}
+            return (
+              <>
+                {sentence}
+                <div className="mt-5 grid gap-3 md:mt-6 grid-cols-2 md:grid-cols-5">
+                  <Kpi
+                    primary
+                    label={t("kpi.reachedTarget")}
+                    value={fmt(breached)}
+                    sub={t("kpi.breachedAirDefenseSub")}
+                    tipLabel={t("kpi.tip.reachedTargetLabel")}
+                    tip={t("kpi.tip.reachedTarget")}
+                  />
+                  <Kpi
+                    label={t("kpi.intercepted", "Intercepted")}
+                    value={fmt(intercepted)}
+                    sub={t("kpi.interceptedSub", "Confirmed shoot-downs")}
+                    tipLabel={t("kpi.tip.interceptionRateLabel")}
+                    tip={t("kpi.tip.interceptionRate")}
+                  />
+                  <Kpi
+                    label={t("kpi.totalLaunched")}
+                    value={fmt(launched)}
+                    sub={t("kpi.launchedSub", "UAVs, cruise & ballistic combined")}
+                    tipLabel={t("kpi.tip.totalLaunchedLabel")}
+                    tip={t("kpi.tip.totalLaunched")}
+                  />
+                  <Kpi
+                    label={t("kpi.interceptionRate")}
+                    value={interceptionPct.toFixed(1)}
+                    suffix="%"
+                    sub={`${fmt(intercepted)} ${t("kpi.ofSep")} ${fmt(launched)}`}
+                    tipLabel={t("kpi.tip.interceptionRateLabel")}
+                    tip={t("kpi.tip.interceptionRate")}
+                  />
+                  <Kpi
+                    accent
+                    label={t("kpi.breachRate", "Breach rate")}
+                    value={breachPct.toFixed(1)}
+                    suffix="%"
+                    sub={t("kpi.breachRateSub", "Share of launches that got through")}
+                    tipLabel={t("kpi.tip.reachedTargetLabel")}
+                    tip={t("kpi.tip.reachedTarget")}
+                  />
                 </div>
-              </div>
-            </div>
-          )}
+              </>
+            );
+          })()}
         </div>
       </section>
 
@@ -864,6 +846,10 @@ const Index = () => {
             meta={<span>Status: source unreachable · auto-retrying</span>}
           />
         </div>
+      )}
+
+      {ready && (
+        <HeroTrendChart shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />
       )}
 
       {ready && (
