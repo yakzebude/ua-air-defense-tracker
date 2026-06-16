@@ -716,6 +716,16 @@ function AnalyticsPager(props: Props) {
               </span>
             </div>
           </Panel>
+          <div className="mt-8">
+            <ChartInsights
+              data={props.cruise.months}
+              metric="launched"
+              unit="Cruise"
+              accent={CAT_COLORS.cruise}
+              direction="down-is-good"
+              subtitle="Plain-language summary of monthly cruise-missile launches detected at Ukrainian airspace."
+            />
+          </div>
         </>
       )}
 
