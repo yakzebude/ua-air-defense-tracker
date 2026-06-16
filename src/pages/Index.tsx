@@ -560,9 +560,9 @@ function CategoryTabs({
       className="flex flex-wrap items-center justify-end gap-1 md:gap-1.5"
     >
       {([
-        { key: "drones" as const,    label: "UAVs",      enabled: !!(shahed && shahedRange) },
-        { key: "cruise" as const,    label: "Cruise",    enabled: !!(cruise && cruiseRange) },
-        { key: "ballistic" as const, label: "Ballistic", enabled: !!(ballistic && ballisticRange) },
+        { key: "drones" as const,    label: "UAVS",      enabled: !!(shahed && shahedRange) },
+        { key: "cruise" as const,    label: "CRUISE",    enabled: !!(cruise && cruiseRange) },
+        { key: "ballistic" as const, label: "BALLISTIC", enabled: !!(ballistic && ballisticRange) },
       ]).map((tab) => {
         if (!tab.enabled) return null;
         const isActive = activeCategory === tab.key;
