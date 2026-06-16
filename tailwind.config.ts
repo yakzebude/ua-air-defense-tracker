@@ -12,7 +12,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['"Source Sans 3"', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['"IBM Plex Sans"', 'system-ui', '-apple-system', 'sans-serif'],
         serif: ['"IBM Plex Sans"', 'system-ui', '-apple-system', 'sans-serif'],
         display: ['"IBM Plex Sans"', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
