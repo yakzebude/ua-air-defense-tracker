@@ -112,7 +112,7 @@ export function WeaponsCatalogSection() {
       <div className="container py-12 md:py-16">
         <div className="mb-6 max-w-3xl">
           <div className="src-label mb-3">{t("arsenal.kicker")}</div>
-          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
+          <h2 className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">
             {t("arsenal.title")}
           </h2>
           <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">

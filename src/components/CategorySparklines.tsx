@@ -190,7 +190,7 @@ export function CategorySparklines({ categories, window = 24 }: Props) {
       <div className="container py-10 md:py-14">
         <div className="mb-6 max-w-3xl">
           <div className="src-label mb-2">{t("sparklines.kicker", "Category breakdown")}</div>
-          <h2 className="text-xl md:text-2xl font-semibold tracking-tight">
+          <h2 className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">
             {t("sparklines.title", "How each category has moved over the last 24 months")}
           </h2>
           <p className="mt-2 text-[13.5px] leading-[1.6] text-muted-foreground">
