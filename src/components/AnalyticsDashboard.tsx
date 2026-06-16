@@ -21,13 +21,11 @@ const fmt = (n: number) => n.toLocaleString("en-US");
 
 type CategoryKey = "uavs" | "cruise" | "ballistic";
 
-// Unified palette — red / grayscale only. Lighter gray for the largest-volume
-// (lowest-threat-per-unit) category, mid red and dark red for the heavier
-// weapon classes. Green is reserved for positive deltas only.
+// Unified palette — grayscale only.
 const CAT_COLORS: Record<CategoryKey, string> = {
-  uavs:      "hsl(0 0% 55%)",     // gray
-  cruise:    "hsl(0 65% 48%)",    // red
-  ballistic: "hsl(0 70% 32%)",    // dark red
+  uavs:      "hsl(0 0% 55%)",     // medium gray
+  cruise:    "hsl(0 0% 42%)",     // dark gray
+  ballistic: "hsl(0 0% 30%)",     // very dark gray
 };
 
 interface Props {

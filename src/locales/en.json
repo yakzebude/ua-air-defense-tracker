@@ -104,13 +104,13 @@
     },
     "cruiseSection": {
       "kicker": "02 · Cruise & air-to-surface",
-      "title": "Cruise missiles",
+      "title": "Cruise missile launches against Ukraine",
       "description": "Cruise and air-to-surface missiles — Kalibr, X-101/X-555, X-22, X-32, X-59/X-69, X-31, X-35, Iskander-K and P-800 Oniks. Generally subsonic; historically intercepted at higher rates than ballistic systems.",
       "unit": "missiles"
     },
     "ballisticSection": {
       "kicker": "03 · Ballistic & quasi-ballistic",
-      "title": "Ballistic missiles",
+      "title": "Ballistic missile launches against Ukraine",
       "description": "Ballistic and quasi-ballistic systems — Iskander-M / KN-23, X-47 Kinzhal, 3M22 Zircon, ICBMs and S-300 / S-400 used in surface-to-surface mode. High velocity and trajectory typically yield the lowest interception rates.",
       "unit": "missiles"
     },
