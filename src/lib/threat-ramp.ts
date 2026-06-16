@@ -1,20 +1,18 @@
 /**
  * Threat color ramp for the escalation calendar.
  *
- *   t = 0.0  → light yellow   (low monthly volume)
- *   t = 0.5  → orange         (medium volume)
- *   t = 1.0  → deep crimson   (record peak)
+ *   t = 0.0  → light warm gray (low monthly volume)
+ *   t = 0.5  → red             (medium volume)
+ *   t = 1.0  → deep dark red   (record peak)
  *
- * Piecewise ramp pale-yellow → orange → dark red, matching the threat-
- * intensity convention used on most operational dashboards.
+ * Grayscale → red → dark red. Matches the site-wide red/grayscale palette.
  */
 export function rampColor(t: number, alpha = 1): string {
   const tc = Math.max(0, Math.min(1, t));
-  // Stops: light yellow → orange → dark red
   const stops = [
-    { h: 48, s: 95, l: 78 }, // 0.0 light yellow
-    { h: 28, s: 92, l: 55 }, // 0.5 orange
-    { h: 0,  s: 78, l: 38 }, // 1.0 deep red
+    { h: 30, s: 10, l: 82 }, // 0.0 light warm gray
+    { h: 0,  s: 65, l: 48 }, // 0.5 red
+    { h: 0,  s: 72, l: 30 }, // 1.0 dark red
   ];
   const seg = tc < 0.5 ? 0 : 1;
   const localT = seg === 0 ? tc / 0.5 : (tc - 0.5) / 0.5;
