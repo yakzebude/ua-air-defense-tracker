@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Trans, useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import Papa from "papaparse";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { loadShahedData, type Dataset, type MonthPoint } from "@/lib/shahed-data";
@@ -540,7 +540,8 @@ const Index = () => {
   const [error, setError] = useState<string | null>(null);
   const [latestDataPoint, setLatestDataPoint] = useState<Date | null>(null);
   const [completeMonth, setCompleteMonth] = useState<{ key: string; label: string } | null>(null);
-  const categoriesScrollRef = useRef<HTMLDivElement | null>(null);
+  
+  const [activeCategory, setActiveCategory] = useState<"drones" | "cruise" | "ballistic">("drones");
   const [contactOpen, setContactOpen] = useState(false);
 
   useEffect(() => {
@@ -863,108 +864,81 @@ const Index = () => {
 
       {(shahed && shahedRange) || (cruise && cruiseRange) || (ballistic && ballisticRange) ? (
         <div className="border-t border-border">
-          <div
-            ref={categoriesScrollRef}
-            className="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:thin]"
-            aria-label="Categories — swipe horizontally between UAVs, cruise and ballistic"
-          >
-            {shahed && shahedRange && (
-              <div className="relative min-w-full snap-start shrink-0 border-r border-border last:border-r-0">
-                <CategorySection
-                  id="drones"
-                  glossaryKey="drones"
-                  kicker={t("category.drones.kicker")}
-                  title={t("category.drones.title")}
-                  description={t("category.drones.description")}
-                  unitNoun={t("category.drones.unit")}
-                  dataset={shahed}
-                  range={shahedRange}
-                  onRangeChange={setShahedRange}
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    const el = categoriesScrollRef.current;
-                    if (el) el.scrollBy({ left: el.clientWidth, behavior: "smooth" });
-                  }}
-                  aria-label="Next visualization"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 md:right-4 flex h-10 w-10 items-center justify-center rounded-full bg-background/80 shadow-sm backdrop-blur-sm transition hover:bg-background md:h-12 md:w-12"
-                >
-                  <ChevronRight className="h-5 w-5 text-muted-foreground md:h-6 md:w-6" />
-                </button>
-              </div>
-            )}
-            {cruise && cruiseRange && (
-              <div className="relative min-w-full snap-start shrink-0 border-r border-border last:border-r-0">
-                <CategorySection
-                  id="cruise"
-                  glossaryKey="cruise"
-                  kicker={t("category.cruiseSection.kicker")}
-                  title={t("category.cruiseSection.title")}
-                  description={t("category.cruiseSection.description")}
-                  unitNoun={t("category.cruiseSection.unit")}
-                  dataset={cruise}
-                  range={cruiseRange}
-                  onRangeChange={setCruiseRange}
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    const el = categoriesScrollRef.current;
-                    if (el) el.scrollBy({ left: -el.clientWidth, behavior: "smooth" });
-                  }}
-                  aria-label="Previous visualization"
-                  className="absolute left-2 top-1/2 -translate-y-1/2 md:left-4 flex h-10 w-10 items-center justify-center rounded-full bg-background/80 shadow-sm backdrop-blur-sm transition hover:bg-background md:h-12 md:w-12"
-                >
-                  <ChevronLeft className="h-5 w-5 text-muted-foreground md:h-6 md:w-6" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const el = categoriesScrollRef.current;
-                    if (el) el.scrollBy({ left: el.clientWidth, behavior: "smooth" });
-                  }}
-                  aria-label="Next visualization"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 md:right-4 flex h-10 w-10 items-center justify-center rounded-full bg-background/80 shadow-sm backdrop-blur-sm transition hover:bg-background md:h-12 md:w-12"
-                >
-                  <ChevronRight className="h-5 w-5 text-muted-foreground md:h-6 md:w-6" />
-                </button>
-              </div>
-            )}
-            {ballistic && ballisticRange && (
-              <div className="relative min-w-full snap-start shrink-0 border-r border-border last:border-r-0">
-                <CategorySection
-                  id="ballistic"
-                  glossaryKey="ballistic"
-                  kicker={t("category.ballisticSection.kicker")}
-                  title={t("category.ballisticSection.title")}
-                  description={t("category.ballisticSection.description")}
-                  unitNoun={t("category.ballisticSection.unit")}
-                  dataset={ballistic}
-                  range={ballisticRange}
-                  onRangeChange={setBallisticRange}
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    const el = categoriesScrollRef.current;
-                    if (el) el.scrollBy({ left: -el.clientWidth, behavior: "smooth" });
-                  }}
-                  aria-label="Previous visualization"
-                  className="absolute left-2 top-1/2 -translate-y-1/2 md:left-4 flex h-10 w-10 items-center justify-center rounded-full bg-background/80 shadow-sm backdrop-blur-sm transition hover:bg-background md:h-12 md:w-12"
-                >
-                  <ChevronLeft className="h-5 w-5 text-muted-foreground md:h-6 md:w-6" />
-                </button>
-              </div>
-            )}
+          <div className="container pt-6 md:pt-8">
+            <div
+              role="tablist"
+              aria-label="Categories — switch between UAVs, cruise and ballistic"
+              className="-mx-4 flex snap-x snap-mandatory gap-1.5 overflow-x-auto px-4 pb-2 md:mx-0 md:flex-wrap md:gap-2 md:overflow-visible md:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
+              {([
+                { key: "drones" as const,    label: t("category.drones.kicker"),           enabled: !!(shahed && shahedRange) },
+                { key: "cruise" as const,    label: t("category.cruiseSection.kicker"),    enabled: !!(cruise && cruiseRange) },
+                { key: "ballistic" as const, label: t("category.ballisticSection.kicker"), enabled: !!(ballistic && ballisticRange) },
+              ]).map((tab, i) => {
+                if (!tab.enabled) return null;
+                const isActive = activeCategory === tab.key;
+                return (
+                  <button
+                    key={tab.key}
+                    role="tab"
+                    aria-selected={isActive}
+                    onClick={() => setActiveCategory(tab.key)}
+                    className={`snap-start shrink-0 whitespace-nowrap border px-2.5 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors md:px-3 md:py-2 md:text-[11px] md:tracking-[0.14em] ${
+                      isActive
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/40"
+                    }`}
+                  >
+                    <span className="mr-1.5 opacity-60 md:mr-2">{String(i + 1).padStart(2, "0")}</span>
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <div className="container flex items-center justify-center gap-2 pb-4 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            <span aria-hidden>←</span>
-            <span>{t("analytics.swipeHint", { defaultValue: "Swipe / scroll horizontally" })}</span>
-            <span aria-hidden>→</span>
-          </div>
+
+          {activeCategory === "drones" && shahed && shahedRange && (
+            <CategorySection
+              id="drones"
+              glossaryKey="drones"
+              kicker={t("category.drones.kicker")}
+              title={t("category.drones.title")}
+              description={t("category.drones.description")}
+              unitNoun={t("category.drones.unit")}
+              dataset={shahed}
+              range={shahedRange}
+              onRangeChange={setShahedRange}
+            />
+          )}
+          {activeCategory === "cruise" && cruise && cruiseRange && (
+            <CategorySection
+              id="cruise"
+              glossaryKey="cruise"
+              kicker={t("category.cruiseSection.kicker")}
+              title={t("category.cruiseSection.title")}
+              description={t("category.cruiseSection.description")}
+              unitNoun={t("category.cruiseSection.unit")}
+              dataset={cruise}
+              range={cruiseRange}
+              onRangeChange={setCruiseRange}
+            />
+          )}
+          {activeCategory === "ballistic" && ballistic && ballisticRange && (
+            <CategorySection
+              id="ballistic"
+              glossaryKey="ballistic"
+              kicker={t("category.ballisticSection.kicker")}
+              title={t("category.ballisticSection.title")}
+              description={t("category.ballisticSection.description")}
+              unitNoun={t("category.ballisticSection.unit")}
+              dataset={ballistic}
+              range={ballisticRange}
+              onRangeChange={setBallisticRange}
+            />
+          )}
         </div>
       ) : null}
+
 
 
       {/* Live situation — collapsible. Historical data remains the primary focus. */}
