@@ -332,7 +332,7 @@ function ShareInterception({ shahed, cruise, ballistic }: Props) {
                     );
                   }}
                 />
-                <Bar dataKey="rate" radius={[0, 2, 2, 0]} barSize={22}>
+                <Bar dataKey="rate" fillOpacity={0.85} maxBarSize={22}>
                   {chartData.map((d, i) => (
                     <Cell key={i} fill={d.color} />
                   ))}
