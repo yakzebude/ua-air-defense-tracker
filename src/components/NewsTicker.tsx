@@ -64,8 +64,21 @@ export const NewsTicker = () => {
   useLayoutEffect(() => {
     const el = measureRef.current;
     if (!el || items.length === 0) return;
-    const w = el.scrollWidth;
-    if (w > 0) setDuration(Math.max(20, w / SCROLL_SPEED_PX_S));
+    const recompute = () => {
+      const w = el.scrollWidth;
+      if (w > 0) setDuration(Math.max(20, w / SCROLL_SPEED_PX_S));
+    };
+    recompute();
+    // Re-measure once webfonts finish loading (avoids width drift mid-scroll).
+    const fonts = (document as any).fonts;
+    if (fonts?.ready) fonts.ready.then(recompute).catch(() => {});
+    const ro = new ResizeObserver(recompute);
+    ro.observe(el);
+    window.addEventListener("resize", recompute);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", recompute);
+    };
   }, [items]);
 
   // Status / fallback content
