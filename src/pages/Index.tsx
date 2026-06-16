@@ -557,13 +557,13 @@ function CategoryTabs({
     <div
       role="tablist"
       aria-label="Categories — switch between UAVs, cruise and ballistic"
-      className="flex flex-wrap items-center gap-1.5 md:gap-2"
+      className="flex flex-wrap items-center justify-end gap-1 md:gap-1.5"
     >
       {([
         { key: "drones" as const,    label: "UAVs",      enabled: !!(shahed && shahedRange) },
         { key: "cruise" as const,    label: "Cruise",    enabled: !!(cruise && cruiseRange) },
         { key: "ballistic" as const, label: "Ballistic", enabled: !!(ballistic && ballisticRange) },
-      ]).map((tab, i) => {
+      ]).map((tab) => {
         if (!tab.enabled) return null;
         const isActive = activeCategory === tab.key;
         return (
@@ -572,13 +572,12 @@ function CategoryTabs({
             role="tab"
             aria-selected={isActive}
             onClick={() => onChange(tab.key)}
-            className={`snap-start shrink-0 whitespace-nowrap border px-2.5 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors md:px-3 md:py-2 md:text-[11px] md:tracking-[0.14em] ${
+            className={`shrink-0 border px-2 py-1 text-center font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors md:px-2.5 md:py-1.5 md:text-[11px] md:tracking-[0.14em] min-w-[68px] md:min-w-[76px] ${
               isActive
                 ? "border-foreground bg-foreground text-background"
                 : "border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/40"
             }`}
           >
-            <span className="mr-1.5 opacity-60 md:mr-2">{String(i + 1).padStart(2, "0")}</span>
             {tab.label}
           </button>
         );
