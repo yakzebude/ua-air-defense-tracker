@@ -21,11 +21,11 @@ const fmt = (n: number) => n.toLocaleString("en-US");
 
 type CategoryKey = "uavs" | "cruise" | "ballistic";
 
-// Unified palette — grayscale only.
+// Unified palette — grayscale only, theme-aware via CSS custom properties.
 const CAT_COLORS: Record<CategoryKey, string> = {
-  uavs:      "hsl(0 0% 70%)",     // light gray
-  cruise:    "hsl(0 0% 55%)",     // medium gray
-  ballistic: "hsl(0 0% 42%)",     // dark gray
+  uavs:      "hsl(var(--bar-uavs))",
+  cruise:    "hsl(var(--bar-cruise))",
+  ballistic: "hsl(var(--bar-ballistic))",
 };
 
 interface Props {
