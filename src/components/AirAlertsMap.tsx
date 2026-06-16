@@ -337,14 +337,14 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         style={{
                           default: {
                             fill: "url(#aggressor-stripes)",
-                            stroke: "hsl(var(--signal) / 0.75)",
+                            stroke: "hsl(var(--muted-foreground) / 0.55)",
                             strokeWidth: 0.7,
                             outline: "none",
                             cursor: "help",
                           },
                           hover: {
                             fill: "url(#aggressor-stripes)",
-                            stroke: "hsl(var(--signal))",
+                            stroke: "hsl(var(--muted-foreground) / 0.80)",
                             strokeWidth: 1.1,
                             outline: "none",
                             cursor: "help",
