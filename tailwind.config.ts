@@ -13,9 +13,9 @@ export default {
     extend: {
       fontFamily: {
         sans: ['"IBM Plex Sans"', 'system-ui', '-apple-system', 'sans-serif'],
-        serif: ['"IBM Plex Sans"', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['"IBM Plex Sans"', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        serif: ['"IBM Plex Serif"', 'Georgia', 'serif'],
+        display: ['"IBM Plex Serif"', 'Georgia', 'serif'],
+        mono: ['"IBM Plex Sans"', 'system-ui', '-apple-system', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
