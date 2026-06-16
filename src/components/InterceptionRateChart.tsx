@@ -73,14 +73,14 @@ export function InterceptionRateChart({ data }: Props) {
           />
           <Tooltip content={<RateTooltip />} cursor={{ fill: "hsl(var(--foreground))", fillOpacity: 0.04 }} />
           <ReferenceLine y={50} stroke="hsl(var(--border))" strokeDasharray="3 3" />
-          <Bar dataKey="ratePct" fill="hsl(var(--series-rate))" fillOpacity={0.22} maxBarSize={22} />
+          <Bar dataKey="ratePct" fill="hsl(var(--series-rate))" fillOpacity={0.18} maxBarSize={18} />
           <Line
             type="monotone"
             dataKey="ratePct"
             stroke="hsl(var(--series-rate))"
-            strokeWidth={2.25}
+            strokeWidth={1.25}
             dot={false}
-            activeDot={{ r: 4 }}
+            activeDot={{ r: 3 }}
           />
         </ComposedChart>
       </ResponsiveContainer>

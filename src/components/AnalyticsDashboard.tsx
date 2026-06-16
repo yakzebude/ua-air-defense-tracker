@@ -2,8 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ResponsiveContainer,
-  AreaChart,
-  Area,
   BarChart,
   Bar,
   Cell,
@@ -78,12 +76,20 @@ function CompositionAreaChart({
   labels: Record<CategoryKey, string>;
   totalLabel: string;
 }) {
-  const ticks = useMemo(() => data.filter((_, i) => i % 5 === 0).map((m) => m.label), [data]);
-  const angled = data.length > 8;
+  const step = data.length <= 6 ? 1 : data.length <= 14 ? 2 : data.length <= 36 ? 3 : 6;
+  const ticks = useMemo(
+    () => data.filter((_, i) => i % step === 0).map((m) => m.label),
+    [data, step],
+  );
   return (
     <div style={{ height }} className="w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data} margin={{ top: 8, right: 12, left: 0, bottom: angled ? 28 : 4 }}>
+        <BarChart
+          data={data}
+          margin={{ top: 8, right: 12, left: 0, bottom: 28 }}
+          barCategoryGap="18%"
+          barGap={1}
+        >
           <CartesianGrid stroke="hsl(var(--border) / 0.15)" vertical={false} />
           <XAxis
             dataKey="label"
@@ -95,35 +101,36 @@ function CompositionAreaChart({
             textAnchor="end"
             height={48}
             interval="preserveStartEnd"
+            minTickGap={6}
           />
-
           <YAxis
             tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
-
             tickLine={false}
             axisLine={false}
             width={48}
             tickFormatter={(v) => fmt(v as number)}
           />
-          <Tooltip content={<StackedTooltip totalLabel={totalLabel} />} cursor={{ stroke: "hsl(var(--foreground))", strokeOpacity: 0.2 }} />
+          <Tooltip
+            content={<StackedTooltip totalLabel={totalLabel} />}
+            cursor={{ fill: "hsl(var(--foreground) / 0.05)" }}
+          />
           {series.map((k) => (
-            <Area
+            <Bar
               key={k}
-              type="monotone"
               dataKey={k}
               name={labels[k]}
               stackId="1"
-              stroke={CAT_COLORS[k]}
-              strokeWidth={1.25}
               fill={CAT_COLORS[k]}
-              fillOpacity={0.35}
+              fillOpacity={0.85}
+              maxBarSize={22}
             />
           ))}
-        </AreaChart>
+        </BarChart>
       </ResponsiveContainer>
     </div>
   );
 }
+
 
 function useCompositionData({ shahed, cruise, ballistic }: Props) {
   return useMemo(() => {
@@ -585,7 +592,7 @@ function HeatmapMonthlyIntensity({ shahed, cruise, ballistic }: Props) {
   );
 }
 
-type PagerKey = "uavs" | "cruiseBal" | "share" | "calendar";
+type PagerKey = "uavs" | "cruiseBal" | "share";
 
 function AnalyticsPager(props: Props) {
   const { t } = useTranslation();
@@ -609,8 +616,8 @@ function AnalyticsPager(props: Props) {
     { key: "uavs", label: t("analytics.uavMonthly") },
     { key: "cruiseBal", label: t("analytics.cruiseBalMonthly") },
     { key: "share", label: t("analytics.sharePanel") },
-    { key: "calendar", label: t("analytics.calendarPanel") },
   ];
+
 
   return (
     <div>
@@ -821,74 +828,7 @@ function AnalyticsPager(props: Props) {
         </>
       )}
 
-      {active === "calendar" && (
-        <>
-          <Panel
-            title={t("analytics.calendarPanel")}
-            subtitle={t("analytics.calendarPanelSub")}
-            source={t("primarySourceShort")}
-            action={
-              <PanelActions
-                filename="ua-airdefense-tracker_calendar-heatmap.csv"
-                panelTitle={t("analytics.calendarPanel")}
-                rows={(() => {
-                  const map = new Map<string, { month: string; uavs: number; cruise: number; ballistic: number }>();
-                  const add = (m: MonthPoint, key: CategoryKey) => {
-                    const k = m.key;
-                    if (!map.has(k)) map.set(k, { month: k, uavs: 0, cruise: 0, ballistic: 0 });
-                    map.get(k)![key] += m.launched;
-                  };
-                  props.shahed.months.forEach((m) => add(m, "uavs"));
-                  props.cruise.months.forEach((m) => add(m, "cruise"));
-                  props.ballistic.months.forEach((m) => add(m, "ballistic"));
-                  return Array.from(map.values()).sort((a, b) => a.month.localeCompare(b.month));
-                })()}
-                headers={["month", "uavs", "cruise", "ballistic"]}
-              />
-            }
-          >
-            <HeatmapMonthlyIntensity {...props} />
-          </Panel>
-          <div
-            className="-mx-4 mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0"
-            aria-label="Key findings — swipe horizontally for cruise and ballistic"
-          >
-            <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
-              <ChartInsights
-                data={props.shahed.months}
-                metric="reached"
-                unit="UAVs"
-                accent={CAT_COLORS.uavs}
-                direction="down-is-good"
-                title="Key findings · UAVs reaching target"
-                subtitle="Plain-language summary of monthly UAVs not intercepted. Swipe → for cruise and ballistic."
-              />
-            </div>
-            <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
-              <ChartInsights
-                data={props.cruise.months}
-                metric="reached"
-                unit="cruise missiles"
-                accent={CAT_COLORS.cruise}
-                direction="down-is-good"
-                title="Key findings · cruise reaching target"
-                subtitle="Plain-language summary of monthly cruise missiles not intercepted."
-              />
-            </div>
-            <div className="snap-start shrink-0 basis-[92%] md:basis-[88%] lg:basis-[85%]">
-              <ChartInsights
-                data={props.ballistic.months}
-                metric="reached"
-                unit="ballistic missiles"
-                accent={CAT_COLORS.ballistic}
-                direction="down-is-good"
-                title="Key findings · ballistic reaching target"
-                subtitle="Plain-language summary of monthly ballistic missiles not intercepted."
-              />
-            </div>
-          </div>
-        </>
-      )}
+
       </div>
     </div>
   );
