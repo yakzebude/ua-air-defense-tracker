@@ -151,9 +151,9 @@
     font-weight: 400;
   }
 
-  /* Headings — IBM Plex Sans for institutional, analytical register. */
+  /* Headings — IBM Plex Serif for editorial, news-graphic register. */
   h1, h2, h3, h4, h5, h6 {
-    font-family: '"IBM Plex Sans"', system-ui, -apple-system, sans-serif;
+    font-family: '"IBM Plex Serif"', Georgia, serif;
     font-weight: 600;
     letter-spacing: -0.01em;
     text-transform: none;
@@ -168,13 +168,14 @@
   table { font-variant-numeric: tabular-nums; }
 
   .font-mono, code, kbd, pre {
-    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: '"IBM Plex Sans"', system-ui, -apple-system, sans-serif;
     font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
   }
 
-  /* Numeric / data values use the technical mono face site-wide. */
+  /* Numeric / data values — IBM Plex Sans with tabular numerals. */
   .num {
-    font-family: '"IBM Plex Mono"', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: '"IBM Plex Sans"', system-ui, -apple-system, sans-serif;
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum";
   }
@@ -182,10 +183,10 @@
 
 @layer components {
   /* Type scale utilities (8pt grid) */
-  .t-h1 { font-family: '"IBM Plex Sans"', system-ui, sans-serif; font-size: 48px; line-height: 56px; font-weight: 700; letter-spacing: -0.02em; }
-  .t-h2 { font-family: '"IBM Plex Sans"', system-ui, sans-serif; font-size: 36px; line-height: 44px; font-weight: 700; letter-spacing: -0.015em; }
-  .t-h3 { font-family: '"IBM Plex Sans"', system-ui, sans-serif; font-size: 28px; line-height: 36px; font-weight: 600; }
-  .t-h4 { font-family: '"IBM Plex Sans"', system-ui, sans-serif; font-size: 22px; line-height: 30px; font-weight: 600; }
+  .t-h1 { font-family: '"IBM Plex Serif"', Georgia, serif; font-size: 48px; line-height: 56px; font-weight: 700; letter-spacing: -0.02em; }
+  .t-h2 { font-family: '"IBM Plex Serif"', Georgia, serif; font-size: 36px; line-height: 44px; font-weight: 700; letter-spacing: -0.015em; }
+  .t-h3 { font-family: '"IBM Plex Serif"', Georgia, serif; font-size: 28px; line-height: 36px; font-weight: 600; }
+  .t-h4 { font-family: '"IBM Plex Serif"', Georgia, serif; font-size: 22px; line-height: 30px; font-weight: 600; }
   .t-body-lg { font-size: 20px; line-height: 32px; }
   .t-body    { font-size: 18px; line-height: 30px; }
   .t-body-sm { font-size: 16px; line-height: 26px; }
@@ -228,7 +229,7 @@
 
   /* Stat / KPI primitives — technical mono for all data values. */
   .stat-value {
-    font-family: '"IBM Plex Mono"', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: '"IBM Plex Sans"', system-ui, -apple-system, sans-serif;
     font-size: 32px;
     line-height: 36px;
     font-weight: 600;
@@ -279,7 +280,7 @@
 
   /* Source / uncertainty micro-label */
   .src-label {
-    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-family: '"IBM Plex Sans"', system-ui, -apple-system, sans-serif;
     font-size: 10px;
     line-height: 1.4;
     letter-spacing: 0.12em;
