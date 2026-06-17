@@ -51,11 +51,11 @@
     "momDetail": "launches in {{last}} vs {{prev}}",
     "tip": {
       "totalLaunchedLabel": "Total launched — how it's counted",
-      "totalLaunched": "Every aerial threat (UAV, cruise missile or ballistic missile) officially reported as launched by the Ukrainian Air Force Command since October 2022. Each entry corresponds to one detected weapon; reconnaissance UAVs are included where the Air Force lists them.",
+      "totalLaunched": "Every aerial threat reported as launched by the Ukrainian Air Force since October 2022. One entry = one detected weapon.",
       "interceptionRateLabel": "Interception rate — how it's calculated",
-      "interceptionRate": "Share of launched threats that the Ukrainian Air Force confirmed as shot down or otherwise neutralised in flight. Calculated as confirmed destroyed ÷ total launched. Cruise and UAV interception rates are typically higher than ballistic ones.",
+      "interceptionRate": "Share of launched threats confirmed destroyed in flight. Calculated as destroyed ÷ launched.",
       "reachedTargetLabel": "Breached air defense — methodology note",
-      "reachedTarget": "Launched threats that were not confirmed destroyed. Used as a proxy for weapons that breached Ukrainian air defenses and reached or impacted near a target. Note: includes weapons that crashed, fell as debris, or were lost from tracking — it is an upper bound, not a damage count."
+      "reachedTarget": "Launched threats not confirmed destroyed. Upper-bound estimate for weapons that breached air defenses — not a damage count."
     }
   },
   "hero": {

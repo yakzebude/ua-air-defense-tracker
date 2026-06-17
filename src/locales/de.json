@@ -46,11 +46,11 @@
     "momDetail": "Starts im {{last}} gegenüber {{prev}}",
     "tip": {
       "totalLaunchedLabel": "Gesamt gestartet — wie gezählt wird",
-      "totalLaunched": "Jede vom ukrainischen Luftwaffenkommando seit Oktober 2022 offiziell als gestartet gemeldete Luftbedrohung (UAV, Marschflugkörper oder ballistische Rakete). Jeder Eintrag entspricht einer erkannten Waffe; Aufklärungs-UAVs sind enthalten, sofern die Luftwaffe sie auflistet.",
+      "totalLaunched": "Jede seit Oktober 2022 vom ukrainischen Luftwaffenkommando gemeldete Luftbedrohung. Ein Eintrag = eine erkannte Waffe.",
       "interceptionRateLabel": "Abfangrate — Berechnung",
-      "interceptionRate": "Anteil der gestarteten Bedrohungen, die von der ukrainischen Luftwaffe als abgeschossen oder im Flug neutralisiert bestätigt wurden. Berechnet als bestätigt zerstört ÷ gesamt gestartet. Marschflugkörper und UAVs werden in der Regel mit höheren Raten abgefangen als ballistische Systeme.",
+      "interceptionRate": "Anteil bestätigt zerstörter Bedrohungen an allen gestarteten. Berechnet als zerstört ÷ gestartet.",
       "reachedTargetLabel": "Luftverteidigung durchbrochen — methodische Anmerkung",
-      "reachedTarget": "Gestartete Bedrohungen, die nicht als zerstört bestätigt wurden. Dient als Näherung für Waffen, die die ukrainische Luftverteidigung durchbrachen und ein Zielgebiet erreichten oder in dessen Nähe einschlugen. Hinweis: Enthält auch Waffen, die abstürzten, als Trümmer fielen oder aus der Verfolgung verloren gingen — es handelt sich um eine Obergrenze, nicht um eine Schadensbilanz."
+      "reachedTarget": "Gestartete Bedrohungen ohne Bestätigung der Zerstörung. Obergrenze für Waffen, die die Luftverteidigung durchbrachen — keine Schadensbilanz."
     }
   },
   "masthead": {
