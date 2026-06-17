@@ -539,7 +539,11 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         }}
                         style={{
                           default: {
-                            fill: isActive ? "hsl(var(--signal) / 0.9)" : "transparent",
+                            fill: isActive
+                              ? "hsl(var(--signal) / 0.9)"
+                              : occupied
+                                ? "transparent"
+                                : "hsl(var(--foreground) / 0.08)",
                             stroke: occupied
                               ? "hsl(0 0% 88% / 0.45)"
                               : "hsl(var(--foreground) / 0.22)",
@@ -554,7 +558,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                               ? "hsl(var(--signal))"
                               : occupied
                                 ? "transparent"
-                                : "hsl(var(--foreground) / 0.08)",
+                                : "hsl(var(--foreground) / 0.14)",
                             stroke: occupied
                               ? "hsl(0 0% 88% / 0.45)"
                               : "hsl(var(--foreground) / 0.55)",
