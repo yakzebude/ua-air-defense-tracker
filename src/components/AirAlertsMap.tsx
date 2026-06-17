@@ -539,7 +539,11 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         }}
                         style={{
                           default: {
-                            fill: isActive ? "hsl(var(--signal) / 0.9)" : "transparent",
+                            fill: isActive
+                              ? "hsl(var(--signal) / 0.9)"
+                              : occupied
+                                ? "transparent"
+                                : "hsl(var(--foreground) / 0.08)",
                             stroke: occupied
                               ? "hsl(0 0% 88% / 0.45)"
                               : "hsl(var(--foreground) / 0.22)",
@@ -554,7 +558,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                               ? "hsl(var(--signal))"
                               : occupied
                                 ? "transparent"
-                                : "hsl(var(--foreground) / 0.08)",
+                                : "hsl(var(--foreground) / 0.14)",
                             stroke: occupied
                               ? "hsl(0 0% 88% / 0.45)"
                               : "hsl(var(--foreground) / 0.55)",
@@ -574,13 +578,9 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           </ZoomableGroup>
         </ComposableMap>
 
-        {/* Overlay: live active-count badge + legend, top-right of the map. */}
+        {/* Overlay: small legend, top-right of the map. (Active-alerts badge moved to the chip strip below.) */}
         {variant === "full" && (
           <div className="pointer-events-none absolute right-3 top-3 flex flex-col items-end gap-1.5">
-            <div className="rounded border border-border bg-background/85 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] backdrop-blur">
-              <span className="text-muted-foreground">Active alerts</span>{" "}
-              <span className="tabular-nums font-semibold text-foreground">{activeCount}</span>
-            </div>
             <div className="flex items-center gap-2 rounded border border-border bg-background/85 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground backdrop-blur">
               <span className="inline-flex items-center gap-1">
                 <span className="h-2 w-2 rounded-sm bg-[hsl(var(--occupied))]" /> Occupied
@@ -1026,8 +1026,9 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
       {variant === "full" && (
         <div className="mt-3 rounded border border-border bg-card p-3">
           <div className="mb-2 flex items-baseline justify-between gap-2">
-            <h3 className="text-[11px] font-mono uppercase tracking-[0.16em] text-foreground">
-              {t("airAlerts.sidePanelTitle", { defaultValue: "Active alerts" })}
+            <h3 className="flex items-baseline gap-2 text-[11px] font-mono uppercase tracking-[0.16em] text-foreground">
+              <span>{t("airAlerts.sidePanelTitle", { defaultValue: "Active alerts" })}</span>
+              <span className="tabular-nums font-semibold text-[hsl(var(--signal))]">{activeList.length}</span>
             </h3>
             <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground tabular-nums">
               {activeList.length} / 22

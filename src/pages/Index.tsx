@@ -586,6 +586,94 @@ function CategoryTabs({
   );
 }
 
+interface FlipKpiProps {
+  label: string;
+  value: string;
+  sub?: string;
+  tipLabel: string;
+  tip: string;
+  primary?: boolean;
+  accent?: boolean;
+  suffix?: string;
+}
+
+function FlipKpi({ label, value, sub, tipLabel, tip, primary = false, accent = false, suffix }: FlipKpiProps) {
+  const [flipped, setFlipped] = useState(false);
+  const toggle = () => setFlipped((f) => !f);
+  const onKey = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggle();
+    }
+  };
+  const valueColor = primary || accent
+    ? { color: "hsl(var(--signal-warn))" }
+    : { color: "hsl(var(--foreground) / 0.8)" };
+  return (
+    <div
+      className="group min-w-0 h-full [perspective:1200px]"
+      onClick={toggle}
+      onKeyDown={onKey}
+      role="button"
+      tabIndex={0}
+      aria-pressed={flipped}
+      aria-label={`${label} — ${flipped ? "show value" : "show details"}`}
+    >
+      <div
+        className="relative h-full min-h-[10.5rem] sm:min-h-[11rem] transition-transform duration-500 [transform-style:preserve-3d] cursor-pointer"
+        style={{ transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
+      >
+        {/* Front */}
+        <div className="absolute inset-0 rounded-md border border-border bg-card p-4 sm:p-5 [backface-visibility:hidden]">
+          <div className="flex min-h-[2.4em] items-start gap-1.5 text-[11px] font-mono font-semibold uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground">
+            <span className="break-words flex-1">{label}</span>
+            <button
+              type="button"
+              aria-label={tipLabel}
+              onClick={(e) => { e.stopPropagation(); toggle(); }}
+              className="ml-auto mt-[1px] inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-foreground/30 text-[9px] leading-none text-foreground/70 transition-colors hover:border-foreground/60 hover:bg-foreground/5 focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground/40"
+            >
+              &zwnj;i
+            </button>
+          </div>
+          <div
+            className="mt-2 num font-mono font-semibold leading-none tracking-tight tabular-nums text-[1.75rem] sm:text-[2rem] md:text-[2.25rem]"
+            style={valueColor}
+          >
+            {value}
+            {suffix && (
+              <span className="text-muted-foreground text-[0.5em] align-baseline ml-1">{suffix}</span>
+            )}
+          </div>
+          {sub && (
+            <div className="mt-2 text-[13px] leading-snug text-muted-foreground">{sub}</div>
+          )}
+        </div>
+        {/* Back */}
+        <div
+          className="absolute inset-0 rounded-md border border-border bg-card p-4 sm:p-5 [backface-visibility:hidden] flex flex-col"
+          style={{ transform: "rotateY(180deg)" }}
+        >
+          <div className="flex items-start gap-1.5 text-[11px] font-mono font-semibold uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground">
+            <span className="break-words flex-1">{tipLabel}</span>
+            <button
+              type="button"
+              aria-label="Close details"
+              onClick={(e) => { e.stopPropagation(); toggle(); }}
+              className="ml-auto mt-[1px] inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-foreground/30 text-[9px] leading-none text-foreground/70 transition-colors hover:border-foreground/60 hover:bg-foreground/5 focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground/40"
+            >
+              &zwnj;i
+            </button>
+          </div>
+          <p className="mt-2 text-[13px] leading-[1.55] text-foreground/85 font-sans font-normal normal-case tracking-normal">
+            {tip}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const Index = () => {
   const { t } = useTranslation();
   const [shahed, setShahed] = useState<Dataset | null>(null);
@@ -793,45 +881,7 @@ const Index = () => {
               );
             }
 
-            const Kpi = ({
-              label, value, sub, tipLabel, tip, primary = false, accent = false, suffix,
-            }: {
-              label: string; value: string; sub?: string; tipLabel: string; tip: string;
-              primary?: boolean; accent?: boolean; suffix?: string;
-            }) => (
-              <div className="min-w-0 rounded-md border border-border bg-card p-4 sm:p-5">
-                <div className="flex min-h-[2.4em] items-start gap-1.5 text-[11px] font-mono font-semibold uppercase tracking-[0.16em] leading-[1.2] text-muted-foreground">
-                  <span className="break-words">{label}</span>
-                  <Tooltip delayDuration={100}>
-                    <TooltipTrigger asChild>
-                      <button
-                        type="button"
-                        aria-label={tipLabel}
-                        className="mt-[1px] inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border border-foreground/30 text-[9px] leading-none text-foreground/70 transition-colors hover:border-foreground/60 hover:bg-foreground/5 focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground/40"
-                      >
-                        &zwnj;i
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" align="start" className="max-w-xs font-sans text-[13px] font-light leading-relaxed normal-case tracking-normal">
-                      <div className="mb-1 font-sans text-[11px] font-light uppercase tracking-[0.18em]">{tipLabel}</div>
-                      <div className="font-sans font-light">{tip}</div>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
-                <div
-                  className="mt-2 num font-mono font-semibold leading-none tracking-tight tabular-nums text-[1.75rem] sm:text-[2rem] md:text-[2.25rem]"
-                  style={primary || accent ? { color: "hsl(var(--signal-warn))" } : { color: "hsl(var(--foreground) / 0.8)" }}
-                >
-                  {value}
-                  {suffix && (
-                    <span className="text-muted-foreground text-[0.5em] align-baseline ml-1">{suffix}</span>
-                  )}
-                </div>
-                {sub && (
-                  <div className="mt-2 text-[13px] leading-snug text-muted-foreground">{sub}</div>
-                )}
-              </div>
-            );
+            const Kpi = (props: FlipKpiProps) => <FlipKpi {...props} />;
 
             return (
               <>
@@ -1023,8 +1073,8 @@ const Index = () => {
                 <span aria-hidden className="transition-transform group-open:rotate-180">▾</span>
               </span>
             </summary>
-            <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-stretch">
-              <div className="lg:col-span-2 flex">
+            <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-4 lg:items-stretch">
+              <div className="lg:col-span-3 flex">
                 <div className="w-full h-full"><AirAlertsMap variant="full" /></div>
               </div>
               <div className="lg:col-span-1 flex min-h-0">
