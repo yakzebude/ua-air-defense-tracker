@@ -599,7 +599,19 @@ interface FlipKpiProps {
 
 function FlipKpi({ label, value, sub, tipLabel, tip, primary = false, accent = false, suffix }: FlipKpiProps) {
   const [flipped, setFlipped] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const toggle = () => setFlipped((f) => !f);
+
+  useEffect(() => {
+    if (flipped) {
+      timerRef.current = setTimeout(() => setFlipped(false), 30_000);
+    }
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [flipped]);
+
   const onKey = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
