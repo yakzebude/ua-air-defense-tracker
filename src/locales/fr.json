@@ -46,11 +46,11 @@
     "momDetail": "lancements en {{last}} vs {{prev}}",
     "tip": {
       "totalLaunchedLabel": "Total lancés — méthode de comptage",
-      "totalLaunched": "Chaque menace aérienne (UAV, missile de croisière ou balistique) officiellement rapportée comme lancée par le Commandement de la Force aérienne ukrainienne depuis octobre 2022. Chaque entrée correspond à une arme détectée ; les UAV de reconnaissance sont inclus lorsqu'ils figurent dans les rapports.",
+      "totalLaunched": "Chaque menace aérienne rapportée comme lancée par la Force aérienne ukrainienne depuis octobre 2022. Une entrée = une arme détectée.",
       "interceptionRateLabel": "Taux d'interception — calcul",
-      "interceptionRate": "Part des menaces lancées que la Force aérienne ukrainienne a confirmées abattues ou neutralisées en vol. Calcul : détruits confirmés ÷ total lancés. Les missiles de croisière et les UAV sont généralement interceptés à un taux plus élevé que les systèmes balistiques.",
+      "interceptionRate": "Part des menaces lancées confirmées détruites en vol. Calcul : détruits ÷ lancés.",
       "reachedTargetLabel": "Défense aérienne pénétrée — note méthodologique",
-      "reachedTarget": "Menaces lancées non confirmées détruites. Utilisé comme estimation des armes ayant pénétré les défenses aériennes ukrainiennes et atteint ou impacté une cible. Note : inclut les armes écrasées, tombées en débris ou perdues du suivi — il s'agit d'une borne haute, pas d'un bilan de dégâts."
+      "reachedTarget": "Menaces lancées non confirmées détruites. Estimation par le haut des armes ayant pénétré les défenses — pas un bilan de dégâts."
     }
   },
   "masthead": {
