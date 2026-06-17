@@ -420,16 +420,16 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       style={{
                         default: {
                           fill: baseFill,
-                          stroke: occupied ? "hsl(var(--occupied-border))" : "hsl(var(--foreground) / 0.6)",
-                          strokeWidth: occupied ? 0.9 : 0.7,
+                          stroke: occupied ? "hsl(var(--signal) / 0.85)" : "hsl(var(--foreground) / 0.6)",
+                          strokeWidth: occupied ? 1.4 : 0.7,
                           outline: "none",
                           transition: "fill 200ms ease",
                           cursor: variant === "full" ? "pointer" : "default",
                         },
                         hover: {
                           fill: hoverFill,
-                          stroke: occupied ? "hsl(var(--occupied-border))" : "hsl(var(--foreground) / 0.85)",
-                          strokeWidth: occupied ? 1.1 : 0.9,
+                          stroke: occupied ? "hsl(var(--signal))" : "hsl(var(--foreground) / 0.85)",
+                          strokeWidth: occupied ? 1.6 : 0.9,
                           outline: "none",
                           cursor: variant === "full" ? "pointer" : "default",
                         },

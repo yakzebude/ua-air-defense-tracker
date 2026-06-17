@@ -40,8 +40,8 @@
     --signal-soft: 0 70% 95%;
     --signal-ok: 152 45% 32%;             /* calm forest green for positive deltas */
     --signal-warn: 0 70% 32%;             /* darker red — secondary danger tone */
-    --occupied: 0 0% 55%;
-    --occupied-border: 0 0% 32%;
+    --occupied: 215 18% 32%;
+    --occupied-border: 215 30% 12%;
 
     --ua-yellow: 48 85% 50%;
     --ua-blue: 211 88% 36%;
