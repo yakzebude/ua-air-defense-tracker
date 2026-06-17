@@ -574,13 +574,9 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           </ZoomableGroup>
         </ComposableMap>
 
-        {/* Overlay: live active-count badge + legend, top-right of the map. */}
+        {/* Overlay: small legend, top-right of the map. (Active-alerts badge moved to the chip strip below.) */}
         {variant === "full" && (
           <div className="pointer-events-none absolute right-3 top-3 flex flex-col items-end gap-1.5">
-            <div className="rounded border border-border bg-background/85 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] backdrop-blur">
-              <span className="text-muted-foreground">Active alerts</span>{" "}
-              <span className="tabular-nums font-semibold text-foreground">{activeCount}</span>
-            </div>
             <div className="flex items-center gap-2 rounded border border-border bg-background/85 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground backdrop-blur">
               <span className="inline-flex items-center gap-1">
                 <span className="h-2 w-2 rounded-sm bg-[hsl(var(--occupied))]" /> Occupied
