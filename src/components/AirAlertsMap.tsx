@@ -1022,8 +1022,9 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
       {variant === "full" && (
         <div className="mt-3 rounded border border-border bg-card p-3">
           <div className="mb-2 flex items-baseline justify-between gap-2">
-            <h3 className="text-[11px] font-mono uppercase tracking-[0.16em] text-foreground">
-              {t("airAlerts.sidePanelTitle", { defaultValue: "Active alerts" })}
+            <h3 className="flex items-baseline gap-2 text-[11px] font-mono uppercase tracking-[0.16em] text-foreground">
+              <span>{t("airAlerts.sidePanelTitle", { defaultValue: "Active alerts" })}</span>
+              <span className="tabular-nums font-semibold text-[hsl(var(--signal))]">{activeList.length}</span>
             </h3>
             <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground tabular-nums">
               {activeList.length} / 22
