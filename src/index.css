@@ -48,16 +48,16 @@
     --cyber: 215 10% 40%;
     --cyber-glow: 215 10% 40%;
 
-    /* Chart series — grayscale only */
-    --series-launched: 0 0% 72%;          /* light gray */
-    --series-destroyed: 0 0% 55%;         /* medium gray */
-    --series-rate: 0 0% 82%;              /* very light gray */
+    /* Chart series — FT/Reuters editorial palette (teal, navy, ochre) */
+    --series-launched: 189 38% 42%;       /* FT teal */
+    --series-destroyed: 210 45% 28%;      /* deep navy */
+    --series-rate: 36 65% 48%;            /* ochre */
     --grid: 215 16% 89%;
 
-    /* Per-category bar fills — grayscale only */
-    --bar-uavs: 0 0% 68%;
-    --bar-cruise: 0 0% 55%;
-    --bar-ballistic: 0 0% 42%;
+    /* Per-category bar fills — editorial palette */
+    --bar-uavs: 189 38% 42%;              /* teal */
+    --bar-cruise: 210 45% 28%;            /* navy */
+    --bar-ballistic: 36 65% 48%;          /* ochre */
 
     /* Weapon-category palette — red/grayscale only (green reserved for positive deltas). */
     --weapon-uav: 0 0% 32%;                /* dark gray */
@@ -115,14 +115,14 @@
     --cyber: 0 0% 70%;
     --cyber-glow: 0 0% 80%;
 
-    --series-launched: 0 0% 50%;
-    --series-destroyed: 0 0% 38%;
-    --series-rate: 0 0% 62%;
+    --series-launched: 189 42% 52%;       /* teal — brighter for dark bg */
+    --series-destroyed: 210 55% 60%;      /* lighter navy/blue */
+    --series-rate: 36 75% 58%;            /* ochre */
     --grid: 0 0% 16%;
 
-    --bar-uavs: 0 0% 48%;
-    --bar-cruise: 0 0% 35%;
-    --bar-ballistic: 0 0% 24%;
+    --bar-uavs: 189 42% 52%;              /* teal */
+    --bar-cruise: 210 55% 55%;            /* blue */
+    --bar-ballistic: 36 75% 55%;          /* ochre */
 
     --weapon-uav: 0 0% 70%;                /* light gray */
     --weapon-cruise: 0 78% 58%;            /* red */
