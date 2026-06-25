@@ -3,6 +3,9 @@ project_id = "sbujjvrxaeazxlgwqtem"
 [functions.air-attack-news]
 verify_jwt = false
 
+[functions.kaggle-sync]
+verify_jwt = true
+
 [functions.air-alerts]
 verify_jwt = false
 

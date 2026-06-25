@@ -79,12 +79,19 @@ const ContactFormInquiryEmail = ({
   </Html>
 )
 
+// Fixed operator recipient — prevents caller-controlled `recipientEmail` from
+// being used as an open relay. Configure via the EMAIL_CONTACT_RECIPIENT secret.
+const CONTACT_RECIPIENT =
+  (typeof Deno !== 'undefined' && Deno.env.get('EMAIL_CONTACT_RECIPIENT')) ||
+  'contact@ua-airdefense-tracker.org'
+
 export const template = {
   component: ContactFormInquiryEmail,
   subject: (data: Record<string, any>) =>
     data?.subject
       ? `[Contact] ${data.subject}`
       : `[Contact] New inquiry from ${data?.name || 'website visitor'}`,
+  to: CONTACT_RECIPIENT,
   displayName: 'Contact form inquiry',
   previewData: {
     name: 'Jane Doe',

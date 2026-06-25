@@ -168,6 +168,31 @@ async function recomputeAggregates(sb: ReturnType<typeof createClient>) {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
+  // Require service-role JWT. pg_cron invokes this with the service-role key;
+  // public callers (anon or signed-in users) must be rejected so they cannot
+  // trigger Kaggle downloads or overwrite database/storage data.
+  const authHeader = req.headers.get("Authorization") || "";
+  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+  let role: string | undefined;
+  try {
+    const parts = token.split(".");
+    if (parts.length === 3) {
+      const payload = JSON.parse(
+        atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")),
+      );
+      role = payload?.role;
+    }
+  } catch {
+    role = undefined;
+  }
+  if (role !== "service_role") {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "content-type": "application/json" },
+    });
+  }
+
+
   const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
   const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
   const KAGGLE_USERNAME = Deno.env.get("KAGGLE_USERNAME");
