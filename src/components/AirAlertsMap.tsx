@@ -9,10 +9,44 @@ import oblastStatsData from "@/data/oblastStats.json";
 const REFRESH_MS = 30 * 1000;
 const OBLASTS_GEO = "/geo/ua-oblasts.geo.json";
 const RAIONS_GEO = "/geo/ua-raions.geo.json";
-// World countries (TopoJSON, ~100 KB). We render Belarus + Russia underneath
-// the Ukraine oblasts so the country borders are visible in context.
-const WORLD_GEO = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json";
-const NEIGHBOUR_NAMES = new Set(["Belarus", "Russia"]);
+// Local, clipped context shapes for Belarus + the visible Russian border zone.
+// Avoid rendering the full Russia world-atlas polygon: it crosses the antimeridian
+// and can project as a huge filled path over the whole map viewport.
+const AGGRESSOR_CONTEXT_GEO: GeoJSON.FeatureCollection = {
+  type: "FeatureCollection",
+  features: [
+    {
+      type: "Feature",
+      properties: { name: "Belarus" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [[
+          [23.15, 51.25], [23.65, 52.15], [24.75, 53.95], [26.45, 55.25],
+          [28.65, 55.95], [31.05, 54.95], [32.75, 53.55], [31.85, 51.65],
+          [29.35, 51.25], [26.75, 51.45], [24.95, 51.55], [23.15, 51.25],
+        ]],
+      },
+    },
+    {
+      type: "Feature",
+      properties: { name: "Russia" },
+      geometry: {
+        type: "MultiPolygon",
+        coordinates: [
+          [[
+            [31.85, 52.25], [42.75, 52.25], [42.75, 47.55], [40.15, 47.65],
+            [38.95, 48.55], [38.25, 49.65], [36.95, 50.35], [35.75, 50.85],
+            [34.55, 51.15], [33.35, 51.75], [31.85, 52.25],
+          ]],
+          [[
+            [35.95, 45.15], [42.75, 45.15], [42.75, 47.65], [40.15, 47.65],
+            [38.75, 47.15], [37.35, 46.35], [36.35, 45.65], [35.95, 45.15],
+          ]],
+        ],
+      },
+    },
+  ],
+};
 
 const stripGeoCoordinateDepth = (coords: unknown): unknown => {
   if (!Array.isArray(coords)) return coords;
@@ -331,29 +365,11 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           style={{ width: "100%", height: "100%" }}
         >
           <ZoomableGroup zoom={1} minZoom={1} maxZoom={variant === "full" ? 6 : 1}>
-            {/* Diagonal red hatch used to mark aggressor states (RU + BY).
-                A subtle red tint sits underneath so the territories read as
-                hostile even when zoomed out and the stripes blur. */}
-            <defs>
-              <pattern
-                id="aggressor-stripes"
-                patternUnits="userSpaceOnUse"
-                width="6"
-                height="6"
-                patternTransform="rotate(45)"
-              >
-                <rect width="6" height="6" fill="hsl(var(--muted-foreground) / 0.10)" />
-                <line x1="0" y1="0" x2="0" y2="6" stroke="hsl(var(--muted-foreground) / 0.45)" strokeWidth="1.6" />
-              </pattern>
-            </defs>
-
-            {/* Belarus + Russia — marked as aggressor states with a red
-                diagonal hatch. Interactive: hovering opens an explanatory
-                tooltip. Drawn first so Ukraine oblasts remain on top. */}
-            <Geographies geography={WORLD_GEO}>
+            {/* Belarus + visible Russian border context. Drawn from clipped local
+                shapes so no oversized world polygon can cover the map. */}
+            <Geographies geography={AGGRESSOR_CONTEXT_GEO}>
               {({ geographies }) =>
                 geographies
-                  .filter((g) => NEIGHBOUR_NAMES.has(g.properties.name as string))
                   .map((geo) => {
                     const country = geo.properties.name as "Belarus" | "Russia";
                     return (
@@ -382,16 +398,16 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         }}
                         style={{
                           default: {
-                            fill: "url(#aggressor-stripes)",
-                            stroke: "hsl(var(--signal) / 0.75)",
-                            strokeWidth: 0.7,
+                            fill: "hsl(var(--muted-foreground) / 0.18)",
+                            stroke: "hsl(var(--border))",
+                            strokeWidth: 0.55,
                             outline: "none",
                             cursor: "help",
                           },
                           hover: {
-                            fill: "url(#aggressor-stripes)",
-                            stroke: "hsl(var(--signal))",
-                            strokeWidth: 1.1,
+                            fill: "hsl(var(--muted-foreground) / 0.24)",
+                            stroke: "hsl(var(--foreground) / 0.45)",
+                            strokeWidth: 0.75,
                             outline: "none",
                             cursor: "help",
                           },
