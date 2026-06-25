@@ -89,6 +89,31 @@ Deno.serve(async (req) => {
         headers: { ...CORS, "Content-Type": "application/json" },
       });
     }
+    // Input size limits — this endpoint is public, so unbounded payloads
+    // would let any caller drive unlimited AI gateway requests.
+    const MAX_ITEMS = 50;
+    const MAX_TEXT_LEN = 2000;
+    const MAX_ID_LEN = 200;
+    if (items.length > MAX_ITEMS) {
+      return new Response(
+        JSON.stringify({ error: `too many items (max ${MAX_ITEMS})` }),
+        { status: 400, headers: { ...CORS, "Content-Type": "application/json" } },
+      );
+    }
+    for (const it of items) {
+      if (
+        !it ||
+        typeof it.id !== "string" ||
+        typeof it.text !== "string" ||
+        it.id.length > MAX_ID_LEN ||
+        it.text.length > MAX_TEXT_LEN
+      ) {
+        return new Response(
+          JSON.stringify({ error: "invalid item (check id/text types and lengths)" }),
+          { status: 400, headers: { ...CORS, "Content-Type": "application/json" } },
+        );
+      }
+    }
     if (items.length === 0) {
       return new Response(JSON.stringify({ lang, translations: {} }), {
         headers: { ...CORS, "Content-Type": "application/json" },
