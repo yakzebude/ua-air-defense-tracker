@@ -14,6 +14,12 @@ type AggressorContextRing = {
   coordinates: [number, number][];
 };
 
+type ProjectedMapPath = {
+  key: string;
+  d: string;
+  redLine?: boolean;
+};
+
 // Simplified Natural Earth borders clipped to the Ukraine map viewport.
 // These are rendered as planar projected SVG paths (not d3 spherical polygons),
 // so ring winding cannot invert them into a full-map overlay.
@@ -32,6 +38,49 @@ const stripGeoCoordinateDepth = (coords: unknown): unknown => {
   if (!Array.isArray(coords)) return coords;
   if (typeof coords[0] === "number") return [coords[0], coords[1]];
   return coords.map(stripGeoCoordinateDepth);
+};
+
+const coordinateRingToSvgPath = (
+  ring: unknown,
+  projection: ReturnType<typeof geoMercator>,
+): string => {
+  if (!Array.isArray(ring)) return "";
+  const points = ring
+    .map((point) => {
+      if (!Array.isArray(point) || typeof point[0] !== "number" || typeof point[1] !== "number") return null;
+      const projected = projection([point[0], point[1]]);
+      if (!projected || !Number.isFinite(projected[0]) || !Number.isFinite(projected[1])) return null;
+      return projected;
+    })
+    .filter((point): point is [number, number] => Boolean(point));
+
+  if (points.length < 3) return "";
+  return `${points
+    .map(([x, y], index) => `${index === 0 ? "M" : "L"}${x.toFixed(3)},${y.toFixed(3)}`)
+    .join("")}Z`;
+};
+
+const polygonCoordinatesToSvgPath = (
+  coordinates: unknown,
+  projection: ReturnType<typeof geoMercator>,
+): string => {
+  if (!Array.isArray(coordinates)) return "";
+  return coordinates.map((ring) => coordinateRingToSvgPath(ring, projection)).filter(Boolean).join("");
+};
+
+const geometryToSvgPath = (
+  geometry: GeoJSON.Geometry | null | undefined,
+  projection: ReturnType<typeof geoMercator>,
+): string => {
+  if (!geometry) return "";
+  if (geometry.type === "Polygon") return polygonCoordinatesToSvgPath(geometry.coordinates, projection);
+  if (geometry.type === "MultiPolygon") {
+    return geometry.coordinates
+      .map((polygon) => polygonCoordinatesToSvgPath(polygon, projection))
+      .filter(Boolean)
+      .join("");
+  }
+  return "";
 };
 
 const normalizeFrontlineFeature = (feature: GeoJSON.Feature): GeoJSON.Feature | null => {
@@ -325,17 +374,19 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
   // Active raions inside non-occupied oblasts pulse red on top.
   const showRaions = variant === "full";
 
-  const aggressorPaths = useMemo(() => {
+  const mapProjection = useMemo(() => {
     const height = variant === "full" ? 680 : 420;
-    const projection = geoMercator()
+    return geoMercator()
       .scale(variant === "full" ? 2800 : 2200)
       .center([31.5, 49])
       .translate([500, height / 2]);
+  }, [variant]);
 
+  const aggressorPaths = useMemo(() => {
     return AGGRESSOR_CONTEXT_RINGS
       .map(({ country, coordinates }) => {
         const projected = coordinates
-          .map(([lng, lat]) => projection([lng, lat]))
+          .map(([lng, lat]) => mapProjection([lng, lat]))
           .filter((point): point is [number, number] => Boolean(point));
         const d = projected
           .map(([x, y], index) => `${index === 0 ? "M" : "L"}${x.toFixed(3)},${y.toFixed(3)}`)
@@ -343,7 +394,18 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
         return { country, d: `${d}Z` };
       })
       .filter((item): item is { country: "Belarus" | "Russia"; d: string } => Boolean(item.d));
-  }, [variant]);
+  }, [mapProjection]);
+
+  const occupiedPaths = useMemo<ProjectedMapPath[]>(() => {
+    if (!frontline) return [];
+    return frontline.features
+      .map((feature, index) => {
+        const d = geometryToSvgPath(feature.geometry, mapProjection);
+        const redLine = (feature.properties as { redLine?: boolean } | null)?.redLine !== false;
+        return { key: `occupied-${index}`, d, redLine };
+      })
+      .filter((path) => path.d);
+  }, [frontline, mapProjection]);
 
   // Map sizes to fill its panel. The full variant fills a fixed-height
   // container so the map and the threat feed read as equal blocks side-by-side.
@@ -614,72 +676,36 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               </Geographies>
             )}
 
-            {/* DeepStateMap occupied territory — exact dark-grey fill from the
-                live polygons, not whole oblasts. */}
-            {showRaions && frontline && (
-              <Geographies geography={frontline}>
-                {({ geographies }) =>
-                  geographies.map((geo) => (
-                    <Geography
-                      key={`frontline-${geo.rsmKey}`}
-                      geography={geo}
-                      style={{
-                        default: {
-                          fill: "hsl(var(--foreground) / 0.28)",
-                          stroke: "transparent",
-                          strokeWidth: 0,
-                          strokeLinecap: "round",
-                          strokeLinejoin: "round",
-                          outline: "none",
-                          pointerEvents: "none",
-                        },
-                        hover: {
-                          fill: "hsl(var(--foreground) / 0.28)",
-                          stroke: "transparent",
-                          strokeWidth: 0,
-                          outline: "none",
-                          pointerEvents: "none",
-                        },
-                        pressed: { fill: "hsl(var(--foreground) / 0.28)", outline: "none", pointerEvents: "none" },
-                      }}
-                    />
-                  ))
-                }
-              </Geographies>
-            )}
+            {/* DeepStateMap occupied territory — projected as planar SVG paths
+                to avoid d3 spherical winding inversions that can fill the map. */}
+            {showRaions && occupiedPaths.map((path) => (
+              <path
+                key={path.key}
+                d={path.d}
+                fill="hsl(var(--foreground) / 0.28)"
+                fillRule="evenodd"
+                stroke="transparent"
+                strokeWidth={0}
+                vectorEffect="non-scaling-stroke"
+                pointerEvents="none"
+              />
+            ))}
 
-            {/* DeepStateMap front line — red stroke only, no broad red area. */}
-            {showRaions && frontline && (
-              <Geographies geography={frontline}>
-                {({ geographies }) =>
-                  geographies.map((geo) => (
-                    <Geography
-                      key={`frontline-stroke-${geo.rsmKey}`}
-                      geography={geo}
-                      style={{
-                        default: {
-                          fill: "transparent",
-                          stroke: "hsl(var(--signal))",
-                          strokeWidth: 1.8,
-                          strokeLinecap: "round",
-                          strokeLinejoin: "round",
-                          outline: "none",
-                          pointerEvents: "none",
-                        },
-                        hover: {
-                          fill: "transparent",
-                          stroke: "hsl(var(--signal))",
-                          strokeWidth: 1.8,
-                          outline: "none",
-                          pointerEvents: "none",
-                        },
-                        pressed: { fill: "transparent", outline: "none", pointerEvents: "none" },
-                      }}
-                    />
-                  ))
-                }
-              </Geographies>
-            )}
+            {/* DeepStateMap front line — red stroke only on live occupied-front
+                polygons, not on historical occupied-territory context. */}
+            {showRaions && occupiedPaths.filter((path) => path.redLine).map((path) => (
+              <path
+                key={`${path.key}-line`}
+                d={path.d}
+                fill="transparent"
+                stroke="hsl(var(--signal))"
+                strokeWidth={1.8}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                vectorEffect="non-scaling-stroke"
+                pointerEvents="none"
+              />
+            ))}
           </ZoomableGroup>
         </ComposableMap>
 
