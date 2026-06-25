@@ -597,6 +597,32 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                 }
               </Geographies>
             )}
+
+            {/* DeepStateMap front-line overlay — outlines current occupied
+                area in red. Refreshed by the edge function every 14 days. */}
+            {showRaions && frontline && (
+              <Geographies geography={frontline}>
+                {({ geographies }) =>
+                  geographies.map((geo, i) => (
+                    <Geography
+                      key={`fl-${i}`}
+                      geography={geo}
+                      style={{
+                        default: {
+                          fill: "hsl(var(--signal) / 0.05)",
+                          stroke: "hsl(var(--signal))",
+                          strokeWidth: 1.1,
+                          outline: "none",
+                          pointerEvents: "none",
+                        },
+                        hover: { outline: "none", pointerEvents: "none" },
+                        pressed: { outline: "none" },
+                      }}
+                    />
+                  ))
+                }
+              </Geographies>
+            )}
           </ZoomableGroup>
         </ComposableMap>
 
