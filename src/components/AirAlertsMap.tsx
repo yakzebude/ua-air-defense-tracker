@@ -757,9 +757,9 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
             </span>
           )}
           {error && !data && (
-            <span className="inline-flex items-center gap-1.5 text-[hsl(var(--signal))]" title="Upstream alerts feed temporarily unreachable. Showing latest cached data.">
+            <span className="inline-flex items-center gap-1.5 text-[hsl(var(--signal))]" title={t("airAlerts.feedUnavailable")}>
               <span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
-              Live feed unavailable — showing cached data
+              {t("airAlerts.feedUnavailable")}
             </span>
           )}
           {data && (
@@ -767,7 +767,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               {data.stale && (
                 <>
                   <span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal-warn))]" />
-                  Delayed ·{" "}
+                  {t("airAlerts.feedDelayed")} ·{" "}
                 </>
               )}
               {t("airAlerts.lastUpdate")}: {new Date(data.updatedAt).toUTCString().slice(17, 22)} UTC
