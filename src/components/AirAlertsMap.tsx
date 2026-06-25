@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from "react-simple-maps";
-import { geoCentroid } from "d3-geo";
+import { geoCentroid, geoMercator, geoPath } from "d3-geo";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import oblastStatsData from "@/data/oblastStats.json";
 
@@ -376,6 +376,22 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
   // Active raions inside non-occupied oblasts pulse red on top.
   const showRaions = variant === "full";
 
+  const aggressorPaths = useMemo(() => {
+    const height = variant === "full" ? 680 : 420;
+    const projection = geoMercator()
+      .scale(variant === "full" ? 2800 : 2200)
+      .center([31.5, 49])
+      .translate([500, height / 2]);
+    const path = geoPath(projection);
+
+    return AGGRESSOR_CONTEXT_GEO.features
+      .map((feature) => ({
+        country: feature.properties?.name as "Belarus" | "Russia",
+        d: path(feature),
+      }))
+      .filter((item): item is { country: "Belarus" | "Russia"; d: string } => Boolean(item.d));
+  }, [variant]);
+
   // Map sizes to fill its panel. The full variant fills a fixed-height
   // container so the map and the threat feed read as equal blocks side-by-side.
   const mapHeightClass = variant === "full"
@@ -396,59 +412,40 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           style={{ width: "100%", height: "100%" }}
         >
           <ZoomableGroup zoom={1} minZoom={1} maxZoom={variant === "full" ? 6 : 1}>
-            {/* Belarus + visible Russian border context. Drawn from clipped local
-                shapes so no oversized world polygon can cover the map. */}
-            <Geographies geography={AGGRESSOR_CONTEXT_GEO}>
-              {({ geographies }) =>
-                geographies
-                  .map((geo) => {
-                    const country = geo.properties.name as "Belarus" | "Russia";
-                    return (
-                      <Geography
-                        key={geo.rsmKey}
-                        geography={geo}
-                        onMouseEnter={(e) => {
-                          const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
-                            ?.getBoundingClientRect();
-                          setHovered({
-                            kind: "aggressor",
-                            country,
-                            x: e.clientX - (cont?.left ?? 0),
-                            y: e.clientY - (cont?.top ?? 0),
-                          });
-                        }}
-                        onMouseMove={(e) => {
-                          const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
-                            ?.getBoundingClientRect();
-                          setHovered({
-                            kind: "aggressor",
-                            country,
-                            x: e.clientX - (cont?.left ?? 0),
-                            y: e.clientY - (cont?.top ?? 0),
-                          });
-                        }}
-                        style={{
-                          default: {
-                            fill: "hsl(var(--muted-foreground) / 0.18)",
-                            stroke: "hsl(var(--border))",
-                            strokeWidth: 0.55,
-                            outline: "none",
-                            cursor: "help",
-                          },
-                          hover: {
-                            fill: "hsl(var(--muted-foreground) / 0.24)",
-                            stroke: "hsl(var(--foreground) / 0.45)",
-                            strokeWidth: 0.75,
-                            outline: "none",
-                            cursor: "help",
-                          },
-                          pressed: { outline: "none" },
-                        }}
-                      />
-                    );
-                  })
-              }
-            </Geographies>
+            {/* Belarus + visible Russian border context. Rendered as projected SVG
+                paths directly so d3 spherical winding cannot invert them into a
+                full-map overlay. */}
+            {aggressorPaths.map(({ country, d }) => (
+              <path
+                key={`aggressor-${country}`}
+                d={d}
+                fill="hsl(var(--muted-foreground) / 0.18)"
+                stroke="hsl(var(--border))"
+                strokeWidth={0.55}
+                vectorEffect="non-scaling-stroke"
+                style={{ outline: "none", cursor: "help" }}
+                onMouseEnter={(e) => {
+                  const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
+                    ?.getBoundingClientRect();
+                  setHovered({
+                    kind: "aggressor",
+                    country,
+                    x: e.clientX - (cont?.left ?? 0),
+                    y: e.clientY - (cont?.top ?? 0),
+                  });
+                }}
+                onMouseMove={(e) => {
+                  const cont = (e.currentTarget.closest("div") as HTMLDivElement | null)
+                    ?.getBoundingClientRect();
+                  setHovered({
+                    kind: "aggressor",
+                    country,
+                    x: e.clientX - (cont?.left ?? 0),
+                    y: e.clientY - (cont?.top ?? 0),
+                  });
+                }}
+              />
+            ))}
 
 
 
