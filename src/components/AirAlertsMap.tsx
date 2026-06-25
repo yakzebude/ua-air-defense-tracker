@@ -14,6 +14,26 @@ const RAIONS_GEO = "/geo/ua-raions.geo.json";
 const WORLD_GEO = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json";
 const NEIGHBOUR_NAMES = new Set(["Belarus", "Russia"]);
 
+const stripGeoCoordinateDepth = (coords: unknown): unknown => {
+  if (!Array.isArray(coords)) return coords;
+  if (typeof coords[0] === "number") return [coords[0], coords[1]];
+  return coords.map(stripGeoCoordinateDepth);
+};
+
+const normalizeFrontlineFeature = (feature: GeoJSON.Feature): GeoJSON.Feature | null => {
+  const type = feature.geometry?.type;
+  if (type !== "Polygon" && type !== "MultiPolygon") return null;
+
+  return {
+    type: "Feature",
+    properties: feature.properties ?? { status: "occupied" },
+    geometry: {
+      type,
+      coordinates: stripGeoCoordinateDepth((feature.geometry as GeoJSON.Polygon | GeoJSON.MultiPolygon).coordinates),
+    } as GeoJSON.Geometry,
+  };
+};
+
 /** Oblasts under full or substantial Russian occupation — rendered permanently
  *  in dark red. Active-alert pulsing is suppressed inside these regions. */
 const OCCUPIED_ISOS = new Set<string>([
@@ -201,7 +221,11 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
         if (!res.ok) return;
         const payload = await res.json() as { features?: GeoJSON.Feature[] };
         if (cancelled || !payload.features?.length) return;
-        setFrontline({ type: "FeatureCollection", features: payload.features });
+        const features = payload.features
+          .map(normalizeFrontlineFeature)
+          .filter((feature): feature is GeoJSON.Feature => Boolean(feature));
+        if (!features.length) return;
+        setFrontline({ type: "FeatureCollection", features });
       } catch { /* ignore */ }
     })();
     return () => { cancelled = true; };
@@ -598,9 +622,37 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               </Geographies>
             )}
 
-            {/* DeepStateMap front-line overlay removed per user request */}
-            {false && showRaions && frontline && (
-              <></>
+            {/* DeepStateMap front line — red stroke only, no fill overlay. */}
+            {showRaions && frontline && (
+              <Geographies geography={frontline}>
+                {({ geographies }) =>
+                  geographies.map((geo) => (
+                    <Geography
+                      key={`frontline-${geo.rsmKey}`}
+                      geography={geo}
+                      style={{
+                        default: {
+                          fill: "transparent",
+                          stroke: "hsl(var(--signal))",
+                          strokeWidth: 2.4,
+                          strokeLinecap: "round",
+                          strokeLinejoin: "round",
+                          outline: "none",
+                          pointerEvents: "none",
+                        },
+                        hover: {
+                          fill: "transparent",
+                          stroke: "hsl(var(--signal))",
+                          strokeWidth: 2.4,
+                          outline: "none",
+                          pointerEvents: "none",
+                        },
+                        pressed: { fill: "transparent", outline: "none", pointerEvents: "none" },
+                      }}
+                    />
+                  ))
+                }
+              </Geographies>
             )}
           </ZoomableGroup>
         </ComposableMap>
