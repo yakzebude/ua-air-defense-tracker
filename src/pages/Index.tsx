@@ -972,7 +972,58 @@ const Index = () => {
       )}
 
       {ready && (
-        <HeroTrendChart shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />
+        <HeroTrendChart
+          shahed={shahed!}
+          cruise={cruise!}
+          ballistic={ballistic!}
+          tab={heroTab}
+          onTabChange={handleHeroTabChange}
+        />
+      )}
+
+      {ready && heroTab !== "all" && (
+        <div>
+          {heroTab === "uav" && shahed && shahedRange && (
+            <CategorySection
+              id="drones"
+              glossaryKey="drones"
+              kicker={t("category.drones.kicker")}
+              title={t("category.drones.title")}
+              description={t("category.drones.description")}
+              unitNoun={t("category.drones.unit")}
+              dataset={shahed}
+              range={shahedRange}
+              onRangeChange={setShahedRange}
+            />
+          )}
+          {heroTab === "cruise" && cruise && cruiseRange && (
+            <CategorySection
+              id="cruise"
+              glossaryKey="cruise"
+              kicker={t("category.cruiseSection.kicker")}
+              title={t("category.cruiseSection.title")}
+              description={t("category.cruiseSection.description")}
+              unitNoun={t("category.cruiseSection.unit")}
+              dataset={cruise}
+              range={cruiseRange}
+              onRangeChange={setCruiseRange}
+            />
+          )}
+          {heroTab === "ballistic" && ballistic && ballisticRange && (
+            <CategorySection
+              id="ballistic"
+              glossaryKey="ballistic"
+              kicker={t("category.ballisticSection.kicker")}
+              title={t("category.ballisticSection.title")}
+              description={t("category.ballisticSection.description")}
+              unitNoun={t("category.ballisticSection.unit")}
+              dataset={ballistic}
+              range={ballisticRange}
+              onRangeChange={setBallisticRange}
+            />
+          )}
+        </div>
+      )}
       )}
 
       {ready && (
