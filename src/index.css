@@ -51,7 +51,7 @@
     /* Chart series — grayscale only */
     --series-launched: 0 0% 72%;          /* light gray */
     --series-destroyed: 0 0% 55%;         /* medium gray */
-    --series-rate: 0 0% 82%;              /* very light gray */
+    --series-rate: 0 0% 55%;              /* mid gray — readable on light bg */
     --grid: 215 16% 89%;
 
     /* Per-category bar fills — grayscale only */
