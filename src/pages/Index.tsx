@@ -1095,7 +1095,7 @@ const Index = () => {
         />
       )}
 
-      {ready && <AnalyticsDashboard shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />}
+      
 
       {/* The full live-alerts section now lives further down (after Ballistic). */}
 
