@@ -24,7 +24,7 @@ interface Cached {
 }
 
 function deepStateStatus(name: string | undefined): "occupied" | "unknown" | null {
-  if (!name) return false;
+  if (!name) return null;
   // DeepStateMap encodes status in the name as "UA /// EN /// geoJSON.status.<x>"
   const lc = name.toLowerCase();
   if (lc.includes("geojson.status.occupied") || lc.includes("/// occupied")) return "occupied";
