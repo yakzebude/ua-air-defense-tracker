@@ -609,9 +609,10 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       geography={geo}
                       style={{
                         default: {
-                          fill: "hsl(var(--signal) / 0.05)",
+                          fill: "hsl(var(--signal) / 0.08)",
                           stroke: "hsl(var(--signal))",
-                          strokeWidth: 1.1,
+                          strokeWidth: 1.6,
+                          strokeLinejoin: "round",
                           outline: "none",
                           pointerEvents: "none",
                         },
