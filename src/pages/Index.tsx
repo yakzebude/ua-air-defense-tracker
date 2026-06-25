@@ -972,6 +972,18 @@ const Index = () => {
       )}
 
       {ready && (
+        <CategorySparklines
+          categories={[
+            { id: "drones",    label: t("category.drones.kicker"),           unit: t("category.drones.unit"),           dataset: shahed!,    href: "#drones" },
+            { id: "cruise",    label: t("category.cruiseSection.kicker"),    unit: t("category.cruiseSection.unit"),    dataset: cruise!,    href: "#cruise" },
+            { id: "ballistic", label: t("category.ballisticSection.kicker"), unit: t("category.ballisticSection.unit"), dataset: ballistic!, href: "#ballistic" },
+          ]}
+        />
+      )}
+
+      {ready && <AnalyticsDashboard shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />}
+
+      {ready && (
         <HeroTrendChart
           shahed={shahed!}
           cruise={cruise!}
@@ -1024,102 +1036,7 @@ const Index = () => {
           )}
         </div>
       )}
-      )}
 
-      {ready && (
-        <CategorySparklines
-          categories={[
-            { id: "drones",    label: t("category.drones.kicker"),           unit: t("category.drones.unit"),           dataset: shahed!,    href: "#drones" },
-            { id: "cruise",    label: t("category.cruiseSection.kicker"),    unit: t("category.cruiseSection.unit"),    dataset: cruise!,    href: "#cruise" },
-            { id: "ballistic", label: t("category.ballisticSection.kicker"), unit: t("category.ballisticSection.unit"), dataset: ballistic!, href: "#ballistic" },
-          ]}
-        />
-      )}
-
-      {ready && <AnalyticsDashboard shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />}
-
-      {/* The full live-alerts section now lives further down (after Ballistic). */}
-
-
-      {(shahed && shahedRange) || (cruise && cruiseRange) || (ballistic && ballisticRange) ? (
-        <div className="border-t border-border">
-          {activeCategory === "drones" && shahed && shahedRange && (
-            <CategorySection
-              id="drones"
-              glossaryKey="drones"
-              kicker={t("category.drones.kicker")}
-              title={t("category.drones.title")}
-              description={t("category.drones.description")}
-              unitNoun={t("category.drones.unit")}
-              dataset={shahed}
-              range={shahedRange}
-              onRangeChange={setShahedRange}
-              tabs={
-                <CategoryTabs
-                  activeCategory={activeCategory}
-                  onChange={setActiveCategory}
-                  shahed={shahed}
-                  shahedRange={shahedRange}
-                  cruise={cruise}
-                  cruiseRange={cruiseRange}
-                  ballistic={ballistic}
-                  ballisticRange={ballisticRange}
-                />
-              }
-            />
-          )}
-          {activeCategory === "cruise" && cruise && cruiseRange && (
-            <CategorySection
-              id="cruise"
-              glossaryKey="cruise"
-              kicker={t("category.cruiseSection.kicker")}
-              title={t("category.cruiseSection.title")}
-              description={t("category.cruiseSection.description")}
-              unitNoun={t("category.cruiseSection.unit")}
-              dataset={cruise}
-              range={cruiseRange}
-              onRangeChange={setCruiseRange}
-              tabs={
-                <CategoryTabs
-                  activeCategory={activeCategory}
-                  onChange={setActiveCategory}
-                  shahed={shahed}
-                  shahedRange={shahedRange}
-                  cruise={cruise}
-                  cruiseRange={cruiseRange}
-                  ballistic={ballistic}
-                  ballisticRange={ballisticRange}
-                />
-              }
-            />
-          )}
-          {activeCategory === "ballistic" && ballistic && ballisticRange && (
-            <CategorySection
-              id="ballistic"
-              glossaryKey="ballistic"
-              kicker={t("category.ballisticSection.kicker")}
-              title={t("category.ballisticSection.title")}
-              description={t("category.ballisticSection.description")}
-              unitNoun={t("category.ballisticSection.unit")}
-              dataset={ballistic}
-              range={ballisticRange}
-              onRangeChange={setBallisticRange}
-              tabs={
-                <CategoryTabs
-                  activeCategory={activeCategory}
-                  onChange={setActiveCategory}
-                  shahed={shahed}
-                  shahedRange={shahedRange}
-                  cruise={cruise}
-                  cruiseRange={cruiseRange}
-                  ballistic={ballistic}
-                  ballisticRange={ballisticRange}
-                />
-              }
-            />
-          )}
-        </div>
-      ) : null}
 
 
 
