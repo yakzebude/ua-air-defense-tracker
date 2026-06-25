@@ -87,14 +87,13 @@ const normalizeFrontlineFeature = (feature: GeoJSON.Feature): GeoJSON.Feature | 
   const type = feature.geometry?.type;
   if (type !== "Polygon" && type !== "MultiPolygon") return null;
   const coordinates = stripGeoCoordinateDepth((feature.geometry as GeoJSON.Polygon | GeoJSON.MultiPolygon).coordinates);
-
+  // Don't pre-rewind here: react-simple-maps' <Geographies> hands the geometry
+  // to d3-geo which performs its own spherical winding. Pre-rewinding inverted
+  // some DeepState polygons, leaving holes inside occupied territory.
   return {
     type: "Feature",
     properties: feature.properties ?? { status: "occupied" },
-    geometry: {
-      type,
-      coordinates: rewindCoordinatesForD3(type, coordinates),
-    } as GeoJSON.Geometry,
+    geometry: { type, coordinates } as GeoJSON.Geometry,
   };
 };
 
