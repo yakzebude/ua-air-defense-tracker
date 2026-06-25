@@ -179,11 +179,33 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
   >(null);
   const timerRef = useRef<number | null>(null);
   const [, setTick] = useState(0);
+  const [frontline, setFrontline] = useState<GeoJSON.FeatureCollection | null>(null);
 
   useEffect(() => {
     const tickTimer = window.setInterval(() => setTick((n) => n + 1), 60_000);
     return () => clearInterval(tickTimer);
   }, []);
+
+  // DeepStateMap front-line polygons. Fetched once per mount; the edge
+  // function itself only refreshes the upstream call every 14 days.
+  useEffect(() => {
+    if (variant !== "full") return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID as string;
+        const apikey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+        const res = await fetch(`https://${projectId}.functions.supabase.co/deepstate-frontline`, {
+          headers: { apikey, Authorization: `Bearer ${apikey}` },
+        });
+        if (!res.ok) return;
+        const payload = await res.json() as { features?: GeoJSON.Feature[] };
+        if (cancelled || !payload.features?.length) return;
+        setFrontline({ type: "FeatureCollection", features: payload.features });
+      } catch { /* ignore */ }
+    })();
+    return () => { cancelled = true; };
+  }, [variant]);
 
   const load = async () => {
     try {
@@ -575,6 +597,32 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                 }
               </Geographies>
             )}
+
+            {/* DeepStateMap front-line overlay — outlines current occupied
+                area in red. Refreshed by the edge function every 14 days. */}
+            {showRaions && frontline && (
+              <Geographies geography={frontline}>
+                {({ geographies }) =>
+                  geographies.map((geo, i) => (
+                    <Geography
+                      key={`fl-${i}`}
+                      geography={geo}
+                      style={{
+                        default: {
+                          fill: "hsl(var(--signal) / 0.05)",
+                          stroke: "hsl(var(--signal))",
+                          strokeWidth: 1.1,
+                          outline: "none",
+                          pointerEvents: "none",
+                        },
+                        hover: { outline: "none", pointerEvents: "none" },
+                        pressed: { outline: "none" },
+                      }}
+                    />
+                  ))
+                }
+              </Geographies>
+            )}
           </ZoomableGroup>
         </ComposableMap>
 
@@ -583,10 +631,13 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           <div className="pointer-events-none absolute right-3 top-3 flex flex-col items-end gap-1.5">
             <div className="flex items-center gap-2 rounded border border-border bg-background/85 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground backdrop-blur">
               <span className="inline-flex items-center gap-1">
-                <span className="h-2 w-2 rounded-sm bg-[hsl(var(--occupied))]" /> Occupied
+                <span className="h-2 w-2 rounded-sm bg-[hsl(var(--occupied))]" /> {t("airAlerts.occupiedLegend")}
               </span>
               <span className="inline-flex items-center gap-1">
-                <span className="h-2 w-2 rounded-sm bg-[hsl(var(--signal))]" /> Alert
+                <span className="h-2 w-2 rounded-sm bg-[hsl(var(--signal))]" /> {t("airAlerts.alertLegend")}
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="h-[2px] w-3 bg-[hsl(var(--signal))]" /> {t("airAlerts.frontlineLegend")}
               </span>
             </div>
           </div>
@@ -611,7 +662,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       <span className="ml-2">{durationLabel(o.changedAt, true)}</span>
                     </>
                   ) : OCCUPIED_ISOS.has(hovered.iso) ? (
-                    <span className="text-[hsl(var(--occupied))]">Occupied territory</span>
+                    <span className="text-[hsl(var(--occupied))]">{t("airAlerts.occupiedTerritory")}</span>
                   ) : (
                     <span>{t("airAlerts.clear")}</span>
                   )}
@@ -698,7 +749,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                            <span className="text-[hsl(var(--signal))]">● {t("airAlerts.active")}</span>
                            {!r && parentActive && (
                              <span className="ml-2 text-[10px] text-muted-foreground/80">
-                               (oblast-wide)
+                               {t("airAlerts.oblastWide")}
                              </span>
                            )}
                          </>
@@ -718,7 +769,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   </>
                 );
               })()}
-              <div className="mt-1.5 text-[9px] text-muted-foreground/70">Click for details</div>
+              <div className="mt-1.5 text-[9px] text-muted-foreground/70">{t("airAlerts.clickForDetails")}</div>
             </div>
           );
         })()}
@@ -754,9 +805,9 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
             </span>
           )}
           {error && !data && (
-            <span className="inline-flex items-center gap-1.5 text-[hsl(var(--signal))]" title="Upstream alerts feed temporarily unreachable. Showing latest cached data.">
+            <span className="inline-flex items-center gap-1.5 text-[hsl(var(--signal))]" title={t("airAlerts.feedUnavailable")}>
               <span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal))]" />
-              Live feed unavailable — showing cached data
+              {t("airAlerts.feedUnavailable")}
             </span>
           )}
           {data && (
@@ -764,7 +815,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               {data.stale && (
                 <>
                   <span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--signal-warn))]" />
-                  Delayed ·{" "}
+                  {t("airAlerts.feedDelayed")} ·{" "}
                 </>
               )}
               {t("airAlerts.lastUpdate")}: {new Date(data.updatedAt).toUTCString().slice(17, 22)} UTC
@@ -792,6 +843,19 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
         {showRaions && (
           <span className="text-muted-foreground/80">{t("airAlerts.threatTypeNote")}</span>
         )}
+        {showRaions && (
+          <span className="text-muted-foreground/80">
+            ·{" "}
+            <a
+              href="https://deepstatemap.live"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline-offset-4 hover:underline"
+            >
+              {t("airAlerts.frontlineNote")}
+            </a>
+          </span>
+        )}
       </div>
 
       {/* Detail panel */}
@@ -805,7 +869,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               <>
                 <SheetHeader>
                   <SheetTitle>{selected.nameEn || selected.name}</SheetTitle>
-                  <SheetDescription>{selected.name}</SheetDescription>
+                  {lang === "uk" && <SheetDescription>{selected.name}</SheetDescription>}
                 </SheetHeader>
                 <div className="mt-6 space-y-4 text-sm">
                   <div>
@@ -924,7 +988,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                 <SheetHeader>
                   <SheetTitle>{selected.name}</SheetTitle>
                   <SheetDescription>
-                    {parent ? `${parent.nameEn} · ${parent.name}` : selected.oblastIso}
+                    {parent ? (lang === "uk" ? `${parent.nameEn} · ${parent.name}` : parent.nameEn) : selected.oblastIso}
                   </SheetDescription>
                 </SheetHeader>
                 <div className="mt-6 space-y-4 text-sm">
@@ -935,7 +999,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         ● {t("airAlerts.active")}
                         {!r?.active && parentActive && (
                           <span className="ml-2 text-[10px] font-normal text-muted-foreground/80">
-                            (oblast-wide)
+                            {t("airAlerts.oblastWide")}
                           </span>
                         )}
                       </div>
@@ -967,7 +1031,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         {t("airAlerts.statsHeading", { date: OBLAST_STATS.periodStart })}
                       </div>
                       <p className="text-[10px] text-muted-foreground/80 -mt-1">
-                        Raion-level historical data is not publicly aggregated; figures below are for the parent oblast ({parent?.nameEn}).
+                        {t("airAlerts.raionHistoricalNote")}
                       </p>
                       <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
                         <div>

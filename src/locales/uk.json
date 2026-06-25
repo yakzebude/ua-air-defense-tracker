@@ -492,7 +492,17 @@
     "fullAlert": "Повна",
     "partialAlert": "Часткова",
     "feedUnauthorized": "Помилка автентифікації для живого потоку.",
-    "sidePanelNote": "Джерело: alerts.in.ua · оновлення кожні 30 с"
+    "sidePanelNote": "Джерело: alerts.in.ua · оновлення кожні 30 с",
+    "occupiedTerritory": "Окупована територія",
+    "occupiedLegend": "Окуповано",
+    "alertLegend": "Тривога",
+    "frontlineLegend": "Лінія фронту",
+    "frontlineNote": "Лінія фронту з DeepStateMap · оновлення кожні 14 днів",
+    "oblastWide": "(на рівні області)",
+    "clickForDetails": "Натисніть для деталей",
+    "raionHistoricalNote": "Історичні дані по районах публічно не агрегуються; показано дані для відповідної області.",
+    "feedUnavailable": "Прямий потік недоступний — кешовані дані",
+    "feedDelayed": "Затримка"
   },
   "threatFeed": {
     "title": "Стрічка загроз наживо",
