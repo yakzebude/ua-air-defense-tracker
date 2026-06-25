@@ -415,22 +415,17 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   const alert = byIso.get(iso);
                   const state: AlertState = alert?.state ?? (alert?.active ? "full" : "none");
                   const occupied = OCCUPIED_ISOS.has(iso);
-                  // Occupied territories are rendered permanently dark red and
-                  // never pulse — active-alert signalling only applies to free
-                  // Ukrainian territory.
+                  // Occupied oblasts no longer get a broad color treatment —
+                  // precise occupation is rendered from DeepState polygons.
                   const isFull = state === "full" && !occupied;
                   const isPartial = state === "partial" && !occupied;
 
-                  const baseFill = occupied
-                    ? "hsl(var(--occupied))"
-                    : isFull
+                  const baseFill = isFull
                       ? "hsl(var(--signal) / 0.65)"
                       : isPartial
                         ? "hsl(var(--signal) / 0.18)"
                         : "hsl(var(--muted))";
-                  const hoverFill = occupied
-                    ? "hsl(var(--occupied))"
-                    : isFull
+                  const hoverFill = isFull
                       ? "hsl(var(--signal) / 0.85)"
                       : isPartial
                         ? "hsl(var(--signal) / 0.28)"
@@ -466,16 +461,16 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       style={{
                         default: {
                           fill: baseFill,
-                          stroke: occupied ? "hsl(var(--signal) / 0.85)" : "hsl(var(--foreground) / 0.6)",
-                          strokeWidth: occupied ? 1.4 : 0.7,
+                          stroke: "hsl(var(--foreground) / 0.6)",
+                          strokeWidth: 0.7,
                           outline: "none",
                           transition: "fill 200ms ease",
                           cursor: variant === "full" ? "pointer" : "default",
                         },
                         hover: {
                           fill: hoverFill,
-                          stroke: occupied ? "hsl(var(--signal))" : "hsl(var(--foreground) / 0.85)",
-                          strokeWidth: occupied ? 1.6 : 0.9,
+                          stroke: "hsl(var(--foreground) / 0.85)",
+                          strokeWidth: 0.9,
                           outline: "none",
                           cursor: variant === "full" ? "pointer" : "default",
                         },
@@ -515,9 +510,9 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                           fontSize,
                           fontWeight: 700,
                           letterSpacing: "0.06em",
-                          fill: occupied ? "hsl(0 0% 100%)" : "hsl(var(--foreground))",
+                          fill: "hsl(var(--foreground))",
                           paintOrder: "stroke",
-                          stroke: occupied ? "hsl(215 30% 8% / 0.95)" : "hsl(var(--background))",
+                          stroke: "hsl(var(--background))",
                           strokeWidth: 3.5,
                           strokeLinejoin: "round",
                         }}
@@ -622,7 +617,8 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               </Geographies>
             )}
 
-            {/* DeepStateMap front line — red stroke only, no fill overlay. */}
+            {/* DeepStateMap occupied territory — exact dark-grey fill from the
+                live polygons, not whole oblasts. */}
             {showRaions && frontline && (
               <Geographies geography={frontline}>
                 {({ geographies }) =>
@@ -632,9 +628,42 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       geography={geo}
                       style={{
                         default: {
+                          fill: "hsl(var(--foreground) / 0.28)",
+                          stroke: "transparent",
+                          strokeWidth: 0,
+                          strokeLinecap: "round",
+                          strokeLinejoin: "round",
+                          outline: "none",
+                          pointerEvents: "none",
+                        },
+                        hover: {
+                          fill: "hsl(var(--foreground) / 0.28)",
+                          stroke: "transparent",
+                          strokeWidth: 0,
+                          outline: "none",
+                          pointerEvents: "none",
+                        },
+                        pressed: { fill: "hsl(var(--foreground) / 0.28)", outline: "none", pointerEvents: "none" },
+                      }}
+                    />
+                  ))
+                }
+              </Geographies>
+            )}
+
+            {/* DeepStateMap front line — red stroke only, no broad red area. */}
+            {showRaions && frontline && (
+              <Geographies geography={frontline}>
+                {({ geographies }) =>
+                  geographies.map((geo) => (
+                    <Geography
+                      key={`frontline-stroke-${geo.rsmKey}`}
+                      geography={geo}
+                      style={{
+                        default: {
                           fill: "transparent",
                           stroke: "hsl(var(--signal))",
-                          strokeWidth: 2.4,
+                          strokeWidth: 1.8,
                           strokeLinecap: "round",
                           strokeLinejoin: "round",
                           outline: "none",
@@ -643,7 +672,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         hover: {
                           fill: "transparent",
                           stroke: "hsl(var(--signal))",
-                          strokeWidth: 2.4,
+                          strokeWidth: 1.8,
                           outline: "none",
                           pointerEvents: "none",
                         },
