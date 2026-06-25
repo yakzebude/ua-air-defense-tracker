@@ -268,13 +268,10 @@ export function HeroTrendChart({ shahed, cruise, ballistic }: Props) {
 
         <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-3 rounded-sm bg-muted-foreground/40" /> Launched
+            <span className="h-2 w-3 rounded-sm" style={{ background: "hsl(var(--series-destroyed))" }} /> Intercepted
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-[2px] w-4" style={{ background: "hsl(var(--foreground))" }} /> Intercepted
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-[2px] w-4" style={{ background: "hsl(var(--signal-warn))" }} /> Breached
+            <span className="h-2 w-3 rounded-sm" style={{ background: "hsl(var(--signal))" }} /> Breached
           </span>
           <span className="ml-auto normal-case tracking-normal text-[11px] text-muted-foreground/80">
             {t("hero.trendSource", "Source: Ukrainian Air Force Command (via Kaggle, Petro Ivaniuk).")}
