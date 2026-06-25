@@ -35,21 +35,21 @@ function ChartTooltip({ active, payload, label, t }: any) {
       <div className="space-y-1">
         <div className="flex items-center justify-between gap-6 text-foreground">
           <span className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_LAUNCHED }} />
-            {t("kpi.launchedReported")}
-          </span>
-          <span className="num font-semibold">{fmt(p.launched)}</span>
-        </div>
-        <div className="flex items-center justify-between gap-6 text-foreground">
-          <span className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_DESTROYED }} />
             {t("kpi.destroyedConfirmed")}
           </span>
           <span className="num font-semibold">{fmt(p.destroyed)}</span>
         </div>
+        <div className="flex items-center justify-between gap-6 text-foreground">
+          <span className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_BREACHED }} />
+            {t("chart.breached", { defaultValue: "Breached" })}
+          </span>
+          <span className="num font-semibold">{fmt(Math.max(0, p.launched - p.destroyed))}</span>
+        </div>
         <div className="mt-1 flex items-center justify-between gap-6 border-t border-border pt-1 text-muted-foreground">
-          <span>{t("chart.interceptionRate")}</span>
-          <span className="num font-semibold text-foreground">{(p.rate * 100).toFixed(1)}%</span>
+          <span>{t("kpi.launchedReported")}</span>
+          <span className="num font-semibold text-foreground">{fmt(p.launched)}</span>
         </div>
       </div>
     </div>
