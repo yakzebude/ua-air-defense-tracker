@@ -21,9 +21,10 @@ const fmtCompact = (n: number) => {
   if (Math.abs(n) >= 1000) return `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k`;
   return String(n);
 };
-const COLOR_LAUNCHED  = "hsl(var(--series-launched))";
+const COLOR_BREACHED  = "hsl(var(--signal))";
 const COLOR_DESTROYED = "hsl(var(--series-destroyed))";
 const COLOR_RATE      = "hsl(var(--series-rate))";
+const COLOR_LAUNCHED  = "hsl(var(--series-launched))";
 
 function ChartTooltip({ active, payload, label, t }: any) {
   if (!active || !payload?.length) return null;
