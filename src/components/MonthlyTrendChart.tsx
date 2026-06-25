@@ -51,6 +51,10 @@ function ChartTooltip({ active, payload, label, t }: any) {
           <span>{t("kpi.launchedReported")}</span>
           <span className="num font-semibold text-foreground">{fmt(p.launched)}</span>
         </div>
+        <div className="flex items-center justify-between gap-6 text-muted-foreground">
+          <span>{t("chart.interceptionRate")}</span>
+          <span className="num font-semibold text-foreground">{(p.rate * 100).toFixed(1)}%</span>
+        </div>
       </div>
     </div>
   );
