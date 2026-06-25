@@ -583,10 +583,13 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
           <div className="pointer-events-none absolute right-3 top-3 flex flex-col items-end gap-1.5">
             <div className="flex items-center gap-2 rounded border border-border bg-background/85 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground backdrop-blur">
               <span className="inline-flex items-center gap-1">
-                <span className="h-2 w-2 rounded-sm bg-[hsl(var(--occupied))]" /> Occupied
+                <span className="h-2 w-2 rounded-sm bg-[hsl(var(--occupied))]" /> {t("airAlerts.occupiedLegend")}
               </span>
               <span className="inline-flex items-center gap-1">
-                <span className="h-2 w-2 rounded-sm bg-[hsl(var(--signal))]" /> Alert
+                <span className="h-2 w-2 rounded-sm bg-[hsl(var(--signal))]" /> {t("airAlerts.alertLegend")}
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="h-[2px] w-3 bg-[hsl(var(--signal))]" /> {t("airAlerts.frontlineLegend")}
               </span>
             </div>
           </div>
