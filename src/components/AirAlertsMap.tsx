@@ -54,16 +54,47 @@ const stripGeoCoordinateDepth = (coords: unknown): unknown => {
   return coords.map(stripGeoCoordinateDepth);
 };
 
+const ringArea = (ring: number[][]): number => {
+  let area = 0;
+  for (let i = 0; i < ring.length - 1; i += 1) {
+    const [x1, y1] = ring[i];
+    const [x2, y2] = ring[i + 1];
+    area += x1 * y2 - x2 * y1;
+  }
+  return area / 2;
+};
+
+// d3-geo uses spherical winding opposite to standard GeoJSON for small
+// polygons. DeepState serves RFC-style rings, which can render as the inverse
+// of the polygon and cover the whole map unless rewound for d3.
+const rewindRingForD3 = (ring: number[][], isExterior: boolean): number[][] => {
+  const area = ringArea(ring);
+  const shouldReverse = isExterior ? area > 0 : area < 0;
+  return shouldReverse ? [...ring].reverse() : ring;
+};
+
+const rewindPolygonForD3 = (polygon: number[][][]): number[][][] =>
+  polygon.map((ring, index) => rewindRingForD3(ring, index === 0));
+
+const rewindCoordinatesForD3 = (
+  type: GeoJSON.Polygon["type"] | GeoJSON.MultiPolygon["type"],
+  coordinates: unknown,
+): GeoJSON.Polygon["coordinates"] | GeoJSON.MultiPolygon["coordinates"] => {
+  if (type === "Polygon") return rewindPolygonForD3(coordinates as number[][][]);
+  return (coordinates as number[][][][]).map(rewindPolygonForD3);
+};
+
 const normalizeFrontlineFeature = (feature: GeoJSON.Feature): GeoJSON.Feature | null => {
   const type = feature.geometry?.type;
   if (type !== "Polygon" && type !== "MultiPolygon") return null;
+  const coordinates = stripGeoCoordinateDepth((feature.geometry as GeoJSON.Polygon | GeoJSON.MultiPolygon).coordinates);
 
   return {
     type: "Feature",
     properties: feature.properties ?? { status: "occupied" },
     geometry: {
       type,
-      coordinates: stripGeoCoordinateDepth((feature.geometry as GeoJSON.Polygon | GeoJSON.MultiPolygon).coordinates),
+      coordinates: rewindCoordinatesForD3(type, coordinates),
     } as GeoJSON.Geometry,
   };
 };
