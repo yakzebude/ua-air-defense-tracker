@@ -431,16 +431,18 @@ function CategorySection({
   return (
     <section id={id} className="scroll-mt-32 border-t border-border">
       <div className="container py-12 md:py-16">
-        <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
-          <div className="max-w-3xl">
-            <div className="src-label mb-3">{kicker}</div>
-            <h2 className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">{title}</h2>
-            <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground line-clamp-2">{description}</p>
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
+          <div className="flex-1 min-w-0">
+            <div className="max-w-3xl">
+              <div className="src-label mb-3">{kicker}</div>
+              <h2 className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">{title}</h2>
+              <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground line-clamp-2">{description}</p>
+            </div>
+            {glossaryKey && <div className="mt-6"><GlossaryChips category={glossaryKey} /></div>}
           </div>
-          {tabs}
+          <div className="shrink-0 self-end pb-2">{tabs}</div>
         </div>
 
-        {glossaryKey && <GlossaryChips category={glossaryKey} />}
 
 
 
