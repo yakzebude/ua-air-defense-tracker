@@ -506,7 +506,17 @@
     "fullAlert": "Full alert",
     "partialAlert": "Partial",
     "feedUnauthorized": "Live feed authentication failed. Showing no active alerts.",
-    "sidePanelNote": "Source: alerts.in.ua · auto-refreshes every 30 s"
+    "sidePanelNote": "Source: alerts.in.ua · auto-refreshes every 30 s",
+    "occupiedTerritory": "Occupied territory",
+    "occupiedLegend": "Occupied",
+    "alertLegend": "Alert",
+    "frontlineLegend": "Front line",
+    "frontlineNote": "Front line via DeepStateMap · refreshed every 14 days",
+    "oblastWide": "(oblast-wide)",
+    "clickForDetails": "Click for details",
+    "raionHistoricalNote": "Raion-level historical data is not publicly aggregated; figures shown are for the parent oblast.",
+    "feedUnavailable": "Live feed unavailable — showing cached data",
+    "feedDelayed": "Delayed"
   },
   "threatFeed": {
     "title": "Live threat feed",
