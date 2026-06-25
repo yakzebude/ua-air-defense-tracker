@@ -614,7 +614,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                       <span className="ml-2">{durationLabel(o.changedAt, true)}</span>
                     </>
                   ) : OCCUPIED_ISOS.has(hovered.iso) ? (
-                    <span className="text-[hsl(var(--occupied))]">Occupied territory</span>
+                    <span className="text-[hsl(var(--occupied))]">{t("airAlerts.occupiedTerritory")}</span>
                   ) : (
                     <span>{t("airAlerts.clear")}</span>
                   )}
