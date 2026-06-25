@@ -701,7 +701,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                            <span className="text-[hsl(var(--signal))]">● {t("airAlerts.active")}</span>
                            {!r && parentActive && (
                              <span className="ml-2 text-[10px] text-muted-foreground/80">
-                               (oblast-wide)
+                               {t("airAlerts.oblastWide")}
                              </span>
                            )}
                          </>
