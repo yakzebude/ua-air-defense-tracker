@@ -14,7 +14,7 @@ const corsHeaders = {
 
 const SOURCE_URL = "https://deepstatemap.live/api/history/last";
 const BUCKET = "deepstate-cache";
-const OBJECT = "frontline-latest-v2.json";
+const OBJECT = "frontline-latest-v3.json";
 const REFRESH_AFTER_MS = 14 * 24 * 60 * 60 * 1000; // 14 days
 
 interface Cached {
@@ -27,7 +27,16 @@ function isOccupied(name: string | undefined): boolean {
   if (!name) return false;
   // DeepStateMap encodes status in the name as "UA /// EN /// geoJSON.status.<x>"
   const lc = name.toLowerCase();
-  return lc.includes("geojson.status.occupied") || lc.includes("/// occupied");
+  return lc.includes("geojson.status.occupied")
+    || lc.includes("geojson.territories.ordlo")
+    || lc.includes("geojson.territories.crimea")
+    || lc.includes("/// occupied");
+}
+
+function shouldDrawFrontline(name: string | undefined): boolean {
+  if (!name) return false;
+  const lc = name.toLowerCase();
+  return lc.includes("geojson.status.occupied") || lc.includes("geojson.territories.ordlo");
 }
 
 async function fetchUpstream(): Promise<Cached> {
@@ -56,7 +65,7 @@ async function fetchUpstream(): Promise<Cached> {
       // deno-lint-ignore no-explicit-any
       coordinates: strip2D((f.geometry as any).coordinates),
     } as GeoJSON.Geometry,
-    properties: { status: "occupied" as const },
+    properties: { status: "occupied" as const, redLine: shouldDrawFrontline((f.properties as { name?: string } | null)?.name) },
   }));
   return {
     fetchedAt: new Date().toISOString(),

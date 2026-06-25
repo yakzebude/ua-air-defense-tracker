@@ -2,50 +2,37 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from "react-simple-maps";
-import { geoCentroid, geoMercator, geoPath } from "d3-geo";
+import { geoCentroid, geoMercator } from "d3-geo";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import oblastStatsData from "@/data/oblastStats.json";
 
 const REFRESH_MS = 30 * 1000;
 const OBLASTS_GEO = "/geo/ua-oblasts.geo.json";
 const RAIONS_GEO = "/geo/ua-raions.geo.json";
-// Local, clipped context shapes for Belarus + the visible Russian border zone.
-// Avoid rendering the full Russia world-atlas polygon: it crosses the antimeridian
-// and can project as a huge filled path over the whole map viewport.
-// Context shapes for Belarus + Russia. Rendered behind Ukraine oblasts which
-// mask the inward edges, so visitors see neighbouring countries extending
-// naturally off the viewport instead of clipped fragments. Coordinates extend
-// well beyond visible bounds; the Ukraine-facing edge is coarse on purpose
-// because the oblast polygons overlay it.
-const AGGRESSOR_CONTEXT_GEO: GeoJSON.FeatureCollection = {
-  type: "FeatureCollection",
-  features: [
-    {
-      type: "Feature",
-      properties: { name: "Belarus" },
-      geometry: {
-        type: "Polygon",
-        coordinates: [[
-          [18, 51.0], [34, 51.0], [34, 62], [18, 62], [18, 51.0],
-        ]],
-      },
-    },
-    {
-      type: "Feature",
-      properties: { name: "Russia" },
-      geometry: {
-        type: "Polygon",
-        coordinates: [[
-          [33, 62], [60, 62], [60, 40], [38, 40],
-          [37.5, 44.5], [37.8, 46.0], [38.2, 47.1],
-          [39.7, 47.8], [40.1, 48.6], [40.0, 49.2], [39.7, 49.6],
-          [38.2, 49.95], [37.4, 50.4], [36.6, 50.2], [35.4, 50.6],
-          [34.4, 51.2], [33.7, 52.3], [33, 52.4], [33, 62],
-        ]],
-      },
-    },
-  ],
+type AggressorContextRing = {
+  country: "Belarus" | "Russia";
+  coordinates: [number, number][];
 };
+
+type ProjectedMapPath = {
+  key: string;
+  d: string;
+  redLine?: boolean;
+};
+
+// Simplified Natural Earth borders clipped to the Ukraine map viewport.
+// These are rendered as planar projected SVG paths (not d3 spherical polygons),
+// so ring winding cannot invert them into a full-map overlay.
+const AGGRESSOR_CONTEXT_RINGS: AggressorContextRing[] = [
+  {
+    country: "Belarus",
+    coordinates: [[31.7634, 52.1011], [31.0793, 52.077], [30.7553, 51.8952], [30.533, 51.5963], [30.6325, 51.3554], [30.5445, 51.265], [30.1607, 51.4779], [29.3465, 51.3826], [29.1021, 51.6275], [28.7312, 51.4334], [28.599, 51.5426], [28.1838, 51.6079], [27.8586, 51.5924], [27.7, 51.478], [27.6897, 51.5724], [27.2963, 51.5974], [27.142, 51.7521], [25.7857, 51.9238], [24.3619, 51.8675], [23.9783, 51.5913], [23.7068, 51.6413], [23.6053, 51.5179], [23.5448, 51.7103], [23.6524, 52.0404], [23.1751, 52.2866], [23.4109, 52.5162], [23.8447, 52.6642], [23.9154, 52.7703], [23.8592, 53.1121], [23.4847, 53.9398], [24.318, 53.893], [24.7682, 53.9747], [24.8695, 54.1452], [25.4611, 54.2928], [25.5104, 54.1596], [25.7492, 54.157], [25.7481, 54.2597], [25.5474, 54.3318], [25.8593, 54.9193], [26.1752, 55.0033], [26.2918, 55.1396], [26.6012, 55.1302], [26.7757, 55.2731], [26.4576, 55.3425], [26.5936, 55.6675], [27.0525, 55.8306], [27.5768, 55.7988], [27.8963, 56.0762], [28.1179, 56.1458], [28.2843, 56.0559], [28.564, 56.092], [28.7947, 55.9426], [29.0317, 56.0218], [29.375, 55.9387], [29.3534, 55.7844], [29.4822, 55.6846], [29.937, 55.8453], [30.2336, 55.8452], [30.9068, 55.57], [30.8105, 55.307], [30.9777, 55.0505], [30.7988, 54.7833], [31.1521, 54.6253], [31.0748, 54.4918], [31.4036, 54.1959], [31.826, 54.0307], [31.7542, 53.8104], [32.4502, 53.6929], [32.4696, 53.547], [32.7064, 53.4194], [32.7043, 53.3363], [32.142, 53.0912], [31.4179, 53.196], [31.2588, 53.0167], [31.5648, 52.7592], [31.5773, 52.3123], [31.7586, 52.1258], [31.7634, 52.1011]],
+  },
+  {
+    country: "Russia",
+    coordinates: [[46, 58], [46, 43], [43.0731, 43], [42.89, 43.1326], [42.419, 43.2242], [41.5806, 43.2192], [40.648, 43.5339], [40.1502, 43.5698], [39.9783, 43.4198], [38.7173, 44.2881], [38.1812, 44.4197], [37.8515, 44.6988], [37.4951, 44.6953], [37.2048, 44.972], [36.6508, 45.1265], [36.6191, 45.1855], [36.9412, 45.2897], [36.7204, 45.3719], [36.7938, 45.4097], [37.2136, 45.2723], [37.6472, 45.3772], [37.6124, 45.5647], [37.9331, 46.0017], [38.0143, 46.0478], [38.0796, 45.9348], [38.1836, 46.0948], [38.4923, 46.0905], [38.0777, 46.3943], [37.9139, 46.4065], [37.7665, 46.6361], [38.501, 46.6637], [38.4387, 46.8131], [39.2707, 47.0441], [39.1957, 47.2688], [38.6682, 47.1439], [38.5524, 47.1503], [38.7619, 47.2616], [38.5772, 47.2391], [38.2144, 47.0915], [38.2808, 47.2767], [38.2014, 47.3208], [38.2874, 47.5592], [38.6406, 47.6659], [38.8223, 47.837], [39.7787, 47.8875], [39.9579, 48.2689], [39.8475, 48.3028], [39.8356, 48.5428], [39.6447, 48.5912], [39.7929, 48.8077], [40.0036, 48.8221], [39.6865, 49.0079], [40.1088, 49.2516], [40.0807, 49.5769], [39.7806, 49.572], [39.1748, 49.856], [38.9184, 49.8247], [38.2586, 50.0523], [38.0469, 49.92], [37.7042, 50.1091], [37.4229, 50.4115], [36.6194, 50.2092], [36.1164, 50.4085], [35.5911, 50.3687], [35.4116, 50.5397], [35.4401, 50.7277], [35.3119, 51.0439], [35.1581, 51.061], [35.0641, 51.2034], [34.2139, 51.2554], [34.275, 51.3402], [34.1211, 51.6791], [34.3979, 51.7804], [33.7353, 52.3448], [32.8064, 52.2526], [32.4354, 52.3072], [32.1223, 52.0506], [31.7634, 52.1011], [31.5773, 52.3123], [31.5648, 52.7592], [31.2588, 53.0167], [31.4179, 53.196], [32.142, 53.0912], [32.7043, 53.3363], [32.7064, 53.4194], [32.4696, 53.547], [32.4502, 53.6929], [31.7542, 53.8104], [31.826, 54.0307], [31.4036, 54.1959], [31.0748, 54.4918], [31.1521, 54.6253], [30.7988, 54.7833], [30.9777, 55.0505], [30.8145, 55.2787], [30.8822, 55.5964], [30.2336, 55.8452], [29.937, 55.8453], [29.4822, 55.6846], [29.3534, 55.7844], [29.375, 55.9387], [29.0317, 56.0218], [28.7947, 55.9426], [28.564, 56.092], [28.2843, 56.0559], [28.1479, 56.1429], [28.2021, 56.2604], [28.1031, 56.5457], [27.8486, 56.8534], [27.6395, 56.8457], [27.8286, 57.2933], [27.352, 57.5281], [27.5421, 57.7994], [27.777, 57.8567], [27.6493, 58], [46, 58]],
+  },
+];
 
 const stripGeoCoordinateDepth = (coords: unknown): unknown => {
   if (!Array.isArray(coords)) return coords;
@@ -53,34 +40,47 @@ const stripGeoCoordinateDepth = (coords: unknown): unknown => {
   return coords.map(stripGeoCoordinateDepth);
 };
 
-const ringArea = (ring: number[][]): number => {
-  let area = 0;
-  for (let i = 0; i < ring.length - 1; i += 1) {
-    const [x1, y1] = ring[i];
-    const [x2, y2] = ring[i + 1];
-    area += x1 * y2 - x2 * y1;
-  }
-  return area / 2;
+const coordinateRingToSvgPath = (
+  ring: unknown,
+  projection: ReturnType<typeof geoMercator>,
+): string => {
+  if (!Array.isArray(ring)) return "";
+  const points = ring
+    .map((point) => {
+      if (!Array.isArray(point) || typeof point[0] !== "number" || typeof point[1] !== "number") return null;
+      const projected = projection([point[0], point[1]]);
+      if (!projected || !Number.isFinite(projected[0]) || !Number.isFinite(projected[1])) return null;
+      return projected;
+    })
+    .filter((point): point is [number, number] => Boolean(point));
+
+  if (points.length < 3) return "";
+  return `${points
+    .map(([x, y], index) => `${index === 0 ? "M" : "L"}${x.toFixed(3)},${y.toFixed(3)}`)
+    .join("")}Z`;
 };
 
-// d3-geo uses spherical winding opposite to standard GeoJSON for small
-// polygons. DeepState serves RFC-style rings, which can render as the inverse
-// of the polygon and cover the whole map unless rewound for d3.
-const rewindRingForD3 = (ring: number[][], isExterior: boolean): number[][] => {
-  const area = ringArea(ring);
-  const shouldReverse = isExterior ? area > 0 : area < 0;
-  return shouldReverse ? [...ring].reverse() : ring;
-};
-
-const rewindPolygonForD3 = (polygon: number[][][]): number[][][] =>
-  polygon.map((ring, index) => rewindRingForD3(ring, index === 0));
-
-const rewindCoordinatesForD3 = (
-  type: GeoJSON.Polygon["type"] | GeoJSON.MultiPolygon["type"],
+const polygonCoordinatesToSvgPath = (
   coordinates: unknown,
-): GeoJSON.Polygon["coordinates"] | GeoJSON.MultiPolygon["coordinates"] => {
-  if (type === "Polygon") return rewindPolygonForD3(coordinates as number[][][]);
-  return (coordinates as number[][][][]).map(rewindPolygonForD3);
+  projection: ReturnType<typeof geoMercator>,
+): string => {
+  if (!Array.isArray(coordinates)) return "";
+  return coordinates.map((ring) => coordinateRingToSvgPath(ring, projection)).filter(Boolean).join("");
+};
+
+const geometryToSvgPath = (
+  geometry: GeoJSON.Geometry | null | undefined,
+  projection: ReturnType<typeof geoMercator>,
+): string => {
+  if (!geometry) return "";
+  if (geometry.type === "Polygon") return polygonCoordinatesToSvgPath(geometry.coordinates, projection);
+  if (geometry.type === "MultiPolygon") {
+    return geometry.coordinates
+      .map((polygon) => polygonCoordinatesToSvgPath(polygon, projection))
+      .filter(Boolean)
+      .join("");
+  }
+  return "";
 };
 
 const normalizeFrontlineFeature = (feature: GeoJSON.Feature): GeoJSON.Feature | null => {
@@ -374,21 +374,38 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
   // Active raions inside non-occupied oblasts pulse red on top.
   const showRaions = variant === "full";
 
-  const aggressorPaths = useMemo(() => {
+  const mapProjection = useMemo(() => {
     const height = variant === "full" ? 680 : 420;
-    const projection = geoMercator()
+    return geoMercator()
       .scale(variant === "full" ? 2800 : 2200)
       .center([31.5, 49])
       .translate([500, height / 2]);
-    const path = geoPath(projection);
-
-    return AGGRESSOR_CONTEXT_GEO.features
-      .map((feature) => ({
-        country: feature.properties?.name as "Belarus" | "Russia",
-        d: path(feature),
-      }))
-      .filter((item): item is { country: "Belarus" | "Russia"; d: string } => Boolean(item.d));
   }, [variant]);
+
+  const aggressorPaths = useMemo(() => {
+    return AGGRESSOR_CONTEXT_RINGS
+      .map(({ country, coordinates }) => {
+        const projected = coordinates
+          .map(([lng, lat]) => mapProjection([lng, lat]))
+          .filter((point): point is [number, number] => Boolean(point));
+        const d = projected
+          .map(([x, y], index) => `${index === 0 ? "M" : "L"}${x.toFixed(3)},${y.toFixed(3)}`)
+          .join("");
+        return { country, d: `${d}Z` };
+      })
+      .filter((item): item is { country: "Belarus" | "Russia"; d: string } => Boolean(item.d));
+  }, [mapProjection]);
+
+  const occupiedPaths = useMemo<ProjectedMapPath[]>(() => {
+    if (!frontline) return [];
+    return frontline.features
+      .map((feature, index) => {
+        const d = geometryToSvgPath(feature.geometry, mapProjection);
+        const redLine = (feature.properties as { redLine?: boolean } | null)?.redLine !== false;
+        return { key: `occupied-${index}`, d, redLine };
+      })
+      .filter((path) => path.d);
+  }, [frontline, mapProjection]);
 
   // Map sizes to fill its panel. The full variant fills a fixed-height
   // container so the map and the threat feed read as equal blocks side-by-side.
@@ -659,72 +676,36 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               </Geographies>
             )}
 
-            {/* DeepStateMap occupied territory — exact dark-grey fill from the
-                live polygons, not whole oblasts. */}
-            {showRaions && frontline && (
-              <Geographies geography={frontline}>
-                {({ geographies }) =>
-                  geographies.map((geo) => (
-                    <Geography
-                      key={`frontline-${geo.rsmKey}`}
-                      geography={geo}
-                      style={{
-                        default: {
-                          fill: "hsl(var(--foreground) / 0.28)",
-                          stroke: "transparent",
-                          strokeWidth: 0,
-                          strokeLinecap: "round",
-                          strokeLinejoin: "round",
-                          outline: "none",
-                          pointerEvents: "none",
-                        },
-                        hover: {
-                          fill: "hsl(var(--foreground) / 0.28)",
-                          stroke: "transparent",
-                          strokeWidth: 0,
-                          outline: "none",
-                          pointerEvents: "none",
-                        },
-                        pressed: { fill: "hsl(var(--foreground) / 0.28)", outline: "none", pointerEvents: "none" },
-                      }}
-                    />
-                  ))
-                }
-              </Geographies>
-            )}
+            {/* DeepStateMap occupied territory — projected as planar SVG paths
+                to avoid d3 spherical winding inversions that can fill the map. */}
+            {showRaions && occupiedPaths.map((path) => (
+              <path
+                key={path.key}
+                d={path.d}
+                fill="hsl(var(--foreground) / 0.28)"
+                fillRule="evenodd"
+                stroke="transparent"
+                strokeWidth={0}
+                vectorEffect="non-scaling-stroke"
+                pointerEvents="none"
+              />
+            ))}
 
-            {/* DeepStateMap front line — red stroke only, no broad red area. */}
-            {showRaions && frontline && (
-              <Geographies geography={frontline}>
-                {({ geographies }) =>
-                  geographies.map((geo) => (
-                    <Geography
-                      key={`frontline-stroke-${geo.rsmKey}`}
-                      geography={geo}
-                      style={{
-                        default: {
-                          fill: "transparent",
-                          stroke: "hsl(var(--signal))",
-                          strokeWidth: 1.8,
-                          strokeLinecap: "round",
-                          strokeLinejoin: "round",
-                          outline: "none",
-                          pointerEvents: "none",
-                        },
-                        hover: {
-                          fill: "transparent",
-                          stroke: "hsl(var(--signal))",
-                          strokeWidth: 1.8,
-                          outline: "none",
-                          pointerEvents: "none",
-                        },
-                        pressed: { fill: "transparent", outline: "none", pointerEvents: "none" },
-                      }}
-                    />
-                  ))
-                }
-              </Geographies>
-            )}
+            {/* DeepStateMap front line — red stroke only on live occupied-front
+                polygons, not on historical occupied-territory context. */}
+            {showRaions && occupiedPaths.filter((path) => path.redLine).map((path) => (
+              <path
+                key={`${path.key}-line`}
+                d={path.d}
+                fill="transparent"
+                stroke="hsl(var(--signal))"
+                strokeWidth={1.8}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                vectorEffect="non-scaling-stroke"
+                pointerEvents="none"
+              />
+            ))}
           </ZoomableGroup>
         </ComposableMap>
 
