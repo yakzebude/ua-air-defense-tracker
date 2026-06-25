@@ -19,6 +19,8 @@ interface Props {
   shahed: Dataset;
   cruise: Dataset;
   ballistic: Dataset;
+  tab?: TabKey;
+  onTabChange?: (t: TabKey) => void;
 }
 
 const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
@@ -116,9 +118,14 @@ function ChartTooltip({ active, payload, label }: any) {
   );
 }
 
-export function HeroTrendChart({ shahed, cruise, ballistic }: Props) {
+export function HeroTrendChart({ shahed, cruise, ballistic, tab: tabProp, onTabChange }: Props) {
   const { t } = useTranslation();
-  const [tab, setTab] = useState<TabKey>("all");
+  const [internalTab, setInternalTab] = useState<TabKey>("all");
+  const tab = tabProp ?? internalTab;
+  const setTab = (k: TabKey) => {
+    if (onTabChange) onTabChange(k);
+    if (tabProp === undefined) setInternalTab(k);
+  };
 
   const rows = useMemo(() => {
     const sets =

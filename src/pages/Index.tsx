@@ -698,7 +698,16 @@ const Index = () => {
   const [latestDataPoint, setLatestDataPoint] = useState<Date | null>(null);
   const [completeMonth, setCompleteMonth] = useState<{ key: string; label: string } | null>(null);
   
-  const [activeCategory, setActiveCategory] = useState<"drones" | "cruise" | "ballistic">("drones");
+  const [activeCategory, setActiveCategoryRaw] = useState<"drones" | "cruise" | "ballistic">("drones");
+  const [heroTab, setHeroTab] = useState<"all" | "uav" | "cruise" | "ballistic">("all");
+  const setActiveCategory = (c: "drones" | "cruise" | "ballistic") => {
+    setActiveCategoryRaw(c);
+    setHeroTab(c === "drones" ? "uav" : c);
+  };
+  const handleHeroTabChange = (k: "all" | "uav" | "cruise" | "ballistic") => {
+    setHeroTab(k);
+    if (k !== "all") setActiveCategoryRaw(k === "uav" ? "drones" : k);
+  };
   const [contactOpen, setContactOpen] = useState(false);
 
   useEffect(() => {
@@ -963,10 +972,6 @@ const Index = () => {
       )}
 
       {ready && (
-        <HeroTrendChart shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />
-      )}
-
-      {ready && (
         <CategorySparklines
           categories={[
             { id: "drones",    label: t("category.drones.kicker"),           unit: t("category.drones.unit"),           dataset: shahed!,    href: "#drones" },
@@ -978,12 +983,19 @@ const Index = () => {
 
       {ready && <AnalyticsDashboard shahed={shahed!} cruise={cruise!} ballistic={ballistic!} />}
 
-      {/* The full live-alerts section now lives further down (after Ballistic). */}
+      {ready && (
+        <HeroTrendChart
+          shahed={shahed!}
+          cruise={cruise!}
+          ballistic={ballistic!}
+          tab={heroTab}
+          onTabChange={handleHeroTabChange}
+        />
+      )}
 
-
-      {(shahed && shahedRange) || (cruise && cruiseRange) || (ballistic && ballisticRange) ? (
-        <div className="border-t border-border">
-          {activeCategory === "drones" && shahed && shahedRange && (
+      {ready && heroTab !== "all" && (
+        <div>
+          {heroTab === "uav" && shahed && shahedRange && (
             <CategorySection
               id="drones"
               glossaryKey="drones"
@@ -994,21 +1006,9 @@ const Index = () => {
               dataset={shahed}
               range={shahedRange}
               onRangeChange={setShahedRange}
-              tabs={
-                <CategoryTabs
-                  activeCategory={activeCategory}
-                  onChange={setActiveCategory}
-                  shahed={shahed}
-                  shahedRange={shahedRange}
-                  cruise={cruise}
-                  cruiseRange={cruiseRange}
-                  ballistic={ballistic}
-                  ballisticRange={ballisticRange}
-                />
-              }
             />
           )}
-          {activeCategory === "cruise" && cruise && cruiseRange && (
+          {heroTab === "cruise" && cruise && cruiseRange && (
             <CategorySection
               id="cruise"
               glossaryKey="cruise"
@@ -1019,21 +1019,9 @@ const Index = () => {
               dataset={cruise}
               range={cruiseRange}
               onRangeChange={setCruiseRange}
-              tabs={
-                <CategoryTabs
-                  activeCategory={activeCategory}
-                  onChange={setActiveCategory}
-                  shahed={shahed}
-                  shahedRange={shahedRange}
-                  cruise={cruise}
-                  cruiseRange={cruiseRange}
-                  ballistic={ballistic}
-                  ballisticRange={ballisticRange}
-                />
-              }
             />
           )}
-          {activeCategory === "ballistic" && ballistic && ballisticRange && (
+          {heroTab === "ballistic" && ballistic && ballisticRange && (
             <CategorySection
               id="ballistic"
               glossaryKey="ballistic"
@@ -1044,22 +1032,11 @@ const Index = () => {
               dataset={ballistic}
               range={ballisticRange}
               onRangeChange={setBallisticRange}
-              tabs={
-                <CategoryTabs
-                  activeCategory={activeCategory}
-                  onChange={setActiveCategory}
-                  shahed={shahed}
-                  shahedRange={shahedRange}
-                  cruise={cruise}
-                  cruiseRange={cruiseRange}
-                  ballistic={ballistic}
-                  ballisticRange={ballisticRange}
-                />
-              }
             />
           )}
         </div>
-      ) : null}
+      )}
+
 
 
 
