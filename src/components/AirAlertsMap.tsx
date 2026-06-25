@@ -970,7 +970,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         {t("airAlerts.statsHeading", { date: OBLAST_STATS.periodStart })}
                       </div>
                       <p className="text-[10px] text-muted-foreground/80 -mt-1">
-                        Raion-level historical data is not publicly aggregated; figures below are for the parent oblast ({parent?.nameEn}).
+                        {t("airAlerts.raionHistoricalNote")}
                       </p>
                       <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
                         <div>
