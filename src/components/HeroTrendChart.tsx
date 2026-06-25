@@ -19,6 +19,8 @@ interface Props {
   shahed: Dataset;
   cruise: Dataset;
   ballistic: Dataset;
+  tab?: TabKey;
+  onTabChange?: (t: TabKey) => void;
 }
 
 const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
