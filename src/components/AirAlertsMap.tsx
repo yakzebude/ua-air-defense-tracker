@@ -721,7 +721,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                   </>
                 );
               })()}
-              <div className="mt-1.5 text-[9px] text-muted-foreground/70">Click for details</div>
+              <div className="mt-1.5 text-[9px] text-muted-foreground/70">{t("airAlerts.clickForDetails")}</div>
             </div>
           );
         })()}
