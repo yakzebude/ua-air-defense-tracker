@@ -442,17 +442,6 @@ function CategorySection({
 
         {glossaryKey && <GlossaryChips category={glossaryKey} />}
 
-        {mom && (
-          <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-sm border border-border bg-card px-4 py-3 text-[13px]">
-            <span className="src-label">{t("kpi.momLabel")}</span>
-            <span className={`num font-semibold ${mom.pct >= 0 ? "text-[#940000]" : "text-[hsl(var(--signal-ok))]"}`}>
-              {mom.pct >= 0 ? "+" : ""}{mom.pct.toFixed(1)}%
-            </span>
-            <span className="text-muted-foreground">
-              {t("kpi.momDetail", { last: mom.last, prev: mom.prev })}
-            </span>
-          </div>
-        )}
 
 
         <Panel
