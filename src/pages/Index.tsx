@@ -698,7 +698,16 @@ const Index = () => {
   const [latestDataPoint, setLatestDataPoint] = useState<Date | null>(null);
   const [completeMonth, setCompleteMonth] = useState<{ key: string; label: string } | null>(null);
   
-  const [activeCategory, setActiveCategory] = useState<"drones" | "cruise" | "ballistic">("drones");
+  const [activeCategory, setActiveCategoryRaw] = useState<"drones" | "cruise" | "ballistic">("drones");
+  const [heroTab, setHeroTab] = useState<"all" | "uav" | "cruise" | "ballistic">("all");
+  const setActiveCategory = (c: "drones" | "cruise" | "ballistic") => {
+    setActiveCategoryRaw(c);
+    setHeroTab(c === "drones" ? "uav" : c);
+  };
+  const handleHeroTabChange = (k: "all" | "uav" | "cruise" | "ballistic") => {
+    setHeroTab(k);
+    if (k !== "all") setActiveCategoryRaw(k === "uav" ? "drones" : k);
+  };
   const [contactOpen, setContactOpen] = useState(false);
 
   useEffect(() => {
