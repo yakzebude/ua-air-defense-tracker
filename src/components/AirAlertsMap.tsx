@@ -12,6 +12,11 @@ const RAIONS_GEO = "/geo/ua-raions.geo.json";
 // Local, clipped context shapes for Belarus + the visible Russian border zone.
 // Avoid rendering the full Russia world-atlas polygon: it crosses the antimeridian
 // and can project as a huge filled path over the whole map viewport.
+// Context shapes for Belarus + Russia. Rendered behind Ukraine oblasts which
+// mask the inward edges, so visitors see neighbouring countries extending
+// naturally off the viewport instead of clipped fragments. Coordinates extend
+// well beyond visible bounds; the Ukraine-facing edge is coarse on purpose
+// because the oblast polygons overlay it.
 const AGGRESSOR_CONTEXT_GEO: GeoJSON.FeatureCollection = {
   type: "FeatureCollection",
   features: [
@@ -21,9 +26,7 @@ const AGGRESSOR_CONTEXT_GEO: GeoJSON.FeatureCollection = {
       geometry: {
         type: "Polygon",
         coordinates: [[
-          [23.15, 51.25], [23.65, 52.15], [24.75, 53.95], [26.45, 55.25],
-          [28.65, 55.95], [31.05, 54.95], [32.75, 53.55], [31.85, 51.65],
-          [29.35, 51.25], [26.75, 51.45], [24.95, 51.55], [23.15, 51.25],
+          [18, 51.0], [34, 51.0], [34, 62], [18, 62], [18, 51.0],
         ]],
       },
     },
@@ -31,18 +34,14 @@ const AGGRESSOR_CONTEXT_GEO: GeoJSON.FeatureCollection = {
       type: "Feature",
       properties: { name: "Russia" },
       geometry: {
-        type: "MultiPolygon",
-        coordinates: [
-          [[
-            [31.85, 52.25], [42.75, 52.25], [42.75, 47.55], [40.15, 47.65],
-            [38.95, 48.55], [38.25, 49.65], [36.95, 50.35], [35.75, 50.85],
-            [34.55, 51.15], [33.35, 51.75], [31.85, 52.25],
-          ]],
-          [[
-            [35.95, 45.15], [36.35, 45.65], [37.35, 46.35], [38.75, 47.15],
-            [40.15, 47.65], [42.75, 47.65], [42.75, 45.15], [35.95, 45.15],
-          ]],
-        ],
+        type: "Polygon",
+        coordinates: [[
+          [33, 62], [60, 62], [60, 40], [38, 40],
+          [37.5, 44.5], [37.8, 46.0], [38.2, 47.1],
+          [39.7, 47.8], [40.1, 48.6], [40.0, 49.2], [39.7, 49.6],
+          [38.2, 49.95], [37.4, 50.4], [36.6, 50.2], [35.4, 50.6],
+          [34.4, 51.2], [33.7, 52.3], [33, 52.4], [33, 62],
+        ]],
       },
     },
   ],
@@ -88,14 +87,13 @@ const normalizeFrontlineFeature = (feature: GeoJSON.Feature): GeoJSON.Feature | 
   const type = feature.geometry?.type;
   if (type !== "Polygon" && type !== "MultiPolygon") return null;
   const coordinates = stripGeoCoordinateDepth((feature.geometry as GeoJSON.Polygon | GeoJSON.MultiPolygon).coordinates);
-
+  // Don't pre-rewind here: react-simple-maps' <Geographies> hands the geometry
+  // to d3-geo which performs its own spherical winding. Pre-rewinding inverted
+  // some DeepState polygons, leaving holes inside occupied territory.
   return {
     type: "Feature",
     properties: feature.properties ?? { status: "occupied" },
-    geometry: {
-      type,
-      coordinates: rewindCoordinatesForD3(type, coordinates),
-    } as GeoJSON.Geometry,
+    geometry: { type, coordinates } as GeoJSON.Geometry,
   };
 };
 
