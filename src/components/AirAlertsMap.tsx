@@ -843,6 +843,19 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
         {showRaions && (
           <span className="text-muted-foreground/80">{t("airAlerts.threatTypeNote")}</span>
         )}
+        {showRaions && (
+          <span className="text-muted-foreground/80">
+            ·{" "}
+            <a
+              href="https://deepstatemap.live"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline-offset-4 hover:underline"
+            >
+              {t("airAlerts.frontlineNote")}
+            </a>
+          </span>
+        )}
       </div>
 
       {/* Detail panel */}
