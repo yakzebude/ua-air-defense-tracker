@@ -436,8 +436,12 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
 
     return frontline.features
       .filter(isUkraineTheaterFeature)
-      .map((feature, index) => ({ id: `deepstate-${index}`, d: path(feature) }))
-      .filter((item): item is { id: string; d: string } => Boolean(item.d));
+      .map((feature, index) => ({
+        id: `deepstate-${index}`,
+        d: path(feature),
+        status: feature.properties?.status === "unknown" ? "unknown" : "occupied",
+      }))
+      .filter((item): item is { id: string; d: string; status: "occupied" | "unknown" } => Boolean(item.d));
   }, [frontline, variant]);
 
   // Map sizes to fill its panel. The full variant fills a fixed-height
@@ -668,11 +672,11 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
 
             {/* DeepStateMap occupation layer: direct projected paths keep the
                 map stable and avoid react-simple-maps rewinding artefacts. */}
-            {showRaions && frontlinePaths.map(({ id, d }) => (
+            {showRaions && frontlinePaths.map(({ id, d, status }) => (
               <path
                 key={`${id}-fill`}
                 d={d}
-                fill="hsl(var(--occupied) / 0.86)"
+                fill={status === "occupied" ? "hsl(var(--occupied) / 0.86)" : "hsl(var(--muted-foreground) / 0.28)"}
                 stroke="transparent"
                 strokeWidth={0}
                 vectorEffect="non-scaling-stroke"
