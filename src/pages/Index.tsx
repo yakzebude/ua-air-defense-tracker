@@ -655,9 +655,7 @@ function FlipKpi({ label, value, sub, tipLabel, tip, primary = false, accent = f
       toggle();
     }
   };
-  const valueColor = primary || accent
-    ? { color: "hsl(var(--signal-warn))" }
-    : { color: "hsl(var(--foreground) / 0.8)" };
+  const valueColor = { color: "hsl(var(--foreground))" };
   return (
     <div
       className="group min-w-0 h-full [perspective:1200px]"
