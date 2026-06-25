@@ -14,7 +14,7 @@ const corsHeaders = {
 
 const SOURCE_URL = "https://deepstatemap.live/api/history/last";
 const BUCKET = "deepstate-cache";
-const OBJECT = "frontline-latest.json";
+const OBJECT = "frontline-latest-v2.json";
 const REFRESH_AFTER_MS = 14 * 24 * 60 * 60 * 1000; // 14 days
 
 interface Cached {
@@ -40,15 +40,22 @@ async function fetchUpstream(): Promise<Cached> {
     datetime?: string;
     map?: { type: string; features: GeoJSON.Feature[] };
   };
+  // Strip Z (elevation) from each [lng,lat,z] tuple — d3-geo expects [lng,lat].
+  const strip2D = (coords: any): any =>
+    typeof coords[0] === "number" ? [coords[0], coords[1]] : coords.map(strip2D);
+
   const features = (json.map?.features ?? []).filter((f) => {
     const t = f.geometry?.type;
     if (t !== "Polygon" && t !== "MultiPolygon") return false;
     const name = (f.properties as { name?: string } | null)?.name;
     return isOccupied(name);
-  // Strip heavy/unused props to shrink payload.
   }).map((f) => ({
     type: "Feature" as const,
-    geometry: f.geometry,
+    geometry: {
+      type: f.geometry!.type,
+      // deno-lint-ignore no-explicit-any
+      coordinates: strip2D((f.geometry as any).coordinates),
+    } as GeoJSON.Geometry,
     properties: { status: "occupied" as const },
   }));
   return {
