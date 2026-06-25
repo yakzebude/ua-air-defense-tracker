@@ -81,6 +81,7 @@ export function MonthlyTrendChart({ data }: Props) {
       .filter((m) => !(m.date.getUTCFullYear() === curY && m.date.getUTCMonth() === curM))
       .map((m) => ({
         ...m,
+        breached: Math.max(0, m.launched - m.destroyed),
         // Short tick label for narrow screens (Jan, Feb …; year only on Jan).
         shortLabel: (() => {
           const mo = m.date.toLocaleString("en-US", { month: "short" });
