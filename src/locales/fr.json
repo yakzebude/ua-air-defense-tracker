@@ -492,7 +492,17 @@
     "fullAlert": "Total",
     "partialAlert": "Partiel",
     "feedUnauthorized": "Échec d'authentification du flux en direct.",
-    "sidePanelNote": "Source : alerts.in.ua · actualisation toutes les 30 s"
+    "sidePanelNote": "Source : alerts.in.ua · actualisation toutes les 30 s",
+    "occupiedTerritory": "Territoire occupé",
+    "occupiedLegend": "Occupé",
+    "alertLegend": "Alerte",
+    "frontlineLegend": "Ligne de front",
+    "frontlineNote": "Ligne de front via DeepStateMap · actualisée tous les 14 jours",
+    "oblastWide": "(toute l'oblast)",
+    "clickForDetails": "Cliquer pour les détails",
+    "raionHistoricalNote": "Les données historiques par raïon ne sont pas agrégées publiquement ; les chiffres concernent l'oblast parent.",
+    "feedUnavailable": "Flux en direct indisponible — données en cache",
+    "feedDelayed": "Retardé"
   },
   "threatFeed": {
     "title": "Flux des menaces en direct",

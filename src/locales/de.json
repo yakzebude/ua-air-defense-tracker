@@ -492,7 +492,17 @@
     "fullAlert": "Voll",
     "partialAlert": "Teilweise",
     "feedUnauthorized": "Live-Feed-Authentifizierung fehlgeschlagen. Keine aktiven Alarme verfügbar.",
-    "sidePanelNote": "Quelle: alerts.in.ua · automatische Aktualisierung alle 30 s"
+    "sidePanelNote": "Quelle: alerts.in.ua · automatische Aktualisierung alle 30 s",
+    "occupiedTerritory": "Besetztes Gebiet",
+    "occupiedLegend": "Besetzt",
+    "alertLegend": "Alarm",
+    "frontlineLegend": "Frontlinie",
+    "frontlineNote": "Frontlinie via DeepStateMap · Aktualisierung alle 14 Tage",
+    "oblastWide": "(oblastweit)",
+    "clickForDetails": "Für Details klicken",
+    "raionHistoricalNote": "Rajon-Statistiken werden nicht öffentlich aggregiert; die Werte beziehen sich auf die übergeordnete Oblast.",
+    "feedUnavailable": "Live-Feed nicht verfügbar — gecachte Daten",
+    "feedDelayed": "Verzögert"
   },
   "threatFeed": {
     "title": "Live-Bedrohungs-Feed",
