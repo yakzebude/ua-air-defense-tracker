@@ -435,7 +435,7 @@ function CategorySection({
           <div className="max-w-3xl">
             <div className="src-label mb-3">{kicker}</div>
             <h2 className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">{title}</h2>
-            <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">{description}</p>
+            <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground line-clamp-2">{description}</p>
           </div>
           {tabs}
         </div>
@@ -482,12 +482,55 @@ function CategorySection({
           <MonthlyTrendChart data={filtered} />
         </Panel>
 
-        <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-border py-6 md:grid-cols-4">
-          <KPI label={t("kpi.launchedReported")} numeric={launched} sub={rangeLabel} />
-          <KPI label={t("kpi.confirmedDestroyed")} numeric={destroyed} sub={t("kpi.confirmedInterceptions")} />
-          <KPI label={t("kpi.interceptionRate")} numeric={rate * 100} decimals={1} suffix="%" sub={`${fmt(destroyed)} ${t("kpi.ofSep")} ${fmt(launched)}`} />
-          <KPI label={t("kpi.reachedTarget")} numeric={Math.max(launched - destroyed, 0)} sub={launched > 0 ? `${(((launched - destroyed) / launched) * 100).toFixed(1)}${t("kpi.leakerPctSuffix")}` : "—"} />
-        </div>
+        {(() => {
+          const breached = Math.max(launched - destroyed, 0);
+          const interceptionPct = rate * 100;
+          const breachPct = launched > 0 ? (breached / launched) * 100 : 0;
+          return (
+            <div className="mt-6 grid gap-3 grid-cols-2 md:grid-cols-5">
+              <FlipKpi
+                primary
+                label={t("kpi.reachedTarget")}
+                value={fmt(breached)}
+                sub={t("kpi.breachedAirDefenseSub")}
+                tipLabel={t("kpi.tip.reachedTargetLabel")}
+                tip={t("kpi.tip.reachedTarget")}
+              />
+              <FlipKpi
+                label={t("kpi.intercepted", "Intercepted")}
+                value={fmt(destroyed)}
+                sub={t("kpi.interceptedSub", "Confirmed shoot-downs")}
+                tipLabel={t("kpi.tip.interceptionRateLabel")}
+                tip={t("kpi.tip.interceptionRate")}
+              />
+              <FlipKpi
+                label={t("kpi.totalLaunched")}
+                value={fmt(launched)}
+                sub={rangeLabel}
+                tipLabel={t("kpi.tip.totalLaunchedLabel")}
+                tip={t("kpi.tip.totalLaunched")}
+              />
+              <FlipKpi
+                accent
+                label={t("kpi.interceptionRate")}
+                value={interceptionPct.toFixed(1)}
+                suffix="%"
+                sub={`${fmt(destroyed)} ${t("kpi.ofSep")} ${fmt(launched)}`}
+                tipLabel={t("kpi.tip.interceptionRateLabel")}
+                tip={t("kpi.tip.interceptionRate")}
+              />
+              <FlipKpi
+                accent
+                label={t("kpi.breachRate", "Breach rate")}
+                value={breachPct.toFixed(1)}
+                suffix="%"
+                sub={t("kpi.breachRateSub", "Share of launches that got through")}
+                tipLabel={t("kpi.tip.reachedTargetLabel")}
+                tip={t("kpi.tip.reachedTarget")}
+              />
+            </div>
+          );
+        })()}
 
 
 
