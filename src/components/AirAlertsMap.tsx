@@ -179,11 +179,33 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
   >(null);
   const timerRef = useRef<number | null>(null);
   const [, setTick] = useState(0);
+  const [frontline, setFrontline] = useState<GeoJSON.FeatureCollection | null>(null);
 
   useEffect(() => {
     const tickTimer = window.setInterval(() => setTick((n) => n + 1), 60_000);
     return () => clearInterval(tickTimer);
   }, []);
+
+  // DeepStateMap front-line polygons. Fetched once per mount; the edge
+  // function itself only refreshes the upstream call every 14 days.
+  useEffect(() => {
+    if (variant !== "full") return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID as string;
+        const apikey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+        const res = await fetch(`https://${projectId}.functions.supabase.co/deepstate-frontline`, {
+          headers: { apikey, Authorization: `Bearer ${apikey}` },
+        });
+        if (!res.ok) return;
+        const payload = await res.json() as { features?: GeoJSON.Feature[] };
+        if (cancelled || !payload.features?.length) return;
+        setFrontline({ type: "FeatureCollection", features: payload.features });
+      } catch { /* ignore */ }
+    })();
+    return () => { cancelled = true; };
+  }, [variant]);
 
   const load = async () => {
     try {
