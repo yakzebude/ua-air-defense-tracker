@@ -808,7 +808,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               <>
                 <SheetHeader>
                   <SheetTitle>{selected.nameEn || selected.name}</SheetTitle>
-                  <SheetDescription>{selected.name}</SheetDescription>
+                  {lang === "uk" && <SheetDescription>{selected.name}</SheetDescription>}
                 </SheetHeader>
                 <div className="mt-6 space-y-4 text-sm">
                   <div>
