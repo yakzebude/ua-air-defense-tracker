@@ -110,8 +110,8 @@ export function MonthlyTrendChart({ data }: Props) {
               ? { top: 8, right: 8, left: 0, bottom: 28 }
               : { top: 8, right: 48, left: 0, bottom: 28 }
             }
-            barCategoryGap={isNarrow ? "12%" : "18%"}
-            barGap={1}
+            barCategoryGap={0}
+            barGap={0}
           >
             <CartesianGrid stroke="hsl(var(--border) / 0.15)" vertical={false} />
             <XAxis
