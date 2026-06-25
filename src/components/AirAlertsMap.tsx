@@ -938,7 +938,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                         ● {t("airAlerts.active")}
                         {!r?.active && parentActive && (
                           <span className="ml-2 text-[10px] font-normal text-muted-foreground/80">
-                            (oblast-wide)
+                            {t("airAlerts.oblastWide")}
                           </span>
                         )}
                       </div>
