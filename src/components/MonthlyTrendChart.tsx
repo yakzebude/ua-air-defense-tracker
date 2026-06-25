@@ -180,10 +180,10 @@ export function MonthlyTrendChart({ data }: Props) {
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
         <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_LAUNCHED }} /> {t("chart.launched")}
+          <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_DESTROYED }} /> {t("chart.destroyed")}
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_DESTROYED }} /> {t("chart.destroyed")}
+          <span className="h-2 w-2 rounded-sm" style={{ background: COLOR_BREACHED }} /> {t("chart.breached", { defaultValue: "Breached" })}
         </span>
         {!isNarrow && (
           <span className="flex items-center gap-1.5 basis-full sm:basis-auto">
