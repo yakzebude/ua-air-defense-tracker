@@ -435,7 +435,7 @@ function CategorySection({
           <div className="max-w-3xl">
             <div className="src-label mb-3">{kicker}</div>
             <h2 className="font-serif text-[1.375rem] md:text-[1.75rem] leading-tight tracking-tight">{title}</h2>
-            <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground">{description}</p>
+            <p className="mt-3 text-[14px] leading-[1.65] text-muted-foreground line-clamp-2">{description}</p>
           </div>
           {tabs}
         </div>
