@@ -192,7 +192,8 @@ export function HeroTrendChart({ shahed, cruise, ballistic }: Props) {
             <ComposedChart
               data={rows}
               margin={{ top: 24, right: 16, left: 0, bottom: 28 }}
-              barCategoryGap="18%"
+              barCategoryGap={0}
+              barGap={0}
             >
               <CartesianGrid stroke="hsl(var(--border) / 0.25)" vertical={false} />
               <XAxis
@@ -215,27 +216,17 @@ export function HeroTrendChart({ shahed, cruise, ballistic }: Props) {
                 cursor={{ fill: "hsl(var(--foreground) / 0.05)" }}
               />
               <Bar
-                dataKey="launched"
-                name="Launched"
-                fill="hsl(var(--series-launched))"
-                maxBarSize={26}
-              />
-              <Line
-                type="monotone"
-                dataKey="intercepted"
-                name="Intercepted"
-                stroke="hsl(var(--foreground))"
-                strokeWidth={1.5}
-                dot={false}
-                isAnimationActive={false}
-              />
-              <Line
-                type="monotone"
                 dataKey="breached"
                 name="Breached"
-                stroke="hsl(var(--signal-warn))"
-                strokeWidth={2.25}
-                dot={false}
+                stackId="a"
+                fill="hsl(var(--signal))"
+                isAnimationActive={false}
+              />
+              <Bar
+                dataKey="intercepted"
+                name="Intercepted"
+                stackId="a"
+                fill="hsl(var(--series-destroyed))"
                 isAnimationActive={false}
               />
               {peakLaunched && (
