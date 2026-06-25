@@ -440,7 +440,7 @@ function CategorySection({
             </div>
             {glossaryKey && <div className="mt-6"><GlossaryChips category={glossaryKey} /></div>}
           </div>
-          <div className="shrink-0 self-end pb-2">{tabs}</div>
+          <div className="shrink-0 self-end">{tabs}</div>
         </div>
 
 
