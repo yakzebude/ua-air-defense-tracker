@@ -927,7 +927,7 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
                 <SheetHeader>
                   <SheetTitle>{selected.name}</SheetTitle>
                   <SheetDescription>
-                    {parent ? `${parent.nameEn} · ${parent.name}` : selected.oblastIso}
+                    {parent ? (lang === "uk" ? `${parent.nameEn} · ${parent.name}` : parent.nameEn) : selected.oblastIso}
                   </SheetDescription>
                 </SheetHeader>
                 <div className="mt-6 space-y-4 text-sm">
