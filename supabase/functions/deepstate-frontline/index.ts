@@ -14,7 +14,7 @@ const corsHeaders = {
 
 const SOURCE_URL = "https://deepstatemap.live/api/history/last";
 const BUCKET = "deepstate-cache";
-const OBJECT = "frontline-latest.json";
+const OBJECT = "frontline-latest-v2.json";
 const REFRESH_AFTER_MS = 14 * 24 * 60 * 60 * 1000; // 14 days
 
 interface Cached {
