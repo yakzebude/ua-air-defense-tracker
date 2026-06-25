@@ -119,8 +119,7 @@ function CompositionAreaChart({
               name={labels[k]}
               stackId="1"
               fill={CAT_COLORS[k]}
-              fillOpacity={0.85}
-              maxBarSize={22}
+              isAnimationActive={false}
             />
           ))}
         </BarChart>
