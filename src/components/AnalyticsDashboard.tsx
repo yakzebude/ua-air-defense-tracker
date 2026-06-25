@@ -85,8 +85,8 @@ function CompositionAreaChart({
         <BarChart
           data={data}
           margin={{ top: 8, right: 12, left: 0, bottom: 28 }}
-          barCategoryGap="18%"
-          barGap={1}
+          barCategoryGap={0}
+          barGap={0}
         >
           <CartesianGrid stroke="hsl(var(--border) / 0.15)" vertical={false} />
           <XAxis
@@ -119,8 +119,7 @@ function CompositionAreaChart({
               name={labels[k]}
               stackId="1"
               fill={CAT_COLORS[k]}
-              fillOpacity={0.85}
-              maxBarSize={22}
+              isAnimationActive={false}
             />
           ))}
         </BarChart>
