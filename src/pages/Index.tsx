@@ -455,10 +455,6 @@ function CategorySection({
         )}
 
 
-        <div className="mb-6">
-          <DateRangeFilter months={dataset.months} range={range} onChange={onRangeChange} />
-        </div>
-
         <Panel
           title={t("category.monthlyPanel", { unit: unitNoun })}
           subtitle={rangeLabel}
@@ -481,6 +477,10 @@ function CategorySection({
         >
           <MonthlyTrendChart data={filtered} />
         </Panel>
+
+        <div className="mt-6">
+          <DateRangeFilter months={dataset.months} range={range} onChange={onRangeChange} />
+        </div>
 
         {(() => {
           const breached = Math.max(launched - destroyed, 0);
