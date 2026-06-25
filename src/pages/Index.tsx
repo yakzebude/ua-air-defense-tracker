@@ -10,7 +10,7 @@ import { MonthlyTrendChart } from "@/components/MonthlyTrendChart";
 import { DateRangeFilter } from "@/components/DateRangeFilter";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
+
 import { WeaponsCatalogSection } from "@/components/WeaponsCatalogSection";
 import { Panel, SourceLabel } from "@/components/ui/panel";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
