@@ -9,12 +9,6 @@ import oblastStatsData from "@/data/oblastStats.json";
 const REFRESH_MS = 30 * 1000;
 const OBLASTS_GEO = "/geo/ua-oblasts.geo.json";
 const RAIONS_GEO = "/geo/ua-raions.geo.json";
-const MAP_WIDTH = 1000;
-const FULL_MAP_HEIGHT = 680;
-const COMPACT_MAP_HEIGHT = 420;
-const MAP_CENTER: [number, number] = [31.5, 49];
-const FULL_MAP_SCALE = 2800;
-const COMPACT_MAP_SCALE = 2200;
 // Local, clipped context shapes for Belarus + the visible Russian border zone.
 // Avoid rendering the full Russia world-atlas polygon: it crosses the antimeridian
 // and can project as a huge filled path over the whole map viewport.
@@ -105,46 +99,14 @@ const normalizeFrontlineFeature = (feature: GeoJSON.Feature): GeoJSON.Feature | 
   };
 };
 
-const coordinateBounds = (coords: unknown): [number, number, number, number] | null => {
-  const bounds: [number, number, number, number] = [Infinity, Infinity, -Infinity, -Infinity];
-  const visit = (value: unknown) => {
-    if (!Array.isArray(value)) return;
-    if (typeof value[0] === "number" && typeof value[1] === "number") {
-      const lon = value[0] as number;
-      const lat = value[1] as number;
-      if (!Number.isFinite(lon) || !Number.isFinite(lat)) return;
-      bounds[0] = Math.min(bounds[0], lon);
-      bounds[1] = Math.min(bounds[1], lat);
-      bounds[2] = Math.max(bounds[2], lon);
-      bounds[3] = Math.max(bounds[3], lat);
-      return;
-    }
-    value.forEach(visit);
-  };
-  visit(coords);
-  return Number.isFinite(bounds[0]) ? bounds : null;
-};
-
-const isUkraineTheaterFeature = (feature: GeoJSON.Feature): boolean => {
-  if (!feature.geometry || !("coordinates" in feature.geometry)) return false;
-  const bounds = coordinateBounds((feature.geometry as GeoJSON.Polygon | GeoJSON.MultiPolygon).coordinates);
-  if (!bounds) return false;
-  const [minLon, minLat, maxLon, maxLat] = bounds;
-  return maxLon >= 22 && minLon <= 42 && maxLat >= 43.5 && minLat <= 53;
-};
-
-const mapProjection = (variant: Props["variant"]) => {
-  const height = variant === "full" ? FULL_MAP_HEIGHT : COMPACT_MAP_HEIGHT;
-  return geoMercator()
-    .scale(variant === "full" ? FULL_MAP_SCALE : COMPACT_MAP_SCALE)
-    .center(MAP_CENTER)
-    .translate([MAP_WIDTH / 2, height / 2]);
-};
-
-/** Fully occupied administrative region. Partial occupation is rendered only by
- *  the DeepState layer so whole oblasts are not incorrectly blocked/filled. */
+/** Oblasts under full or substantial Russian occupation — rendered permanently
+ *  in dark red. Active-alert pulsing is suppressed inside these regions. */
 const OCCUPIED_ISOS = new Set<string>([
   "UA-43", // Crimea (Autonomous Republic) — occupied since 2014
+  "UA-09", // Luhansk
+  "UA-14", // Donetsk
+  "UA-23", // Zaporizhzhia (partial)
+  "UA-65", // Kherson (partial)
 ]);
 
 /** Short oblast codes per language. EN/DE/FR use Latin abbreviations;
@@ -415,7 +377,11 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
   const showRaions = variant === "full";
 
   const aggressorPaths = useMemo(() => {
-    const projection = mapProjection(variant);
+    const height = variant === "full" ? 680 : 420;
+    const projection = geoMercator()
+      .scale(variant === "full" ? 2800 : 2200)
+      .center([31.5, 49])
+      .translate([500, height / 2]);
     const path = geoPath(projection);
 
     return AGGRESSOR_CONTEXT_GEO.features
@@ -425,20 +391,6 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
       }))
       .filter((item): item is { country: "Belarus" | "Russia"; d: string } => Boolean(item.d));
   }, [variant]);
-
-  const frontlinePaths = useMemo(() => {
-    if (!frontline?.features.length) return [];
-    const path = geoPath(mapProjection(variant));
-
-    return frontline.features
-      .filter(isUkraineTheaterFeature)
-      .map((feature, index) => ({
-        id: `deepstate-${index}`,
-        d: path(feature),
-        status: feature.properties?.status === "unknown" ? "unknown" : "occupied",
-      }))
-      .filter((item): item is { id: string; d: string; status: "occupied" | "unknown" } => Boolean(item.d));
-  }, [frontline, variant]);
 
   // Map sizes to fill its panel. The full variant fills a fixed-height
   // container so the map and the threat feed read as equal blocks side-by-side.
@@ -454,9 +406,9 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
       >
         <ComposableMap
           projection="geoMercator"
-          projectionConfig={{ scale: variant === "full" ? FULL_MAP_SCALE : COMPACT_MAP_SCALE, center: MAP_CENTER }}
-          width={MAP_WIDTH}
-          height={variant === "full" ? FULL_MAP_HEIGHT : COMPACT_MAP_HEIGHT}
+          projectionConfig={{ scale: variant === "full" ? 2800 : 2200, center: [31.5, 49] }}
+          width={1000}
+          height={variant === "full" ? 680 : 420}
           style={{ width: "100%", height: "100%" }}
         >
           <ZoomableGroup zoom={1} minZoom={1} maxZoom={variant === "full" ? 6 : 1}>
@@ -467,9 +419,9 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               <path
                 key={`aggressor-${country}`}
                 d={d}
-                fill="hsl(var(--muted-foreground) / 0.10)"
-                stroke="hsl(var(--border) / 0.8)"
-                strokeWidth={0.45}
+                fill="hsl(var(--muted-foreground) / 0.18)"
+                stroke="hsl(var(--border))"
+                strokeWidth={0.55}
                 vectorEffect="non-scaling-stroke"
                 style={{ outline: "none", cursor: "help" }}
                 onMouseEnter={(e) => {
@@ -575,6 +527,49 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               }
             </Geographies>
 
+            {/* Oblast abbreviation labels — placed at the polygon centroid.
+                Pointer-events disabled so they never intercept hover/click. */}
+            <Geographies geography={OBLASTS_GEO}>
+              {({ geographies }) =>
+                geographies.map((geo) => {
+                  const iso = geo.properties.iso as string;
+                  const code = codeMap[iso];
+                  if (!code) return null;
+                  const [lng, lat] = geoCentroid(geo);
+                  if (!Number.isFinite(lng) || !Number.isFinite(lat)) return null;
+                  const occupied = OCCUPIED_ISOS.has(iso);
+                  // Slightly smaller font for Cyrillic so 3-letter codes fit
+                  // tight oblasts; bumped vs prior values for legibility.
+                  const fontSize = variant === "full"
+                    ? (lang === "uk" ? 11 : 12)
+                    : (lang === "uk" ? 9 : 10);
+                  return (
+                    <Marker key={`lbl-${iso}`} coordinates={[lng, lat]}>
+                      <text
+                        textAnchor="middle"
+                        dy={3}
+                        style={{
+                          pointerEvents: "none",
+                          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+                          fontSize,
+                          fontWeight: 700,
+                          letterSpacing: "0.06em",
+                          fill: "hsl(var(--foreground))",
+                          paintOrder: "stroke",
+                          stroke: "hsl(var(--background))",
+                          strokeWidth: 3.5,
+                          strokeLinejoin: "round",
+                        }}
+                      >
+                        {code}
+                      </text>
+                    </Marker>
+                  );
+                })
+              }
+            </Geographies>
+
+
             {/* Raion subdivisions. Always drawn on the full map as thin
                 borders so visitors can read alert geography at finer than
                 oblast resolution. Active raions in non-occupied oblasts
@@ -666,72 +661,72 @@ export function AirAlertsMap({ variant = "compact" }: Props) {
               </Geographies>
             )}
 
-            {/* DeepStateMap occupation layer: direct projected paths keep the
-                map stable and avoid react-simple-maps rewinding artefacts. */}
-            {showRaions && frontlinePaths.map(({ id, d, status }) => (
-              <path
-                key={`${id}-fill`}
-                d={d}
-                fill={status === "occupied" ? "hsl(var(--occupied) / 0.86)" : "hsl(var(--muted-foreground) / 0.28)"}
-                stroke="transparent"
-                strokeWidth={0}
-                vectorEffect="non-scaling-stroke"
-                style={{ pointerEvents: "none" }}
-              />
-            ))}
-
-            {/* DeepStateMap front line — red line only, no red area overlay. */}
-            {showRaions && frontlinePaths.map(({ id, d }) => (
-              <path
-                key={`${id}-line`}
-                d={d}
-                fill="none"
-                stroke="hsl(var(--signal))"
-                strokeWidth={1.55}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                vectorEffect="non-scaling-stroke"
-                style={{ pointerEvents: "none" }}
-              />
-            ))}
-
-            {/* Oblast abbreviation labels — always above alerts/frontline. */}
-            <Geographies geography={OBLASTS_GEO}>
-              {({ geographies }) =>
-                geographies.map((geo) => {
-                  const iso = geo.properties.iso as string;
-                  const code = codeMap[iso];
-                  if (!code) return null;
-                  const [lng, lat] = geoCentroid(geo);
-                  if (!Number.isFinite(lng) || !Number.isFinite(lat)) return null;
-                  const fontSize = variant === "full"
-                    ? (lang === "uk" ? 11 : 12)
-                    : (lang === "uk" ? 9 : 10);
-                  return (
-                    <Marker key={`lbl-${iso}`} coordinates={[lng, lat]}>
-                      <text
-                        textAnchor="middle"
-                        dy={3}
-                        style={{
-                          pointerEvents: "none",
-                          fontFamily: '"IBM Plex Sans", system-ui, -apple-system, sans-serif',
-                          fontSize,
-                          fontWeight: 700,
-                          letterSpacing: "0.04em",
-                          fill: "hsl(var(--foreground))",
-                          paintOrder: "stroke",
-                          stroke: "hsl(var(--background))",
-                          strokeWidth: 3.5,
+            {/* DeepStateMap occupied territory — exact dark-grey fill from the
+                live polygons, not whole oblasts. */}
+            {showRaions && frontline && (
+              <Geographies geography={frontline}>
+                {({ geographies }) =>
+                  geographies.map((geo) => (
+                    <Geography
+                      key={`frontline-${geo.rsmKey}`}
+                      geography={geo}
+                      style={{
+                        default: {
+                          fill: "hsl(var(--foreground) / 0.28)",
+                          stroke: "transparent",
+                          strokeWidth: 0,
+                          strokeLinecap: "round",
                           strokeLinejoin: "round",
-                        }}
-                      >
-                        {code}
-                      </text>
-                    </Marker>
-                  );
-                })
-              }
-            </Geographies>
+                          outline: "none",
+                          pointerEvents: "none",
+                        },
+                        hover: {
+                          fill: "hsl(var(--foreground) / 0.28)",
+                          stroke: "transparent",
+                          strokeWidth: 0,
+                          outline: "none",
+                          pointerEvents: "none",
+                        },
+                        pressed: { fill: "hsl(var(--foreground) / 0.28)", outline: "none", pointerEvents: "none" },
+                      }}
+                    />
+                  ))
+                }
+              </Geographies>
+            )}
+
+            {/* DeepStateMap front line — red stroke only, no broad red area. */}
+            {showRaions && frontline && (
+              <Geographies geography={frontline}>
+                {({ geographies }) =>
+                  geographies.map((geo) => (
+                    <Geography
+                      key={`frontline-stroke-${geo.rsmKey}`}
+                      geography={geo}
+                      style={{
+                        default: {
+                          fill: "transparent",
+                          stroke: "hsl(var(--signal))",
+                          strokeWidth: 1.8,
+                          strokeLinecap: "round",
+                          strokeLinejoin: "round",
+                          outline: "none",
+                          pointerEvents: "none",
+                        },
+                        hover: {
+                          fill: "transparent",
+                          stroke: "hsl(var(--signal))",
+                          strokeWidth: 1.8,
+                          outline: "none",
+                          pointerEvents: "none",
+                        },
+                        pressed: { fill: "transparent", outline: "none", pointerEvents: "none" },
+                      }}
+                    />
+                  ))
+                }
+              </Geographies>
+            )}
           </ZoomableGroup>
         </ComposableMap>
 
