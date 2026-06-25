@@ -14,7 +14,7 @@ const corsHeaders = {
 
 const SOURCE_URL = "https://deepstatemap.live/api/history/last";
 const BUCKET = "deepstate-cache";
-const OBJECT = "frontline-latest-v2.json";
+const OBJECT = "frontline-latest-v3.json";
 const REFRESH_AFTER_MS = 14 * 24 * 60 * 60 * 1000; // 14 days
 
 interface Cached {
@@ -23,11 +23,18 @@ interface Cached {
   features: GeoJSON.Feature[];
 }
 
-function isOccupied(name: string | undefined): boolean {
-  if (!name) return false;
+function deepStateStatus(name: string | undefined): "occupied" | "unknown" | null {
+  if (!name) return null;
   // DeepStateMap encodes status in the name as "UA /// EN /// geoJSON.status.<x>"
   const lc = name.toLowerCase();
-  return lc.includes("geojson.status.occupied") || lc.includes("/// occupied");
+  if (lc.includes("geojson.status.occupied") || lc.includes("/// occupied")) return "occupied";
+  if (
+    lc.includes("geojson.territories.crimea") ||
+    lc.includes("geojson.territories.tuzla") ||
+    lc.includes("geojson.territories.ordlo")
+  ) return "occupied";
+  if (lc.includes("geojson.status.unknown") || lc.includes("/// unknown status")) return "unknown";
+  return null;
 }
 
 async function fetchUpstream(): Promise<Cached> {
@@ -44,20 +51,22 @@ async function fetchUpstream(): Promise<Cached> {
   const strip2D = (coords: any): any =>
     typeof coords[0] === "number" ? [coords[0], coords[1]] : coords.map(strip2D);
 
-  const features = (json.map?.features ?? []).filter((f) => {
+  const features = (json.map?.features ?? []).map((f) => {
     const t = f.geometry?.type;
-    if (t !== "Polygon" && t !== "MultiPolygon") return false;
+    if (t !== "Polygon" && t !== "MultiPolygon") return null;
     const name = (f.properties as { name?: string } | null)?.name;
-    return isOccupied(name);
-  }).map((f) => ({
-    type: "Feature" as const,
-    geometry: {
-      type: f.geometry!.type,
-      // deno-lint-ignore no-explicit-any
-      coordinates: strip2D((f.geometry as any).coordinates),
-    } as GeoJSON.Geometry,
-    properties: { status: "occupied" as const },
-  }));
+    const status = deepStateStatus(name);
+    if (!status) return null;
+    return {
+      type: "Feature" as const,
+      geometry: {
+        type: f.geometry!.type,
+        // deno-lint-ignore no-explicit-any
+        coordinates: strip2D((f.geometry as any).coordinates),
+      } as GeoJSON.Geometry,
+      properties: { status },
+    };
+  }).filter((feature): feature is GeoJSON.Feature => Boolean(feature));
   return {
     fetchedAt: new Date().toISOString(),
     upstreamDatetime: json.datetime,
