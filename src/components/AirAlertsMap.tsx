@@ -141,14 +141,10 @@ const mapProjection = (variant: Props["variant"]) => {
     .translate([MAP_WIDTH / 2, height / 2]);
 };
 
-/** Oblasts under full or substantial Russian occupation — rendered permanently
- *  in dark red. Active-alert pulsing is suppressed inside these regions. */
+/** Fully occupied administrative region. Partial occupation is rendered only by
+ *  the DeepState layer so whole oblasts are not incorrectly blocked/filled. */
 const OCCUPIED_ISOS = new Set<string>([
   "UA-43", // Crimea (Autonomous Republic) — occupied since 2014
-  "UA-09", // Luhansk
-  "UA-14", // Donetsk
-  "UA-23", // Zaporizhzhia (partial)
-  "UA-65", // Kherson (partial)
 ]);
 
 /** Short oblast codes per language. EN/DE/FR use Latin abbreviations;
