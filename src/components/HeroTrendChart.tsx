@@ -192,7 +192,8 @@ export function HeroTrendChart({ shahed, cruise, ballistic }: Props) {
             <ComposedChart
               data={rows}
               margin={{ top: 24, right: 16, left: 0, bottom: 28 }}
-              barCategoryGap="18%"
+              barCategoryGap={0}
+              barGap={0}
             >
               <CartesianGrid stroke="hsl(var(--border) / 0.25)" vertical={false} />
               <XAxis
@@ -215,27 +216,17 @@ export function HeroTrendChart({ shahed, cruise, ballistic }: Props) {
                 cursor={{ fill: "hsl(var(--foreground) / 0.05)" }}
               />
               <Bar
-                dataKey="launched"
-                name="Launched"
-                fill="hsl(var(--series-launched))"
-                maxBarSize={26}
-              />
-              <Line
-                type="monotone"
-                dataKey="intercepted"
-                name="Intercepted"
-                stroke="hsl(var(--foreground))"
-                strokeWidth={1.5}
-                dot={false}
-                isAnimationActive={false}
-              />
-              <Line
-                type="monotone"
                 dataKey="breached"
                 name="Breached"
-                stroke="hsl(var(--signal-warn))"
-                strokeWidth={2.25}
-                dot={false}
+                stackId="a"
+                fill="hsl(var(--signal))"
+                isAnimationActive={false}
+              />
+              <Bar
+                dataKey="intercepted"
+                name="Intercepted"
+                stackId="a"
+                fill="hsl(var(--series-destroyed))"
                 isAnimationActive={false}
               />
               {peakLaunched && (
@@ -277,13 +268,10 @@ export function HeroTrendChart({ shahed, cruise, ballistic }: Props) {
 
         <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-3 rounded-sm bg-muted-foreground/40" /> Launched
+            <span className="h-2 w-3 rounded-sm" style={{ background: "hsl(var(--series-destroyed))" }} /> Intercepted
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-[2px] w-4" style={{ background: "hsl(var(--foreground))" }} /> Intercepted
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-[2px] w-4" style={{ background: "hsl(var(--signal-warn))" }} /> Breached
+            <span className="h-2 w-3 rounded-sm" style={{ background: "hsl(var(--signal))" }} /> Breached
           </span>
           <span className="ml-auto normal-case tracking-normal text-[11px] text-muted-foreground/80">
             {t("hero.trendSource", "Source: Ukrainian Air Force Command (via Kaggle, Petro Ivaniuk).")}
